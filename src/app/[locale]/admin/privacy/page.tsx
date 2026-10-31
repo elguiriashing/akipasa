@@ -75,9 +75,15 @@ export default async function PrivacyRequestsPage({
                     <label>
                       {es ? "Estado" : "State"}
                       <select name="state" defaultValue="processing">
-                        <option value="processing">Processing</option>
-                        <option value="completed">Completed</option>
-                        <option value="cancelled">Cancelled</option>
+                        <option value="processing">
+                          {es ? "En proceso" : "Processing"}
+                        </option>
+                        <option value="completed">
+                          {es ? "Completada" : "Completed"}
+                        </option>
+                        <option value="cancelled">
+                          {es ? "Cancelada" : "Cancelled"}
+                        </option>
                       </select>
                     </label>
                     <label>

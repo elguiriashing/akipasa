@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { behaviourBatchSchema } from "@/lib/personalisation/schema";
 import {
+  readBoundedText,
   requireSameOriginRequest,
   RequestSecurityError,
 } from "@/lib/request-security";
@@ -21,12 +22,28 @@ export async function POST(request: Request) {
         { error: "unsupported_media_type" },
         { status: 415 },
       );
-    const contentLength = Number(request.headers.get("content-length") || 0);
-    if (contentLength > 64_000)
-      return NextResponse.json({ error: "payload_too_large" }, { status: 413 });
-    const parsed = behaviourBatchSchema.safeParse(
-      await request.json().catch(() => null),
-    );
+    let input: unknown;
+    try {
+      input = JSON.parse(await readBoundedText(request, 64_000));
+    } catch (error) {
+      if (error instanceof RequestSecurityError && error.status !== 400)
+        throw error;
+      input = null;
+    }
+    // Zod 3 traverses every item even after a collection maximum fails.
+    // Reject oversized batches before invoking the element schema.
+    if (
+      input !== null &&
+      typeof input === "object" &&
+      "events" in input &&
+      Array.isArray(input.events) &&
+      input.events.length > 25
+    )
+      return NextResponse.json(
+        { error: "invalid_behaviour_batch" },
+        { status: 400 },
+      );
+    const parsed = behaviourBatchSchema.safeParse(input);
     if (!parsed.success)
       return NextResponse.json(
         { error: "invalid_behaviour_batch" },

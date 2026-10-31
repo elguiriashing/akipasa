@@ -133,7 +133,9 @@ it("keeps provider acceptance separate from claim decision success", () => {
   const page = source("src/app/[locale]/staff/moderation/page.tsx");
   expect(action).toContain("claimantMailStatus");
   expect(action).toContain("delivery.sent > 0");
-  expect(action).toContain("mailQuery");
+  expect(action).toContain("staffModerationHref(locale, queue, page");
+  expect(action).toContain("{ mail: claimantMailStatus }");
+  expect(action).toContain('value.targetType === "venue_claim"');
   expect(page).toContain('query.mail === "not_sent"');
   expect(page).toContain("claimant email was not confirmed as sent");
 });

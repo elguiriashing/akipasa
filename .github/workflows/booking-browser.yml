@@ -5,6 +5,12 @@ on:
     paths:
       - "src/**"
       - "scripts/test-booking-browser.mjs"
+      - "scripts/test-event-booking-browser.mjs"
+      - "scripts/test-booking-read-boundary-browser.mjs"
+      - "scripts/validate-booking-staging*.mjs"
+      - "tests/authenticated-local-transport.test.ts"
+      - "tests/helpers/authenticated-*"
+      - "tests/e2e/authenticated-production.spec.ts"
       - ".github/workflows/booking-browser.yml"
   workflow_dispatch:
 permissions:
@@ -21,32 +27,45 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium
+      - name: Verify authenticated host transport stays on disposable loopback
+        run: npx vitest run --config tests/helpers/authenticated-transport.vitest.config.ts
       - run: npm run test:booking:browser
+      - name: Verify real event booking availability and request journey
+        run: node scripts/test-event-booking-browser.mjs
+      - name: Verify private booking read failures and safe recovery
+        run: node scripts/test-booking-read-boundary-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: booking-browser-evidence
-          path: test-results/booking-release
+          path: |
+            test-results/booking-release
+            test-results/event-booking-browser
+            test-results/booking-read-boundary
           retention-days: 7
   site-regression:
-    # The existing 63-case site suite needs a provisioned catalogue backend.
-    # Its isolated localhost attempt timed out; this is not booking acceptance.
+    # Keep the complete site suite against an explicitly isolated, provisioned
+    # QA catalogue/RPC backend. This is separate from PR localhost fixtures.
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      NEXT_PUBLIC_DATA_PROVIDER: fixtures
+      NEXT_PUBLIC_DATA_PROVIDER: supabase
       NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3100
       NEXT_PUBLIC_SUPABASE_URL: ${{ vars.BOOKING_STAGING_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.BOOKING_STAGING_SUPABASE_ANON_KEY }}
+      BOOKING_STAGING_PROJECT_REF: ${{ vars.BOOKING_STAGING_PROJECT_REF }}
+      AKIPASA_QA_EMAIL: ${{ secrets.AKIPASA_QA_EMAIL }}
+      AKIPASA_QA_PASSWORD: ${{ secrets.AKIPASA_QA_PASSWORD }}
+      AKIPASA_QA_VENUE_ID: ${{ vars.AKIPASA_QA_VENUE_ID }}
     steps:
-      - name: Require an explicitly provisioned test backend
-        run: test -n "$NEXT_PUBLIC_SUPABASE_URL" && test -n "$NEXT_PUBLIC_SUPABASE_ANON_KEY"
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
+      - name: Require an explicitly isolated and provisioned QA backend
+        run: node scripts/validate-booking-staging.mjs
       - run: npm ci
       - run: npm run test:e2e
       - uses: actions/upload-artifact@v4

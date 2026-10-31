@@ -13,10 +13,10 @@ type ToolSection = Exclude<VenueDashboardSection, "overview">;
 type Counts = {
   photos: number;
   events: number;
-  catalogueItems?: number;
+  catalogueItems?: number | null;
   programs: number;
   credentials: number;
-  requests: number;
+  requests: number | null;
   members: number;
 };
 
@@ -83,10 +83,11 @@ export function VenueDashboard({
     };
   }, []);
   function countLabel(
-    value: number,
+    value: number | null,
     en: [string, string],
     spanish: [string, string],
   ) {
+    if (value === null) return es ? "No disponible" : "Unavailable";
     return `${value} ${(es ? spanish : en)[value === 1 ? 0 : 1]}`;
   }
   const tools: {
@@ -125,11 +126,16 @@ export function VenueDashboard({
         ? "Comida, productos y servicios"
         : "Food, products and services",
       icon: "inbox",
-      detail: countLabel(
-        counts.catalogueItems || 0,
-        ["item", "items"],
-        ["elemento", "elementos"],
-      ),
+      detail:
+        counts.catalogueItems === null
+          ? es
+            ? "No disponible"
+            : "Unavailable"
+          : countLabel(
+              counts.catalogueItems || 0,
+              ["item", "items"],
+              ["elemento", "elementos"],
+            ),
     },
     {
       id: "rewards",

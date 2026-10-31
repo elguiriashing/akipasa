@@ -29,48 +29,131 @@ export default async function PrestigePrivacyPage({
     delete_after: string;
   }[];
   return (
-    <main className={styles.workspace}>
-      <h1>{es ? "Privacidad de prestigio" : "Prestige privacy"}</h1>
-      <p>
-        {es
-          ? "Gestiona la publicación y elimina direcciones guardadas, aunque el programa esté pausado."
-          : "Manage publication and delete saved addresses even when the programme is paused."}
-      </p>
-      <Link href={`/${locale}/account/export`}>
-        {es ? "Exportar mis datos" : "Export my data"}
-      </Link>
+    <main className={[styles.workspace, styles.privacyWorkspace].join(" ")}>
+      <nav
+        className={styles.privacyNavigation}
+        aria-label={es ? "Navegación de privacidad" : "Privacy navigation"}
+      >
+        <Link href={"/" + locale + "/passports"}>
+          {es ? "Pasaporte" : "Passport"}
+        </Link>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">
+          {es ? "Privacidad de prestigio" : "Prestige privacy"}
+        </span>
+      </nav>
+
+      <header className={styles.privacyHero}>
+        <span className={styles.privacyEyebrow}>
+          AkiPasa · {es ? "Control de privacidad" : "Privacy controls"}
+        </span>
+        <h1>{es ? "Privacidad de prestigio" : "Prestige privacy"}</h1>
+        <p>
+          {es
+            ? "Gestiona la publicación y elimina direcciones guardadas, aunque el programa esté pausado."
+            : "Manage publication and delete saved addresses even when the programme is paused."}
+        </p>
+        <div className={styles.privacyActions}>
+          <Link href={"/" + locale + "/account/export"}>
+            {es ? "Exportar mis datos" : "Export my data"}
+          </Link>
+        </div>
+      </header>
+
       {error ? (
-        <p role="alert">
+        <p className={styles.privacyNotice} role="alert">
           {es
             ? "No se pudo cargar. Reinténtalo."
             : "Could not load. Please retry."}
         </p>
       ) : (
-        <div className={styles.grid}>
-          {awards.map((a) => (
-            <section key={a.id} className={styles.panel}>
-              <h2>
-                #{a.serial} · {es ? a.title_es : a.title_en}
+        <section
+          className={styles.privacySection}
+          aria-labelledby="prestige-privacy-awards"
+        >
+          <div className={styles.privacySectionHeading}>
+            <div>
+              <h2 id="prestige-privacy-awards">
+                {es ? "Tus reconocimientos" : "Your awards"}
               </h2>
-              {addresses.some((s) => s.award_id === a.id) && (
-                <p>
-                  {es ? "Dirección guardada hasta" : "Address retained until"}{" "}
-                  {new Date(
-                    addresses.find((s) => s.award_id === a.id)!.delete_after,
-                  ).toLocaleDateString(es ? "es-ES" : "en-GB", {
-                    timeZone: "Europe/Madrid",
-                  })}
-                </p>
-              )}
-              <PassportPrestigePrivacy
-                locale={locale}
-                awardId={a.id}
-                address={addresses.some((s) => s.award_id === a.id)}
-                shared={a.shared}
-              />
-            </section>
-          ))}
-        </div>
+              <p>
+                {es
+                  ? "Solo tus reconocimientos. Las direcciones se mantienen privadas y nunca se muestran aquí."
+                  : "Only your awards. Shipping addresses stay private and are never displayed here."}
+              </p>
+            </div>
+            <span className={styles.privacyCount}>
+              {awards.length}{" "}
+              {awards.length === 1
+                ? es
+                  ? "reconocimiento"
+                  : "award"
+                : es
+                  ? "reconocimientos"
+                  : "awards"}
+            </span>
+          </div>
+          {awards.length === 0 ? (
+            <div className={styles.privacyEmpty} role="status">
+              <h3>
+                {es ? "Nada que gestionar todavía" : "Nothing to manage yet"}
+              </h3>
+              <p>
+                {es
+                  ? "Cuando tengas un reconocimiento, aquí aparecerán sus controles de privacidad."
+                  : "When you earn an award, its privacy controls will appear here."}
+              </p>
+            </div>
+          ) : (
+            <div className={styles.grid}>
+              {awards.map((award) => {
+                const address = addresses.find(
+                  (item) => item.award_id === award.id,
+                );
+                return (
+                  <section
+                    key={award.id}
+                    className={[styles.panel, styles.privacyAwardCard].join(
+                      " ",
+                    )}
+                  >
+                    <span className={styles.privacySerial}>
+                      {es ? "Reconocimiento" : "Award"} #{award.serial}
+                    </span>
+                    <h3>
+                      {es
+                        ? award.title_es || award.title_en
+                        : award.title_en || award.title_es}
+                    </h3>
+                    <p>
+                      {address ? (
+                        <>
+                          {es
+                            ? "Dirección conservada hasta"
+                            : "Address retained until"}{" "}
+                          {new Date(address.delete_after).toLocaleDateString(
+                            es ? "es-ES" : "en-GB",
+                            { timeZone: "Europe/Madrid" },
+                          )}
+                        </>
+                      ) : es ? (
+                        "No hay ninguna dirección de envío guardada."
+                      ) : (
+                        "No shipping address is stored."
+                      )}
+                    </p>
+                    <PassportPrestigePrivacy
+                      locale={locale}
+                      awardId={award.id}
+                      address={Boolean(address)}
+                      shared={award.shared}
+                    />
+                  </section>
+                );
+              })}
+            </div>
+          )}
+        </section>
       )}
     </main>
   );

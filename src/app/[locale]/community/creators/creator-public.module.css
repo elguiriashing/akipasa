@@ -1,0 +1,243 @@
+.page {
+  color: #fff4e8;
+  background: #080909;
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.workspace-shell.community-workspace) {
+  --pasa-ui-panel: #12100e;
+  --pasa-ui-elevated: #1d1712;
+  --pasa-ui-glass: #15110e;
+  --pasa-ui-border: #49382b;
+  --pasa-ui-text: #fff4e8;
+  --pasa-ui-subtle: #cbbcaf;
+  --pasa-ui-highlight: #ffad72;
+  --creator-paper: #12100e;
+  --creator-soft: #1d1712;
+  --surface: #12100e;
+  --surface-alt: #1d1712;
+  --consumer-soft: #0b0b0a;
+  --consumer-line: #49382b;
+  --ink: #fff4e8;
+  --muted: #cbbcaf;
+  --line: #49382b;
+  --primary: #ff812e;
+  --primary-strong: #ffad72;
+  color: #fff4e8;
+  background: transparent;
+}
+:global(html) :global(body) :global(.app-shell):has(.page),
+:global(html) :global(body) :global(.app-content):has(.page) {
+  background: #080909;
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :is(
+    :global(.workspace-sidebar),
+    :global(.workspace-mobile-trigger),
+    :global(.workspace-drawer)
+  ) {
+  color: #fff4e8;
+  background: #15110e;
+  border-color: #49382b;
+  box-shadow: none;
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :global(.workspace-navigation a) {
+  color: #cbbcaf;
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :global(.workspace-navigation a.active) {
+  color: #ffb27b;
+  background: #302013;
+  border-radius: 999px;
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :is(
+    :global(.panel),
+    :global(.creator-search),
+    :global(.creator-card),
+    :global(.creator-profile),
+    :global(.creator-profile-main),
+    :global(.creator-profile-summary),
+    :global(.creator-profile-footer-card),
+    :global(.creator-review-form),
+    :global(.creator-faq-list details),
+    :global(.creator-review-grid article)
+  ) {
+  color: #fff4e8;
+  border: 1px solid #49382b;
+  background: #12100e;
+  box-shadow: none;
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :global(.creator-discovery-intro) {
+  padding: clamp(24px, 4vw, 44px);
+  border: 1px solid #68452d;
+  border-radius: 26px;
+  background:
+    radial-gradient(ellipse at 100% 0, #55301b, transparent 65%), #15100c;
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :global(.creator-discovery-intro h2) {
+  color: #fff4e8;
+  font-size: clamp(30px, 4.2vw, 54px);
+  letter-spacing: -0.05em;
+  line-height: 1.05;
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :is(
+    :global(.creator-discovery-intro p),
+    :global(.creator-card-body p),
+    :global(.creator-profile-main p),
+    :global(.creator-profile-summary span),
+    :global(.creator-reviews-section p),
+    :global(.creator-faq-list p)
+  ) {
+  color: #cbbcaf;
+  line-height: 1.65;
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :is(
+    :global(.eyebrow),
+    :global(.creator-card-open),
+    :global(.creator-location),
+    :global(.creator-event-venue)
+  ) {
+  color: #ffb27b;
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :is(:global(.creator-category-nav a), :global(.creator-tags span)) {
+  color: #efcfb6;
+  background: #261b12;
+  border-color: #68482f;
+  border-radius: 999px;
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :global(.creator-category-nav a.active) {
+  color: #211105;
+  background: #ff812e;
+  border-color: transparent;
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :global(.button) {
+  color: #211105;
+  background: #ff812e;
+  border-color: transparent;
+  border-radius: 999px;
+  min-height: 48px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :global(.button.secondary) {
+  color: #ffe1c9;
+  background: #251a11;
+  border: 1px solid #745034;
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :is(:global(input), :global(textarea), :global(select)) {
+  color: #fff4e8;
+  font-size: 16px;
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :is(:global(input), :global(textarea))::placeholder {
+  color: #baaa9b;
+  opacity: 1;
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :is(
+    :global(a),
+    :global(button),
+    :global(input),
+    :global(textarea),
+    :global(select),
+    :global(summary)
+  ):focus-visible {
+  outline: 3px solid #ffb27b;
+  outline-offset: 4px;
+}
+
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :global(.creator-cover:not(.has-image)) {
+  background:
+    radial-gradient(ellipse at 90% 0, #55301b, transparent 65%), #15100c;
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :global(.creator-cover)::after {
+  background: linear-gradient(transparent, #080909b8);
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :global(.creator-card-gradient) {
+  background: linear-gradient(180deg, transparent 40%, #080909c7);
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :global(.creator-events-v2 > header > span) {
+  color: #211105;
+  background: #ff812e;
+}
+:global(html)
+  :global(body)
+  .page
+  :global(.community-workspace)
+  :global(.creator-review-form) {
+  padding: 20px;
+  border-radius: 18px;
+}

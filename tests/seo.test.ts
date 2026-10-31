@@ -2,6 +2,7 @@
 import { describe, expect, it } from "vitest";
 import {
   languageUrls,
+  publicPagePaths,
   localizedMetadata,
   serializeJsonLd,
   shouldNoindex,
@@ -72,6 +73,8 @@ describe("public search metadata", () => {
       "/en/membership",
       "/es/passports",
       "/es/terms",
+      "/en/photo-credits",
+      "/es/photo-credits",
       "/en/venues/business-cafe",
       "/en/events/community-party",
       "/sitemap.xml",
@@ -119,7 +122,9 @@ describe("catalogue sitemaps", () => {
       throw new Error("must not query catalogue");
     });
     const doc = document(await response.text());
-    expect(doc.querySelectorAll("url")).toHaveLength(16);
+    expect(doc.querySelectorAll("url")).toHaveLength(
+      publicPagePaths.length * 2,
+    );
     expect(doc.querySelectorAll("lastmod")).toHaveLength(0);
     const urls = [...doc.querySelectorAll("loc")].map(
       (loc) => loc.textContent!,
@@ -132,7 +137,7 @@ describe("catalogue sitemaps", () => {
     );
     expect(
       doc.getElementsByTagNameNS("http://www.w3.org/1999/xhtml", "link"),
-    ).toHaveLength(48);
+    ).toHaveLength(publicPagePaths.length * 6);
   });
 
   it("escapes XML, preserves real change dates and omits invented dates", () => {

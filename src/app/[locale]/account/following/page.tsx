@@ -1,3 +1,4 @@
+import { accountReturnPath } from "@/lib/account-return-path";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { Icon } from "@/components/Icons";
@@ -21,8 +22,14 @@ export default async function FollowingPage({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const { supabase } = await requireUser(locale);
   const query = (await searchParams) || {};
+  const { supabase } = await requireUser(
+    locale,
+    accountReturnPath(
+      locale,
+      `/${locale}/account/following?${new URLSearchParams(Object.entries(query).filter((entry): entry is [string, string] => typeof entry[1] === "string"))}`,
+    ),
+  );
   const search = accountCollectionQuery(query.q);
   const page = accountCollectionPage(query.page);
   const from = (page - 1) * accountCollectionPageSize;

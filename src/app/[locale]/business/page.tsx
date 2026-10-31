@@ -101,24 +101,25 @@ export default async function BusinessPage({
   const { supabase, user } = claimView
     ? await requireUser(locale, returnPath)
     : await requireBusinessAccess(locale, returnPath);
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("app_role")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  const flags = await loadFeatureFlags(supabase);
   const es = locale === "es";
-  const platformStaff = canModerate(profile?.app_role || "");
-
+  // Independent caller-authorized reads share one network stage. Staff-only
+  // editorial loading below still waits for the current profile's role.
   const [
+    { data: profile, error: profileError },
+    flags,
     { data: members, error: membersError },
-    { data: categories },
-    { data: claims },
-    { data: programs },
-    { data: redemptions },
-    { data: promotions },
+    { data: categories, error: categoriesError },
+    { data: claims, error: claimsError },
+    { data: programs, error: programsError },
+    { data: redemptions, error: redemptionsError },
+    { data: promotions, error: promotionsError },
   ] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("app_role")
+      .eq("id", user.id)
+      .maybeSingle(),
+    loadFeatureFlags(supabase),
     supabase
       .from("venue_members")
       .select("role,venues(id,name,slug,status,verified,discovery_vertical)")
@@ -147,15 +148,28 @@ export default async function BusinessPage({
       .order("created_at", { ascending: false }),
   ]);
 
+  const platformStaff = !profileError && canModerate(profile?.app_role || "");
   const memberManaged = (members || []) as unknown as ManagedVenue[];
-  const { data: editorialVenue } = platformStaff
-    ? await supabase
-        .from("venues")
-        .select("id,name,slug,status,verified,discovery_vertical")
-        .eq("slug", "akipasa-editorial")
-        .eq("status", "published")
-        .maybeSingle()
-    : { data: null };
+  const [
+    { data: editorialVenue, error: editorialVenueError },
+    { data: rentalCompanies, error: rentalCompaniesError },
+  ] = await Promise.all([
+    platformStaff
+      ? supabase
+          .from("venues")
+          .select("id,name,slug,status,verified,discovery_vertical")
+          .eq("slug", "akipasa-editorial")
+          .eq("status", "published")
+          .maybeSingle()
+      : { data: null, error: null },
+    view === "venues"
+      ? supabase
+          .from("car_rental_companies")
+          .select("id,name,slug,status,venue_id")
+          .eq("submitted_by", user.id)
+          .order("created_at", { ascending: true })
+      : { data: [], error: null },
+  ]);
   const managed: ManagedVenue[] = [
     ...memberManaged,
     ...(editorialVenue &&
@@ -163,14 +177,6 @@ export default async function BusinessPage({
       ? [{ role: "editor", venues: editorialVenue }]
       : []),
   ];
-  const { data: rentalCompanies, error: rentalCompaniesError } =
-    view === "venues"
-      ? await supabase
-          .from("car_rental_companies")
-          .select("id,name,slug,status,venue_id")
-          .eq("submitted_by", user.id)
-          .order("created_at", { ascending: true })
-      : { data: [], error: null };
   const managedVenueIds = managed.flatMap((item) =>
     item.venues ? [item.venues.id] : [],
   );
@@ -180,22 +186,23 @@ export default async function BusinessPage({
   const regularVenueIds = regularManaged.flatMap((item) =>
     item.venues ? [item.venues.id] : [],
   );
-  const { data: eventComposerMediaRows } =
+  const { data: eventComposerMediaRows, error: eventComposerMediaError } =
     view === "events" && regularVenueIds.length
       ? await supabase
           .from("venue_media")
           .select("id,venue_id,storage_path,alt_es,alt_en")
           .in("venue_id", regularVenueIds)
           .order("sort_order")
-      : { data: [] };
+      : { data: [], error: null };
   const composerMediaPaths = (eventComposerMediaRows || []).map(
     (item) => item.storage_path,
   );
-  const { data: composerSignedRows } = composerMediaPaths.length
-    ? await supabase.storage
-        .from("event-media")
-        .createSignedUrls(composerMediaPaths, 3600)
-    : { data: [] };
+  const { data: composerSignedRows, error: composerSignedError } =
+    composerMediaPaths.length
+      ? await supabase.storage
+          .from("event-media")
+          .createSignedUrls(composerMediaPaths, 3600)
+      : { data: [], error: null };
   const composerSignedMap = new Map(
     (composerSignedRows || []).flatMap((item) =>
       item.path && item.signedUrl ? [[item.path, item.signedUrl] as const] : [],
@@ -218,24 +225,29 @@ export default async function BusinessPage({
           ]
         : [];
     });
-  const [{ data: promotionEvents }, { data: managedEvents }] =
-    managedVenueIds.length
-      ? await Promise.all([
-          supabase
-            .from("events")
-            .select("id,venue_id,title_es,title_en")
-            .in("venue_id", managedVenueIds)
-            .eq("status", "published")
-            .order("title_es"),
-          supabase
-            .from("events")
-            .select(
-              "id,venue_id,slug,title_es,title_en,status,source,created_at,event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status)",
-            )
-            .in("venue_id", managedVenueIds)
-            .order("created_at", { ascending: false }),
-        ])
-      : [{ data: [] }, { data: [] }];
+  const [
+    { data: promotionEvents, error: promotionEventsError },
+    { data: managedEvents, error: managedEventsError },
+  ] = managedVenueIds.length
+    ? await Promise.all([
+        supabase
+          .from("events")
+          .select("id,venue_id,title_es,title_en")
+          .in("venue_id", managedVenueIds)
+          .eq("status", "published")
+          .order("title_es"),
+        supabase
+          .from("events")
+          .select(
+            "id,venue_id,slug,title_es,title_en,status,source,created_at,event_occurrences!event_occurrences_event_id_fkey(id,starts_at,ends_at,status)",
+          )
+          .in("venue_id", managedVenueIds)
+          .order("created_at", { ascending: false }),
+      ])
+    : [
+        { data: [], error: null },
+        { data: [], error: null },
+      ];
   const businessEvents = (managedEvents || []) as unknown as BusinessEvent[];
   const venueNames = new Map(
     managed.flatMap((item) =>
@@ -274,18 +286,60 @@ export default async function BusinessPage({
       : [];
 
   const base = `/${locale}/business`;
+  const membershipUnavailable = Boolean(
+    membersError || profileError || editorialVenueError,
+  );
+  const eventsUnavailable =
+    membershipUnavailable || Boolean(managedEventsError);
+  const eventCreationUnavailable =
+    Boolean(membersError) ||
+    Boolean(
+      categoriesError ||
+        eventComposerMediaError ||
+        composerSignedError ||
+        composerSignedRows?.some(
+          (item) => "error" in item && Boolean(item.error),
+        ),
+    );
+  const loyaltyUnavailable = Boolean(programsError);
+  const claimCreationUnavailable = Boolean(membersError || claimsError);
+  const promotionCreationUnavailable = Boolean(
+    membersError || promotionsError || promotionEventsError,
+  );
+  const retryQuery = new URLSearchParams({ view });
+  if (query.compose === "1") retryQuery.set("compose", "1");
+  if (query.venueId && /^[0-9a-f-]{36}$/i.test(query.venueId))
+    retryQuery.set("venueId", query.venueId);
+  const retryHref = `${base}?${retryQuery}`;
+  const readNotice = (key: string, label: string) => (
+    <section
+      className="panel catalogue-empty-card dashboard-grid-full"
+      role="alert"
+      data-business-read-error={key}
+    >
+      <h2>{label}</h2>
+      <p>
+        {es
+          ? "No se pudo cargar esta información. Reintenta antes de gestionarla; no mostramos datos vacíos sin confirmarlos."
+          : "This information could not be loaded. Retry before managing it; an empty state is hidden until the data is confirmed."}
+      </p>
+      <Link className="button secondary" href={retryHref}>
+        {es ? "Reintentar" : "Retry"}
+      </Link>
+    </section>
+  );
   const items: WorkspaceItem[] = [
     {
       href: base,
       label: es ? "Inicio" : "Home",
       icon: "home",
-      count: managed.length || undefined,
+      count: membershipUnavailable ? undefined : managed.length || undefined,
     },
     {
       href: `${base}?view=events`,
       label: es ? "Eventos" : "Events",
       icon: "calendar",
-      count: businessEvents.length || undefined,
+      count: eventsUnavailable ? undefined : businessEvents.length || undefined,
     },
     {
       href: `${base}?view=loyalty`,
@@ -298,7 +352,11 @@ export default async function BusinessPage({
       label: es ? "Promoción" : "Growth",
       icon: "megaphone",
     },
-    { href: `${base}?view=analytics`, label: "Analytics", icon: "activity" },
+    {
+      href: `${base}?view=analytics`,
+      label: es ? "Analítica" : "Analytics",
+      icon: "activity",
+    },
     {
       href: `/${locale}/account/subscription?from=akibusiness`,
       label: es ? "Membresías" : "Memberships",
@@ -367,7 +425,81 @@ export default async function BusinessPage({
         </p>
       )}
       <section className="dashboard-grid">
-        {view === "events" && query.compose !== "1" && (
+        {membersError &&
+          readNotice(
+            "membership",
+            es
+              ? "Locales gestionados no disponibles"
+              : "Managed venues unavailable",
+          )}
+        {(profileError || editorialVenueError) &&
+          readNotice(
+            "editorial",
+            profileError
+              ? es
+                ? "Rol de negocio no disponible"
+                : "Business role unavailable"
+              : es
+                ? "Local editorial no disponible"
+                : "Editorial venue unavailable",
+          )}
+        {view === "events" &&
+          eventsUnavailable &&
+          readNotice(
+            "events",
+            es ? "Eventos no disponibles" : "Events unavailable",
+          )}
+        {view === "events" &&
+          !membershipUnavailable &&
+          eventCreationUnavailable &&
+          !eventsUnavailable &&
+          readNotice(
+            "event-options",
+            es
+              ? "Opciones del evento no disponibles"
+              : "Event setup unavailable",
+          )}
+        {view === "loyalty" &&
+          loyaltyUnavailable &&
+          readNotice(
+            "loyalty",
+            es
+              ? "Programas de fidelidad no disponibles"
+              : "Loyalty programmes unavailable",
+          )}
+        {view === "loyalty" &&
+          redemptionsError &&
+          readNotice(
+            "redemptions",
+            es
+              ? "Canjes pendientes no disponibles"
+              : "Pending redemptions unavailable",
+          )}
+        {view === "claims" &&
+          claimsError &&
+          readNotice(
+            "claims",
+            es
+              ? "Historial de reclamaciones no disponible"
+              : "Claims history unavailable",
+          )}
+        {view === "growth" &&
+          (promotionsError || promotionEventsError) &&
+          readNotice(
+            "promotions",
+            es
+              ? "Solicitudes de promoción no disponibles"
+              : "Promotion requests unavailable",
+          )}
+        {view === "growth" &&
+          eventsUnavailable &&
+          readNotice(
+            "growth-events",
+            es
+              ? "Totales de eventos no disponibles"
+              : "Event totals unavailable",
+          )}
+        {view === "events" && !eventsUnavailable && query.compose !== "1" && (
           <section className="panel catalogue-edit-card dashboard-grid-full">
             <BusinessEventCatalogue
               locale={locale}
@@ -414,7 +546,8 @@ export default async function BusinessPage({
         {view === "venues" && (
           <BusinessHome
             locale={locale}
-            readError={Boolean(membersError || rentalCompaniesError)}
+            readError={Boolean(membershipUnavailable || rentalCompaniesError)}
+            retryHref={retryHref}
             places={[
               ...managed.flatMap((item) =>
                 item.venues
@@ -448,7 +581,7 @@ export default async function BusinessPage({
         )}
 
         {/* Create Venue Form */}
-        {view === "venues" && (
+        {view === "venues" && !membersError && (
           <details className="panel catalogue-edit-card" open={!managed.length}>
             <summary>
               <strong>
@@ -509,173 +642,185 @@ export default async function BusinessPage({
           </details>
         )}
 
-        {view === "events" && platformStaff && query.compose !== "1" && (
-          <details
-            id="create-official-event"
-            className="panel catalogue-edit-card dashboard-grid-full"
-            open
-          >
-            <summary>
-              <strong>
-                {es
-                  ? "+ Publicar Selección AkiPasa"
-                  : "+ Publish AkiPasa Selection"}
-              </strong>
-            </summary>
-            <div className="catalogue-section-header">
-              <div>
-                <span className="eyebrow">Selección AkiPasa</span>
-                <h2>
-                  {es
-                    ? "Ferias, romerías y planes de interés público"
-                    : "Fairs, festivals and public-interest plans"}
-                </h2>
-                <p className="catalogue-section-sub">
-                  {es
-                    ? "Se publica desde el perfil editorial de AkiPasa y aparece con marcador oficial. «Selección AkiPasa» significa seleccionado/publicado por AkiPasa, no necesariamente organizado por AkiPasa."
-                    : "Published from AkiPasa's editorial profile with an official marker. “AkiPasa Selection” means curated/published by AkiPasa, not necessarily organised by AkiPasa."}
-                </p>
-              </div>
-            </div>
-            <AutoTranslationNote locale={locale} />
-            <GuardedActionForm
-              action={createOfficialEvent}
-              className="stack focused-form"
+        {view === "events" &&
+          platformStaff &&
+          !eventCreationUnavailable &&
+          !editorialVenueError &&
+          query.compose !== "1" && (
+            <details
+              id="create-official-event"
+              className="panel catalogue-edit-card dashboard-grid-full"
+              open
             >
-              <input type="hidden" name="locale" value={locale} />
-              <div className="form-grid-two">
-                <label>
-                  {es ? "Categoría" : "Category"}
-                  <select name="categoryId" required>
-                    {categories?.map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {locale === "es" ? category.name_es : category.name_en}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label>
-                  {es ? "Título" : "Title"}
-                  <input
-                    name="title"
-                    required
-                    minLength={3}
-                    maxLength={160}
-                    placeholder={
-                      es ? "Ej. Feria de Fuengirola" : "e.g. Fuengirola Fair"
-                    }
-                  />
-                </label>
+              <summary>
+                <strong>
+                  {es
+                    ? "+ Publicar Selección AkiPasa"
+                    : "+ Publish AkiPasa Selection"}
+                </strong>
+              </summary>
+              <div className="catalogue-section-header">
+                <div>
+                  <span className="eyebrow">Selección AkiPasa</span>
+                  <h2>
+                    {es
+                      ? "Ferias, romerías y planes de interés público"
+                      : "Fairs, festivals and public-interest plans"}
+                  </h2>
+                  <p className="catalogue-section-sub">
+                    {es
+                      ? "Se publica desde el perfil editorial de AkiPasa y aparece con marcador oficial. «Selección AkiPasa» significa seleccionado/publicado por AkiPasa, no necesariamente organizado por AkiPasa."
+                      : "Published from AkiPasa's editorial profile with an official marker. “AkiPasa Selection” means curated/published by AkiPasa, not necessarily organised by AkiPasa."}
+                  </p>
+                </div>
               </div>
-              <OfficialEventLocationPicker locale={locale} />
-              <label>
-                {es ? "Descripción" : "Description"}
-                <textarea
-                  name="description"
-                  required
-                  minLength={20}
-                  maxLength={4000}
-                  rows={4}
-                />
-              </label>
-              <fieldset className="official-event-price-fieldset">
-                <legend>{es ? "Precio de entrada" : "Entry price"}</legend>
-                <div className="event-price-mode">
-                  <label className="event-price-option">
-                    <input
-                      type="radio"
-                      name="priceDisplayMode"
-                      value="hide"
-                      defaultChecked
-                    />
-                    <span>◌</span>
-                    <strong>{es ? "No mostrar precio" : "Hide price"}</strong>
-                    <small>
-                      {es
-                        ? "Para planes sin entrada: desayunos, mercados, bares…"
-                        : "For events with no entry fee: breakfasts, markets, bars…"}
-                    </small>
+              <AutoTranslationNote locale={locale} />
+              <GuardedActionForm
+                action={createOfficialEvent}
+                className="stack focused-form"
+              >
+                <input type="hidden" name="locale" value={locale} />
+                <div className="form-grid-two">
+                  <label>
+                    {es ? "Categoría" : "Category"}
+                    <select name="categoryId" required>
+                      {categories?.map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {locale === "es"
+                            ? category.name_es
+                            : category.name_en}
+                        </option>
+                      ))}
+                    </select>
                   </label>
-                  <label className="event-price-option">
-                    <input type="radio" name="priceDisplayMode" value="show" />
-                    <span>€</span>
-                    <strong>{es ? "Mostrar precio" : "Show price"}</strong>
-                    <small>
-                      {es
-                        ? "0 € aparecerá como Gratis."
-                        : "€0 displays as Free."}
-                    </small>
+                  <label>
+                    {es ? "Título" : "Title"}
+                    <input
+                      name="title"
+                      required
+                      minLength={3}
+                      maxLength={160}
+                      placeholder={
+                        es ? "Ej. Feria de Fuengirola" : "e.g. Fuengirola Fair"
+                      }
+                    />
                   </label>
                 </div>
-                <label className="event-price-input">
-                  {es ? "Precio (€)" : "Price (€)"}
-                  <input
-                    name="priceEuros"
-                    type="number"
-                    min="0"
-                    defaultValue="0"
-                    step="0.01"
+                <OfficialEventLocationPicker locale={locale} />
+                <label>
+                  {es ? "Descripción" : "Description"}
+                  <textarea
+                    name="description"
                     required
+                    minLength={20}
+                    maxLength={4000}
+                    rows={4}
                   />
                 </label>
-              </fieldset>
-              <label>
-                {es ? "Enlace oficial / reserva" : "Official / booking link"}
-                <input name="bookingUrl" type="url" placeholder="https://" />
-              </label>
-              <div className="form-grid-two">
+                <fieldset className="official-event-price-fieldset">
+                  <legend>{es ? "Precio de entrada" : "Entry price"}</legend>
+                  <div className="event-price-mode">
+                    <label className="event-price-option">
+                      <input
+                        type="radio"
+                        name="priceDisplayMode"
+                        value="hide"
+                        defaultChecked
+                      />
+                      <span>◌</span>
+                      <strong>{es ? "No mostrar precio" : "Hide price"}</strong>
+                      <small>
+                        {es
+                          ? "Para planes sin entrada: desayunos, mercados, bares…"
+                          : "For events with no entry fee: breakfasts, markets, bars…"}
+                      </small>
+                    </label>
+                    <label className="event-price-option">
+                      <input
+                        type="radio"
+                        name="priceDisplayMode"
+                        value="show"
+                      />
+                      <span>€</span>
+                      <strong>{es ? "Mostrar precio" : "Show price"}</strong>
+                      <small>
+                        {es
+                          ? "0 € aparecerá como Gratis."
+                          : "€0 displays as Free."}
+                      </small>
+                    </label>
+                  </div>
+                  <label className="event-price-input">
+                    {es ? "Precio (€)" : "Price (€)"}
+                    <input
+                      name="priceEuros"
+                      type="number"
+                      min="0"
+                      defaultValue="0"
+                      step="0.01"
+                      required
+                    />
+                  </label>
+                </fieldset>
                 <label>
-                  {es ? "Inicio" : "Starts"}
-                  <input name="startsAt" type="datetime-local" required />
+                  {es ? "Enlace oficial / reserva" : "Official / booking link"}
+                  <input name="bookingUrl" type="url" placeholder="https://" />
                 </label>
-                <label>
-                  {es ? "Fin" : "Ends"}
-                  <input name="endsAt" type="datetime-local" required />
-                </label>
-              </div>
-              <div className="form-actions-right">
-                <button className="button primary" type="submit">
-                  {es
-                    ? "Publicar Selección AkiPasa"
-                    : "Publish AkiPasa Selection"}
-                </button>
-              </div>
-            </GuardedActionForm>
-          </details>
-        )}
+                <div className="form-grid-two">
+                  <label>
+                    {es ? "Inicio" : "Starts"}
+                    <input name="startsAt" type="datetime-local" required />
+                  </label>
+                  <label>
+                    {es ? "Fin" : "Ends"}
+                    <input name="endsAt" type="datetime-local" required />
+                  </label>
+                </div>
+                <div className="form-actions-right">
+                  <button className="button primary" type="submit">
+                    {es
+                      ? "Publicar Selección AkiPasa"
+                      : "Publish AkiPasa Selection"}
+                  </button>
+                </div>
+              </GuardedActionForm>
+            </details>
+          )}
 
         {/* Create Event Form */}
-        {view === "events" && regularManaged.length > 0 && (
-          <details
-            id="create-event"
-            className="panel catalogue-edit-card dashboard-grid-full"
-            open={query.compose === "1"}
-          >
-            <summary>
-              <strong>
-                {es ? "+ Crear evento de local" : "+ Create venue event"}
-              </strong>
-            </summary>
-            <BusinessEventComposer
-              locale={locale}
-              venues={regularManaged.flatMap((item) =>
-                item.venues
-                  ? [{ id: item.venues.id, name: item.venues.name }]
-                  : [],
-              )}
-              categories={(categories || []).map((category) => ({
-                id: category.id,
-                label:
-                  (locale === "es" ? category.name_es : category.name_en) ||
-                  category.name_es,
-              }))}
-              media={eventComposerMedia}
-            />
-          </details>
-        )}
+        {view === "events" &&
+          regularManaged.length > 0 &&
+          !eventCreationUnavailable && (
+            <details
+              id="create-event"
+              className="panel catalogue-edit-card dashboard-grid-full"
+              open={query.compose === "1"}
+            >
+              <summary>
+                <strong>
+                  {es ? "+ Crear evento de local" : "+ Create venue event"}
+                </strong>
+              </summary>
+              <BusinessEventComposer
+                locale={locale}
+                venues={regularManaged.flatMap((item) =>
+                  item.venues
+                    ? [{ id: item.venues.id, name: item.venues.name }]
+                    : [],
+                )}
+                categories={(categories || []).map((category) => ({
+                  id: category.id,
+                  label:
+                    (locale === "es" ? category.name_es : category.name_en) ||
+                    category.name_es,
+                }))}
+                media={eventComposerMedia}
+              />
+            </details>
+          )}
 
         {/* Loyalty & Stamps View */}
-        {view === "loyalty" && managed.length > 0 && (
+        {view === "loyalty" && managed.length > 0 && !loyaltyUnavailable && (
           <details className="panel catalogue-edit-card" open>
             <summary>
               <strong>
@@ -686,72 +831,74 @@ export default async function BusinessPage({
             </summary>
 
             <AutoTranslationNote locale={locale} />
-            <form action={saveLoyaltyProgram} className="stack focused-form">
-              <input type="hidden" name="locale" value={locale} />
+            {!membersError && (
+              <form action={saveLoyaltyProgram} className="stack focused-form">
+                <input type="hidden" name="locale" value={locale} />
 
-              <div className="form-grid-two">
-                <label>
-                  {es ? "Local" : "Venue"}
-                  <select name="venueId" required>
-                    {managed.map(
-                      (m) =>
-                        m.venues && (
-                          <option key={m.venues.id} value={m.venues.id}>
-                            {m.venues.name}
-                          </option>
-                        ),
-                    )}
-                  </select>
-                </label>
+                <div className="form-grid-two">
+                  <label>
+                    {es ? "Local" : "Venue"}
+                    <select name="venueId" required>
+                      {managed.map(
+                        (m) =>
+                          m.venues && (
+                            <option key={m.venues.id} value={m.venues.id}>
+                              {m.venues.name}
+                            </option>
+                          ),
+                      )}
+                    </select>
+                  </label>
 
-                <label>
-                  {es ? "Sellos necesarios" : "Stamps required"}
-                  <input
-                    name="stampsRequired"
-                    type="number"
-                    min="2"
-                    max="50"
-                    defaultValue="8"
-                    required
-                  />
-                </label>
-              </div>
+                  <label>
+                    {es ? "Sellos necesarios" : "Stamps required"}
+                    <input
+                      name="stampsRequired"
+                      type="number"
+                      min="2"
+                      max="50"
+                      defaultValue="8"
+                      required
+                    />
+                  </label>
+                </div>
 
-              <div className="form-grid-two">
-                <label>
-                  {es ? "Nombre del programa" : "Programme name"}
-                  <input
-                    name="title"
-                    required
-                    minLength={3}
-                    placeholder={es ? "Ej. Tarjeta VIP" : "e.g. VIP Card"}
-                  />
-                </label>
-              </div>
+                <div className="form-grid-two">
+                  <label>
+                    {es ? "Nombre del programa" : "Programme name"}
+                    <input
+                      name="title"
+                      required
+                      minLength={3}
+                      placeholder={es ? "Ej. Tarjeta VIP" : "e.g. VIP Card"}
+                    />
+                  </label>
+                </div>
 
-              <div className="form-grid-two">
-                <label>
-                  {es ? "Recompensa" : "Reward"}
-                  <textarea
-                    name="reward"
-                    required
-                    minLength={3}
-                    rows={2}
-                    placeholder={
-                      es
-                        ? "Ej. Bebida gratis en tu 8ª visita"
-                        : "e.g. Free drink on 8th visit"
-                    }
-                  />
-                </label>
-              </div>
+                <div className="form-grid-two">
+                  <label>
+                    {es ? "Recompensa" : "Reward"}
+                    <textarea
+                      name="reward"
+                      required
+                      minLength={3}
+                      rows={2}
+                      placeholder={
+                        es
+                          ? "Ej. Bebida gratis en tu 8ª visita"
+                          : "e.g. Free drink on 8th visit"
+                      }
+                    />
+                  </label>
+                </div>
 
-              <div className="form-actions-right">
-                <button className="button primary" type="submit">
-                  {es ? "Guardar programa" : "Save programme"}
-                </button>
-              </div>
-            </form>
+                <div className="form-actions-right">
+                  <button className="button primary" type="submit">
+                    {es ? "Guardar programa" : "Save programme"}
+                  </button>
+                </div>
+              </form>
+            )}
 
             {programs && programs.length > 0 && (
               <div className="managed-list">
@@ -784,44 +931,58 @@ export default async function BusinessPage({
           </details>
         )}
 
-        {view === "loyalty" && redemptions && redemptions.length > 0 && (
-          <section className="panel catalogue-edit-card">
-            <h2>
-              {es
-                ? "Recompensas pendientes de canje"
-                : "Pending reward redemptions"}
-            </h2>
-            <div className="managed-list">
-              {redemptions.map((item) => (
-                <form
-                  action={confirmRedemption}
-                  className="managed-row"
-                  key={item.id}
-                >
-                  <input type="hidden" name="locale" value={locale} />
-                  <input type="hidden" name="redemptionId" value={item.id} />
-                  <strong>
-                    {(
-                      item.profiles as unknown as {
-                        display_name: string | null;
-                      } | null
-                    )?.display_name || (es ? "Usuario" : "User")}
-                  </strong>
-                  <button className="button primary small-btn" type="submit">
-                    {es ? "Confirmar entrega" : "Confirm handover"}
-                  </button>
-                </form>
-              ))}
-            </div>
-          </section>
-        )}
+        {view === "loyalty" &&
+          !redemptionsError &&
+          redemptions &&
+          redemptions.length > 0 && (
+            <section className="panel catalogue-edit-card">
+              <h2>
+                {es
+                  ? "Recompensas pendientes de canje"
+                  : "Pending reward redemptions"}
+              </h2>
+              <div className="managed-list">
+                {redemptions.map((item) => (
+                  <form
+                    action={confirmRedemption}
+                    className="managed-row"
+                    key={item.id}
+                  >
+                    <input type="hidden" name="locale" value={locale} />
+                    <input type="hidden" name="redemptionId" value={item.id} />
+                    <strong>
+                      {(
+                        item.profiles as unknown as {
+                          display_name: string | null;
+                        } | null
+                      )?.display_name || (es ? "Usuario" : "User")}
+                    </strong>
+                    <button
+                      className="button primary"
+                      type="submit"
+                      style={{
+                        width: "auto",
+                        minWidth: "max-content",
+                        minHeight: 44,
+                        flexShrink: 0,
+                        alignSelf: "flex-start",
+                      }}
+                    >
+                      {es ? "Confirmar entrega" : "Confirm handover"}
+                    </button>
+                  </form>
+                ))}
+              </div>
+            </section>
+          )}
 
         {view === "growth" && (
           <BusinessGrowthOverview
             locale={locale}
             premiumEnabled={premiumEnabled}
             premiumActive={Boolean(premiumActive)}
-            events={businessEvents.length}
+            venuesUnavailable={membershipUnavailable}
+            events={eventsUnavailable ? null : businessEvents.length}
             venues={managed
               .filter((item) => item.venues)
               .map((item) => {
@@ -832,9 +993,11 @@ export default async function BusinessPage({
                 return {
                   id: venue.id,
                   name: venue.name,
-                  events: businessEvents.filter(
-                    (event) => event.venue_id === venue.id,
-                  ).length,
+                  events: eventsUnavailable
+                    ? null
+                    : businessEvents.filter(
+                        (event) => event.venue_id === venue.id,
+                      ).length,
                   interactions: result?.unavailable
                     ? null
                     : result?.rows.length
@@ -861,7 +1024,7 @@ export default async function BusinessPage({
               </strong>
             </summary>
 
-            {flags.promotion_requests ? (
+            {flags.promotion_requests && !promotionCreationUnavailable ? (
               <form action={requestPromotion} className="stack focused-form">
                 <input type="hidden" name="locale" value={locale} />
 
@@ -939,15 +1102,15 @@ export default async function BusinessPage({
                   </button>
                 </div>
               </form>
-            ) : (
+            ) : !flags.promotion_requests ? (
               <p className="notice notice-error">
                 {es
                   ? "Las nuevas solicitudes de promoción están pausadas temporalmente. Tus solicitudes anteriores siguen visibles."
                   : "New promotion requests are temporarily paused. Your previous requests remain visible."}
               </p>
-            )}
+            ) : null}
 
-            {promotions && promotions.length > 0 && (
+            {promotions && !promotionsError && promotions.length > 0 && (
               <div className="managed-list">
                 {promotions.map((item) => (
                   <div className="managed-row" key={item.id}>
@@ -1006,7 +1169,7 @@ export default async function BusinessPage({
           ))}
 
         {/* Claim Venue View */}
-        {view === "claims" && (
+        {view === "claims" && !claimCreationUnavailable && (
           <section className="akibusiness-claim-workspace">
             <header className="akibusiness-section-hero">
               <div>
@@ -1203,7 +1366,7 @@ export default async function BusinessPage({
           </section>
         )}
 
-        {view === "claims" && claims && claims.length > 0 && (
+        {view === "claims" && !claimsError && claims && claims.length > 0 && (
           <section className="panel catalogue-edit-card">
             <h2>{es ? "Historial de reclamaciones" : "Claims history"}</h2>
             <div className="managed-list">

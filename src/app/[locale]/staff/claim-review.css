@@ -1,25 +1,25 @@
-/* AkiPasa Staff / Claims. Scoped: other moderation queues remain unchanged.
+/* AkiPasa Staff / Claims and scoped moderation action contrast.
  * The UI deliberately distinguishes submitted, unverified evidence from canonical
  * venue/account records. Layout responds to the actual workspace container width.
  */
 .claim-modern-workspace {
-  --cm-fg: #f4f6ff;
-  --cm-muted: #b6bfdb;
-  --cm-subtle: #8d9cc4;
-  --cm-line: rgba(138, 161, 222, 0.28);
+  --cm-fg: #faf7f3;
+  --cm-muted: #c9c2bb;
+  --cm-subtle: #b0aaa2;
+  --cm-line: rgba(204, 181, 160, 0.25);
   --cm-panel: linear-gradient(
     135deg,
-    rgba(27, 44, 81, 0.96),
-    rgba(22, 31, 63, 0.96)
+    rgba(26, 25, 23, 0.98),
+    rgba(17, 18, 19, 0.98)
   );
   --cm-hero: linear-gradient(
     116deg,
-    rgba(20, 44, 77, 0.99),
-    rgba(39, 37, 83, 0.98)
+    rgba(37, 27, 20, 0.99),
+    rgba(18, 19, 20, 0.98)
   );
-  --cm-soft: rgba(107, 133, 211, 0.13);
-  --cm-teal: #1bd5c0;
-  --cm-link: #a8e8ff;
+  --cm-soft: rgba(190, 171, 151, 0.1);
+  --cm-teal: #ffad76;
+  --cm-link: #ffc195;
   --cm-danger: #ff8eab;
   color: var(--cm-fg);
   container-type: inline-size;
@@ -32,18 +32,18 @@
 }
 [data-theme="light"] .claim-modern-workspace,
 .theme-light .claim-modern-workspace {
-  --cm-fg: #182641;
-  --cm-muted: #435572;
-  --cm-subtle: #5c708d;
-  --cm-line: rgba(52, 85, 140, 0.2);
+  --cm-fg: #26231f;
+  --cm-muted: #5c554e;
+  --cm-subtle: #6a625a;
+  --cm-line: rgba(91, 73, 54, 0.22);
   --cm-panel: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.98),
-    rgba(242, 248, 255, 0.96)
+    rgba(250, 247, 241, 0.98)
   );
-  --cm-hero: linear-gradient(116deg, #f0f7ff, #f6f0ff);
-  --cm-soft: rgba(72, 119, 181, 0.08);
-  --cm-link: #005b8b;
+  --cm-hero: linear-gradient(116deg, #fff7ed, #fffdf9);
+  --cm-soft: rgba(115, 89, 59, 0.07);
+  --cm-link: #96400d;
   --cm-danger: #a91a44;
 }
 .claim-modern-workspace :is(h2, h3, h4, p, dl, dd, dt) {
@@ -157,7 +157,7 @@
   grid-template-columns: 5rem minmax(0, 1fr);
   gap: 1.2rem;
   border: 1px solid var(--cm-line);
-  border-left: 3px solid rgba(27, 213, 192, 0.65);
+  border-left: 3px solid rgba(255, 155, 91, 0.65);
   border-radius: 1.15rem;
   padding: 1.2rem;
   background: var(--cm-hero);
@@ -170,9 +170,9 @@
   height: 5rem;
   width: 5rem;
   border-radius: 1rem;
-  background: linear-gradient(140deg, #075972, #2b436e 56%, #6144a3);
-  color: #6ef3de;
-  border: 1px solid rgba(80, 240, 213, 0.2);
+  background: linear-gradient(140deg, #473323, #25221f);
+  color: #ffc195;
+  border: 1px solid rgba(255, 177, 124, 0.25);
 }
 .claim-modern-avatar svg {
   width: 2.35rem;
@@ -516,9 +516,9 @@
   cursor: pointer;
 }
 .claim-modern-form > .claim-modern-approve {
-  background: linear-gradient(110deg, #0ac4b3, #37ddc5);
-  border-color: #16cbb8;
-  color: #092c39;
+  background: linear-gradient(110deg, #ff7628, #ffab6e);
+  border-color: #ff944f;
+  color: #21150c;
 }
 .claim-modern-form > .claim-modern-request {
   background: transparent;
@@ -622,4 +622,20 @@
   .claim-modern-venue-link {
     margin-left: 0;
   }
+}
+
+/* Staff queue decisions keep a readable danger identity in both workspace themes. */
+.staff-workspace .moderation-form .button.danger {
+  color: #fff;
+  background: #9f2d2d;
+  border-color: #9f2d2d;
+}
+.staff-workspace .moderation-form .button.danger:hover {
+  color: #fff;
+  background: #862626;
+  border-color: #862626;
+}
+
+[data-theme="light"] .claim-modern-workspace {
+  --cm-teal: #9a430f;
 }

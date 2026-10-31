@@ -1,0 +1,110 @@
+{
+  "baselineCommit": "3cd2c944858915da2893223866b0a7b59aafc2b0",
+  "fullCheck": {
+    "exitCode": 0,
+    "vitestPassed": 2783,
+    "vitestGroups": 17,
+    "initialNodeTests": 140,
+    "optimizedNextRoutes": 193,
+    "log": "/tmp/akipasa-preview-FINAL-integrated-20261030.log",
+    "logSha256": "cd48ef3a96ae0a7c768664c477c84e3b7fb05538b4990402181a302d05c234b8"
+  },
+  "sourceFreezeVerified": true,
+  "sourceFiles": {
+    "database/migrations/20261030163000_add_checkin_venue_preview.sql": "8f863eb676dabfed65955f7febadd1fc4f75b921a040a26e0697c7de4e9cbaeb",
+    "docs/AKIPASA_CANONICAL_REPLAY_PLAN_20261030.json": "d4351a2c8162143863c0839c301b53e59a38ed6744d391298881ad5e28924482",
+    "scripts/check-canonical-replay-plan.test.mjs": "a262bfc434658d8c287c9c523a189da5ef1115ea02290457a3e0b7b9e5563079",
+    "src/app/[locale]/business/apply/apply.module.css": "31b11ef4eaabf1ec15f1a80ce7bdc1e666eb2ee2189dbd7a0edfd6594ae2c4cd",
+    "src/app/[locale]/business/apply/page.tsx": "2679e0579e53c12ad47f1deed55f333325663275295ee85f76a33c20654193a6",
+    "src/app/[locale]/check-in/[token]/page.tsx": "299e5cd95bde8d5e39e3301acea3a2492f71442aae47b52b05ba07028faf2eb6",
+    "src/app/[locale]/passports/prestige/hall/page.tsx": "40035f7a6a4d40e04e132e86bcbb124e318e85d5de9ef64050b6ea11d7df9a5a",
+    "src/app/[locale]/staff/staff-ui.css": "b80cfd42c969608c5b03ca1320db7074c0ff68864b14c3677dc13808a0300465",
+    "supabase/migrations/20261030163000_add_checkin_venue_preview.sql": "8f863eb676dabfed65955f7febadd1fc4f75b921a040a26e0697c7de4e9cbaeb",
+    "tests/checkin-token-preview-route.test.tsx": "a43a22b9e400ab6dde79a41833d302d29818f396b56549de0ec13f15e88e5bd9",
+    "tests/checkin-token-read-recovery.test.tsx": "e1623561dddcaca62d13228b520e8fff525f512b8d06b9463b3af21fb58ab756",
+    "tests/checkin-venue-preview-sql.test.ts": "342e5db8337c96b40dd4f9dbd1b091d34efcc53c721edae6d14727bbd2f6851f",
+    "tests/e2e/pasa-compatibility-redirects.spec.ts": "09eb0eabe4e01d9927ab51b665a0028aecccab7f78ca051e17384262936b400a",
+    "tests/passport-prestige.test.tsx": "f940efd1846ca7a5f02855580e1a6ee6f3cd5dbceb3d07ca0e79ad05a0b77120",
+    "vitest.founder-push.config.ts": "1d57540575120aaaef2b841f807921a47a8eef41fc91080001f1c828f5475a6f",
+    "vitest.spotlight.config.ts": "870c0e9c4b2ad702c64fb21a8e7cda7fc6e46d6ee0504e939cc74dc95ebd87ad"
+  },
+  "migration": {
+    "sourcePath": "database/migrations/20261030163000_add_checkin_venue_preview.sql",
+    "mirrorPath": "supabase/migrations/20261030163000_add_checkin_venue_preview.sql",
+    "sha256": "8f863eb676dabfed65955f7febadd1fc4f75b921a040a26e0697c7de4e9cbaeb",
+    "applied": false,
+    "productionApprovalRequired": true,
+    "interface": "authenticated checkin_venue_preview(uuid) returns only published venue_id/name after auth.uid and canonical account_features_allowed() TRUE",
+    "privateCredentialTableAccessUnchanged": true,
+    "attendanceAndXpUnchanged": true
+  },
+  "targeted": {
+    "postgresTestsPassed": 11,
+    "routeAuthAndRecoveryPassed": 23,
+    "routeBrowserStatesPassed": 48,
+    "hallMaintainedTestsPassed": 15,
+    "hallNativeKeyboardCasesPassed": 8,
+    "businessAndStaffTestsPassed": 50,
+    "consumerApplicationBrowserContextsPassed": 16,
+    "businessHostPixelIdenticalControls": 16,
+    "staffDangerContextsPassed": 16,
+    "canonicalInventoryGuardsPassed": 16,
+    "newCompatibilityHttpCasesCollected": 2,
+    "newCompatibilityHttpExecution": "pending proper disposable-fixture CI; retained unconfigured build500 does not count as pass"
+  },
+  "newlyRepairedRouteScopes": [
+    "Check-in signed consumer preview and private error recovery",
+    "Prestige Hall accessible link name",
+    "AkiPasa-host business application lower panels, retaining separate AkiBusiness skin",
+    "Staff venue permanent-delete control size/semantics"
+  ],
+  "canonicalInventory": {
+    "rawPaths": 341,
+    "candidatePrefix": 97,
+    "unresolved": 152,
+    "byteMirrors": 88,
+    "excluded": 4,
+    "executable": false,
+    "fullParity": false,
+    "onlyNewMirrorPairAndFingerprintsAdded": true
+  },
+  "priorFailuresPreserved": [
+    "/tmp/akipasa-preview-inventory-tests.log:16guards/1outdatedliteralcount; updated339\u2192341 and151\u2192152 for actual2newsourcepaths, added unresolved/not-in-prefix assertions",
+    "/tmp/akipasa-preview-before-type-repair-20261030.log:RPCreturntypeinferred{}; supportedminimalgenericadded",
+    "/tmp/akipasa-preview-before-hall-test-type-repair-20261030.log:unsupportedRTLexactoption; removedonlyunsupportedoption withliteralname/href assertions preserved"
+  ],
+  "externalGaps": [
+    "No isolated Supabase QA project/branch exists; cost confirmation expired, no resource created",
+    "No real consumer Auth\u2192preview\u2192GPS\u2192verified mutation\u2192XP ledger transaction in isolated provider yet",
+    "Physical Android/full final visual acceptance of candidate remains outstanding",
+    "Three legacy aliases need actual new maintained HTTP CI execution"
+  ],
+  "sourceReview": {
+    "rpc": "checkin-venue-preview-independent-source-review-20261030.md",
+    "hall": "prestige-hall-label-repair-20261030.md",
+    "businessAndDanger": "business-apply-staff-danger-completion-20261030.md"
+  },
+  "ownerVisualDirectionFeedback": {
+    "reviewer": "Alex Ashing",
+    "reviewedSourceCommit": "197dc36a093cd6a4fe3320676913ac81b5a39058",
+    "reviewedArtifact": "akipasa-review-packs-20261030.zip",
+    "artifactSha256": "fbf3d1d5fba29de526ead429abcabe8a88f485f587438af9b17719f4e240858e",
+    "quote": "The visual direction is right",
+    "scope": ["Profile overview", "Edit profile", "Settings"],
+    "sourcePaths": [
+      "src/app/[locale]/account/page.tsx",
+      "src/app/[locale]/account/profile/page.tsx",
+      "src/app/[locale]/account/settings/page.tsx"
+    ],
+    "approvalKind": "visual-direction feedback only",
+    "finalRouteAcceptance": false,
+    "mergeApproved": false,
+    "databaseChangeApproved": false,
+    "physicalDeviceApprovalForCandidate": false
+  },
+  "formalAcceptedRoutes": 5,
+  "newFormalAcceptances": 0,
+  "merged": false,
+  "deployed": false,
+  "productionChanged": false
+}

@@ -17,7 +17,10 @@ export default async function AccountPrivacyPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
-  const { supabase, user } = await requireUser(locale);
+  const { supabase, user } = await requireUser(
+    locale,
+    `/${locale}/account/privacy`,
+  );
   const { data: deletion, error: deletionError } = await supabase
     .from("account_deletion_requests")
     .select("state,requested_at")

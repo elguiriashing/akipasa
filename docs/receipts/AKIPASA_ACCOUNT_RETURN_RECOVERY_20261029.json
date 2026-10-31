@@ -1,0 +1,64 @@
+{
+  "observedAt": "2026-10-29T21:03:39.521821+00:00",
+  "baselineCommit": "1b9e45acc4e4fbc32042388202d24ca438aa550d",
+  "testedWorkingTree": true,
+  "sourceHashes": {
+    "src/app/[locale]/account/activity/page.tsx": "d7c5e4e3558c4d48ed646e049981cb7b8b01c86880a69af21655b8620b9a77d5",
+    "src/app/[locale]/account/bookings/page.tsx": "5687d1e88bf394d9abef9492b5c853b7683df9f06a43ededa8d6ffd7c2613cd6",
+    "src/app/[locale]/account/following/page.tsx": "7a527cbf83347b97a1e5feff585c4840cbe589295e9be4e12afb1e7e3656a2b9",
+    "src/app/[locale]/account/layout.tsx": "8286d69cfaf6f7dec3ed67759c96101eaa6f8dc4f09bb3954232084f9a816c25",
+    "src/app/[locale]/account/premium/page.tsx": "e527d804d89b2449caaf414d265ae6cc54fcd8c153d5e11418e7574f6c5c8150",
+    "src/app/[locale]/account/privacy/page.tsx": "2ca69145e52eb7aa0dd2a37123abd7d66dad3363d3b341f3b2884ad0b4355abf",
+    "src/app/[locale]/account/profile/page.tsx": "5dabd8f50a0111b91ffb9567768a8c124bee17f6cab441fb7b4faa94ab71f2d2",
+    "src/app/[locale]/account/referrals/page.tsx": "3b78291fe853fe796ed889d158b0e4fcad123185583ef8a93f198e461f9ca9bd",
+    "src/app/[locale]/account/rewards/page.tsx": "b960c1ec17f27cf000b15d19957461edd67a4db89f3a5fc6507ca62620e9ccad",
+    "src/app/[locale]/account/saved/page.tsx": "dd603f7bd7d6b1a1c9916ba4f10a71a18c88e13aa1201d341eb2f69ea85efcc4",
+    "src/app/[locale]/account/settings/page.tsx": "4a49ece278230fe7da98fc51d61ecff3f8f8554edead60d6a56cdb1469d4edec",
+    "src/app/[locale]/account/subscription/operations/page.tsx": "61202fc54ad62d2357501628dd7ca6614cc51ae9aa09262f911d349a32a97b79",
+    "src/components/PasaCinematic.css": "8a23cb0771f62c61f3309ba13f8eb0c7adaf7020b829c3d8d820c158ba8d753b",
+    "src/components/PassportBook.module.css": "d92523f6a6a18c5ad2789bba5af8454108c696eefab437194462d26a25a91c29",
+    "src/lib/account-return-path.ts": "9822fbb7985da09ed910f2822e16aae629538e3e83844998ae5f07ae958e0332",
+    "src/middleware.ts": "2f9c33cd133d54ed8b6a7e218f38a314aa964738d9861869fd6e0f844b380c32",
+    "tests/account-collections-ui.test.tsx": "6ae65b8b7d822cec3796f83cc25defa7472f284198eef157d6c80224b1b7a2bf",
+    "tests/account-passport-redirect.test.ts": "d73277b616f1555985f57de2b9c1c3104c497d92424f42b395cb474932d79b7d",
+    "tests/account-profile-website.test.ts": "ea3d24c9caca9545737c10d0be2a4763ed9113e579b297419a72703e8199091b",
+    "tests/akisuite-account-child-return.test.tsx": "845d8d68c1841638e834b18132eadb9cdf102c253b722d5715994ea1b73a0137",
+    "tests/e2e/pasa-public-page-families.spec.ts": "72484c10202d2539fb5c1d4c00aad76bdbec1b8ed395a4ac7b6c9be08999f1f9"
+  },
+  "checks": {
+    "fullCheck": {
+      "passed": true,
+      "vitestCases": 2556,
+      "log": "/tmp/akipasa-account-return-full-check.log"
+    },
+    "integratedPublicBrowser": {
+      "passed": true,
+      "cases": 38,
+      "log": "/tmp/akipasa-account-return-integrated-browser.log"
+    },
+    "realLocalAuth": {
+      "originalJourneyCases": 3,
+      "queryAndSpoofCases": 6,
+      "layoutKeyboardPrivacyCases": 4,
+      "allPassed": true,
+      "failedPriorReceiptRetained": true,
+      "sourceIdentity": "c86c62d9328842bf73391326d6c3149c9a9ce93d3a3dc4ac663d1fe00666b544",
+      "handoff": "/tmp/akipasa-real-auth-return-replay-impact.md",
+      "productionOrFullSchemaAcceptance": false
+    }
+  },
+  "independentReview": "history read-only source/test review: no blocking findings; no route acceptance",
+  "release": {
+    "accepted": false,
+    "merged": false,
+    "deployed": false,
+    "routeAcceptance": "0/90"
+  },
+  "productionReadback": {
+    "deployment": "96e0e51f-474a-496c-b7b0-1303fe8187d7",
+    "workerVersion": "884dda44-e95d-4266-8ce1-d7a4de5c54db",
+    "percentage": 100,
+    "rollbackVersionReadStatus": 200,
+    "readOnly": true
+  }
+}

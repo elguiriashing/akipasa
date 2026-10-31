@@ -5,10 +5,16 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { BrandLogo } from "./BrandLogo";
+import { LaunchRibbon } from "./LaunchRibbon";
 import { GlobalSearch } from "./GlobalSearch";
 import { Icon, type IconName } from "./Icons";
 import { LanguageLink } from "./LanguageLink";
 import { DiscoveryNavigation } from "./DiscoveryNavigation";
+import { PasaBottomDock, pasaDestinations } from "./PasaBottomDock";
+import "./PasaBottomDock.css";
+import "./PasaCinematic.css";
+import "./PasaSharedSurfaces.css";
+import { pasaSurfaceFamily } from "../lib/pasa-surface-families";
 import { ThemeToggle } from "./ThemeModeControls";
 import { signOut } from "../app/[locale]/auth/actions";
 import { ConsoleSwitcher, type ConsoleKey } from "./ConsoleSwitcher";
@@ -93,6 +99,9 @@ export function AppShell({
   const suiteCloseRef = useRef<HTMLButtonElement>(null);
   const sheetCloseRef = useRef<HTMLButtonElement>(null);
   const section = pathname.split("/").filter(Boolean)[1];
+  const pasaSurface = pasaSurfaceFamily(pathname);
+  const showConsumerDock =
+    pasaSurface !== "operations" && pasaSurface !== "auth";
   const activeWorkspace = ["account", "business", "staff", "admin"].includes(
     section || "",
   )
@@ -105,16 +114,7 @@ export function AppShell({
     capabilities.administerPlatform ||
     ownerConsole;
 
-  const primaryNav: NavItem[] = [
-    { href: `/${locale}`, label: m.discover, icon: "discover" },
-    { href: `/${locale}/map`, label: m.map, icon: "map" },
-    {
-      href: `/${locale}/community`,
-      label: es ? "Comunidad" : "Community",
-      icon: "community",
-    },
-    { href: `/${locale}/account`, label: m.saved, icon: "account" },
-  ];
+  const primaryNav: NavItem[] = pasaDestinations(locale);
 
   const suiteApps = [
     {
@@ -191,6 +191,11 @@ export function AppShell({
 
   const railExtras: NavItem[] = [
     { href: `/${locale}/passports`, label: m.passports, icon: "passport" },
+    {
+      href: `/${locale}/roadmap`,
+      label: es ? "Plan de lanzamiento" : "Roadmap",
+      icon: "calendar",
+    },
     {
       href: `/${locale}/membership`,
       label: es ? "Membresía" : "Membership",
@@ -376,50 +381,40 @@ export function AppShell({
             setSuiteOpen(true);
           }}
         >
-          <Icon name="more" />
+          <Icon name="globe" />
           <span>AkiSuite</span>
         </button>
-      </header>
-
-      <div className="app-content">{children}</div>
-
-      {/* Mobile bottom tab bar */}
-      <nav
-        className="app-bottom-nav"
-        aria-label={es ? "Navegación" : "Navigation"}
-      >
-        {primaryNav.map((item) => (
-          <Suspense
-            key={item.href}
-            fallback={
-              <Link href={item.href}>
-                <Icon name={item.icon} />
-                <span>{item.label}</span>
-              </Link>
-            }
-          >
-            <PrimaryNavLink
-              item={item}
-              locale={locale}
-              pathname={pathname}
-              mobile
-            />
-          </Suspense>
-        ))}
         <button
-          ref={moreButtonRef}
           type="button"
-          className={sheetOpen ? "active" : undefined}
-          onClick={() => setSheetOpen(true)}
+          ref={moreButtonRef}
+          className="app-more-mobile-trigger"
+          aria-label={es ? "Más opciones" : "More options"}
           aria-haspopup="dialog"
           aria-expanded={sheetOpen}
           aria-controls="app-more-sheet"
-          aria-label={es ? "Más opciones" : "More options"}
+          onClick={() => {
+            setSuiteOpen(false);
+            setSheetOpen(true);
+          }}
         >
           <Icon name="more" />
-          <span>{es ? "Más" : "More"}</span>
         </button>
-      </nav>
+      </header>
+
+      <div className="app-content" data-pasa-surface={pasaSurface}>
+        {(!section ||
+          ["map", "community", "venues", "events"].includes(section)) && (
+          <LaunchRibbon locale={locale} />
+        )}
+        {children}
+      </div>
+
+      {/* One shared mobile dock across the complete consumer shell. */}
+      {showConsumerDock && (
+        <Suspense fallback={null}>
+          <PasaBottomDock locale={locale} />
+        </Suspense>
+      )}
 
       {suiteOpen && (
         <div className="app-sheet-layer app-suite-layer">

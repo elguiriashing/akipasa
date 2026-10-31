@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "newRouteAcceptances": {
+    "src/app/[locale]/page.tsx": {
+      "reviewer": "Codex discovery_screens (independent responsible tester)",
+      "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610",
+      "sourceSha256": "903fccde4c539e44090c94c87d98d1dfeeb6d8a323f021d052991b33a02676f3",
+      "evidenceType": "Plans-first Home with truthful zero-event state and real-data-shaped synthetic venue directory; no live activity claims.",
+      "realProviderOrPhysicalDeviceAcceptance": false
+    },
+    "src/app/[locale]/events/[slug]/page.tsx": {
+      "reviewer": "Codex discovery_screens (independent responsible tester)",
+      "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675",
+      "sourceSha256": "9240fc19dcb4cc1c87b585c066288c53c5ccbd9c0c63aefd255643a34a0b7f57",
+      "evidenceType": "Public event detail and guest entry journeys. Booking subpage mutations and signed engagement transactions are separate and not accepted here.",
+      "realProviderOrPhysicalDeviceAcceptance": false
+    },
+    "src/app/[locale]/venues/[slug]/page.tsx": {
+      "reviewer": "Codex discovery_screens (independent responsible tester)",
+      "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675",
+      "sourceSha256": "0a8f917886d288753662d44935149030def7be553b72e68c2e956ed0d95cf1fe",
+      "evidenceType": "Public venue detail, menus/events/info, directions and guest booking entry. Claim/owner management and booking submission remain separate.",
+      "realProviderOrPhysicalDeviceAcceptance": false
+    },
+    "src/app/[locale]/tonight/page.tsx": {
+      "reviewer": "Codex discovery_screens (independent responsible tester)",
+      "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254636",
+      "sourceSha256": "f581bb1c87ce75f47259c4969e78bf831aac44e0ce1a8c09b53520ae966750c3",
+      "evidenceType": "Preserve production default-off gate; truthful zero-verified-event preview/retry/planning filters only. This does not authorize broad Tonight activation or invent event supply.",
+      "realProviderOrPhysicalDeviceAcceptance": false
+    }
+  },
+  "externalReviewSha256": "17033856e6c79a8c4b39c130adef62fd09a24a668ddc3fd4117e6a1af36e6bda",
+  "limits": [
+    "Tonight acceptance is for existing default-off/truthful empty implementation; no production activation.",
+    "Booking subroutes, authenticated booking/payment/attendance/XP, GPS, provider and candidate device are not accepted by public-detail proof.",
+    "Passport and Places remain in progress for the precise integration/current-evidence gaps in the independent review."
+  ]
+}

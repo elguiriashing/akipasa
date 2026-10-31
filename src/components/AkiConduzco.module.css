@@ -769,3 +769,217 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* AkiPasa coordinated rental-operations visual pass.
+   Scoped to the authenticated legacy rental workspace. Consumer catalogue,
+   fleet queries and booking mutations remain owned by existing components. */
+.business {
+  --rental-canvas: #faf8f6;
+  --rental-panel: #fff;
+  --rental-ink: #202633;
+  --rental-muted: #586273;
+  --rental-border: rgba(40, 52, 66, 0.15);
+  --rental-accent: #ba2039;
+  min-width: 0;
+  color: var(--rental-ink);
+  background:
+    radial-gradient(circle at 95% 0%, rgba(224, 68, 91, 0.12), transparent 34%),
+    var(--rental-canvas);
+}
+.businessMain {
+  padding-bottom: calc(3.5rem + env(safe-area-inset-bottom, 0px));
+}
+.businessHeader {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-width: 0;
+  padding: clamp(1.3rem, 3vw, 3rem);
+  border: 1px solid var(--rental-border);
+  border-radius: clamp(1rem, 2.5vw, 1.9rem);
+  background:
+    radial-gradient(
+      ellipse at 100% 0%,
+      rgba(239, 70, 89, 0.19),
+      transparent 58%
+    ),
+    linear-gradient(130deg, #fff, #fff8f6);
+  box-shadow: 0 24px 60px rgba(37, 23, 34, 0.09);
+}
+.businessHeader h1 {
+  font-size: clamp(2.1rem, 5vw, 4rem);
+  letter-spacing: -0.06em;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+.businessHeader p {
+  max-width: 58ch;
+  color: var(--rental-muted);
+  font-size: clamp(0.95rem, 1.5vw, 1.12rem);
+  line-height: 1.6;
+}
+.businessBack {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: #9d1b32;
+  text-decoration: none;
+  font-weight: 800;
+}
+.business .button {
+  min-height: 44px;
+  background: #b21d35;
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(178, 29, 53, 0.18);
+}
+.businessNav {
+  top: 0;
+  gap: 0.6rem;
+  border: 1px solid var(--rental-border);
+  border-radius: 1rem;
+  background: rgba(255, 253, 251, 0.94);
+  padding-block: 0.65rem;
+  scrollbar-width: thin;
+}
+.businessNav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--rental-ink);
+}
+.businessCard,
+.businessStats a {
+  min-width: 0;
+  border-color: var(--rental-border);
+  border-radius: 1.15rem;
+  background: var(--rental-panel);
+  box-shadow: 0 12px 34px rgba(18, 29, 45, 0.045);
+}
+.businessCard {
+  padding: clamp(1rem, 2.4vw, 1.7rem);
+}
+.businessCard h2 {
+  font-size: clamp(1.15rem, 2.5vw, 1.65rem);
+  letter-spacing: -0.025em;
+}
+.businessCard :is(input, select, textarea) {
+  min-height: 44px;
+  border-color: var(--rental-border);
+  background: var(--rental-panel);
+  color: var(--rental-ink);
+}
+.businessCard :is(button, a) {
+  min-height: 44px;
+}
+.businessCard button {
+  background: var(--rental-accent);
+  color: #fff;
+}
+.business :is(a, button, input, textarea, select):focus-visible {
+  outline: 3px solid #e94a61;
+  outline-offset: 3px;
+}
+.businessIntro {
+  min-width: 0;
+  border: 1px solid rgba(237, 110, 125, 0.35);
+  border-radius: 1.15rem;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(216, 44, 73, 0.2), transparent 55%),
+    #192439;
+  box-shadow: 0 14px 38px rgba(20, 32, 49, 0.12);
+}
+.businessStats {
+  gap: clamp(0.55rem, 2vw, 1rem);
+}
+.businessStats a {
+  transition:
+    transform 0.16s ease,
+    border-color 0.16s ease;
+}
+.businessStats a:hover {
+  transform: translateY(-2px);
+}
+.businessFooter {
+  color: var(--rental-muted);
+  border-color: var(--rental-border);
+}
+.businessFooter a {
+  color: #9d1b32;
+}
+.business :is(.businessIntro, .businessCard)[id] {
+  scroll-margin-top: 95px;
+}
+:global(html[data-theme="dark"]) .business {
+  --rental-canvas: #0c1322;
+  --rental-panel: #1a263a;
+  --rental-ink: #f5f7fc;
+  --rental-muted: #cad4e3;
+  --rental-border: rgba(189, 207, 235, 0.22);
+  --rental-accent: #b7233d;
+}
+:global(html[data-theme="dark"]) .businessHeader {
+  background:
+    radial-gradient(
+      ellipse at 100% 0%,
+      rgba(239, 73, 99, 0.21),
+      transparent 58%
+    ),
+    linear-gradient(130deg, #202d44, #131f33);
+}
+:global(html[data-theme="dark"]) .businessBack,
+:global(html[data-theme="dark"]) .businessFooter a {
+  color: #ffb0ba;
+}
+:global(html[data-theme="dark"]) .businessNav {
+  background: rgba(21, 32, 51, 0.95);
+}
+:global(html[data-theme="dark"]) .businessNav a,
+:global(html[data-theme="dark"]) .businessStats a {
+  color: var(--rental-ink);
+}
+:global(html[data-theme="dark"]) .businessCard label,
+:global(html[data-theme="dark"]) .businessCard p,
+:global(html[data-theme="dark"]) .businessCard small,
+:global(html[data-theme="dark"]) .businessStats span {
+  color: var(--rental-muted);
+}
+:global(html[data-theme="dark"]) .business .fleetItem {
+  border-color: var(--rental-border);
+}
+:global(html[data-theme="dark"]) .business .fleetItem small {
+  color: var(--rental-muted);
+}
+@media (max-width: 600px) {
+  .businessMain {
+    padding-inline: 12px;
+  }
+  .businessHeader {
+    align-items: stretch;
+    padding: 1.5rem 1.1rem;
+  }
+  .businessHeader .button {
+    width: 100%;
+  }
+  .businessNav {
+    margin-inline: -3px;
+    padding-inline: 0.5rem;
+  }
+  .businessNav a {
+    padding-inline: 0.9rem;
+  }
+  .businessStats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .businessGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .businessStats a {
+    transition: none;
+  }
+  .businessStats a:hover {
+    transform: none;
+  }
+}

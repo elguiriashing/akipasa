@@ -40,8 +40,8 @@ describe("business onboarding", () => {
       expect(source).not.toContain('name="titleEs"');
       expect(source).not.toContain('name="titleEn"');
     }
-    expect(businessPage).toContain(
-      '{view === "events" && regularManaged.length > 0 && (',
+    expect(businessPage.replace(/\s+/g, " ")).toContain(
+      '{view === "events" && regularManaged.length > 0 && !eventCreationUnavailable && (',
     );
     expect(businessPage).not.toContain(
       '(view === "venues" || view === "events")',

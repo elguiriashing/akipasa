@@ -1,0 +1,77 @@
+{
+  "baselineCommit": "c10d7adcb45c0add6c82accfe398bdedec2dd0f6",
+  "testedWorkingTree": true,
+  "publicLiveSourceCommit": "3d87eb7c995fbd0947cb25a771a43376d9462645",
+  "sourceHashes": {
+    "src/components/ProductionMap.tsx": "131d9995e89d013e1a17eefefed3a42217dee149bc1f823cb2028d860e4ce778",
+    "src/app/[locale]/map/page.tsx": "2019c458fee66f78d73b890a2d01ef8cf4a3aa654800555fa1db110896c64b41",
+    "tests/akisuite-map-availability.test.tsx": "247877821dc50c535080a4315b9132d50c4a5e200527237d87e892f1725af549",
+    "tests/public-ui-upgrades.test.tsx": "a71e0b76a3c1dea97c033221b9771aeaae7df73da99270a6a6631f7cb5c61c6a"
+  },
+  "providerVerified": {
+    "publicCloudflareChromium": true,
+    "style200": true,
+    "spriteAndGlyph200": true,
+    "diagnosticMalagaVectorPbfStatus": 200,
+    "diagnosticVectorPbfBytes": 251828,
+    "actualRoadsLabelsScreenshot": "live-map-roads.jpg",
+    "plainLocalPythonClient": {
+      "status": 403,
+      "body": "error code: 1010",
+      "server": "envoy",
+      "cfRayObserved": true,
+      "networkPolicyDeniedNotProven": true
+    },
+    "productionProviderOutageProven": false
+  },
+  "defect": {
+    "url": "https://akipasa.com/en/map?locality=malaga",
+    "geolocationPermission": "granted",
+    "actualRenderedMap": "Tehran",
+    "selectedSearch": "M\u00e1laga",
+    "cause": "Automatic initial GPS overwrites explicit search intent."
+  },
+  "fix": {
+    "optionalAutoLocateDefault": true,
+    "validExplicitLocalityDisablesAutoGps": true,
+    "validatedCustomCentreDisablesAutoGps": true,
+    "implicitOrInvalidFallbackRetainsAutoGps": true,
+    "currentRefInsteadOfLifetimeDependency": true,
+    "lateCallbackChecksCurrentRef": true,
+    "manualControlUnchanged": true,
+    "mapLifetimeCameraRetryFiltersTelemetryPreserved": true
+  },
+  "before": {
+    "mapAvailabilityFailed": 3,
+    "mapAvailabilityPassed": 4,
+    "mapPageFailed": 22,
+    "mapPagePassed": 62
+  },
+  "after": {
+    "mapAvailabilityPassed": 7,
+    "mapPagePassed": 84,
+    "nativeMapLibreControlsPassed": 56,
+    "total": 147,
+    "lint": "passed",
+    "typecheck": "passed",
+    "format": "passed",
+    "diffWhitespace": "passed"
+  },
+  "newRegressions": 26,
+  "logs": {
+    "availabilityBefore": "/tmp/akipasa-map-gps-before-final-20261030.log",
+    "mapPageBefore": "/tmp/akipasa-map-intent-page-before-20261030.log",
+    "availabilityAfter": "/tmp/akipasa-map-gps-availability-after-20261030.log",
+    "mapPageAfter": "/tmp/akipasa-map-intent-page-after-20261030.log",
+    "nativeControls": "/tmp/akipasa-map-gps-native-controls-20261030.log",
+    "typecheck": "/tmp/akipasa-map-gps-final-typecheck-20261030.log"
+  },
+  "publicObservationConsentChanged": false,
+  "productionCodeOrDataChanged": false,
+  "physicalAndroidTested": false,
+  "fullReleaseAccepted": false,
+  "screenshotHashes": {
+    "live-map-crop.jpg": "df9db6461705d566ccbd611a3c9ad9b54d66ce0edfb853e9b1d0883b45a2f167",
+    "live-map-roads.jpg": "5075756fc593a9be66bbdaac793653206a008d77d15012e920749257d5a52f45"
+  }
+}

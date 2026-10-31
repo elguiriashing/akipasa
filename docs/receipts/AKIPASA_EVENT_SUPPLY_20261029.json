@@ -1,0 +1,21 @@
+{
+  "observedAt": "2026-10-29T10:42:57.020752Z",
+  "configuredDiscoveryAlias": "https://akipasa.supabase.co",
+  "projectRef": "vhpbvcfkcteswlsdjrfl",
+  "mappingEvidence": {
+    "method": "Unauthenticated GET; no credential or customer record requested",
+    "paths": ["/auth/v1/health", "/rest/v1/"],
+    "httpStatus": 401,
+    "responseHeader": "sb-project-ref: vhpbvcfkcteswlsdjrfl",
+    "canonicalProjectHostMatches": true
+  },
+  "aggregateSql": "select now() as observed_at, (select count(*) from public.events) as total_events, (select count(*) from public.event_occurrences) as total_occurrences, (select count(*) from public.event_occurrences where starts_at > now()) as future_occurrences, (select count(*) from public.event_occurrences o join public.events e on e.id = o.event_id where o.starts_at > now() and o.status::text = 'scheduled' and e.status::text = 'published') as future_published_scheduled",
+  "result": {
+    "totalEvents": 9,
+    "totalOccurrences": 10,
+    "futureOccurrences": 0,
+    "futurePublishedScheduled": 0
+  },
+  "productionWrites": false,
+  "launchDecision": "Tonight remains default off; genuine verified future supply is required"
+}

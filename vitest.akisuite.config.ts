@@ -9,6 +9,7 @@ export default defineConfig({
       "tests/akisuite-*.test.ts",
       "tests/akisuite-*.test.tsx",
       "tests/business-growth-overview.test.ts",
+      "tests/pasa-mobility-operations.test.ts",
     ],
     environment: "node",
   },

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
-import { akiSuiteMembershipReturnPath } from "@/lib/akisuite-catalogue";
+import { accountReturnPath } from "@/lib/account-return-path";
 import {
   WorkspaceShell,
   type WorkspaceItem,
@@ -22,11 +22,13 @@ export default async function AccountLayout({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const requestHeaders = await headers();
   const { supabase, user } = await requireUser(
     locale,
-    akiSuiteMembershipReturnPath(
+    accountReturnPath(
       locale,
-      (await headers()).get("x-akipasa-membership-next"),
+      requestHeaders.get("x-akipasa-account-next"),
+      requestHeaders.get("x-akipasa-membership-next"),
     ),
   );
   const { data: profile } = await supabase

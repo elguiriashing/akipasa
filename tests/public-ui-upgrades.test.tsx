@@ -74,6 +74,18 @@ vi.mock("@/components/WorkspaceShell", () => ({
   WorkspaceShell: ({ children }: { children: ReactNode }) => (
     <main>{children}</main>
   ),
+  WorkspacePageHeader: ({
+    title,
+    description,
+  }: {
+    title: string;
+    description: string;
+  }) => (
+    <header>
+      <h1>{title}</h1>
+      <p>{description}</p>
+    </header>
+  ),
 }));
 vi.mock("@/components/community/CreatorDirectoryPage", () => ({
   communityCreatorItems: () => [],
@@ -81,6 +93,8 @@ vi.mock("@/components/community/CreatorDirectoryPage", () => ({
 
 import DiscoverPage from "../src/app/[locale]/page";
 import MapPage from "../src/app/[locale]/map/page";
+import { selectEventOccurrence } from "@/lib/event-occurrence";
+import type { Occurrence } from "@/lib/domain";
 import CommunityPage from "../src/app/[locale]/community/page";
 import {
   submitCommunityEvent,
@@ -271,13 +285,89 @@ it("uses the filtered recommendation set for map pins", async () => {
       points: [
         expect.objectContaining({
           id: "event-filtered",
-          href: "/en/events/filtered-event",
+          href: "/en/events/filtered-event?occurrence=occurrence-filtered",
           category: "music",
         }),
       ],
     }),
   );
 });
+
+it.each(["en", "es"] as const)(
+  "opens the date-filtered recurring event occurrence from its %s map pin",
+  async (locale) => {
+    const occurrences: Occurrence[] = [
+      {
+        id: "first-night",
+        startsAt: "2026-11-01T18:00:00Z",
+        endsAt: "2026-11-01T21:00:00Z",
+        status: "scheduled",
+      },
+      {
+        id: "selected-night",
+        startsAt: "2026-11-08T18:00:00Z",
+        endsAt: "2026-11-08T21:00:00Z",
+        status: "scheduled",
+      },
+    ];
+    mocks.recommend.mockResolvedValueOnce({
+      requestId: "synthetic-filtered-recurring-event",
+      items: [
+        {
+          reasonCodes: [],
+          result: {
+            event: {
+              id: "recurring-event",
+              slug: "recurring-show",
+              title: { en: "Synthetic recurring show", es: "Evento de prueba" },
+              category: "music",
+              priceCents: 0,
+              currency: "EUR",
+              source: "verified_venue",
+              venueId: "synthetic-venue",
+            },
+            venue: {
+              name: "Synthetic venue",
+              latitude: 36.72,
+              longitude: -4.42,
+            },
+            occurrence: occurrences[1],
+          },
+        },
+      ],
+    });
+    render(
+      await MapPage(
+        pageProps(locale, {
+          dateFrom: "2026-11-08",
+          dateTo: "2026-11-08",
+          category: "music",
+        }),
+      ),
+    );
+    const point = mocks.mapProps.mock.calls[0][0].points[0];
+    const destination = new URL(point.href, "https://example.test");
+    expect(destination.pathname).toBe(`/${locale}/events/recurring-show`);
+    expect(destination.searchParams.get("occurrence")).toBe("selected-night");
+    expect(point.startsAt).toBe(occurrences[1].startsAt);
+    const now = new Date("2026-10-30T12:00:00Z");
+    // The real detail selector defaults to the earlier night without context.
+    expect(selectEventOccurrence(occurrences, undefined, now)?.id).toBe(
+      "first-night",
+    );
+    expect(
+      selectEventOccurrence(
+        occurrences,
+        destination.searchParams.get("occurrence"),
+        now,
+      ),
+    ).toBe(occurrences[1]);
+    expect(mocks.recommend.mock.calls[0][0].query.dateFrom.toISOString()).toBe(
+      "2026-11-07T23:00:00.000Z",
+    );
+    expect(mocks.discover).not.toHaveBeenCalled();
+  },
+);
 
 it("keeps every active filter in the empty-state Map handoff", async () => {
   render(
@@ -442,8 +532,8 @@ describe("community workflow return paths", () => {
       expect(
         screen.getByText(
           locale === "es"
-            ? "Enviado correctamente para revision."
-            : "Submitted successfully for review.",
+            ? "Consulta abajo el estado actual de tu envío."
+            : "Check your submission’s current status below.",
         ),
       ).toBeInTheDocument();
       expect(
@@ -481,8 +571,8 @@ describe("community workflow return paths", () => {
         expect(
           screen.getByText(
             locale === "es"
-              ? "Enviado correctamente para revision."
-              : "Submitted successfully for review.",
+              ? "Consulta abajo el estado actual de tu envío."
+              : "Check your submission’s current status below.",
           ),
         ).toBeInTheDocument();
         expect(
@@ -609,16 +699,22 @@ describe("community workflow return paths", () => {
       },
     );
     it(
-      "retains creator navigation from the public community home in " + locale,
+      "renders a public Community landing rather than redirecting in " + locale,
       async () => {
-        const markup = renderToStaticMarkup(
-          await CommunityPage({
-            params: Promise.resolve({ locale }),
-            searchParams: Promise.resolve({}),
-          }),
-        );
+        const landing = await CommunityPage({
+          params: Promise.resolve({ locale }),
+          searchParams: Promise.resolve({}),
+        });
+        render(landing);
+        const markup = renderToStaticMarkup(landing);
         expect(markup).toContain(`href="/${locale}/community/creators"`);
         expect(markup).toContain(locale === "es" ? "Comunidad" : "Community");
+        expect(
+          screen.getByRole("link", {
+            name: locale === "es" ? /Explorar creadores/ : /Explore creators/,
+          }),
+        ).toHaveAttribute("href", `/${locale}/community/creators`);
+        expect(mocks.redirect).not.toHaveBeenCalled();
         expect(mocks.requireUser).not.toHaveBeenCalled();
       },
     );
@@ -695,4 +791,132 @@ describe("community catalogue recovery", () => {
     expect(eventFilter).toContain('\\"central\\"');
     expect(screen.getByLabelText("Item")).toHaveValue(reportTarget);
   });
+});
+
+describe("community workflow presentation", () => {
+  afterEach(() => {
+    reads.reports = [];
+    reads.event_submissions = [];
+  });
+  it.each(["en", "es"] as const)(
+    "renders one task heading and localized history labels in %s without changing source values",
+    async (locale) => {
+      reads.reports = [
+        {
+          id: "report-a",
+          target_type: "event",
+          reason: "incorrect",
+          state: "open",
+          created_at: "2026-10-29T12:00:00Z",
+        },
+      ];
+      render(await CommunityPage(communityProps(locale, { view: "reports" })));
+      expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+      expect(
+        screen.getByRole("heading", {
+          level: 1,
+          name: locale === "es" ? "Problemas comunicados" : "Reported problems",
+        }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          locale === "es"
+            ? "Evento · Datos incorrectos"
+            : "Event · Incorrect details",
+        ),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(locale === "es" ? "Abierto" : "Open"),
+      ).toBeInTheDocument();
+      expect(reads.reports[0]).toMatchObject({
+        target_type: "event",
+        reason: "incorrect",
+        state: "open",
+      });
+    },
+  );
+  it("localizes Spanish report options while preserving the submitted enum values", async () => {
+    render(
+      await CommunityPage(
+        communityProps("es", { view: "report", target: reportTarget }),
+      ),
+    );
+    expect(screen.getByRole("option", { name: "Estafa" })).toHaveValue("scam");
+    expect(screen.getByLabelText("Elemento")).toHaveValue(reportTarget);
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+  });
+  it("does not turn an untrusted created query into a successful submission claim", async () => {
+    render(
+      await CommunityPage(
+        communityProps("en", { view: "reports", created: "report" }),
+      ),
+    );
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Check your submission’s current status below.",
+    );
+    expect(screen.getByText("No reports submitted yet.")).toBeInTheDocument();
+    expect(
+      screen.queryByText("Submitted successfully for review."),
+    ).not.toBeInTheDocument();
+  });
+  it("describes suggestion review without promising publication", async () => {
+    render(await CommunityPage(communityProps("es", { view: "suggest" })));
+    expect(
+      screen.getByText(/La publicación depende de su aprobación/),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Título del evento")).toBeInTheDocument();
+    expect(screen.getByLabelText("Descripción")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Enviar a revisión" }),
+    ).toBeInTheDocument();
+  });
+});
+
+describe("Map search-location intent", () => {
+  const cases: Array<
+    [string, Record<string, string | string[] | undefined>, boolean]
+  > = [
+    ["implicit fallback", {}, true],
+    ["valid selected locality", { locality: "malaga" }, false],
+    ["another selected locality", { locality: "madrid" }, false],
+    ["unknown locality fallback", { locality: "not-a-city" }, true],
+    ["array locality fallback", { locality: ["malaga"] }, true],
+    [
+      "validated custom centre",
+      { latitude: "36.7213", longitude: "-4.4214" },
+      false,
+    ],
+    [
+      "custom centre with unknown locality",
+      { locality: "not-a-city", latitude: "36.7213", longitude: "-4.4214" },
+      false,
+    ],
+    [
+      "invalid latitude fallback",
+      { latitude: "90", longitude: "-4.4214" },
+      true,
+    ],
+    [
+      "array coordinates fallback",
+      { latitude: ["36.7213"], longitude: "-4.4214" },
+      true,
+    ],
+    [
+      "out-of-region coordinates fallback",
+      { latitude: "36.7213", longitude: "51.389" },
+      true,
+    ],
+    [
+      "selected locality with invalid coordinates",
+      { locality: "malaga", latitude: "90", longitude: "51.389" },
+      false,
+    ],
+  ];
+  for (const locale of ["en", "es"] as const)
+    it.each(cases)(locale + ": %s", async (_name, query, autoLocate) => {
+      render(await MapPage(pageProps(locale, query)));
+      expect(mocks.mapProps).toHaveBeenCalledWith(
+        expect.objectContaining({ autoLocate }),
+      );
+    });
 });

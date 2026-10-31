@@ -156,7 +156,9 @@ await new Promise((ready) => server.listen(0, "127.0.0.1", ready));
 const origin = `http://127.0.0.1:${server.address().port}`;
 const browser = await chromium.launch({
   headless: true,
+  executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
   args: [
+    "--no-sandbox",
     "--use-angle=swiftshader",
     "--enable-unsafe-swiftshader",
     "--disable-dev-shm-usage",
@@ -172,6 +174,19 @@ async function setup(context) {
     });
   });
   await context.addInitScript(() => {
+    // Observe the actual mount/result without replacing the renderer or motion.
+    window.addEventListener(
+      "akipals:3d-ready",
+      () => {
+        const mount = window.AkiPals3D.mount;
+        window.AkiPals3D.mount = (...args) => {
+          const stage = mount(...args);
+          if (args[1]?.mode === "world") window.palsWorldStage = stage;
+          return stage;
+        };
+      },
+      { once: true },
+    );
     const state = {
       calls: 0,
       clears: [],
@@ -237,6 +252,14 @@ try {
     await expect(
       page.getByRole("button", { name: /TEST ONLY Music Room/ }).first(),
     ).toBeVisible();
+    assert.equal(
+      await page.evaluate(() => typeof window.palsWorldStage?.setMotion),
+      "function",
+      "World mounts the real renderer with its motion interface",
+    );
+    const portraitBeforeGps = await page.evaluate(() =>
+      window.palsWorldStage.screenshot(),
+    );
     assert.equal(await page.evaluate(() => window.palsGPS.state.calls), 0);
     assert.equal(
       await page.evaluate(
@@ -257,6 +280,14 @@ try {
     await expect(page.locator("[data-pals-gps-status]")).toContainText(
       "Following you",
     );
+    await expect
+      .poll(() =>
+        page.evaluate(
+          (before) => window.palsWorldStage.screenshot() !== before,
+          portraitBeforeGps,
+        ),
+      )
+      .toBe(true);
     await page
       .getByRole("button", {
         name: "Explore TEST ONLY Music Room",
@@ -328,6 +359,7 @@ try {
       width,
       realMapLibre: true,
       realGLB: true,
+      realWorldModeAndGpsPortraitUpdate: true,
       gpsInitiallyOff: true,
       stopVisibleOnVenue: true,
       staleCallbackBlocked: true,

@@ -128,7 +128,34 @@ try {
             expect(box.x + box.width).toBeLessThanOrEqual(width + 1);
           }
           if (["member", "shipping"].includes(screen)) {
+            const privacyButton = page.getByRole("button", {
+              name: locale === "es" ? "Guardar privacidad" : "Save privacy",
+              exact: true,
+            });
+            const controlStyle = await privacyButton.evaluate((element) => {
+              const style = getComputedStyle(element);
+              return {
+                background: style.backgroundColor,
+                border: style.borderTopWidth,
+              };
+            });
+            expect(controlStyle.background).not.toBe("rgba(0, 0, 0, 0)");
+            expect(controlStyle.border).toBe("1px");
+            expect(
+              await page
+                .locator("progress")
+                .evaluate((element) => getComputedStyle(element).appearance),
+            ).toBe("none");
             const check = page.getByRole("checkbox").first();
+            expect((await check.boundingBox()).width).toBeGreaterThanOrEqual(
+              19,
+            );
+            expect(
+              await check.evaluate(
+                (element) =>
+                  element.closest("label").getBoundingClientRect().height,
+              ),
+            ).toBeGreaterThanOrEqual(44);
             await check.focus();
             await page.keyboard.press("Space");
             await expect(check).toBeChecked();
@@ -292,10 +319,28 @@ try {
               .toBe("delivery");
           }
           expect(errors).toEqual([]);
-          await page.screenshot({
-            path: resolve(output, `${screen}-${locale}-${theme}-${width}.png`),
-            fullPage: true,
-          });
+          // Keep the required full-page screenshot; retry only Chromium's
+          // intermittent Page.captureScreenshot protocol rejection.
+          const screenshotPath = resolve(
+            output,
+            `${screen}-${locale}-${theme}-${width}.png`,
+          );
+          for (let attempt = 0; attempt < 2; attempt++) {
+            try {
+              await page.screenshot({
+                path: screenshotPath,
+                fullPage: true,
+                animations: "disabled",
+              });
+              break;
+            } catch (error) {
+              const chromiumCaptureFailure =
+                String(error).includes("Page.captureScreenshot") &&
+                String(error).includes("Unable to capture screenshot");
+              if (!chromiumCaptureFailure || attempt === 1) throw error;
+              await page.waitForTimeout(350);
+            }
+          }
           results.push({
             screen,
             locale,

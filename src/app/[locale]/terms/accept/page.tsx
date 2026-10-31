@@ -37,8 +37,8 @@ export default async function TermsAcceptancePage({
   const es = locale === "es";
 
   return (
-    <main className="shell">
-      <section className="hero">
+    <main className="shell pasa-terms-accept-page">
+      <section className="hero pasa-terms-accept-hero">
         <div className="eyebrow">
           {es ? "Antes de continuar" : "Before you continue"}
         </div>
@@ -52,13 +52,27 @@ export default async function TermsAcceptancePage({
             ? "Necesitamos registrar qué versión aceptaste para mantener tu cuenta y tus datos de forma responsable."
             : "We need to record which version you accepted so we can manage your account and data responsibly."}
         </p>
-        <p>
+        <p className="pasa-terms-accept-version">
           {es ? "Versión" : "Version"}: {config.currentTermsVersion}
         </p>
       </section>
-      <section className="panel auth-panel">
+      <nav
+        className="pasa-terms-accept-documents"
+        aria-label={es ? "Documentos de tu cuenta" : "Account documents"}
+      >
+        <Link href={`/${locale}/terms`}>
+          <span>{es ? "01 · Condiciones" : "01 · Terms"}</span>
+          <strong>{es ? "Leer condiciones" : "Read the terms"} ↗</strong>
+        </Link>
+        <Link href={`/${locale}/privacy`}>
+          <span>{es ? "02 · Privacidad" : "02 · Privacy"}</span>
+          <strong>{es ? "Revisar privacidad" : "Review privacy"} ↗</strong>
+        </Link>
+      </nav>
+      <section className="panel auth-panel pasa-terms-accept-panel">
+        <h2>{es ? "Confirma tu aceptación" : "Confirm your acceptance"}</h2>
         {query.error && (
-          <p className="notice">
+          <p className="notice" role="alert">
             {es
               ? "No pudimos guardar tu aceptación. Revisa la casilla e inténtalo de nuevo."
               : "We could not save your acceptance. Check the box and try again."}
@@ -67,7 +81,7 @@ export default async function TermsAcceptancePage({
         <form action={acceptTerms} className="stack">
           <input type="hidden" name="locale" value={locale} />
           <input type="hidden" name="next" value={next} />
-          <label className="consent-row">
+          <label className="consent-row pasa-terms-accept-consent">
             <input
               name="acceptTerms"
               type="checkbox"
@@ -86,7 +100,7 @@ export default async function TermsAcceptancePage({
               .
             </span>
           </label>
-          <button className="button" type="submit">
+          <button className="button pasa-terms-accept-submit" type="submit">
             {es ? "Aceptar y continuar" : "Accept and continue"}
           </button>
         </form>

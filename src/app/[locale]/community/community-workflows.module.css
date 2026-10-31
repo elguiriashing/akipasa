@@ -1,0 +1,310 @@
+:global(html:not([data-theme="light"]))
+  :global(.app-shell)
+  :global(.community-workspace):has(.workflow) {
+  --pasa-ui-panel: #131619;
+  --pasa-ui-elevated: #1c1a18;
+  --pasa-ui-glass: rgb(19 22 25 / 96%);
+  --pasa-ui-border: #484039;
+  --pasa-ui-text: #faf7f3;
+  --pasa-ui-subtle: #c7beb4;
+  --pasa-ui-highlight: #ffad73;
+}
+
+.workflow,
+.section,
+.content {
+  display: grid;
+  min-width: 0;
+  gap: 1.25rem;
+  color: var(--ink);
+}
+
+.workflow {
+  max-width: 72rem;
+}
+
+.formCard,
+.history {
+  min-width: 0;
+  padding: clamp(1.1rem, 3vw, 2rem);
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  background: var(--surface);
+  box-shadow: 0 16px 40px rgb(0 0 0 / 7%);
+}
+
+.cardHeader {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.icon {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: var(--surface-alt);
+  color: var(--ink);
+}
+
+.icon svg {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.cardHeader h2 {
+  margin: 0;
+  font-size: clamp(1.15rem, 2vw, 1.4rem);
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+
+.cardHeader p {
+  max-width: 65ch;
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.form {
+  display: grid;
+  min-width: 0;
+  gap: 1.1rem;
+}
+
+.form + .form {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.form label {
+  display: grid;
+  min-width: 0;
+  gap: 0.5rem;
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 750;
+  line-height: 1.5;
+}
+
+.form :is(input, select, textarea) {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 46px;
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  background: var(--surface-alt);
+  color: var(--ink);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 450;
+  line-height: 1.5;
+}
+
+.form :is(input, textarea)::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+.form textarea {
+  min-height: 9rem;
+  resize: vertical;
+}
+
+.form :global(.two-col) {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.1rem;
+}
+
+.form :global(.address-autocomplete) {
+  min-width: 0;
+}
+
+.form :global(.address-autocomplete) > input {
+  margin-top: 0.5rem;
+}
+
+.form :global(.address-results) {
+  z-index: 5;
+  max-height: 18rem;
+  overflow-y: auto;
+}
+
+.form :global(.address-results) [role="option"] {
+  min-height: 46px;
+}
+
+.form :is(input, select, textarea):focus-visible,
+.form button:focus-visible,
+.notice a:focus-visible {
+  outline: 3px solid #e5803f;
+  outline-offset: 3px;
+}
+
+.submit,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 48px;
+  padding: 0.75rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.submit {
+  margin-top: 0.25rem;
+  border-color: #f59b63;
+  background: #ffb57e;
+  color: #24170f;
+}
+
+.secondary {
+  justify-self: start;
+  min-width: 8rem;
+  background: var(--surface-alt);
+  color: var(--ink);
+}
+
+.submit:disabled,
+.form :is(input, select, textarea):disabled {
+  border-color: var(--line);
+  background: var(--surface-alt);
+  color: var(--muted);
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+.notice,
+.empty {
+  margin: 0;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: var(--surface-alt);
+  color: var(--ink);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.notice {
+  border-inline-start: 4px solid #e5803f;
+}
+
+.notice a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-inline-start: 0.4rem;
+  color: var(--ink);
+  font-weight: 750;
+  text-underline-offset: 0.2em;
+}
+
+.history {
+  display: grid;
+  gap: 0;
+}
+
+.historyRow {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.9rem;
+  min-width: 0;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.historyRow:first-child {
+  padding-top: 0;
+}
+
+.historyRow:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.historyMark {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  background: var(--surface-alt);
+  font-weight: 800;
+}
+
+.historyRow > div {
+  display: grid;
+  min-width: 0;
+  gap: 0.3rem;
+}
+
+.historyRow strong {
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.historyRow > div > span {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.status {
+  max-width: 100%;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-alt);
+  color: var(--ink);
+  font-size: 0.75rem;
+  font-weight: 750;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 700px) {
+  .form :global(.two-col) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .cardHeader {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  .historyRow {
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+  }
+
+  .status {
+    grid-column: 2;
+    justify-self: start;
+  }
+}

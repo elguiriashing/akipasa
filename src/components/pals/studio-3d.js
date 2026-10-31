@@ -75,6 +75,62 @@ function segment(parent, start, end, a, b, mat, radial = 14) {
   parent.add(mesh);
   return mesh;
 }
+/** Continuous swept fabric/skin, with tapered rings and shared vertex normals.
+ * Garments meet the torso without the old sphere-and-cylinder articulated joints. */
+function softLimb(parent, points, radii, mat) {
+  const path = new THREE.CatmullRomCurve3(
+    points.map((point) => new THREE.Vector3(...point)),
+  );
+  const steps = 24,
+    sides = 18;
+  const frames = path.computeFrenetFrames(steps, false);
+  const positions = [],
+    indices = [];
+  for (let step = 0; step <= steps; step++) {
+    const t = step / steps;
+    const center = path.getPointAt(t);
+    const span = t * (radii.length - 1),
+      left = Math.floor(span),
+      right = Math.min(left + 1, radii.length - 1);
+    const radius = THREE.MathUtils.lerp(radii[left], radii[right], span - left);
+    for (let side = 0; side <= sides; side++) {
+      const angle = (side / sides) * Math.PI * 2;
+      const point = center
+        .clone()
+        .addScaledVector(frames.normals[step], Math.cos(angle) * radius)
+        .addScaledVector(frames.binormals[step], Math.sin(angle) * radius);
+      positions.push(point.x, point.y, point.z);
+      if (step < steps && side < sides) {
+        const a = step * (sides + 1) + side,
+          b = a + sides + 1;
+        indices.push(a, a + 1, b, b, a + 1, b + 1);
+      }
+    }
+  }
+  // Closed ends prevent dark, hollow shoulder openings and visible trouser
+  // interiors when the user orbits below the default camera position.
+  const firstCenter = positions.length / 3;
+  const first = path.getPointAt(0),
+    last = path.getPointAt(1);
+  positions.push(first.x, first.y, first.z, last.x, last.y, last.z);
+  const lastRing = steps * (sides + 1);
+  for (let side = 0; side < sides; side++) {
+    indices.push(firstCenter, side + 1, side);
+    indices.push(firstCenter + 1, lastRing + side, lastRing + side + 1);
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute(positions, 3),
+  );
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  const mesh = new THREE.Mesh(geometry, mat);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  parent.add(mesh);
+  return mesh;
+}
 function curve(parent, pts, radius, mat, divisions = 20) {
   const points = pts.map((v) => new THREE.Vector3(...v));
   const mesh = new THREE.Mesh(
@@ -91,7 +147,7 @@ function curve(parent, pts, radius, mat, divisions = 20) {
   parent.add(mesh);
   return mesh;
 }
-function makeHair(a) {
+export function makeHair(a) {
   const group = new THREE.Group();
   group.name = "AkiPals hairstyle: " + a.hair;
   const color = HAIR[a.hairColor];
@@ -102,31 +158,63 @@ function makeHair(a) {
     y: 1.728,
     z: -0.014,
     rx: 0.125,
-    ry: a.hair === "buzz" ? 0.044 : 0.08,
+    ry: a.hair === "buzz" ? 0.044 : 0.059,
     rz: 0.127,
     mat: main,
     details: 32,
   };
-  addEllipsoid(group, crown);
+  // A fitted scalp cap exposes the forehead. The former full ellipsoid
+  // extended down across the brows and read as a separate hat.
+  const scalp = new THREE.Mesh(
+    new THREE.SphereGeometry(
+      1,
+      32,
+      18,
+      0,
+      Math.PI * 2,
+      0,
+      a.hair === "buzz" ? 2.3 : 2.15,
+    ),
+    main,
+  );
+  scalp.name = "AkiPals fitted scalp cap";
+  scalp.position.set(crown.x, crown.y, crown.z);
+  scalp.scale.set(crown.rx, crown.ry, crown.rz);
+  scalp.castShadow = true;
+  scalp.receiveShadow = true;
+  group.add(scalp);
+  if (["buzz", "crop", "quiff"].includes(a.hair)) {
+    for (const side of [-1, 1])
+      addEllipsoid(group, {
+        x: side * 0.095,
+        y: 1.71,
+        z: -0.034,
+        rx: 0.016,
+        ry: 0.036,
+        rz: 0.07,
+        mat: main,
+      });
+  }
   // Each style is real 3D geometry with volume, not a sprite or SVG.
   switch (a.hair) {
     case "buzz":
       break;
     case "crop":
     case "quiff": {
-      const spikes = a.hair === "quiff" ? 13 : 9;
+      const spikes = a.hair === "quiff" ? 9 : 7;
       for (let i = 0; i < spikes; i++) {
         const x = -0.101 + (i / (spikes - 1)) * 0.202;
-        const lift = a.hair === "quiff" ? 0.065 : 0.024;
+        const sweep = Math.sin((i / (spikes - 1)) * Math.PI);
+        const lift = (a.hair === "quiff" ? 0.026 : 0.006) * sweep;
         curve(
           group,
           [
             [x, 1.744, 0.078],
-            [x * 0.9, 1.777 + lift, 0.086],
-            [x * 0.86 + 0.023, 1.768 + lift * 0.6, 0.103],
+            [x * 0.9 + 0.014, 1.765 + lift, 0.075],
+            [x * 0.86 + 0.029, 1.754 + lift * 0.6, 0.105],
             [x + 0.018, 1.721, 0.113],
           ],
-          0.016 + 0.004 * (i % 3),
+          0.012 + 0.008 * sweep,
           i % 2 ? main : shine,
           14,
         );
@@ -227,6 +315,8 @@ function makeHair(a) {
     default:
       break;
   }
+  group.position.y = a.bodyStyle === "masculine" ? 0.044 : 0;
+  group.scale.x = a.face === "round" ? 1.09 : a.face === "angular" ? 0.95 : 1;
   return group;
 }
 
@@ -239,6 +329,44 @@ function makeFaceDetails(a) {
   const male = a.bodyStyle === "masculine";
   const noseY = male ? 1.647 : 1.614;
   const mouthY = male ? 1.615 : 1.573;
+  const eyeLine = male ? 1.698 : 1.655;
+  const iris = material(EYES[a.eyeColor], 0.32);
+  const pupil = material("#191b25", 0.23);
+  const glint = material("#fff9f0", 0.2);
+  for (const side of [-1, 1]) {
+    const eyeHeight =
+      a.eyes === "wide" ? 0.013 : a.eyes === "almond" ? 0.009 : 0.011;
+    addEllipsoid(group, {
+      x: side * 0.035,
+      y: eyeLine,
+      z: male ? 0.082 : 0.077,
+      rx: 0.01,
+      ry: eyeHeight,
+      rz: 0.006,
+      mat: iris,
+      details: 20,
+    });
+    addEllipsoid(group, {
+      x: side * 0.035,
+      y: eyeLine,
+      z: male ? 0.087 : 0.082,
+      rx: 0.005,
+      ry: eyeHeight * 0.64,
+      rz: 0.003,
+      mat: pupil,
+      details: 16,
+    });
+    addEllipsoid(group, {
+      x: side * 0.035 - 0.003,
+      y: eyeLine + 0.004,
+      z: male ? 0.09 : 0.085,
+      rx: 0.002,
+      ry: 0.002,
+      rz: 0.0015,
+      mat: glint,
+      details: 12,
+    });
+  }
   const front = 0.116;
   const noseShape =
     a.nose === "straight"
@@ -295,7 +423,7 @@ function shirtTorso(parent, a, fabric) {
   parent.add(mesh);
   return mesh;
 }
-function makeWardrobe(a) {
+export function makeWardrobe(a) {
   const group = new THREE.Group();
   group.name = "AkiPals original clothing";
   const textile = material(
@@ -310,58 +438,56 @@ function makeWardrobe(a) {
   const skin = material(SKINS[a.skin], 0.79);
   // Tapered 3D jersey with a human silhouette, rather than an oval blob.
   shirtTorso(group, a, textile);
-  addEllipsoid(group, {
-    x: 0,
-    y: 1.482,
-    z: 0.023,
-    rx: 0.115,
-    ry: 0.026,
-    rz: 0.09,
-    mat: trim,
-    details: 28,
-  });
-  addEllipsoid(group, {
-    x: 0,
-    y: 1.51,
-    z: 0.025,
-    rx: 0.067,
-    ry: 0.047,
-    rz: 0.062,
-    mat: skin,
-    details: 24,
-  });
+  const collar = new THREE.Mesh(
+    new THREE.TorusGeometry(0.065, 0.009, 10, 36),
+    trim,
+  );
+  collar.rotation.x = Math.PI / 2;
+  collar.position.set(0, 1.509, 0.022);
+  collar.scale.y = 0.9;
+  group.add(collar);
+  const neckRadius =
+    a.neck === "broad" ? 0.063 : a.neck === "slim" ? 0.046 : 0.054;
+  softLimb(
+    group,
+    [
+      [0, 1.485, 0.002],
+      [0, a.bodyStyle === "masculine" ? 1.592 : 1.58, 0.002],
+    ],
+    [neckRadius, neckRadius * 0.9],
+    skin,
+  );
   // Relaxed arms and hands. The old skinned base uses a T-pose for
   // animation authoring; the character-creation studio does not display it.
   for (const side of [-1, 1]) {
     const puffy = a.top === "hoodie" || a.top === "sweater";
-    const radius = puffy ? 0.082 : 0.066;
-    const shoulder = [side * 0.205, 1.436, 0.007];
-    const elbow = [side * 0.294, 1.268, 0.015];
+    // Start inside the chest so the swept sleeve's cap is buried, rather
+    // than leaving a V-shaped opening between the sleeve and collar line.
+    const shoulder = [side * 0.09, 1.42, 0.007];
+    const upper = [side * 0.229, 1.393, 0.01];
+    const elbow = [side * 0.285, 1.263, 0.017];
     const wrist = [side * 0.315, 1.09, 0.07];
-    addEllipsoid(group, {
-      x: side * 0.21,
-      y: 1.44,
-      z: 0.008,
-      rx: radius * 1.2,
-      ry: radius * 1.2,
-      rz: radius * 1.1,
-      mat: textile,
-    });
     if (a.top === "tee") {
-      segment(group, shoulder, elbow, radius, radius * 0.88, textile);
-      segment(group, elbow, wrist, 0.055, 0.042, skin);
+      softLimb(group, [upper, elbow, wrist], [0.06, 0.052, 0.039], skin);
+      softLimb(
+        group,
+        [shoulder, upper, [side * 0.27, 1.31, 0.015]],
+        [0.073, 0.071, 0.063],
+        textile,
+      );
     } else {
-      segment(group, shoulder, elbow, radius, radius * 0.94, textile);
-      segment(group, elbow, wrist, radius * 0.94, radius * 0.72, textile);
-      addEllipsoid(group, {
-        x: wrist[0],
-        y: wrist[1] + 0.014,
-        z: wrist[2],
-        rx: radius * 0.79,
-        ry: 0.024,
-        rz: radius * 0.77,
-        mat: trim,
-      });
+      softLimb(
+        group,
+        [shoulder, upper, elbow, wrist],
+        puffy ? [0.084, 0.079, 0.068, 0.05] : [0.074, 0.069, 0.059, 0.046],
+        textile,
+      );
+      softLimb(
+        group,
+        [[wrist[0], wrist[1] + 0.025, wrist[2] - 0.008], wrist],
+        [0.052, 0.05],
+        trim,
+      );
     }
     addEllipsoid(group, {
       x: side * 0.318,
@@ -470,37 +596,41 @@ function makeWardrobe(a) {
   }
   const short = a.bottom === "shorts";
   const wide =
-    a.bottom === "cargo" ? 0.127 : a.bottom === "tailored" ? 0.092 : 0.105;
+    a.bottom === "cargo" ? 0.114 : a.bottom === "tailored" ? 0.092 : 0.104;
   addEllipsoid(group, {
     x: 0,
-    y: 1.019,
+    y: 1.055,
     z: 0,
-    rx: 0.193,
-    ry: 0.135,
+    rx: 0.183,
+    ry: 0.085,
     rz: 0.133,
     mat: pants,
   });
   for (const side of [-1, 1]) {
-    const top = [side * 0.1, 1.02, 0];
-    const ankle = [side * 0.112, short ? 0.59 : 0.15, 0.01];
-    segment(
+    // A curved thigh/knee/cuff silhouette retains fabric volume without the
+    // former rigid, constant-radius cylinders. All wardrobe IDs stay intact.
+    const leg = softLimb(
       group,
-      top,
-      ankle,
-      wide,
-      wide * (a.bottom === "cargo" ? 1.05 : 0.88),
+      [
+        [side * 0.095, 1.035, 0],
+        [side * 0.108, 0.84, 0.012],
+        [side * 0.112, short ? 0.68 : 0.56, 0.024],
+        [side * 0.112, short ? 0.59 : 0.15, 0.01],
+      ],
+      [wide, wide * 0.98, wide * 0.88, wide * 0.73],
       pants,
-      20,
     );
+    leg.name = "AkiPals tailored trouser leg";
     if (short)
-      segment(
+      softLimb(
         group,
-        [side * 0.112, 0.61, 0],
-        [side * 0.112, 0.15, 0],
-        0.062,
-        0.049,
+        [
+          [side * 0.112, 0.61, 0],
+          [side * 0.112, 0.39, 0.018],
+          [side * 0.112, 0.15, 0],
+        ],
+        [0.062, 0.058, 0.043],
         skin,
-        14,
       );
     if (a.bottom === "cargo") {
       const pocket = new THREE.Mesh(
@@ -523,8 +653,29 @@ function makeWardrobe(a) {
       z: 0.076,
       rx: 0.108,
       ry: 0.082,
-      rz: 0.191,
+      rz: 0.168,
       mat: footwear,
+      details: 24,
+    });
+    if (a.shoes === "boots") {
+      segment(
+        group,
+        [side * 0.112, 0.12, 0.01],
+        [side * 0.112, 0.3, 0.01],
+        0.077,
+        0.068,
+        footwear,
+        20,
+      );
+    }
+    addEllipsoid(group, {
+      x: side * 0.112,
+      y: 0.028,
+      z: 0.08,
+      rx: 0.11,
+      ry: 0.027,
+      rz: 0.172,
+      mat: a.shoes === "boots" ? dark : trim,
       details: 24,
     });
     curve(
@@ -592,20 +743,25 @@ function makeWardrobe(a) {
         gold,
       );
   }
+  const headWear = new THREE.Group();
+  headWear.name = "AkiPals fitted headwear";
+  group.add(headWear);
   if (a.accessory === "glasses") {
     const frame = material("#e4bb8d", 0.34, 0.65);
+    const eyeLine = a.bodyStyle === "masculine" ? 1.698 : 1.655;
     for (const s of [-1, 1]) {
       const ring = new THREE.Mesh(
         new THREE.TorusGeometry(0.044, 0.007, 8, 24),
         frame,
       );
-      ring.position.set(s * 0.056, 1.649, 0.127);
-      group.add(ring);
+      ring.position.set(s * 0.046, eyeLine, 0.105);
+      ring.scale.set(0.88, 0.72, 1);
+      headWear.add(ring);
     }
     segment(
-      group,
-      [-0.012, 1.649, 0.135],
-      [0.012, 1.649, 0.135],
+      headWear,
+      [-0.012, eyeLine, 0.112],
+      [0.012, eyeLine, 0.112],
       0.005,
       0.005,
       frame,
@@ -618,24 +774,28 @@ function makeWardrobe(a) {
         new THREE.TorusGeometry(0.029, 0.005, 8, 22),
         frame,
       );
-      hoop.position.set(s * 0.128, 1.571, 0.005);
+      hoop.position.set(
+        s * 0.108,
+        a.bodyStyle === "masculine" ? 1.635 : 1.591,
+        0.005,
+      );
       hoop.rotation.y = s * 0.4;
-      group.add(hoop);
+      headWear.add(hoop);
     }
   } else if (a.accessory === "cap") {
     const hat = material("#232936", 0.64);
-    addEllipsoid(group, {
+    addEllipsoid(headWear, {
       x: 0,
-      y: 1.787,
+      y: a.bodyStyle === "masculine" ? 1.831 : 1.787,
       z: 0.003,
       rx: 0.137,
       ry: 0.08,
       rz: 0.134,
       mat: hat,
     });
-    addEllipsoid(group, {
+    addEllipsoid(headWear, {
       x: 0,
-      y: 1.747,
+      y: a.bodyStyle === "masculine" ? 1.791 : 1.747,
       z: 0.115,
       rx: 0.118,
       ry: 0.014,
@@ -646,46 +806,185 @@ function makeWardrobe(a) {
   return group;
 }
 
-function applyBaseColors(base, a) {
+/** Keep only the head triangles in object space. A world-space clipping plane
+ * sliced short/tall avatars at the wrong height and could expose the T-pose. */
+export function prepareBase(base) {
+  base.updateMatrixWorld(true);
   base.traverse((node) => {
     if (!node.isMesh) return;
-    let c = SKINS[a.skin];
-    if (/eyes/i.test(node.name)) c = EYES[a.eyeColor];
-    else if (/brow|face/i.test(node.name) && !/female|male/i.test(node.name))
-      c = HAIR[a.hairColor];
-    if (node.material?.userData?.akipalsMutable) node.material.dispose();
-    node.material = material(c, /eyes/i.test(node.name) ? 0.22 : 0.78);
-    node.material.userData.akipalsMutable = true;
-    // Keep the original sculpted head, eyes and brows; suppress the uncostumed
-    // rigged T-pose beneath the first-party 3D clothes and hands.
-    const isBody = /Superhero_|Retopology/i.test(node.name);
-    if (isBody) {
-      node.material.clippingPlanes = [
-        // Keep the face above the collar; the donor rig's T-pose shoulder tips
-        // extend above y=1.5 and otherwise leak as detached skin triangles.
-        new THREE.Plane(new THREE.Vector3(0, 1, 0), -1.585),
-      ];
-      node.material.clipShadows = true;
+    node.geometry = node.geometry.clone();
+    const position = node.geometry.getAttribute("position");
+    node.userData.originalPositions = new Float32Array(position.array);
+    if (/Superhero_|Retopology/i.test(node.name)) {
+      const old = node.geometry.index;
+      const kept = [];
+      const skinIndex = node.geometry.getAttribute("skinIndex"),
+        skinWeight = node.geometry.getAttribute("skinWeight");
+      const headBone = node.skeleton.bones.find((bone) => bone.name === "Head");
+      const headOrigin = node.worldToLocal(
+        headBone.getWorldPosition(new THREE.Vector3()),
+      );
+      // Each donor has a different neck height. Retain the jaw, but replace
+      // the low-poly flared neck/shoulder remnants with our continuous neck.
+      const neckJoin = Math.max(1.5, headOrigin.y - 0.022);
+      const headBones = new Set(
+        node.skeleton.bones.flatMap((bone, index) =>
+          /^(Head|neck_01)$/.test(bone.name) ? [index] : [],
+        ),
+      );
+      const headWeight = (index) => {
+        let weight = 0;
+        for (let part = 0; part < 4; part++) {
+          if (headBones.has(skinIndex.array[index * 4 + part]))
+            weight += skinWeight.array[index * 4 + part];
+        }
+        return weight;
+      };
+      const count = old ? old.count : position.count;
+      for (let i = 0; i < count; i += 3) {
+        const triangle = [0, 1, 2].map((j) => (old ? old.getX(i + j) : i + j));
+        if (
+          triangle.every(
+            (index) =>
+              position.getY(index) >= neckJoin &&
+              Math.abs(position.getX(index)) <= 0.145 &&
+              headWeight(index) > 0.5,
+          )
+        )
+          kept.push(...triangle);
+      }
+      node.geometry.setIndex(kept);
     }
+  });
+}
+
+/** Rebuild smooth normals without welding UV/rig vertices. Recomputing normals
+ * independently at each duplicate seam destroys the donor's smooth cheek/jaw
+ * shading. Only the retained head triangles contribute; hidden body faces and
+ * separate eye/brow meshes must not influence the portrait. */
+function smoothHeadNormals(geometry) {
+  const position = geometry.getAttribute("position");
+  const normal = geometry.getAttribute("normal");
+  const indices = geometry.index.array;
+  const keys = new Map(),
+    sums = new Map();
+  const used = new Set(indices);
+  for (const index of used) {
+    const key = [
+      position.getX(index),
+      position.getY(index),
+      position.getZ(index),
+    ]
+      .map((value) => Math.round(value * 1e6))
+      .join(",");
+    keys.set(index, key);
+    if (!sums.has(key)) sums.set(key, new THREE.Vector3());
+  }
+  const a = new THREE.Vector3(),
+    b = new THREE.Vector3(),
+    c = new THREE.Vector3();
+  for (let offset = 0; offset < indices.length; offset += 3) {
+    const first = indices[offset],
+      second = indices[offset + 1],
+      third = indices[offset + 2];
+    a.fromBufferAttribute(position, first);
+    b.fromBufferAttribute(position, second);
+    c.fromBufferAttribute(position, third);
+    // The unnormalized cross product weights each face by its actual area.
+    b.sub(a).cross(c.sub(a));
+    for (const index of [first, second, third])
+      sums.get(keys.get(index)).add(b);
+  }
+  for (const sum of sums.values()) {
+    if (sum.lengthSq() < 1e-18) sum.set(0, -1, 0);
+    else sum.normalize();
+  }
+  for (const index of used) {
+    const sum = sums.get(keys.get(index));
+    normal.setXYZ(index, sum.x, sum.y, sum.z);
+  }
+  normal.needsUpdate = true;
+}
+
+/** Bounded local sculpt deformations; always start from the original vertex
+ * positions so switching looks never accumulates distortion in the cached GLB. */
+export function applyBaseColors(base, a) {
+  base.traverse((node) => {
+    if (!node.isMesh) return;
+    const eye = /eyes/i.test(node.name);
+    const brow = /brow/i.test(node.name);
+    const color = eye ? "#fff2e4" : brow ? HAIR[a.hairColor] : SKINS[a.skin];
+    if (node.material?.userData?.akipalsMutable) node.material.dispose();
+    node.material = material(color, eye ? 0.22 : 0.78);
+    node.material.userData.akipalsMutable = true;
     node.visible = true;
     node.castShadow = true;
     node.receiveShadow = true;
+    const position = node.geometry.getAttribute("position");
+    const original = node.userData.originalPositions;
+    if (!original) return;
+    const masculine = a.bodyStyle === "masculine";
+    const eyeY = masculine ? 1.698 : 1.655;
+    const chinY = masculine ? 1.586 : 1.543;
+    const faceWidth =
+      a.face === "round" ? 1.09 : a.face === "angular" ? 0.95 : 1;
+    for (let i = 0; i < position.count; i++) {
+      let x = original[i * 3],
+        y = original[i * 3 + 1],
+        z = original[i * 3 + 2];
+      if (eye) {
+        const centerX = x < 0 ? -0.035 : 0.035;
+        x = centerX + (x - centerX) * (a.eyes === "almond" ? 1.12 : 1);
+        y =
+          eyeY +
+          (y - eyeY) *
+            (a.eyes === "wide" ? 1.2 : a.eyes === "almond" ? 0.78 : 1);
+      } else if (brow) {
+        const browY = eyeY + 0.023;
+        y = browY + (y - browY) * (a.brows === "bold" ? 1.4 : 0.8);
+        if (a.brows === "arched")
+          y += 0.011 * Math.sin(Math.min(Math.abs(x) / 0.065, 1) * Math.PI);
+      } else if (y >= 1.5) {
+        // Donor neck topology was authored for a T-pose torso, not this
+        // portrait. Collapse its cut boundary into a level, narrow join inside
+        // the authored neck instead of exposing triangular shoulder scraps.
+        if (y < chinY + 0.022) {
+          y = chinY + 0.008;
+          x = THREE.MathUtils.clamp(x, -0.039, 0.039);
+          z = THREE.MathUtils.clamp(z, -0.035, 0.037);
+        }
+        const chinInfluence = Math.max(0, 1 - Math.abs(y - chinY) / 0.055);
+        x *=
+          1 +
+          chinInfluence *
+            (a.chin === "pointed" ? -0.15 : a.chin === "square" ? 0.12 : 0);
+        const earInfluence =
+          Math.max(0, Math.min(1, (Math.abs(x) - 0.075) / 0.025)) *
+          Math.max(0, 1 - Math.abs(y - (eyeY - 0.018)) / 0.07);
+        x *=
+          1 +
+          earInfluence *
+            (a.ears === "prominent" ? 0.18 : a.ears === "small" ? -0.16 : 0);
+        const neckInfluence = Math.max(0, 1 - (y - chinY) / 0.06);
+        x *=
+          1 +
+          neckInfluence *
+            (a.neck === "broad" ? 0.22 : a.neck === "slim" ? -0.18 : 0);
+      }
+      position.setXYZ(i, x * faceWidth, y, z);
+    }
+    position.needsUpdate = true;
+    node.geometry.computeVertexNormals();
+    if (!eye && !brow) smoothHeadNormals(node.geometry);
+    node.geometry.computeBoundingSphere();
   });
-  const head = base.getObjectByName("Head");
-  if (head) {
-    const size =
-      a.face === "round"
-        ? [1.09, 0.98, 1]
-        : a.face === "angular"
-          ? [0.92, 1.05, 0.98]
-          : [1, 1, 1];
-    head.scale.set(...size);
-  }
 }
 function clearGroup(group) {
   if (!group) return;
   group.parent?.remove(group);
+  const skeletons = new Set();
   group.traverse((node) => {
+    if (node.skeleton) skeletons.add(node.skeleton);
     if (node.geometry) node.geometry.dispose();
     if (node.material) {
       const materials = Array.isArray(node.material)
@@ -694,6 +993,7 @@ function clearGroup(group) {
       for (const mat of materials) mat.dispose?.();
     }
   });
+  for (const skeleton of skeletons) skeleton.dispose();
 }
 function create(container, { mode = "studio" } = {}) {
   const isWorld = mode === "world";
@@ -705,22 +1005,22 @@ function create(container, { mode = "studio" } = {}) {
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
     alpha: true,
-    powerPreference: isWorld ? "low-power" : "high-performance",
-    preserveDrawingBuffer: !isWorld,
+    powerPreference: isWorld ? "low-power" : "default",
   });
   renderer.setPixelRatio(
     Math.min(isWorld ? 1.25 : 2, window.devicePixelRatio || 1),
   );
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.42;
-  renderer.localClippingEnabled = true;
+  renderer.toneMappingExposure = isWorld ? 1.42 : 1.12;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.setClearColor(0x000000, 0);
   renderer.domElement.setAttribute(
     "aria-label",
-    "Interactive 3D character. Drag to rotate, scroll or pinch to zoom.",
+    document.documentElement.lang === "es"
+      ? "Personaje 3D interactivo. Arrastra para girar, desliza o pellizca para acercar."
+      : "Interactive 3D character. Drag to rotate, scroll or pinch to zoom.",
   );
   renderer.domElement.setAttribute("role", "img");
   renderer.domElement.style.cssText =
@@ -728,19 +1028,26 @@ function create(container, { mode = "studio" } = {}) {
   container.replaceChildren(renderer.domElement);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(isWorld ? 39 : 33, 1, 0.05, 90);
-  camera.position.set(0, isWorld ? 1.23 : 1.33, isWorld ? 2.62 : 3.42);
+  // Reserve breathing room for the stage badge and bottom touch controls.
+  camera.position.set(0, isWorld ? 1.23 : 1.34, isWorld ? 2.62 : 4.5);
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.set(0, 0.99, 0);
-  controls.enablePan = false;
+  controls.target.set(0, isWorld ? 0.99 : 1.04, 0);
   controls.enabled = !isWorld;
-  controls.enableDamping = true;
+  controls.enablePan = false;
+  controls.enableDamping = !prefersReducedMotion && !isWorld;
   controls.dampingFactor = 0.07;
   controls.minDistance = 2.05;
   controls.maxDistance = 4.8;
   controls.minPolarAngle = 0.67;
   controls.maxPolarAngle = 2.07;
   controls.update();
-  scene.add(new THREE.HemisphereLight("#eaf5ff", "#725146", 2.3));
+  scene.add(
+    new THREE.HemisphereLight(
+      isWorld ? "#eaf5ff" : "#f1f5ff",
+      isWorld ? "#725146" : "#504b57",
+      isWorld ? 2.3 : 1.65,
+    ),
+  );
   const light = (color, intensity, x, y, z, shadow = false) => {
     const l = new THREE.DirectionalLight(color, intensity);
     l.position.set(x, y, z);
@@ -755,9 +1062,15 @@ function create(container, { mode = "studio" } = {}) {
     }
     scene.add(l);
   };
-  light("#ffe1c7", 3.2, -2.5, 4, 3, true);
-  light("#ff8c58", 2.4, 2, 3, -3, false);
-  light("#afc9ff", 0.86, -3, 1, -1, false);
+  if (isWorld) {
+    light("#ffe1c7", 3.2, -2.5, 4, 3, true);
+    light("#ff8c58", 2.4, 2, 3, -3, false);
+    light("#afc9ff", 0.86, -3, 1, -1, false);
+  } else {
+    light("#fff0e5", 2.65, -2.5, 4, 3, true);
+    light("#ffab7e", 1.65, 2, 3, -3, false);
+    light("#c4d8ff", 1.2, 3, 2, 2, false);
+  }
   const stageMat = new THREE.MeshStandardMaterial({
     color: "#1a1c27",
     roughness: 0.43,
@@ -784,18 +1097,28 @@ function create(container, { mode = "studio" } = {}) {
   if (!isWorld) scene.add(ring);
   const root = new THREE.Group();
   scene.add(root);
+  // A friendly six-head silhouette. Hair, facial details and accessories use
+  // the same neck pivot, preserving fit while the body/height controls change.
+  const head = new THREE.Group();
+  head.position.y = 1.5 * (1 - 1.4);
+  head.scale.set(1.38, 1.4, 1.35);
+  root.add(head);
   let base = null,
     cloth = null,
     hair = null,
     faceDetails = null,
     loadNumber = 0,
     active = true,
+    contextLost = false,
     raf = 0;
+  let faceType = null,
+    previousStyle = null,
+    requestedStyle = null;
   let worldWalking = false,
     worldHeading = 0,
-    worldTurn = 0;
-  let faceType = null,
-    previousStyle = null;
+    worldTurn = 0,
+    worldBaseY = 0,
+    worldFrame = 0;
   const resize = () => {
     if (!active) return;
     const w = Math.max(container.clientWidth, 1),
@@ -803,56 +1126,105 @@ function create(container, { mode = "studio" } = {}) {
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    requestRender();
   };
-  const observer = new ResizeObserver(resize);
-  observer.observe(container);
-  resize();
-  let frame = 0;
+  const requestRender = () => {
+    if (active && !contextLost && !document.hidden && !raf)
+      raf = requestAnimationFrame(tick);
+  };
   const tick = () => {
-    if (!active) return;
-    raf = requestAnimationFrame(tick);
-    frame += 0.016;
-    if (!prefersReducedMotion) {
-      root.position.y = isWorld
-        ? worldWalking
-          ? Math.abs(Math.sin(frame * 11)) * 0.025
-          : Math.sin(frame * 0.8) * 0.007
-        : Math.sin(frame * 0.8) * 0.007;
-      if (isWorld && worldWalking)
-        root.rotation.z = Math.sin(frame * 5.5) * 0.025;
-      else root.rotation.z *= 0.85;
-    }
+    raf = 0;
+    if (!active || contextLost || document.hidden) return;
+    let worldAnimating = false;
     if (isWorld) {
       const difference = Math.atan2(
         Math.sin(worldHeading - worldTurn),
         Math.cos(worldHeading - worldTurn),
       );
-      worldTurn += difference * 0.09;
+      const turning = Math.abs(difference) > 0.001;
+      worldTurn =
+        prefersReducedMotion || !turning
+          ? worldHeading
+          : worldTurn + difference * 0.09;
       root.rotation.y = worldTurn;
+      worldAnimating = !prefersReducedMotion && (worldWalking || turning);
+      if (worldWalking && !prefersReducedMotion) {
+        worldFrame += 0.016;
+        root.position.y =
+          worldBaseY + Math.abs(Math.sin(worldFrame * 11)) * 0.025;
+        root.rotation.z = Math.sin(worldFrame * 5.5) * 0.025;
+      } else {
+        root.position.y = worldBaseY;
+        root.rotation.z = 0;
+      }
     }
     controls.update();
     renderer.render(scene, camera);
+    // OrbitControls emits change while damping settles. An idle portrait needs
+    // no perpetual animation loop, especially inside an Android WebView.
+    // World GPS animates only walking or a settling heading; an idle/off/hidden
+    // world character keeps the same demand-driven lifetime as the Wardrobe.
+    if (worldAnimating) requestRender();
   };
-  tick();
+  const visibility = () => {
+    if (document.hidden) {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    } else requestRender();
+  };
+  controls.addEventListener("change", requestRender);
+  document.addEventListener("visibilitychange", visibility);
+  const loseContext = (event) => {
+    event.preventDefault();
+    contextLost = true;
+    cancelAnimationFrame(raf);
+    raf = 0;
+    container.dataset.rendered = "error";
+    container.dispatchEvent(
+      new CustomEvent("akipals:error", {
+        detail: {
+          message:
+            "3D preview paused. Waiting for graphics to recover. Your saved look is unchanged.",
+        },
+      }),
+    );
+  };
+  const restoreContext = () => {
+    contextLost = false;
+    if (requestedStyle) void setAppearance(JSON.parse(requestedStyle));
+  };
+  renderer.domElement.addEventListener("webglcontextlost", loseContext);
+  renderer.domElement.addEventListener("webglcontextrestored", restoreContext);
+  const observer = new ResizeObserver(resize);
+  observer.observe(container);
+  resize();
   async function setAppearance(a) {
+    requestedStyle = JSON.stringify(a);
     const model = a.bodyStyle === "masculine" ? "male" : "female";
     const number = ++loadNumber;
+    container.dataset.rendered = "loading";
+    container.dispatchEvent(new CustomEvent("akipals:loading"));
     try {
       if (!base || faceType !== model) {
-        let cached = models.get(model);
-        if (!cached) {
-          cached = await loader.loadAsync(
-            "/pals/models/akipals-base-" + model + ".glb",
-          );
-          models.set(model, cached);
+        let pending = models.get(model);
+        if (!pending) {
+          pending = loader
+            .loadAsync("/pals/models/akipals-base-" + model + ".glb")
+            .catch((error) => {
+              models.delete(model);
+              throw error;
+            });
+          models.set(model, pending);
         }
+        const cached = await pending;
         if (!active || number !== loadNumber) return;
-        if (base) root.remove(base);
+        clearGroup(base);
         base = cloneSkeleton(cached.scene);
-        root.add(base);
+        prepareBase(base);
+        head.add(base);
         faceType = model;
       }
-      if (!active || number !== loadNumber) return;
+      if (!active || contextLost || number !== loadNumber) return;
       applyBaseColors(base, a);
       clearGroup(cloth);
       clearGroup(hair);
@@ -860,7 +1232,14 @@ function create(container, { mode = "studio" } = {}) {
       cloth = makeWardrobe(a);
       hair = makeHair(a);
       faceDetails = makeFaceDetails(a);
-      root.add(cloth, hair, faceDetails);
+      // The masculine donor's jaw sits higher than the feminine donor. Bring
+      // it toward the common garment collar instead of stretching the neck.
+      head.position.y = 1.5 * (1 - 1.4) - (model === "male" ? 0.048 : 0);
+      root.add(cloth);
+      head.add(hair, faceDetails);
+      const headWear = cloth.getObjectByName("AkiPals fitted headwear");
+      headWear.position.copy(head.position);
+      headWear.scale.copy(head.scale);
       const frameWidth =
         a.build === "broad" ? 1.1 : a.build === "slim" ? 0.91 : 1;
       root.scale.set(
@@ -869,9 +1248,13 @@ function create(container, { mode = "studio" } = {}) {
         a.height === "tall" ? 1.055 : a.height === "short" ? 0.94 : 1,
         frameWidth * 0.96,
       );
-      root.position.y = a.height === "short" ? 0.01 : 0;
+      worldBaseY = a.height === "short" ? 0.01 : 0;
+      root.position.y = worldBaseY;
       previousStyle = JSON.stringify(a);
+      renderer.render(scene, camera);
+      requestRender();
       container.dataset.rendered = "true";
+      container.dataset.model = model;
       container.dispatchEvent(
         new CustomEvent("akipals:rendered", { detail: { model } }),
       );
@@ -894,12 +1277,16 @@ function create(container, { mode = "studio" } = {}) {
       worldWalking = Boolean(walking);
       if (Number.isFinite(headingDegrees))
         worldHeading = (headingDegrees * Math.PI) / 180;
+      requestRender();
     },
     rotate(angle = Math.PI / 4) {
       camera.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
       controls.update();
+      requestRender();
     },
     screenshot() {
+      if (contextLost || container.dataset.rendered !== "true")
+        throw new Error("3D preview is not ready");
       renderer.render(scene, camera);
       return renderer.domElement.toDataURL("image/png");
     },
@@ -910,7 +1297,15 @@ function create(container, { mode = "studio" } = {}) {
       active = false;
       cancelAnimationFrame(raf);
       observer.disconnect();
+      document.removeEventListener("visibilitychange", visibility);
+      renderer.domElement.removeEventListener("webglcontextlost", loseContext);
+      renderer.domElement.removeEventListener(
+        "webglcontextrestored",
+        restoreContext,
+      );
+      controls.removeEventListener("change", requestRender);
       controls.dispose();
+      clearGroup(base);
       clearGroup(cloth);
       clearGroup(hair);
       clearGroup(faceDetails);
@@ -923,5 +1318,7 @@ function create(container, { mode = "studio" } = {}) {
     },
   };
 }
-window.AkiPals3D = { mount: create };
-window.dispatchEvent(new Event("akipals:3d-ready"));
+if (typeof window !== "undefined") {
+  window.AkiPals3D = { mount: create };
+  window.dispatchEvent(new Event("akipals:3d-ready"));
+}

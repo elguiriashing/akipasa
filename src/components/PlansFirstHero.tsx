@@ -3,6 +3,7 @@ import Image from "next/image";
 import type { Locale } from "@/lib/config";
 import { planShortcutHref, type PlanShortcut } from "@/lib/plans-first";
 import { discoveryViewHref } from "@/lib/discovery-navigation";
+import { tonightEnabled } from "@/lib/aki-tonight-release";
 import { DiscoverySearchTrigger } from "./DiscoverySearchTrigger";
 import styles from "./PlansFirstHero.module.css";
 
@@ -75,6 +76,11 @@ export function PlansFirstHero({
             {es ? shortcut.es : shortcut.en}
           </Link>
         ))}
+        {tonightEnabled() && (
+          <Link className={styles.mapShortcut} href={`/${locale}/tonight`}>
+            {es ? "Crear un plan · AkiTonight" : "Make a plan · AkiTonight"}
+          </Link>
+        )}
         <Link className={styles.mapShortcut} href={mapHref}>
           {es ? "Ver mapa" : "See map"}
         </Link>

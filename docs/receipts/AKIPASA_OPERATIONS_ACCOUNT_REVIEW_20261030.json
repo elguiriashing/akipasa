@@ -1,0 +1,24 @@
+{
+  "reviewedBaseline": "227267a63885d6162206480f74e9f9e1eb6d4cd2",
+  "changedFile": "scripts/test-account-personal-browser.mjs",
+  "changedFileSha256": "a7aca885ccedde5f6adc2821d7032d30bb7cf474bcd314d45143d11811e57e07",
+  "ciFailureJob": 124131245679,
+  "ciFailureUrl": "https://github.com/elguiriashing/akipasa/actions/runs/41075725512/job/124131245679",
+  "ciFailureExtract": "/workspace/akipasa-main-checkpoints/account-personal-227-ci-failure-extract-20261030.log",
+  "fix": "ScopeOverviewEditCTAtoexistingdata-personal-account;assertuniqueCTA+samehref;independentlyassertuniquelocalizedsectionEditlink+samehref",
+  "allExistingAssertionsRetained": true,
+  "firstOrNthSelectionAdded": false,
+  "uiHiddenOrRemoved": false,
+  "applicationFilesChangedByThisRepair": false,
+  "matrixCasesPassed": 32,
+  "matrix": "EN/ES,dark/light,360/390/820/1440,overview+profile,no filters",
+  "log": "/tmp/akipasa-account-personal-selector-repair-20261030.log",
+  "resultSourceHashes": {
+    "src/app/[locale]/account/page.tsx": "61d0956c1d69ede2d1a706c08d12d6eda69f86bb1608db64d228add0d549019c",
+    "src/app/[locale]/account/profile/page.tsx": "606c9f4f497a9303cf3c206de3156f73dac47b043be6ce06ae387813fcdc331f",
+    "src/app/[locale]/account/account-personal.module.css": "43eb698ea51fd4ca60493cbe0714b56076dd1bcfbb4ebd38a052bcfc0086f2a2"
+  },
+  "resultsSha256": "e37140bcf3809ca53246d2dfe03689e888a42f0ba1ac0aa703c561971eb65e9a",
+  "hostedFreshHeadPending": true,
+  "routeAcceptanceGranted": false
+}

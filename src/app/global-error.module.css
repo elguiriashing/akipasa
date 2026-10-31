@@ -1,0 +1,84 @@
+.body {
+  margin: 0;
+  min-height: 100svh;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #f4f5f8;
+  color: #17233a;
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+  color-scheme: light dark;
+}
+.card {
+  width: min(100%, 520px);
+  box-sizing: border-box;
+  padding: clamp(24px, 5vw, 44px);
+  border: 1px solid #d2d8e2;
+  border-radius: 24px;
+  background: #fff;
+  overflow-wrap: anywhere;
+}
+.brand {
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  margin: 0 0 28px;
+}
+.card h1,
+.card h2 {
+  line-height: 1.2;
+  margin: 0 0 16px;
+}
+.card h1 {
+  font-size: clamp(26px, 6vw, 36px);
+}
+.card h2 {
+  font-size: 22px;
+}
+.card p {
+  margin-top: 0;
+}
+.translation {
+  border-top: 1px solid #d2d8e2;
+  padding-top: 24px;
+  margin-top: 24px;
+}
+.retry {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 20px;
+  margin-top: 16px;
+  border-radius: 12px;
+  background: #243e73;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.retry:focus-visible {
+  outline: 3px solid #b66b00;
+  outline-offset: 5px;
+}
+@media (prefers-color-scheme: dark) {
+  .body {
+    background: #101725;
+    color: #f3f5fa;
+  }
+  .card {
+    background: #192438;
+    border-color: #53617a;
+  }
+  .translation {
+    border-color: #53617a;
+  }
+  .retry {
+    background: #f8cf65;
+    color: #17233a;
+  }
+  .retry:focus-visible {
+    outline-color: #fff;
+  }
+}

@@ -9,7 +9,9 @@ import { resolve, extname } from "node:path";
 // Real async page loaders, AccountLayout, client components and production CSS.
 // Only Auth/database reads, Next routing/request headers and server actions are disposable adapters.
 // This verifies UI behavior; it does not claim live authentication/payment acceptance.
-const directory = resolve("test-results/account");
+const directory = resolve(
+  process.env.ACCOUNT_BROWSER_EVIDENCE || "test-results/account",
+);
 mkdirSync(directory, { recursive: true });
 const routes = [
   "overview",
@@ -30,6 +32,9 @@ const viewports = [
   [1024, 768],
   [1536, 960],
   [640, 400],
+  [390, 844],
+  [820, 1180],
+  [1440, 900],
 ];
 const accountRoot = "./src/app/[locale]/account";
 const routeImports = routes
@@ -42,6 +47,7 @@ const entry = `
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import AccountLayout from '${accountRoot}/layout';
+import {AppShell} from './src/components/AppShell';
 import RewardsPage from '${accountRoot}/rewards/page';
 import {AkiSuiteMembershipGrid} from './src/components/AkiSuiteMembershipGrid';
 ${routeImports}
@@ -64,7 +70,8 @@ async function renderRoute(){
     const handoff=route==='membership-handoff';
     const content=handoff?<main style={{padding:16}}><AkiSuiteMembershipGrid locale={locale} purchaseMode="account" checkoutReady={new URLSearchParams(location.search).get("ready")==="true"} originatingApp="akiduermo" /></main>:await page(props);
     const shell=handoff?content:await AccountLayout({...props,children:content});
-    root.render(React.createElement(React.Fragment,{key:location.href},shell));
+    // Next preserves a shared localized layout across child-route navigation.
+    root.render(handoff?shell:React.createElement(AppShell,{key:locale,locale,signedIn:true,role:"consumer"},shell));
     requestAnimationFrame(()=>requestAnimationFrame(()=>{window.__accountReady=true;window.__accountReadiness++}));
   }catch(error){
     if(error.redirect){window.__accountRedirect=error.redirect;root.render(<p data-testid="redirect">{error.redirect}</p>);window.__accountReady=true;return}
@@ -217,7 +224,11 @@ const server = createServer((request, response) => {
   } else if (pathname.startsWith("/api/")) {
     response.statusCode = 500;
     response.end(`Unexpected fixture API request: ${pathname}`);
-  } else if (/^\/(brand|pwa)\/[a-z0-9-]+\.(png|svg|webp)$/.test(pathname)) {
+  } else if (
+    /^\/(brand|pwa|images)\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_.-]+\.(png|svg|webp)$/.test(
+      pathname,
+    )
+  ) {
     const file = resolve("public", pathname.slice(1));
     response.setHeader(
       "Content-Type",
@@ -402,6 +413,76 @@ async function checkBounds(page, context) {
     return [...new Set(failures)];
   });
   expect(problems, context).toEqual([]);
+  await expect(page.locator(".app-shell .account-workspace")).toBeVisible();
+  const palette = await page
+    .locator(".account-workspace")
+    .evaluate((element) => ({
+      surface: getComputedStyle(element).getPropertyValue("--surface").trim(),
+      light: document.documentElement.dataset.theme === "light",
+    }));
+  expect(palette.surface, `${context}: actual Account palette`).toBe(
+    palette.light ? "#ffffff" : "#131619",
+  );
+  const contrast = await page
+    .locator(".account-collection-remove")
+    .evaluateAll((elements) => {
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = 1;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      const luminance = (color) => {
+        ctx.clearRect(0, 0, 1, 1);
+        ctx.fillStyle = color;
+        ctx.fillRect(0, 0, 1, 1);
+        const rgba = ctx.getImageData(0, 0, 1, 1).data;
+        return [0.2126, 0.7152, 0.0722].reduce((sum, weight, index) => {
+          const value = rgba[index] / 255;
+          return (
+            sum +
+            weight *
+              (value <= 0.04045
+                ? value / 12.92
+                : ((value + 0.055) / 1.055) ** 2.4)
+          );
+        }, 0);
+      };
+      return elements.map((element) => {
+        const ink = luminance(getComputedStyle(element).color);
+        const panel = luminance(
+          getComputedStyle(element.closest(".account-collection-card"))
+            .backgroundColor,
+        );
+        return (Math.max(ink, panel) + 0.05) / (Math.min(ink, panel) + 0.05);
+      });
+    });
+  for (const ratio of contrast)
+    expect(
+      ratio,
+      `${context}: destructive label contrast`,
+    ).toBeGreaterThanOrEqual(4.5);
+  const remove = page.locator(".account-collection-remove:enabled").last();
+  if (await remove.count()) {
+    await remove.scrollIntoViewIfNeeded();
+    expect(
+      await remove.evaluate((element) => {
+        const box = element.getBoundingClientRect();
+        return element.contains(
+          document.elementFromPoint(
+            box.x + box.width / 2,
+            box.y + box.height / 2,
+          ),
+        );
+      }),
+      `${context}: removal remains reachable`,
+    ).toBe(true);
+    await remove.focus();
+    await expect(remove).toBeFocused();
+    await page.keyboard.press("Shift+Tab");
+    expect(
+      await page.evaluate(() => document.activeElement?.tagName !== "BODY"),
+    ).toBe(true);
+    await resetScroll(page);
+  }
+
   const heading = await page.locator(".workspace-content h1").boundingBox();
   expect(
     heading.y,
@@ -447,6 +528,69 @@ async function checkNavigation(page, locale, width) {
   await resetScroll(page);
 }
 
+async function checkDesktopSearchAndMenu(page, context) {
+  const search = page.locator(".global-search-trigger");
+  const menu = page.locator(".workspace-mobile-trigger");
+  const panel = page.locator("#site-search-panel");
+  await resetScroll(page);
+  await expect(search).toBeEnabled();
+  await expect(menu).toHaveAttribute("aria-expanded", "false");
+  const geometry = await page.evaluate(() => {
+    const search = document.querySelector(".global-search-trigger");
+    const menu = document.querySelector(".workspace-mobile-trigger");
+    const a = search.getBoundingClientRect();
+    const b = menu.getBoundingClientRect();
+    const hit = (element) => {
+      const rect = element.getBoundingClientRect();
+      return [0.2, 0.5, 0.8].map((fraction) => {
+        const target = document.elementFromPoint(
+          rect.left + rect.width * fraction,
+          rect.top + rect.height / 2,
+        );
+        return target === element || element.contains(target);
+      });
+    };
+    return {
+      overlap:
+        Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) *
+        Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)),
+      searchHits: hit(search),
+      menuHits: hit(menu),
+    };
+  });
+  expect(geometry.overlap, `${context}: Search/Menu overlap`).toBe(0);
+  expect(geometry.searchHits, `${context}: Search pointer targets`).toEqual([
+    true,
+    true,
+    true,
+  ]);
+  expect(geometry.menuHits, `${context}: Menu pointer targets`).toEqual([
+    true,
+    true,
+    true,
+  ]);
+  await search.click();
+  await expect(panel).toBeVisible();
+  await expect(menu).toHaveAttribute("aria-expanded", "false");
+  await page.keyboard.press("Escape");
+  await expect(panel).not.toBeVisible();
+  await search.focus();
+  await page.keyboard.press("Enter");
+  await expect(panel).toBeVisible();
+  await expect(menu).toHaveAttribute("aria-expanded", "false");
+  await page.keyboard.press("Escape");
+  await expect(panel).not.toBeVisible();
+  await menu.click();
+  await expect(menu).toHaveAttribute("aria-expanded", "true");
+  await expect(page.locator(".workspace-drawer")).toBeVisible();
+  await expect(panel).not.toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(menu).toHaveAttribute("aria-expanded", "false");
+  await expect(menu).toBeFocused();
+  await resetScroll(page);
+  return geometry;
+}
+
 async function reveal(page, field) {
   const sections = page.locator("details").filter({ has: field });
   for (const section of await sections.all()) {
@@ -482,7 +626,30 @@ async function interactions(page, route, locale) {
       locale,
       email: "changed.disposable@example.test",
     });
+    for (const [label, action] of [
+      [
+        es ? "Cambiar mi contraseña" : "Change my password",
+        "requestAccountPasswordReset",
+      ],
+      [es ? "Cerrar sesión" : "Sign out", "signOut"],
+    ]) {
+      const button = page.getByRole("button", { name: label, exact: true });
+      await button.scrollIntoViewIfNeeded();
+      await button.focus();
+      await expect(button).toBeFocused();
+      await page.keyboard.press("Enter");
+      await lastAction(page, action, { locale });
+      expect(await page.evaluate(() => window.__accountAction.fields)).toEqual({
+        locale,
+      });
+    }
   } else if (route === "profile") {
+    const bio = page.locator('textarea[name="bio"]');
+    await bio.fill("A".repeat(500));
+    await bio.press("End");
+    await bio.press("Backspace");
+    await expect(bio).toHaveValue("A".repeat(499));
+    expect(await bio.evaluate((field) => field.checkValidity())).toBe(true);
     const name = page.locator('input[name="displayName"]');
     await reveal(page, name);
     await name.fill("María ÁÉÍÓÚ Ñ Ç");
@@ -495,7 +662,73 @@ async function interactions(page, route, locale) {
     await lastAction(page, "updateAccountProfile", {
       locale,
       displayName: "María ÁÉÍÓÚ Ñ Ç",
+      bio: "A".repeat(499),
     });
+    const username = page.locator('input[name="username"]');
+    await resetScroll(page);
+    await name.focus();
+    await page.keyboard.press("Tab");
+    await expect(username).toBeFocused();
+    await expect
+      .poll(
+        () =>
+          username.evaluate((element) => {
+            const rect = element.getBoundingClientRect();
+            return [0.1, 0.5, 0.9].map((fraction) => {
+              const target = document.elementFromPoint(
+                rect.left + rect.width * fraction,
+                rect.top + rect.height / 2,
+              );
+              return target === element || element.contains(target);
+            });
+          }),
+        {
+          message:
+            "Native Tab focus into Profile username remains above the dock",
+        },
+      )
+      .toEqual([true, true, true]);
+    // The consumer menu must travel with its section links, never float over
+    // lower Profile fields after the section row has left the viewport.
+    await page.evaluate(() =>
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: "instant",
+      }),
+    );
+    const sectionRow = await page
+      .locator(".account-section-links")
+      .boundingBox();
+    const menu = await page
+      .locator(".workspace-mobile-navigation")
+      .boundingBox();
+    if (sectionRow && menu && sectionRow.y + sectionRow.height < 0) {
+      expect(
+        menu.y + menu.height,
+        "Account menu must leave with its section row",
+      ).toBeLessThanOrEqual(0);
+    }
+    await username.evaluate((element) =>
+      element.scrollIntoView({ block: "center", behavior: "instant" }),
+    );
+    await expect
+      .poll(
+        () =>
+          username.evaluate((element) => {
+            const rect = element.getBoundingClientRect();
+            return [0.1, 0.5, 0.9].map((fraction) => {
+              const target = document.elementFromPoint(
+                rect.left + rect.width * fraction,
+                rect.top + rect.height / 2,
+              );
+              return target === element || element.contains(target);
+            });
+          }),
+        {
+          message: "Profile username remains unobscured after native scrolling",
+        },
+      )
+      .toEqual([true, true, true]);
   } else if (route === "privacy") {
     const checkbox = page.getByRole("checkbox", { name: /recom/ });
     await reveal(page, checkbox);
@@ -611,14 +844,58 @@ try {
       ? { args: JSON.parse(process.env.ACCOUNT_BROWSER_ARGS) }
       : {}),
   });
+  for (const locale of ["en", "es"]) {
+    const context = await browser.newContext({
+      viewport: { width: 360, height: 800 },
+    });
+    const page = await context.newPage();
+    try {
+      await page.goto(`${origin}/${locale}/account`);
+      await ready(page);
+      await page.evaluate(
+        (href) => window.__accountNavigate(href),
+        `/${locale}/account/profile`,
+      );
+      await expect(page.locator(".account-profile-form")).toBeVisible();
+      const opener = page.locator(".workspace-mobile-trigger");
+      await opener.click();
+      await expect(opener).toHaveAttribute("aria-expanded", "true");
+      await page.goBack();
+      await expect(page.locator(".account-overview")).toBeVisible();
+      await expect(opener).toHaveAttribute("aria-expanded", "false");
+      await opener.click();
+      await page.goForward();
+      await expect(page.locator(".account-profile-form")).toBeVisible();
+      await expect(opener).toHaveAttribute("aria-expanded", "false");
+      await opener.click();
+      await page.evaluate(() =>
+        window.dispatchEvent(new PopStateEvent("popstate")),
+      );
+      await expect(opener).toHaveAttribute("aria-expanded", "true");
+      await page.keyboard.press("Escape");
+      await expect(opener).toBeFocused();
+      await expect(opener).toHaveAttribute("aria-expanded", "false");
+      await page.screenshot({
+        path: resolve(directory, `workspace-history-${locale}.png`),
+      });
+      results.push({ locale, test: "workspace-history", passed: true });
+    } finally {
+      await context.close();
+    }
+  }
   const selected = process.env.ACCOUNT_BROWSER_ROUTES?.split(",") || routes;
   // An explicit fixture list runs only the selected boundary states.
   const selectedFixtures = process.env.ACCOUNT_BROWSER_FIXTURES?.split(",");
   const sizes = selectedFixtures
     ? []
-    : process.env.ACCOUNT_BROWSER_SMOKE
-      ? [viewports[0], viewports[4]]
-      : viewports;
+    : process.env.ACCOUNT_BROWSER_REFERENCE_MATRIX
+      ? [
+          [360, 800],
+          [1440, 900],
+        ]
+      : process.env.ACCOUNT_BROWSER_SMOKE
+        ? [viewports[0], viewports[4]]
+        : viewports;
   for (const locale of ["en", "es"]) {
     for (const theme of ["light", "dark"]) {
       for (const [width, height] of sizes) {
@@ -650,6 +927,7 @@ try {
               `${origin}/${locale}/account${route === "overview" ? "" : `/${route}`}`,
             );
             await ready(page);
+            if (width >= 851) await checkDesktopSearchAndMenu(page, tag);
             await checkBounds(page, tag);
             await expect(
               page.locator('a[href$="/account/rewards"]'),
@@ -673,6 +951,29 @@ try {
               await checkBounds(page, `${tag} after interaction`);
             }
             expect(errors).toEqual([]);
+            if (route === "overview") {
+              await page
+                .locator(".account-next-step")
+                .evaluate(async (element) => {
+                  const urls = Array.from(
+                    getComputedStyle(element).backgroundImage.matchAll(
+                      /url\(["']?([^"')]+)["']?\)/g,
+                    ),
+                    (match) => match[1],
+                  );
+                  for (const url of urls) {
+                    const image = new Image();
+                    image.src = url;
+                    await image.decode();
+                  }
+                });
+              await page.evaluate(
+                () =>
+                  new Promise((done) =>
+                    requestAnimationFrame(() => requestAnimationFrame(done)),
+                  ),
+              );
+            }
             await resetScroll(page);
             await page.screenshot({
               path: resolve(directory, `${tag}.png`),
@@ -710,6 +1011,53 @@ try {
     }
   }
   // Separate boundary cases keep the main matrix focused and the run bounded.
+  if (!selectedFixtures)
+    for (const locale of ["en", "es"])
+      for (const theme of ["light", "dark"]) {
+        const context = await browser.newContext({
+          viewport: { width: 851, height: 900 },
+          colorScheme: theme,
+          reducedMotion: "reduce",
+        });
+        await context.route("**/*", (route) =>
+          new URL(route.request().url()).origin === origin
+            ? route.continue()
+            : route.abort(),
+        );
+        await context.addInitScript((value) => {
+          localStorage.setItem("akipasa.theme", value);
+          document.addEventListener("DOMContentLoaded", () => {
+            document.documentElement.dataset.theme = value;
+            document.documentElement.classList.toggle("dark", value === "dark");
+          });
+        }, theme);
+        try {
+          for (const route of selected) {
+            const page = await context.newPage();
+            const tag = `search-menu-${route}-${locale}-${theme}-851`;
+            try {
+              await page.goto(
+                `${origin}/${locale}/account${route === "overview" ? "" : `/${route}`}`,
+              );
+              await ready(page);
+              const geometry = await checkDesktopSearchAndMenu(page, tag);
+              await page.screenshot({ path: resolve(directory, `${tag}.png`) });
+              results.push({
+                route,
+                locale,
+                theme,
+                width: 851,
+                geometry,
+                pass: true,
+              });
+            } finally {
+              await page.close();
+            }
+          }
+        } finally {
+          await context.close();
+        }
+      }
   for (const locale of ["en", "es"]) {
     const page = await browser.newPage({
       viewport: { width: 360, height: 800 },
@@ -1085,6 +1433,158 @@ try {
           await page.close();
         }
       }
+  if (selected.includes("settings") && !selectedFixtures) {
+    for (const locale of ["en", "es"])
+      for (const theme of ["light", "dark"])
+        for (const width of [390, 1440])
+          for (const [query, role, message] of [
+            [
+              "email=confirmed",
+              "status",
+              locale === "es"
+                ? "Correo actualizado correctamente."
+                : "Email updated successfully.",
+            ],
+            [
+              "password=sent",
+              "status",
+              locale === "es"
+                ? "Enlace enviado. Revisa tu correo para cambiar la contraseña."
+                : "Link sent. Check your email to change your password.",
+            ],
+            [
+              "error=password-provider",
+              "alert",
+              locale === "es"
+                ? "No pudimos enviar el enlace de cambio de contraseña."
+                : "We could not send the password-change link.",
+            ],
+            [
+              "error=email-validation",
+              "alert",
+              locale === "es"
+                ? "Introduce una dirección de correo válida."
+                : "Enter a valid email address.",
+            ],
+          ]) {
+            const page = await browser.newPage({
+              viewport: { width, height: 900 },
+              colorScheme: theme,
+              reducedMotion: "reduce",
+            });
+            await page.route("**/*", (request) =>
+              new URL(request.request().url()).origin === origin
+                ? request.continue()
+                : request.abort(),
+            );
+            await page.addInitScript((value) => {
+              localStorage.setItem("akipasa.theme", value);
+              document.addEventListener("DOMContentLoaded", () => {
+                document.documentElement.dataset.theme = value;
+                document.documentElement.classList.toggle(
+                  "dark",
+                  value === "dark",
+                );
+              });
+            }, theme);
+            const tag = `settings-${locale}-${theme}-${width}-${query.replace("=", "-")}`;
+            try {
+              await page.goto(`${origin}/${locale}/account/settings?${query}`);
+              await ready(page);
+              await checkBounds(page, tag);
+              const notice = page.getByRole(role).filter({ hasText: message });
+              await expect(notice).toHaveText(message);
+              await notice.scrollIntoViewIfNeeded();
+              await expect(notice).toBeVisible();
+              const contrast = await notice.evaluate((element) => {
+                const canvas = document.createElement("canvas");
+                canvas.width = canvas.height = 1;
+                const context = canvas.getContext("2d", {
+                  willReadFrequently: true,
+                });
+                const rgba = (color) => {
+                  context.clearRect(0, 0, 1, 1);
+                  context.fillStyle = color;
+                  context.fillRect(0, 0, 1, 1);
+                  return Array.from(context.getImageData(0, 0, 1, 1).data);
+                };
+                const over = (foreground, background) =>
+                  foreground
+                    .slice(0, 3)
+                    .map(
+                      (value, index) =>
+                        (value * foreground[3]) / 255 +
+                        background[index] * (1 - foreground[3] / 255),
+                    );
+                const chain = [];
+                for (let node = element; node; node = node.parentElement)
+                  chain.push(node);
+                let background = [255, 255, 255];
+                for (const node of chain.reverse())
+                  background = over(
+                    rgba(getComputedStyle(node).backgroundColor),
+                    background,
+                  );
+                const foreground = over(
+                  rgba(getComputedStyle(element).color),
+                  background,
+                );
+                const luminance = (color) =>
+                  color.reduce((sum, value, index) => {
+                    const channel = value / 255;
+                    return (
+                      sum +
+                      [0.2126, 0.7152, 0.0722][index] *
+                        (channel <= 0.04045
+                          ? channel / 12.92
+                          : ((channel + 0.055) / 1.055) ** 2.4)
+                    );
+                  }, 0);
+                const a = luminance(foreground),
+                  b = luminance(background);
+                return {
+                  ratio: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05),
+                  foreground,
+                  background,
+                };
+              });
+              expect(
+                contrast.ratio,
+                `${tag}: actual alpha-composited notice ${JSON.stringify(contrast)}`,
+              ).toBeGreaterThanOrEqual(4.5);
+              expect(
+                await notice.evaluate((element) => {
+                  const rect = element.getBoundingClientRect();
+                  const target = document.elementFromPoint(
+                    rect.left + rect.width / 2,
+                    rect.top + rect.height / 2,
+                  );
+                  return target === element || element.contains(target);
+                }),
+              ).toBe(true);
+              const editor = page.locator(".account-email-card details");
+              if (query === "error=email-validation") {
+                await expect(editor).toHaveAttribute("open", "");
+                await expect(page.locator('input[name="email"]')).toBeVisible();
+              } else await expect(editor).not.toHaveAttribute("open");
+              expect(
+                await page.evaluate(() => window.__accountActions),
+              ).toEqual([]);
+              await page.screenshot({ path: resolve(directory, `${tag}.png`) });
+              results.push({
+                route: "settings-notice",
+                locale,
+                theme,
+                width,
+                query,
+                contrast,
+                pass: true,
+              });
+            } finally {
+              await page.close();
+            }
+          }
+  }
   console.log(`Account browser acceptance: ${results.length} cases passed`);
 } finally {
   writeFileSync(

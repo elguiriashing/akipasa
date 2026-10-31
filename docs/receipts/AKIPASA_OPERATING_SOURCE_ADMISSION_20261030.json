@@ -1,0 +1,47 @@
+{
+  "baselineCommit": "6bd725e4d8455c0b9fb5360859484332d5da064d",
+  "testedWorkingTree": true,
+  "scope": "Replay-only source admission and fixed-byte checker; no database execution path",
+  "sourceHashes": {
+    "database/replay-only/recovered-operating/20261016092914_private_operating_location.sql": "0436f81e3f15ff88c2b68b6eedeeb15bba6f9188423b4be751d6af57db72a97a",
+    "database/replay-only/recovered-operating/20261016093118_operating_organisations.sql": "b9d06ab3b40ac3614d739bb8cc386680e9692f878a14c0163a22ecfbd9f79317",
+    "database/replay-only/recovered-operating/20261016093336_rental_operating_location.sql": "90e765599a4f276395c81a9b3e58b031918e4dfd157393c05394cbf7437d36c5",
+    "database/replay-only/recovered-operating/PROVENANCE.json": "dcc4921d2411462ff781849d70d29da6f7e43218161a8bbe76c72457d1641a0d",
+    "database/replay-only/recovered-operating/README.md": "9bd290109abfe40b1721cc940d008d25abc90043e8f6d74c656eb1ebbefac630",
+    "scripts/check-operating-replay-sources.mjs": "01db1102578f9ffbb69c7d74c5685418663e29f1b06088ba3dccce3a96448a93",
+    "scripts/check-operating-replay-sources.test.mjs": "f8adbf88fc598dc1b145c4652aee36d069e58386fc82a9785f1b9681c06e9cfc"
+  },
+  "fullCheck": {
+    "passed": true,
+    "vitestCases": 2639,
+    "addedCanonicalPlanTests": 16,
+    "addedOperatingSourceTests": 14,
+    "log": "/tmp/akipasa-main-operating-admission-final-check-20261030.log"
+  },
+  "sourceIntegrityChecker": {
+    "exitCode": 0,
+    "sourceIntegrityValid": true,
+    "sourceCount": 3,
+    "databaseExecutionSupported": false,
+    "freshOrderedGuardAcceptance": false,
+    "fullCanonicalParity": false
+  },
+  "canonicalPlan": {
+    "exitCode": 2,
+    "migrationInventoryCount": 337,
+    "unresolvedSources": 150,
+    "operatingStopsResolved": false,
+    "sourceReferencesAdded": true,
+    "fullCanonicalParity": false
+  },
+  "provenance": "Fresh authorized read-only metadata version/name/byte-length/SHA256; snapshot equals raw statement plus exactly one finalLF",
+  "originalProtectedArtifactsUnchanged": true,
+  "productionDdlApplied": false,
+  "customerDataRetrieved": false,
+  "fixtureChanges": false,
+  "noStandaloneExecution": true,
+  "requiresCurrentAccountCoverage": true,
+  "accepted": false,
+  "merged": false,
+  "deployed": false
+}

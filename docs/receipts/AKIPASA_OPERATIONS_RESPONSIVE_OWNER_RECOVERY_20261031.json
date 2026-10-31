@@ -1,0 +1,340 @@
+{
+  "sourceParent": "329db407162ac250b74c27989653ab35573bce2e",
+  "scope": "18Admin presentation routes and Owner read-recovery; not realprovider/role/mutation/device approval",
+  "evidence": {
+    "admin18-final-contrast-batch-freeze-20261031.json": {
+      "sha256": "bd708ea7bff54014d01846d57a5a17ff707100d6db0e82b84c007d9a910646a5",
+      "receipt": {
+        "state": "Implemented and locally tested; not accepted/merged/deployed",
+        "runtimeBase": "329db407162ac250b74c27989653ab35573bce2e",
+        "files": {
+          "src/app/[locale]/admin/achievements/achievements.module.css": "635f2db34f441d7516849e809bc26061071c985ab77354f9082ce3c802b982c6",
+          "src/app/[locale]/admin/admin-suite.css": "a536822dc54ef1b0f8d8036e82ce0a71d12c65975bc46e3324fab8cc8bd601d7",
+          "src/components/aki-selector/aki-selector-lab.css": "0e66c819da0e61f3208f8772742d6321a6ad60f778957cce09e5510eff7c1763",
+          "scripts/test-admin-achievement-palette-browser.mjs": "36c1b6eb25d732dd0ab77cd4927dcb8f7dc3d53ec5b22167e3990ff0008d8cb4"
+        },
+        "copyReady832Runner": "/workspace/akipasa-main-checkpoints/test-admin-compact-workbenches-responsive-browser.mjs",
+        "copyReadyRunnerSha256": "9a3de25d6495910a4d28f4af17ee2b87c607176d15ba27eda0a303c620e5baf6",
+        "copyReadyDefaultCounts": {
+          "contexts": 832,
+          "renders": 800,
+          "denials": 32,
+          "captureFilesIncludingEditorPopups": 1632
+        },
+        "freshHosted832Required": true,
+        "original832": "test-results/admin-compact-workbenches-responsive/results.json",
+        "original832Unchanged": true,
+        "passportInvalidDTOCorrection": "test-results/admin-compact-workbenches-responsive-passport-dto/results.json",
+        "tests": {
+          "admin-confirmed-contrast-followup": {
+            "path": "/workspace/akipasa/test-results/admin-confirmed-contrast-followup/results.json",
+            "sha256": "a97230ffdbaedc6ed8f6fc633d5918c200cfa80be47d3fe228bda39737b23d20",
+            "contexts": 64,
+            "contrastMeasurements": 208,
+            "minimumContrast": 5.259831293097932,
+            "candidateFailures": 0,
+            "renderFailures": 0,
+            "initialFinalEqual": true,
+            "sourceCommit": "329db407162ac250b74c27989653ab35573bce2e",
+            "sourceDirty": true
+          },
+          "admin-achievement-palette": {
+            "path": "/workspace/akipasa/test-results/admin-achievement-palette/results.json",
+            "sha256": "2fa7eefbf5377f1edc6c09658ac439b15afcae5123028574b9f3c45237202d5f",
+            "contexts": 24,
+            "contrastMeasurements": 72,
+            "minimumContrast": 6.025264370334965,
+            "candidateFailures": 0,
+            "renderFailures": 0,
+            "initialFinalEqual": true,
+            "sourceCommit": "329db407162ac250b74c27989653ab35573bce2e",
+            "sourceDirty": true
+          },
+          "admin-contrast-state-audit": {
+            "path": "/workspace/akipasa/test-results/admin-contrast-state-audit/results.json",
+            "sha256": "02fde3b448b045cc66605e5655068aaccd6d62030950150c827d88c1bfbf83a2",
+            "contexts": 104,
+            "contrastMeasurements": 30,
+            "minimumContrast": 5.259831293097932,
+            "candidateFailures": 0,
+            "renderFailures": 0,
+            "initialFinalEqual": true,
+            "sourceCommit": "329db407162ac250b74c27989653ab35573bce2e",
+            "sourceDirty": true
+          }
+        },
+        "focusedVitest": 14,
+        "lintFormatDiffCheck": "pass",
+        "scope": "LIGHT text colors only; dark/canvas/geometry/forms/actions unchanged. Neutral badge important override narrowly matches legacy global important declarations.",
+        "auditLimits": [
+          "Synthetic actual-component/AppShell/AdminLayout; not actual Next/Auth/RLS/provider/physicaldevice proof",
+          "104 generic text audit excludes gradients/images/canvas/disabled/decorative/sr-only; computed candidates are not blanket page AA certification",
+          "Individual route acceptance and new committed source binding remain integration-owner tasks"
+        ],
+        "preservedFailures": [
+          "admin-confirmed-contrast-followup-before-final-preview-fix",
+          "admin-contrast-state-audit-before-final-preview-fix",
+          "admin-contrast-state-audit-before-badge-and-modal-probe-fix",
+          "admin-light-text-audit-initial-modern-color-parser",
+          "admin-achievement-threshold-responsive-initial-state-filter"
+        ]
+      }
+    },
+    "owner-read-recovery-completion-20261031.json": {
+      "sha256": "d14399068b153f6104a0b93ff5566eb560bb446b01b023b17d88c688c09452b1",
+      "receipt": {
+        "reviewer": "Codex public_release_source_review",
+        "baseCommit": "329db407162ac250b74c27989653ab35573bce2e",
+        "candidate": "Owner page working-tree repair; root controls final commit/exact-head CI",
+        "capturedAt": "2026-10-31T00:29:07.118116+00:00",
+        "ownedRuntimeFiles": {
+          "src/app/[locale]/owner/page.tsx": "515bb41ba221294529b3eab9111b7123b3577bb336b73e394d3b306ea81b22fb"
+        },
+        "sourceHashesBefore": {
+          "src/components/AppShell.tsx": "4d5d2f42369751f4968a640d5f7aa80c6157b64d72bcf26162427abfbfff5072",
+          "src/components/WorkspaceShell.tsx": "a48978c34c3b184dfe82c1f7ef8dd7607a575afee3e402a9268431c27a69b3a2",
+          "src/components/PasaCinematic.css": "f5b80b832b3626f5864473d8764f04bcea6d4993c9dc7d1ee6f583b5196e8368",
+          "src/components/PasaSharedSurfaces.css": "e6335b16f87d65d3ba6d64212343678d4a5db25662b7e75cecc3122ef4e26fa6",
+          "src/app/appearance.css": "580e07b84302a5d479ef53f5bd6e25ca0a5e518c23a3390fb6ad27e8114bb836",
+          "src/app/globals.css": "53e2f4b7dec5fa5469e328d81ee0f2773f06d4998967e0dd47d58e9d54c62402",
+          "src/app/[locale]/owner/page.tsx": "515bb41ba221294529b3eab9111b7123b3577bb336b73e394d3b306ea81b22fb",
+          "src/app/[locale]/owner/owner.css": "1bd5a94effb3c52aded480ead9a5fdaccceedbbb156fb2a92360385c974ca31d",
+          "src/components/owner/OwnerToolboxLauncher.tsx": "2cab7d43b4d373165261a44f580626a4a369f90e28e8fcca0269a4a0ebcbd654",
+          "src/components/owner/OwnerAppearanceForm.tsx": "ca5e95adbb193a4424b1e53d4a368ae00fb3d0996ee0f18ffeb8df66c3616364",
+          "src/lib/owner-console.ts": "2bad4b2d17c7470aba7ab94329323d266d3157d23604b07a96bdfc99116c5ec1",
+          "src/app/[locale]/owner/actions.ts": "96e7bced8c8a79cd3ae982d1c94600abc338802ce7f65e9a3d2325e25d078aec"
+        },
+        "sourceHashesAfter": {
+          "src/components/AppShell.tsx": "4d5d2f42369751f4968a640d5f7aa80c6157b64d72bcf26162427abfbfff5072",
+          "src/components/WorkspaceShell.tsx": "a48978c34c3b184dfe82c1f7ef8dd7607a575afee3e402a9268431c27a69b3a2",
+          "src/components/PasaCinematic.css": "f5b80b832b3626f5864473d8764f04bcea6d4993c9dc7d1ee6f583b5196e8368",
+          "src/components/PasaSharedSurfaces.css": "e6335b16f87d65d3ba6d64212343678d4a5db25662b7e75cecc3122ef4e26fa6",
+          "src/app/appearance.css": "580e07b84302a5d479ef53f5bd6e25ca0a5e518c23a3390fb6ad27e8114bb836",
+          "src/app/globals.css": "53e2f4b7dec5fa5469e328d81ee0f2773f06d4998967e0dd47d58e9d54c62402",
+          "src/app/[locale]/owner/page.tsx": "515bb41ba221294529b3eab9111b7123b3577bb336b73e394d3b306ea81b22fb",
+          "src/app/[locale]/owner/owner.css": "1bd5a94effb3c52aded480ead9a5fdaccceedbbb156fb2a92360385c974ca31d",
+          "src/components/owner/OwnerToolboxLauncher.tsx": "2cab7d43b4d373165261a44f580626a4a369f90e28e8fcca0269a4a0ebcbd654",
+          "src/components/owner/OwnerAppearanceForm.tsx": "ca5e95adbb193a4424b1e53d4a368ae00fb3d0996ee0f18ffeb8df66c3616364",
+          "src/lib/owner-console.ts": "2bad4b2d17c7470aba7ab94329323d266d3157d23604b07a96bdfc99116c5ec1",
+          "src/app/[locale]/owner/actions.ts": "96e7bced8c8a79cd3ae982d1c94600abc338802ce7f65e9a3d2325e25d078aec"
+        },
+        "sourceStable": true,
+        "beforeEvidence": {
+          "path": "/workspace/akipasa-main-checkpoints/owner-read-failure-before-329-review-20261031.json",
+          "sha256": "b305a0049af9b56e0b831fe6919ae72af941c8b54e985b89d313af6d2a1fd44c"
+        },
+        "implemented": [
+          "Failed metrics render unavailable em dash instead of false zero, including independent failed moderation subtotals.",
+          "Failed preference or private-background list/signing reads withhold dependent appearance/background writes; successful missing preference defaults and empty background folder remain usable.",
+          "Per-section localized GET retry; healthy empty agent/activity lists have explicit states.",
+          "Existing private Owner guard, all parallel queries, storage APIs, actions and healthy populated behavior preserved."
+        ],
+        "validation": {
+          "browserCasesPassed": 69,
+          "coreMatrixCases": 64,
+          "independentFailureCases": 5,
+          "languages": ["en", "es"],
+          "themes": ["dark", "light"],
+          "widths": [360, 390, 820, 1440],
+          "states": [
+            "healthy-empty",
+            "healthy-populated",
+            "all-read-unavailable",
+            "synthetic-private-photo"
+          ],
+          "independentFailures": [
+            "preferences",
+            "storage-list",
+            "agents",
+            "counts",
+            "recent-activity"
+          ],
+          "nativeGETRetryRecoveryCases": 16,
+          "nativeMenuEscapeFocusReturnCases": 53,
+          "all16UnavailableMetricsUnknown": true,
+          "all16UnavailableDependentWritesAbsent": true,
+          "maximumHorizontalOverflow": 0,
+          "actionsInvoked": 0,
+          "pageErrors": 0,
+          "ownerConsoleUnitPassed": 19,
+          "typecheck": "PASS npx tsc --noEmit --incremental false",
+          "eslint": "PASS owned Owner page",
+          "prettier": "PASS owned Owner page",
+          "initialUnitCommandFailure": "Supplied nonexistent vitest.config.ts; corrected to existing default npx vitest run tests/owner-console.test.ts,19PASS. Original command failure retained."
+        },
+        "sourceProtection": {
+          "guardAndAllParallelReadsByteIdentical": true,
+          "signedStorageCallRetained": true,
+          "actionsByteIdenticalTo329": true,
+          "ownerGuardByteIdenticalTo329": true
+        },
+        "evidence": {
+          "results": {
+            "path": "/workspace/akipasa-main-checkpoints/owner-read-recovery-20261031/results.json",
+            "sha256": "8c7e4b9e14e74a709a6ea9047a3b6e779766fbac01fbc23ce91ec2300a16f965"
+          },
+          "runner": {
+            "path": "/workspace/akipasa-main-checkpoints/owner-read-recovery-browser-20261031.mjs",
+            "sha256": "f4c1e230e03ac3f7da298f2f1c589d0d03c6e8ab847112400754d18dc4545e62"
+          },
+          "bundleSha256": "26068e66f92a06b21b970e92641e1368a0603bca7cead82c4b8896d3dad41c2a",
+          "cssSha256": "e7cc9026653a6b08fd22bac08bb55aebe79d64ba82bf769faf9309e0cfe3b27e",
+          "browserLog": {
+            "path": "/tmp/akipasa-owner-read-recovery-browser-20261031.log",
+            "sha256": "69a7d9eb1f72ef21a82df7dd2e0465d422ff4943dad8acb86bd5d45485f5db23"
+          },
+          "typecheckLog": {
+            "path": "/tmp/akipasa-owner-read-recovery-typecheck-20261031.log",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "actuallyViewedAfterImages": [
+          {
+            "path": "/workspace/akipasa-main-checkpoints/owner-read-recovery-20261031/en-dark-390-unavailable-upper.png",
+            "sha256": "f9122b8bfc3eead6e5a643673ff8ba2b68d43fef1f36b51635a9600479e82699"
+          },
+          {
+            "path": "/workspace/akipasa-main-checkpoints/owner-read-recovery-20261031/en-dark-390-unavailable-lower.png",
+            "sha256": "4b56b79df73e164294cd07ad58a475e3df5ea35c8c1ea713ca63397cda62170f"
+          },
+          {
+            "path": "/workspace/akipasa-main-checkpoints/owner-read-recovery-20261031/es-light-1440-unavailable-full.png",
+            "sha256": "7b74f38cbf1d42947e312f1802f832a4f85d8e1ab0e47fa9b0897431edfc9f61"
+          }
+        ],
+        "limits": [
+          "ActualOwner/AppShell/Appearance/Launcher componentbundle with valid synthetic DTOs, throw-only source-action adapters and blocked external network.",
+          "Not actualNext, realOwner Auth/RLS/storage/provider persistence or physicalAndroid acceptance. No source guard approval manufactured.",
+          "One runtimepage repair and outsideQA/evidence only; no source CSS/Form/action/schema/role/billing/consent/provider changes, commit/PR/merge/deploy performed.",
+          "Root must integrate maintained runner into hostedCI and review exact final source; this receipt does not accept or release Owner route."
+        ],
+        "nextAction": "Root integrates Ownerpage+maintainedportablefixture into coherent main batch; updateMaster/impact then finalheadCI/source-bound screenshotreview. No server remains running."
+      }
+    },
+    "owner-portable69-completion-20261031.json": {
+      "sha256": "0079c281ccf80c07340a20600b7699d676e51a957cb5bf04a6943f79ee8c686f",
+      "receipt": {
+        "reviewer": "Codex public_release_source_review",
+        "createdAt": "2026-10-31T00:41:01.407151+00:00",
+        "baseCommit": "329db407162ac250b74c27989653ab35573bce2e",
+        "workingCandidateOwnerPageSha256": "515bb41ba221294529b3eab9111b7123b3577bb336b73e394d3b306ea81b22fb",
+        "portableRunner": {
+          "path": "/workspace/akipasa-main-checkpoints/test-owner-read-recovery-browser.mjs",
+          "sha256": "2edfd321846fc25bdf9b8f1d70446ebdc0f48964ba05a0d2439783b29c60c033",
+          "packageImports": [
+            "esbuild",
+            "postcss",
+            "@tailwindcss/postcss",
+            "@playwright/test"
+          ],
+          "root": "process.cwd()",
+          "output": "test-results/owner-read-recovery",
+          "browser": "BOOKING_BROWSER_PATH when supplied; standard installed Playwright Chromium otherwise",
+          "noWorkspaceOrPersonalPathConstants": true,
+          "eslint": "PASS via --stdin-filename scripts/test-owner-read-recovery-browser.mjs",
+          "prettier": "PASS",
+          "nodeSyntax": "PASS"
+        },
+        "browserValidation": {
+          "passed": 69,
+          "coreCases": 64,
+          "independentFailureCases": 5,
+          "nativeGETRecovery": 16,
+          "nativeMoreMenuEscapeFocusReturn": 53,
+          "actions": 0,
+          "pageErrors": 0,
+          "mutatingRequests": 0,
+          "externalRequests": 0,
+          "allCasesRequired": "Runner explicitly throws unless all69 complete; all previous assertions retained."
+        },
+        "completeSourceBinding": {
+          "esbuildMetafileInputs": 63,
+          "boundDiskInputs": 57,
+          "virtualInputs": [
+            "<define:process.env>",
+            "fixture:next/image",
+            "fixture:next/link",
+            "fixture:next/navigation",
+            "fixture:owner",
+            "<stdin>"
+          ],
+          "rootGlobalStylesheets": [
+            "src/app/globals.css",
+            "src/app/compact-app.css",
+            "src/app/brand.css",
+            "src/app/appearance.css",
+            "src/app/tablet-responsive.css",
+            "src/app/portal-unity.css",
+            "src/components/pasa-finished-public.css"
+          ],
+          "explicitAuthorityFiles": [
+            "package.json",
+            "package-lock.json",
+            "tsconfig.json",
+            "src/app/layout.tsx",
+            "src/lib/owner-console.ts",
+            "src/app/[locale]/owner/actions.ts",
+            "src/app/[locale]/owner/page.tsx",
+            "src/app/[locale]/owner/owner.css",
+            "src/components/owner/OwnerAppearanceForm.tsx",
+            "src/components/owner/OwnerToolboxLauncher.tsx"
+          ],
+          "totalInitialFinalFilePins": 1893,
+          "initialFinalAllStable": true,
+          "allCompiledDiskInputsBound": true,
+          "tailwindScanDependenciesAlsoBound": true,
+          "packageAndLockPinned": true,
+          "note": "esbuild file onLoad pins bytes before default compilation; virtual action adapter also pins original source. Metadata verifies every compiled disk input. Root CSS and PostCSS dependency messages are pinned as well; all1893 files stable across browser capture."
+        },
+        "evidence": {
+          "results.json": {
+            "path": "/workspace/akipasa/test-results/owner-read-recovery/results.json",
+            "sha256": "a1a14e2ca56725d17fda5135588c981a69653a4c9fbb211f829f6f3053625d43"
+          },
+          "source-closure.json": {
+            "path": "/workspace/akipasa/test-results/owner-read-recovery/source-closure.json",
+            "sha256": "ef07f1a8c8ec6595c0c908216d3601bdd3c6065f4584abf99df612e89b4e27b7"
+          },
+          "metafile.json": {
+            "path": "/workspace/akipasa/test-results/owner-read-recovery/metafile.json",
+            "sha256": "229306d0bb2aa3cbbe455b14e469b9a29bb67b578e8cd5782fbf4292b69b63cc"
+          }
+        },
+        "actualImagesViewed": [
+          {
+            "path": "/workspace/akipasa/test-results/owner-read-recovery/en-dark-390-unavailable-upper.png",
+            "sha256": "27e5b41d5de2dd5f589d9812216960e8dd0c1fb852746f3717e76a19ba1c2fc7"
+          },
+          {
+            "path": "/workspace/akipasa/test-results/owner-read-recovery/es-light-1440-populated-full.png",
+            "sha256": "39db03517c897dbba6217e9ad741a082c0c906e85f442010d7554e51de2925ef"
+          }
+        ],
+        "visualDecision": "No new layout/overflow/unreadable-control defect observed in these two representative captures; failed reads truthful and healthy controls retained. This does not establish complete route acceptance.",
+        "initialPreparationFailures": [
+          "Before browser execution, full metadata binding rejected esbuild generated define:process.env; correctly classified as virtual.",
+          "Before browser execution, metadata revealed old absolute-alias action adapter path; corrected root-relative onResolve path, preserving throw-only actions."
+        ],
+        "limits": [
+          "Actual Owner component/AppShell fixture, not actualNext, hosted Auth/RLS, real private storage/provider writes or physicalAndroid.",
+          "No application source edit, Next build, commit, branch, PR or deployment performed in this portability task.",
+          "Root owns hosted registration, final source SHA validation and release gates."
+        ]
+      }
+    }
+  },
+  "maintainedRunners": {
+    "scripts/test-admin-compact-workbenches-responsive-browser.mjs": "9a3de25d6495910a4d28f4af17ee2b87c607176d15ba27eda0a303c620e5baf6",
+    "scripts/test-owner-read-recovery-browser.mjs": "2edfd321846fc25bdf9b8f1d70446ebdc0f48964ba05a0d2439783b29c60c033",
+    "scripts/test-admin-achievement-palette-browser.mjs": "36c1b6eb25d732dd0ab77cd4927dcb8f7dc3d53ec5b22167e3990ff0008d8cb4"
+  },
+  "newCIJob": "Existing tablet workflow gains independent mandatory20min operations-responsive-evidence, preserving all prior jobs/assertions;832Admin and69Owner cases run without adding load to existing portaljob.",
+  "full832Qualification": "Original832geometry/source proof on329 retained. ValidPassport16DTOfollowup; final64targeted208contrast(min5.2598), maintained24/72contrast(min6.0253),104stateaudit100renders4denials/no eligiblecontrastcandidates. Freshcommitted default832 includingnewcontrast/editor assertions remainsrequired; never relabelold832allcolorspassed.",
+  "formalRouteAcceptanceAdded": 0,
+  "mainAccepted": 49,
+  "mainPending": 41,
+  "fallbackAccepted": 6,
+  "fullCombinedCheck": "Required after production338 reconciliation",
+  "merged": false,
+  "deployed": false
+}

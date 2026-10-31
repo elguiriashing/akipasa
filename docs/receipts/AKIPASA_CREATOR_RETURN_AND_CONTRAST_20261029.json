@@ -1,0 +1,58 @@
+{
+  "observedAt": "2026-10-29T23:07:38.820754+00:00",
+  "committedBaseline": "da4ab3d72e9208f7cb046c56d3218690f63dd592",
+  "sourceHashes": {
+    ".github/workflows/tablet-browser.yml": "dd967c3022dc692af5a4998c6e938ed361813e4958da43ba575c75ab12a15677",
+    "scripts/test-creator-routes-browser.mjs": "dc6096b4cf8a59c362b01b36dcdd4d48f8d527c5ce573502fcc64b7340705c30",
+    "src/app/[locale]/account/actions.ts": "105d6b269fdd11022b2bf0582362b976aea2bfb3d053c9a101fcfc3ca0bfbb93",
+    "src/app/[locale]/community/creator-actions.ts": "00f022fbc3c78605cae4d4982f95c74a6437108a8d81800a78581d6d1085676c",
+    "src/app/[locale]/community/creator/page.tsx": "73eac5fe9ca0ea6d18d283015df95dfbc9fc7e0cec4788c8967cb0825e125c97",
+    "src/components/PasaSharedSurfaces.css": "538407373e5210f718d481498d46db5b49105537a540c89a34dc8db6780213d3",
+    "src/components/community/creators.css": "42b7c461c0328a4bac83d6df5648ef24b598489f4a8d40cbfeade1fb78535e2e",
+    "tests/account-action-return.test.ts": "50892d65474549083345d44e3ff42e132f8d1e7592b8020019d11c20f64db3da",
+    "tests/account-profile-media-action.test.ts": "f24ca0e4865f34c78c7ada956c1eb322361e33cf723cb2efe6f779c93db6a6ec",
+    "tests/akisuite-collection-validation-boundaries.test.ts": "2705c56ac8f74b4b64c15ad52cb9d8f21365cd1b2f7ee28f74793581aca31ab0",
+    "tests/creator-review-action.test.ts": "42ef9396af248d85f802afb079c1a7a651a6a396472cd5c5eb698aa0df769a38",
+    "tests/fixtures/creator-route-browser-data.mjs": "b25d3ab3c4d1f0c2c9953e4085966438accd5f767a8e1fa1f5d8d7430f24d5c0",
+    "vitest.account.config.ts": "d88b422aec819df7cb884901df314eb547208a86abe1afbc145cc425969c54cd"
+  },
+  "fullCheck": {
+    "passed": true,
+    "vitestPassed": 2599,
+    "logSha256": "8c80f233cb67aec0bf01d866c69214dc94e6da3a1e39f096ead7966dff222626",
+    "priorFailure": "Two pre-existing Creator category-boundary assertions expected no return argument; updated to assert exact safe studio destination. Category count, parsing, auth and mutation assertions retained."
+  },
+  "creatorBrowser": {
+    "passed": 144,
+    "failed": 0,
+    "externalRequests": 0,
+    "localActualPageAndActionExports": true,
+    "actualAppShell": true,
+    "disposableNextAuthDatabaseAdapters": true,
+    "actualNextServer": false,
+    "physicalAndroid": false,
+    "venueLabelContrastSamples": 18,
+    "minimumVenueLabelContrast": 5.842031833352706,
+    "receiptSha256": "1cd58c264303205039dc1277f05f6da3f71b14fbf533d0712350e875b8a7a618"
+  },
+  "reconciledBaselineEvidence": {
+    "sourceCommit": "da4ab3d72e9208f7cb046c56d3218690f63dd592",
+    "fullCheckVitestPassed": 2557,
+    "accountBrowserPassed": 312,
+    "publicBrowserPassed": 437,
+    "publicBrowserSkipped": 53,
+    "ordinaryHostedWorkflowsPassed": 11,
+    "strictVisualReleaseGate": "blocked:90 genuine route acceptances outstanding",
+    "cloudflareNonproductionBuild": "9bf16ceb-593d-4d97-b6d8-1434042a01e1 succeeded; production unchanged"
+  },
+  "backendScope": {
+    "newIsolatedProject": "akipasa-creator-qa",
+    "actualAuthRestProbesPassed": 39,
+    "originalQAUnchanged": true,
+    "fullCanonicalParity": false,
+    "actualNextJourneyStatus": "Healthy Auth/private reads and terms return observed; complete success not claimed. Creator save exposes missing committed Profile column-grant provenance; live metadata has intended grants. No production writes or grant changes."
+  },
+  "acceptedRoutes": 0,
+  "merged": false,
+  "deployed": false
+}

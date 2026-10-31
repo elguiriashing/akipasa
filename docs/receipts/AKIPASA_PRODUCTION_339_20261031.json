@@ -1,0 +1,126 @@
+{
+  "reviewer": "Codex release339_deployment_verification",
+  "verifiedAt": "2026-10-31T02:12:34.609Z",
+  "readOnly": true,
+  "pullRequest": 339,
+  "reviewedHead": "35fb284814b733738fe4766d414239b3ce516c75",
+  "mergeCommit": "0775ee598463a37907c0a711bd03014c44d1ec4b",
+  "reviewedTree": "19be4f37b943ad6243b369c3f5d9fe1a3d7bf104",
+  "mergeTree": "19be4f37b943ad6243b369c3f5d9fe1a3d7bf104",
+  "treesEqual": true,
+  "accountId": "501bc9434d8ae555a6ac984a26dd2725",
+  "scriptName": "akipasa",
+  "scriptTag": "ddd52cc0b72240fdb04068b82b3326f2",
+  "automaticBuild": {
+    "id": "87103309-1548-46c4-adc3-a2e20fe767d2",
+    "status": "stopped",
+    "outcome": "success",
+    "sourceCommit": "0775ee598463a37907c0a711bd03014c44d1ec4b",
+    "branch": "master",
+    "triggerSource": "push_event",
+    "triggerId": "88fe029a-45e9-4ab2-a3cb-9dbf6417316c",
+    "buildCommand": "npm run build:cloudflare",
+    "deployCommand": "npx wrangler deploy --keep-vars",
+    "stoppedOn": "2026-10-31T02:11:22.799Z",
+    "versionMappingConfirmed": true
+  },
+  "worker": {
+    "status": 200,
+    "success": true,
+    "id": "035e006c-1012-4819-8cad-0b30d11e70e4",
+    "number": 2906,
+    "createdOn": "2026-10-31T02:11:06.441645Z",
+    "etag": "12fa04cd73d9657fb7692a5bc6dd64a615d8336e6584c519b3253be37626c544",
+    "compatibilityDate": "2026-07-22",
+    "migrationTag": "map-snapshot-v1"
+  },
+  "deployment": {
+    "id": "746d78e8-49c3-4373-9137-fa8b437535fd",
+    "source": "wrangler",
+    "strategy": "percentage",
+    "author_email": "[redacted provider contact]",
+    "annotations": {
+      "workers/triggered_by": "deployment"
+    },
+    "versions": [
+      {
+        "version_id": "035e006c-1012-4819-8cad-0b30d11e70e4",
+        "percentage": 100
+      }
+    ],
+    "created_on": "2026-10-31T02:11:09.858527Z"
+  },
+  "trafficPercent": 100,
+  "rollback": [
+    {
+      "id": "0c2e5166-d82d-49b5-befc-a57b15f92fd3",
+      "status": 200,
+      "success": true,
+      "etag": "ca2299b8574e01e734dcd208c4c0b19179b268879e22145fa18caefd08591753"
+    },
+    {
+      "id": "980f4d74-9dca-42be-b096-03979c749e63",
+      "status": 200,
+      "success": true,
+      "etag": "a47e79b1fdeb6550c61b342c84abe63ebed7123486ad07c324888b307164f2cc"
+    },
+    {
+      "id": "26e51e72-bb1e-49e9-a307-243e0203ef8d",
+      "status": 200,
+      "success": true,
+      "etag": "f7d0f0892a5c90de14fecf88c0de2e79c55a46bdacea45906b9c2f3570046961"
+    }
+  ],
+  "merged": true,
+  "deployed": true,
+  "manualDeploymentInvoked": false,
+  "productionConfigurationMutated": false,
+  "customerDataWritten": false,
+  "httpsSmoke": "Root performs separately; not inferred from deployment metadata",
+  "physicalAndroid": false,
+  "generalHTTPS": {
+    "cases": 56,
+    "result": "PASS",
+    "noUncaughtPageErrors": true,
+    "savedPrivacyUnchanged": true,
+    "actualProductionPngsRootViewed": 3,
+    "results": "/workspace/akipasa-main-checkpoints/production339-readonly-smoke-20261031/captures-venue339-2026-10-31T02-12-47-695Z/results.json"
+  },
+  "knownBlockingPrivacyLayoutDefect": {
+    "recordedAt": "2026-10-31T02:21:11.086567+00:00",
+    "source": "Actual root browser tool output, after settled instant bottom scroll, not inferred from screenshot",
+    "productionSource": "0775ee598463a37907c0a711bd03014c44d1ec4b",
+    "worker": "035e006c-1012-4819-8cad-0b30d11e70e4",
+    "url": "https://akipasa.com/en/venues/la-terraza-de-panda-20881299",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "physicalDevice": false,
+    "readOnly": true,
+    "closePrivacyUiOnly": true,
+    "consentChoiceClicked": false,
+    "metrics": {
+      "scrollY": 306,
+      "documentHeight": 1150,
+      "innerHeight": 844,
+      "triggerBounds": {
+        "x": 126.109375,
+        "y": 723.9375,
+        "width": 122.765625,
+        "height": 44
+      },
+      "sampledPointFractions": [
+        [0.5, 0.5],
+        [0.1, 0.1],
+        [0.9, 0.9]
+      ],
+      "triggerOwnsSampledHits": [false, false, false],
+      "actualObstructingElement": "a.button.venue-spotlight-directions"
+    },
+    "status": "Demonstrated live accessibility defect; no fix deployed by this receipt",
+    "generalSmokeQualification": "56 general read-only HTTPS checks passed, but did not hit-test this trigger. Their passing result does not override this failure."
+  },
+  "nextRepair": "Fold narrow detail mobile trigger clearance/native48 proof into final340 candidate before freshCI/expectedheadrelease; do not claim accessibility fully green",
+  "publicReceiptRedaction": "Provider author contacts omitted; immutable raw evidence retained outside repository. Commit/tree/version identity unchanged."
+}

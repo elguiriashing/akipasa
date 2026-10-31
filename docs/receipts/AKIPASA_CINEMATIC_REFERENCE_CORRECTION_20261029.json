@@ -1,0 +1,109 @@
+{
+  "version": 1,
+  "observedAt": "2026-10-29T20:42:11.338595+00:00",
+  "baselineCommit": "78d7d9f864a54d174859283847804a39026be6f9",
+  "testedWorkingTree": true,
+  "sourceHashes": {
+    ".github/workflows/account-browser.yml": "6b5795c567095309df14b00eac1312e88a450f5f84ae88977965d7e27704a504",
+    ".github/workflows/booking-browser.yml": "625897c5fd995b4f449e64ba888507266804da71d03dd98e2f5be93e09cfb614",
+    "package.json": "d22fc508632de383b8a6b66ceb5cfbaff95400b2ecfa94fc3cfabc5084f5fe2a",
+    "public/images/akipasa/nightlife-editorial.webp": "fb5e33bb52b1f5161b155799f5b3a28942fde200920e7eb2452529fbb821387a",
+    "scripts/test-account-personal-browser.mjs": "4059b293d5093048019802fa0824ee78eab8ecb60d5c32e87b925d0eb39b59fd",
+    "scripts/validate-booking-staging.mjs": "599db7a8dd60b1136d54e051d338c6738f4ee8d0a3ac4ec1ab8ea1df05b06d7f",
+    "scripts/validate-booking-staging.test.mjs": "2ff7b405c29a352ebd0c18c8f27886d18be202ce6529de60e87b6535535999b3",
+    "src/app/[locale]/account/account-personal.module.css": "43eb698ea51fd4ca60493cbe0714b56076dd1bcfbb4ebd38a052bcfc0086f2a2",
+    "src/app/[locale]/account/page.tsx": "b647529fddcdf961a2a96643a08af272da92d9f1afe29a028c8a812b360364f2",
+    "src/app/[locale]/account/profile/page.tsx": "b5eb47b5e53c278803df6e7c707b6b92580f98ab218622260067c2cc6231538e",
+    "src/app/[locale]/auth/auth-surfaces.module.css": "dcc4539add05fe7c5c50c52ce3e6f7493b005dc03c806a69401834878f420d2b",
+    "src/app/[locale]/auth/page.tsx": "fdcf24c610c6ee96bf78f57b48cad5e37be3e1f522d55e55eed1066e7e6161f1",
+    "src/components/AuthBrand.tsx": "efb217eaa2dedec38889f75ec959ef4ce139be48fda1da59339ef47202ea03f3",
+    "src/components/CityDiscovery.module.css": "11815723a1cc7b478fce5167f7276eb8e972a373904ea04e1d7c10cd7e6f0abe",
+    "src/components/DiscoverySearchTrigger.tsx": "c99900e2220f45932ed176c09adec0fcedf0da068fcb45da6de2a9fd1e6ff04a",
+    "src/components/GlobalSearch.tsx": "43009af8842c7bbe248d5e35b9a8f8bb2f3883ba5f4865c33437dd4d50b42f43",
+    "src/components/LaunchRibbon.module.css": "b6a0109cc591b9894b65a6a27af3b0d66d4e0410f124b35c8916ecfc2a112aeb",
+    "src/components/LaunchRibbon.tsx": "31c2bf74a858233ba5e38dea2623adc066954b068e6452103bb69c914a3eff49",
+    "src/components/PasaBottomDock.css": "d4c8b7f404e19fd8b98d8b1d0e03f9e14de00539ddeb2c25a98a7ce5c5eee94f",
+    "src/components/PasaCinematic.css": "ed0388e203b694dc0a21562cf3d0739db4f0b7ea4fbb0b465034fcec35576728",
+    "src/components/PassportBook.module.css": "caeb7fc8f4f0f5dc54795ea794c0f6412001eeecdb9d2da34651fe414d8d5657",
+    "src/components/PlansFirstHero.module.css": "b41642a2c7dbfcd4bad6fc22a30a302f6caa9a81252bda5a21d27734901358d1",
+    "src/components/PlansFirstHero.tsx": "38c3a0d279ba925da47af983609405e74b3e5d225d6261f6cd95cf6f4c4c0f86",
+    "src/components/community/CommunityLanding.module.css": "bcbe6818264da117c09fe30b46877334356f6e3e3fb58325a7042721cf352ee4",
+    "src/components/community/CommunityLanding.tsx": "74a36ea81801f16306933a15d7054a2d500a38bf9255a364706bcd5a9b8e8a25",
+    "tests/authenticated-local-transport.test.ts": "a59b897341ba71c65ee27891619f5b7bc48c10b7c5f7ac546d58b8583c5fa1c0",
+    "tests/discovery-search-trigger.test.tsx": "972cd72805ca8c34f9ba8e2adb8e95f0da13214240de5286e1776dd4ad8f1657",
+    "tests/e2e/authenticated-production.spec.ts": "f34785b619c7e0c2203d17b568f3ff365659aee46b2eaaac84f90249abd79d3a",
+    "tests/e2e/pasa-auth-contrast.spec.ts": "1e21915a964f3f5942e024f0638aa242c79051d1ae2c1ee2a0270089e440b098",
+    "tests/e2e/pasa-home-entrance.spec.ts": "379e3f6f492fbce3540156f6e27c24231fe3b7f94e9134a8041a341c9c369af0",
+    "tests/e2e/pasa-public-page-families.spec.ts": "c06bcf418eaa8b93b2a62763af6a150d927d4f731017ff0f7041d05822a8f5b6",
+    "tests/helpers/authenticated-local-transport.ts": "4613070284c49a322b965694e974d1bb3d21db645f3963cdac4a533472271ba1",
+    "tests/helpers/authenticated-transport.vitest.config.ts": "c2f31cac462b9999f91ef2b34f8a2f760daa4bb329d4608dc39178fbe9a3579a",
+    "vitest.account.config.ts": "2be4287cf3a69fbe3179c4348b098aa8601752f9b82b0f12bc829ee4bc673b04"
+  },
+  "media": {
+    "path": "public/images/akipasa/nightlife-editorial.webp",
+    "bytes": 163886,
+    "provenance": "AI-generated decorative Mediterranean rooftop illustration, 29 October2026; not a verified venue/event/crowd or catalogue photograph"
+  },
+  "checks": {
+    "completeRepositoryCheck": {
+      "status": "passed",
+      "vitestCases": 2516,
+      "log": "/tmp/akipasa-cinematic-verified-check.log"
+    },
+    "integratedBrowser": {
+      "status": "passed",
+      "cases": 50,
+      "log": "/tmp/akipasa-cinematic-source-matched-browser.log",
+      "configuration": "Explicit disposable localhost fixture backend, Google/Tonight enabled only for fixture run; 2105 synthetic venues; no production configuration change"
+    },
+    "personalAccountFixture": {
+      "status": "passed",
+      "renders": 32,
+      "log": "/tmp/akipasa-cinematic-account-final.log"
+    },
+    "stagingGuard": {
+      "status": "passed",
+      "cases": 48,
+      "log": "/tmp/akipasa-cinematic-staging-final.log"
+    },
+    "testOnlyHostTransport": {
+      "status": "passed",
+      "cases": 13,
+      "log": "/tmp/akipasa-cinematic-transport.log"
+    },
+    "strictReleaseAudit": {
+      "status": "blocked",
+      "exitCode": 2,
+      "accepted": 0,
+      "inScope": 90,
+      "log": "/tmp/akipasa-cinematic-strict-audit.log"
+    }
+  },
+  "inspectedScreenshots": {
+    "test-results/cinematic-integrated-review/home-390.png": "108b64e9916ba27b08c961cefde31961bbe9df4a7bc53bd20e376e6ecc6a37eb",
+    "test-results/cinematic-integrated-review/auth-390.png": "6e8623ebf220abc37ee2166718e1784057e25547268eb8a827d56f0269030f93",
+    "test-results/cinematic-integrated-review/community-1440.png": "6e6eb1d1de950d64367190ab17bf7b067d4fd6530a8f164a3a4e19576ea14025",
+    "test-results/pasa-review-en-passports-small-phone-dark-index.png": "207380d04faaabc90fce5e982af3095eaab0da71023f91cf65101efdc47878ff"
+  },
+  "independentTechnicalReview": "providers reviewed root Home/search/ribbon/dock/shell diffs, including dedicated real-handler readiness and unchanged-submit regression. This is not visual route approval.",
+  "realLocalAccountProbe": {
+    "status": "partial",
+    "successful": "Actual password sign-in/account/profile EN390dark and ES1440light; real own-profile RLS checks",
+    "failed": "Fresh terms-required account requesting /en/account/profile returns to /en/account instead; unchanged assertion failed. Fix is next cycle.",
+    "schemaParity": false,
+    "fixture": "Only synthetic identities and real local Auth/REST with recorded source migration subset; no production acceptance"
+  },
+  "remainingVisualFindings": [
+    "Personal Account mobile workspace header/privacy footer still inherit navy and excess cumulative lower padding; inspect/fix in next source cycle.",
+    "Passport paper search placeholder needs stronger contrast.",
+    "All route reviewer and real Android acceptance remain outstanding."
+  ],
+  "release": {
+    "implemented": true,
+    "accepted": false,
+    "merged": false,
+    "deployed": false,
+    "akiPals": "paused",
+    "tonightProductionGate": "unchanged/default-off"
+  }
+}

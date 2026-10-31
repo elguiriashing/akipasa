@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "observedAt": "2026-10-29T18:19:31.174076+00:00",
+  "baselineCommit": "68d44db4d0dbdfa8df5acccbc3b70cdb8bf493e6",
+  "testedWorkingTree": true,
+  "sourceDirty": true,
+  "sourceHashes": {
+    ".github/workflows/tablet-browser.yml": "6eff5125cd37e8980096aefc3ee6892da29cebdaa2b773bf057ea3e09a3893fc",
+    "package.json": "e64641811a9dfb2e56737a883b4dd4c37ea838e81dd6ef7829402ef704053771",
+    "scripts/test-community-workflows-browser.mjs": "14cb1554cb6a6b8fc3ca3a5dbbdd0cc4faac44380f26b8e3a8bda694c59ad70c",
+    "scripts/test-global-error-browser.mjs": "a408b00b9ad5022d000e204df3823484c6c47c6df5525470bfda4b695d807994",
+    "scripts/test-pasa-boundaries-browser.mjs": "57baba27bf154871406b178e5b84a3eef5e80ff4022090ff1c5a071e55f4c65c",
+    "src/app/[locale]/admin/loading.tsx": "5e0c803629c562777c1fec507ff4e80847caadbc035cd3f3c82b72f6f4703933",
+    "src/app/[locale]/community/community-workflows.module.css": "95b0d05d6ea07ae8c9bf15182770821d6264ec71aeb33a259fb18e5393be205d",
+    "src/app/[locale]/community/page.tsx": "30525a177e7a2ee9bf1be2c9384c4eb674a658a1cc2d26166f9a9c4653eb59b7",
+    "src/app/[locale]/error.tsx": "e899c56e78f7403b101b882f7940b4b07ce656d8b6b7549ca6ae9b02a24e5bef",
+    "src/app/[locale]/not-found.tsx": "f461834497b8da5fe1953f0414a4c6350063ef1565bb2df45f37cbc481842a8d",
+    "src/app/[locale]/passports/page.tsx": "de9e3a07b0a628d31d07c6b1e9574be7f70450f1e95fc6d978a64b15891a378e",
+    "src/app/error.tsx": "b04590ba1333d40136b995a36cbcd868911e205f1c45cf56aec8684e3a568570",
+    "src/app/global-error.module.css": "1b76ec526ee6f841e37d540938ad37cad0f3b921e7afc446431f5821caf4c186",
+    "src/app/global-error.tsx": "09e6e34c4f2b3873de097ad5cb8955b97cc94d84147d81116b71457ffc1787a0",
+    "src/app/layout.tsx": "86c1f853153e66121648588b3f57640487566b5f5d4ddcc4f6f0ee553e195a2a",
+    "src/app/not-found.tsx": "ed434fabd6d34a1db66b1354566a3903be8f9197b35cc45efb87b312dab6db52",
+    "src/components/BrandLogo.tsx": "04f2de22ee6163137aaedcde12a080bfe74bcbda6e6ff47aec5249fb3995b328",
+    "src/components/PasaBottomDock.css": "c25f652abc7ac44c09cddc576eb3e80439d950d433cbe5f64b575c36b8834dd1",
+    "src/components/PasaCinematic.css": "11baa1fa12cb7ba812ddc32401f0d459f2c2a58a2a09172643a4c588c6e6e678",
+    "src/components/PasaRouteFallback.module.css": "123b495b6e3a142945da547847e787ee0a318eddf07dae6987f410d5ff0e1a2a",
+    "src/components/PasaRouteFallback.tsx": "bade012c428e64e088d99005b3732ad7de0c5c49e9b4bf344eea793a059dd905",
+    "src/components/PassportBook.module.css": "2f5580de8716ea7d37d13b0315295f9d537b95672f89fec3b826eda82f86dc32",
+    "src/components/RouteBoundaryContext.tsx": "c343012dd14e427cb61ee14a638b094261e0b6b6fcb8eadf7a57acbf3aaaf4ce",
+    "src/lib/pasa-roadmap.ts": "000a3724e8ac64ba1b2e5421e78c78c1dd39975ab35e95289b6d6a1a911d49b6",
+    "tests/akisuite-brand-logo.test.tsx": "d59fbe42cc2e54eb5804aa7613f898b8dd4eb304e1d848dbede8decc4d77cccc",
+    "tests/akisuite-global-error.test.tsx": "41551357a4685f0b0ae335906e1d309befd3d9511f49f87a9551c158d4e11faf",
+    "tests/e2e/authenticated-production.spec.ts": "1c60135005c27c62a7e1b61781c9c1dc4c4c1f29f0dfd4dc9ef6efea3be2e75c",
+    "tests/e2e/pasa-privacy-clearance.spec.ts": "895fd5aa902c778cb04aeafaec0912fb58a6e1c770582406efcd47ccb63dddc1",
+    "tests/e2e/pasa-public-page-families.spec.ts": "33a50ca2d62b75081098e787258914259b74bc1fbaa307a91564dd833ac14219",
+    "tests/e2e/pasa-route-fallbacks.spec.ts": "695b4b75fe9fe82a4c1cb1ba9fe258e758b3f732bcdc5abce8ab8a45cea9ea3a",
+    "tests/e2e/passport-book.spec.ts": "3b9c401d2fe2fa4e06724a53591dbd109168de15b110824e9e9bb4648b67fb03",
+    "tests/pasa-roadmap.test.ts": "b1e820b21d29d49509514cf8ee9de9b0d96c6bf49bc0a1f9200bc38cfeea3128",
+    "tests/pasa-route-boundaries.test.tsx": "f0637c28be0465f2885fb5d45fb72b424b911d0cd898093014260a596bd25570",
+    "tests/passport-read-recovery.test.tsx": "8e5dd5c6bb375c48d85dd35427d548876fde50be9dc7c05494b3e7faad132df5",
+    "tests/public-ui-upgrades.test.tsx": "ec81938128dd4e3e473b1645e319c20e4bb50eb8ddf291e7e0496c0ed465b354",
+    "vitest.boundaries.config.ts": "a3e06fd223bb20d4592b2e8230e203fcc9563d98a170b9be1e7ae0576fb398d3"
+  },
+  "checks": {
+    "fullCheck": {
+      "status": "passed",
+      "log": "/tmp/akipasa-main-cycle2-recovered-check-unrestricted.log",
+      "vitestPassed": 2416
+    },
+    "community": {
+      "focused": 63,
+      "browser": 240,
+      "receipt": "test-results/community-workflows/results.json"
+    },
+    "routeBoundaries": {
+      "focused": 30,
+      "browser": 88,
+      "receipt": "test-results/pasa-boundaries-framework/results.json"
+    },
+    "globalError": {
+      "browser": 8,
+      "receipt": "test-results/global-error/evidence.json"
+    },
+    "integratedBrowser": {
+      "status": "passed",
+      "passed": 433,
+      "skipped": 29,
+      "failed": 0,
+      "duration": "16.4m",
+      "log": "/tmp/akipasa-main-cycle2-integrated-browser.log",
+      "evidenceManifest": "/workspace/akipasa-main-checkpoints/layout-4e71c62/manifest.json"
+    },
+    "strictReleaseAudit": {
+      "exitCode": 2,
+      "accepted": 0,
+      "inScope": 90
+    },
+    "independentCloudflareBuild": {
+      "status": "passed",
+      "freshLockedPackages": 814,
+      "sourceStamp": "4e71c62553b51d1bdf9ad79e92ef48224a29bcce",
+      "trackedTreeCleanAtBuild": true,
+      "workerSha256": "d05223bf4d44c84108a102ab62aa3bc9c5568f0c3ac2064c37be5cc65c64bc45",
+      "log": "/tmp/akipasa-4e71c62-independent-cloudflare.log"
+    },
+    "hostedCI": {
+      "sourceCommit": "4e71c62553b51d1bdf9ad79e92ef48224a29bcce",
+      "ordinaryPassed": 9,
+      "ordinaryFailed": 1,
+      "failedRun": "https://github.com/elguiriashing/akipasa/actions/runs/40929814529",
+      "cause": "Root-error harness hardcoded /home/agent Chrome executable; portable repair separately tested8cases without override. Not all CI green.",
+      "strictGate": "failure expected0/90"
+    }
+  },
+  "limits": [
+    "Working-tree fixtures are not exact-commit hosted evidence.",
+    "No physical Android or live protected-role acceptance.",
+    "No route signoff, merge or deployment.",
+    "Actual screenshot review found light mobile search icon contrast; next candidate fixes it and retains screenshots from this run separately."
+  ],
+  "validatedSourceCommit": "4e71c62553b51d1bdf9ad79e92ef48224a29bcce"
+}

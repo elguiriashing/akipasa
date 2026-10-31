@@ -1,8 +1,9 @@
+import styles from "../../events/[slug]/book/consumer-action.module.css";
 import { randomUUID } from "node:crypto";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/config";
 import { loadFeatureFlags } from "@/lib/feature-flags";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { requireUser } from "@/lib/auth";
 import { CheckInForm } from "./CheckInForm";
 
 export default async function CheckInPage({
@@ -12,44 +13,48 @@ export default async function CheckInPage({
 }) {
   const { locale, token } = await params;
   if (!isLocale(locale) || !/^[0-9a-f-]{36}$/i.test(token)) notFound();
-  const supabase = await createSupabaseServerClient();
+  const { supabase } = await requireUser(
+    locale,
+    `/${locale}/check-in/${token}`,
+  );
   const flags = await loadFeatureFlags(supabase);
-  const { data: credential } = await supabase
-    .from("venue_checkin_credentials")
-    .select("id,venues(id,name)")
-    .eq("token", token)
-    .eq("active", true)
-    .maybeSingle();
-  if (!credential) notFound();
+  const { data: credential, error: credentialError } = await supabase
+    .rpc("checkin_venue_preview", { p_token: token })
+    .maybeSingle<{ venue_id: string; venue_name: string }>();
   const es = locale === "es";
-  const venue = credential.venues as unknown as {
-    id: string;
-    name: string;
-  } | null;
-  if (!venue) notFound();
-  const { data: programs } = await supabase
-    .from("loyalty_programs")
-    .select("id")
-    .eq("venue_id", venue.id)
-    .eq("active", true);
-  const program = {
-    stamps_required: programs?.length || 0,
-    reward_es: "tarjetas activas",
-    reward_en: "active cards",
-  };
+  if (credentialError) {
+    return (
+      <main className={`shell pasa-checkin-visit ${styles.page}`}>
+        <header className={styles.intro}>
+          <div className={`eyebrow ${styles.kicker}`}>Check-in</div>
+          <h1>
+            {es ? "No se puede cargar el check-in" : "Check-in unavailable"}
+          </h1>
+          <p className="lede">
+            {es
+              ? "No podemos cargar el check-in en este momento. No se ha registrado ninguna visita. Inténtalo de nuevo."
+              : "We cannot load check-in right now. No visit has been recorded. Please try again."}
+          </p>
+        </header>
+        <a className="button" href={`/${locale}/check-in/${token}`}>
+          {es ? "Reintentar" : "Retry"}
+        </a>
+      </main>
+    );
+  }
+  if (!credential) notFound();
+  if (!credential.venue_id || !credential.venue_name) notFound();
   return (
-    <main className="shell">
-      <section className="hero">
-        <div className="eyebrow">Check-in</div>
-        <h1>{venue.name}</h1>
+    <main className={`shell pasa-checkin-visit ${styles.page}`}>
+      <header className={styles.intro}>
+        <div className={`eyebrow ${styles.kicker}`}>Check-in</div>
+        <h1>{credential.venue_name}</h1>
         <p className="lede">
-          {venue?.name} · {program.stamps_required}{" "}
-          {es ? "sellos para" : "stamps for"}{" "}
-          {locale === "en"
-            ? program.reward_en || program.reward_es
-            : program.reward_es}
+          {es
+            ? "Comprueba el nombre del local y confirma tu ubicación. La visita se verificará al enviar el check-in."
+            : "Check the venue name and share your location. Your visit is verified when you submit the check-in."}
         </p>
-      </section>
+      </header>
       <section className="panel auth-panel">
         <p>
           {es

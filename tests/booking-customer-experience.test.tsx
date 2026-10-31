@@ -2,7 +2,14 @@
 import React from "react";
 import "@testing-library/jest-dom/vitest";
 import { afterEach, describe, it, expect, vi } from "vitest";
-import { cleanup, render, screen, fireEvent } from "@testing-library/react";
+import {
+  cleanup,
+  render,
+  screen,
+  fireEvent,
+  act,
+  waitFor,
+} from "@testing-library/react";
 import { MyBookings } from "../src/components/MyBookings";
 import { BookingWizard } from "../src/components/BookingWizard";
 
@@ -106,3 +113,148 @@ describe("Customer booking wizard", () => {
     expect(screen.getByRole("button", { name: /Continuar/ })).toBeVisible();
   });
 });
+
+describe("Event context in the shared booking wizard", () => {
+  it("submits event/occurrence context with the existing caller fields and stable request key", () => {
+    const { container } = render(
+      <BookingWizard
+        {...wizardProps}
+        event={{
+          id: "30000000-0000-4000-8000-000000000001",
+          occurrence: "selected-occurrence",
+        }}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: /Continue/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Continue/ }));
+    const form = container.querySelector("form")!;
+    const data = new FormData(form);
+    expect(data.get("eventId")).toBe("30000000-0000-4000-8000-000000000001");
+    expect(data.get("occurrence")).toBe("selected-occurrence");
+    expect(data.get("venueId")).toBe(wizardProps.venueId);
+    expect(data.get("contactName")).toBe("Test User");
+    expect(data.get("contactEmail")).toBe("person@example.com");
+    expect(data.get("requestKey")).toMatch(/^[a-f0-9-]{36}$/);
+    const key = data.get("requestKey");
+    fireEvent.click(screen.getByRole("button", { name: "Back" }));
+    fireEvent.click(screen.getByRole("button", { name: /Continue/ }));
+    expect(
+      new FormData(container.querySelector("form")!).get("requestKey"),
+    ).toBe(key);
+  });
+  it("leaves the ordinary venue submission free of event-only fields", () => {
+    const { container } = render(<BookingWizard {...wizardProps} />);
+    fireEvent.click(screen.getByRole("button", { name: /Continue/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Continue/ }));
+    const data = new FormData(container.querySelector("form")!);
+    expect(data.has("eventId")).toBe(false);
+    expect(data.has("occurrence")).toBe(false);
+    expect(data.get("venueId")).toBe(wizardProps.venueId);
+  });
+  it.each(["en", "es"] as const)(
+    "%s all-full slots show an honest full state without a zero-guest request",
+    (locale) => {
+      render(
+        <BookingWizard
+          {...wizardProps}
+          locale={locale}
+          slots={slots.map((s) => ({ ...s, remaining: 0 }))}
+        />,
+      );
+      expect(screen.getByRole("status")).toHaveTextContent(
+        locale === "es"
+          ? "No quedan plazas disponibles"
+          : "No places available",
+      );
+      expect(
+        screen.queryByRole("button", { name: /Continue|Continuar/ }),
+      ).not.toBeInTheDocument();
+    },
+  );
+});
+
+it.each([
+  { label: "venue", event: undefined },
+  {
+    label: "event",
+    event: {
+      id: "30000000-0000-4000-8000-000000000001",
+      occurrence: "selected-occurrence",
+    },
+  },
+])(
+  "$label pending requests disable repeat submission and retain contact/idempotency after availability changes",
+  async ({ event }) => {
+    let finish!: (value: { error: string; remaining: number }) => void;
+    const submit = vi.fn(
+      () =>
+        new Promise<{ error: string; remaining: number }>((resolve) => {
+          finish = resolve;
+        }),
+    );
+    const { container } = render(
+      <BookingWizard {...wizardProps} event={event} submit={submit} />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: /Continue/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Continue/ }));
+    fireEvent.change(screen.getByLabelText("Name", { exact: true }), {
+      target: { value: "Updated Guest" },
+    });
+    fireEvent.change(screen.getByLabelText("Email", { exact: true }), {
+      target: { value: "updated@example.test" },
+    });
+    const form = container.querySelector("form")!,
+      key = new FormData(form).get("requestKey");
+    fireEvent.submit(form);
+    const button = await screen.findByRole("button", { name: "Submitting..." });
+    expect(button).toBeDisabled();
+    fireEvent.click(button);
+    fireEvent.click(button);
+    expect(submit).toHaveBeenCalledTimes(1);
+    await act(async () => {
+      finish({ error: "Availability changed", remaining: 1 });
+    });
+    await waitFor(() =>
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        "Availability changed",
+      ),
+    );
+    fireEvent.click(screen.getByRole("button", { name: /Continue/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Continue/ }));
+    expect(screen.getByLabelText("Name", { exact: true })).toHaveValue(
+      "Updated Guest",
+    );
+    expect(screen.getByLabelText("Email", { exact: true })).toHaveValue(
+      "updated@example.test",
+    );
+    const retry = new FormData(container.querySelector("form")!);
+    expect(retry.get("requestKey")).toBe(key);
+    expect(retry.get("partySize")).toBe("1");
+    expect(retry.get("eventId")).toBe(event?.id ?? null);
+    expect(retry.get("occurrence")).toBe(event?.occurrence ?? null);
+  },
+);
+
+it.each(["en", "es"] as const)(
+  "%s single guest, slot and remaining place use singular labels",
+  (locale) => {
+    render(
+      <BookingWizard
+        {...wizardProps}
+        locale={locale}
+        slots={[{ ...slots[0], remaining: 1 }]}
+      />,
+    );
+    expect(
+      screen.getByText(locale === "es" ? "1 persona" : "1 guest", {
+        selector: ".booking-wizard-summary span",
+      }),
+    ).toBeVisible();
+    expect(
+      screen.getByText(locale === "es" ? "1 plaza libre" : "1 place left"),
+    ).toBeVisible();
+    expect(
+      screen.getByText(locale === "es" ? "1 horario" : "1 time"),
+    ).toBeVisible();
+  },
+);

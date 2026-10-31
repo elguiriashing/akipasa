@@ -1,6 +1,6 @@
 .discovery {
   display: grid;
-  gap: 2.8rem;
+  gap: 2rem;
   padding-top: 1rem;
   position: relative;
   isolation: isolate;
@@ -20,7 +20,7 @@
   );
 }
 .discovery > section:first-child .heading h2 {
-  font-size: clamp(2rem, 3.4vw, 3.2rem);
+  font-size: clamp(1.5rem, 2.8vw, 2.25rem);
   max-width: 20ch;
   line-height: 1.04;
   letter-spacing: -0.055em;
@@ -321,7 +321,7 @@
 
 @media (max-width: 650px) {
   .discovery > section:first-child .heading h2 {
-    font-size: clamp(1.6rem, 6vw, 2.2rem);
+    font-size: clamp(1.3rem, 5vw, 1.6rem);
   }
   .discovery > section:first-child .heading p {
     display: block;

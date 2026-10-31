@@ -1,0 +1,99 @@
+{
+  "receiptId": "map-list-title-readability-20261031",
+  "reviewedAt": "2026-10-31T12:14:40.064004+00:00",
+  "baseCommit": "d6859859ece002436838be215c16c284fcfe7222",
+  "sourceDirty": true,
+  "runtimeFiles": ["src/components/PasaCinematic.css"],
+  "problem": "Map reuses the discover page class, so the existing aki-app-first.css white event-title rule overrode the warm light drawer ink, producing white on an almost-white card.",
+  "selector": "html[data-theme=\"light\"] .app-shell:has(.map-page) .map-results-drawer .pasa-event-card .card-body h3",
+  "fix": "Use the existing Map drawer --ink token for the light-theme event title. Dark theme and non-Map routes do not match the new rule.",
+  "sourceHashes": {
+    "src/components/PasaCinematic.css": {
+      "before": "f5b80b832b3626f5864473d8764f04bcea6d4993c9dc7d1ee6f583b5196e8368",
+      "after": "2070cf72788406246f87b964982397e581a6a73b3945e93c1038cf7ca0aa5906"
+    },
+    "scripts/test-map-route-review-browser.mjs": {
+      "before": "new review harness owned by release_cloudflare",
+      "after": "88e5dc5a47d6bac6f74bed53e5aaceaa33b398e017c5f4d26bd4c367a75c2e18"
+    }
+  },
+  "beforeEvidence": {
+    "results": "/workspace/scratch/5ff731a563cb/review-evidence/map-route-contrast-before/results.json",
+    "inspectedImage": "/workspace/scratch/5ff731a563cb/review-evidence/map-route-contrast-before/map-es-light-1440-list.png",
+    "observation": "The event title is visibly unreadable on its almost-white card while the nearby dark labels remain visible.",
+    "computedForeground": [255, 255, 255],
+    "computedBackground": [255, 254, 252],
+    "computedContrast": 1.0079493898232783,
+    "resultsSha256": "ebba41b24cb62322807d74135f9ad3165ad527b412a778f2576041464f18fb7e",
+    "imageSha256": "e5c985f230ede098b7a07516a97f3cef0fb850cec6f7183706e1a1c0170a6fae"
+  },
+  "afterEvidence": {
+    "status": "passed",
+    "owner": "release_cloudflare",
+    "runner": "scripts/test-map-route-review-browser.mjs",
+    "runnerSha256": "88e5dc5a47d6bac6f74bed53e5aaceaa33b398e017c5f4d26bd4c367a75c2e18",
+    "results": "/workspace/scratch/5ff731a563cb/review-evidence/map-route-repaired/results.json",
+    "resultsSha256": "01c194311e45ff9aa962bacf6dbc8bdd19cab18b9f5f344d2ac54f6035815a79",
+    "captures": 60,
+    "titleContrastAssertions": 12,
+    "lightTitleContrastMinimum": 15.989431827984154,
+    "lightTitleContrastMaximum": 15.989431827984154,
+    "lightTitleForeground": [37, 32, 29],
+    "lightCardBackground": [255, 254, 252],
+    "darkTitleForegroundUnchanged": [255, 255, 255],
+    "darkTitleOpaqueAncestorContrastEstimate": 18.772532253316175,
+    "darkContrastMeasurementLimitation": "The runner uses the first opaque ancestor. The dark card has a semitransparent oklab fill, so this is an opaque-ancestor estimate rather than exact composited pixel contrast. The new CSS cannot match dark mode, and the independent reviewer visually inspected its unchanged white-on-dark title. Light card measurements have an opaque rgb background.",
+    "failures": [],
+    "violations": [],
+    "sourceHashesStableDuringRun": true,
+    "currentInputHashesEqualTested": true,
+    "inputCount": 63,
+    "compiledBundleSha256": "148b534a8e608602c9f556d985f7747507a47022e600966c12945d776b5e8a25",
+    "compiledCssSha256": "430c16f0df55f9a72a1352709b6a6dab31d41d9cf3baab6bbe9f23d14081a943",
+    "independentlyInspectedImages": [
+      {
+        "file": "/workspace/scratch/5ff731a563cb/review-evidence/map-route-repaired/map-es-light-1440-list.png",
+        "sha256": "2f228a18f1de749bf134cd3abbaf974c78ee8f8b4e98487ea58268df86cc770a",
+        "observation": "The event title is now dark, readable and naturally wrapped within the light card."
+      },
+      {
+        "file": "/workspace/scratch/5ff731a563cb/review-evidence/map-route-repaired/map-en-light-360-list.png",
+        "sha256": "f007d069ea867ce5da43573b940e752459c4b7e6048dcb6ff70ea45454b5e4eb",
+        "observation": "The event title is now dark, readable and naturally wrapped within the light card."
+      }
+    ],
+    "scope": "Actual Map page export, AppShell and MapLibre with one synthetic event and synthetic tileless background. No live provider/Auth/RLS/geolocation/device acceptance."
+  },
+  "checks": [
+    {
+      "command": "npx prettier --check src/components/PasaCinematic.css",
+      "status": "passed"
+    },
+    {
+      "command": "git diff --check -- src/components/PasaCinematic.css",
+      "status": "passed"
+    }
+  ],
+  "scopePreserved": [
+    "EventCard implementation and tracking",
+    "MapResultsDrawer behavior",
+    "Map queries, markers and viewport",
+    "Location consent",
+    "Data and actions",
+    "Dark-theme styles"
+  ],
+  "provenanceNote": "PasaCinematic.css is a shared file; other route evidence must explicitly reconcile this Map/light-only selector change instead of claiming equal file hashes.",
+  "limitations": [
+    "Final browser evidence uses actual composed page components with synthetic map/read adapters, not live geolocation/provider acceptance.",
+    "No real identity, tenant/RLS, provider/payment or physical-device acceptance is claimed."
+  ],
+  "publication": {
+    "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+    "reviewedSourceTree": "7de020d02387bb7196fe56fdc4f930e23500d852",
+    "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+    "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+    "hostedExecution": "Fresh final-head workflows required; no future run ID or artifact is asserted.",
+    "sourceBinding": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added."
+  },
+  "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895"
+}

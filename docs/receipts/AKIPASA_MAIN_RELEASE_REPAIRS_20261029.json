@@ -1,0 +1,89 @@
+{
+  "baselineCommit": "df528bf225bc8f4df2387918518c97ed0b4ec662",
+  "testedWorkingTree": true,
+  "acceptedRoutes": 0,
+  "merged": false,
+  "deployed": false,
+  "scope": "Main coordinated release repairs; AkiPals paused. Real components with disposable auth/database/action boundaries. No live authenticated/RLS or physical Android acceptance.",
+  "browserSuites": [
+    {
+      "suite": "event-booking",
+      "passedCases": 208,
+      "receipt": "test-results/event-booking-browser/results.json",
+      "receiptSha256": "e9cedc83467f6da1486acbe96c34a1050e8cfe58eb3f09a86cf3aa0135bbf22e"
+    },
+    {
+      "suite": "private-booking",
+      "passedCases": 96,
+      "receipt": "test-results/booking-read-boundary/evidence.json",
+      "receiptSha256": "e5037b2a8b6c1b34ce90f55cb20f7b9d8fcd8a5d446d29972d0d56761b14a1f6"
+    },
+    {
+      "suite": "admin-review",
+      "passedCases": 70,
+      "receipt": "test-results/admin-review/results.json",
+      "receiptSha256": "43ebb9d21e4ebc7fbc8dfee1aa7272dc10d33fb6b85a1ee83f4c2ceb8d0456c3"
+    },
+    {
+      "suite": "staff-pagination",
+      "passedCases": 85,
+      "receipt": "test-results/staff-pagination/browser-evidence.json",
+      "receiptSha256": "4a1cdec28a26087ac2fbcaedbacd0228c03712f679a4f51b76cca70abb498e9d"
+    },
+    {
+      "suite": "account",
+      "passedCases": 312,
+      "receipt": "test-results/account/results.json",
+      "receiptSha256": "f85ea87483a435cedd5bfb52d2df930f40ab60d4e2518caf8bc0a539ca4a2937"
+    }
+  ],
+  "additionalPrivateBookingSuccessfulMissingRowDefaults": 16,
+  "sourceHashes": {
+    "scripts/test-account-browser.mjs": "3507f6d9d30a0bff2f8bbcb2f3af3f023c914ec582ab0ed3c5cc713588efceff",
+    "scripts/test-admin-review-browser.mjs": "0a81883e0f6cb5c1e27595af52e5fd285986193dd542bbd804c7ab901aa2615a",
+    "scripts/test-booking-read-boundary-browser.mjs": "1894855e5d55fcdc5a3252bc7495452ae901c740d038866307b82a8234dbeb71",
+    "scripts/test-event-booking-browser.mjs": "af3c1b05ca09894d358c1081a3cab05d75bdb332f1d6a7760bad3494df3d5ad0",
+    "scripts/test-staff-pagination-browser.mjs": "6de47ff85b66db3115982bef80929f6ce4e0698d195c052f894d4cc7c152483e",
+    "src/app/[locale]/account/profile/page.tsx": "c9b39fd75e9336aa7b5b9602d065fd242a449014a80a496592fc2d7082365929",
+    "src/app/[locale]/admin/accommodation-review/page.tsx": "e9e60ab02e46476289c378e07ffd86b3ba63ffcecb46bfe2b9142ef6cdf3b9db",
+    "src/app/[locale]/admin/listing-review/page.tsx": "a6d283e844c92d9e1ab5cba84cb846ed7f3d677d6e4308366327163c4906b212",
+    "src/app/[locale]/business/venue/[id]/page.tsx": "43bf96ebf8ca0534c9bd7f489b40e1c2e97a0ec17d8b8af6697244ad6d9bc20a",
+    "src/app/[locale]/events/[slug]/book/actions.ts": "6a74d70954e4608ee22dc13f6c128c3d9d811cc2fba5605c90d3f83edd343228",
+    "src/app/[locale]/events/[slug]/book/page.tsx": "a17e622f5de294257552dfccf6fddd8df8f215eebefb25d1f1baa16fca2038a9",
+    "src/app/[locale]/moderation/actions.ts": "3e8cb8adbd1c4c2a97b2c4783eec16bc0da87dc4a3e6f8cd4a61fd2eb71c0f94",
+    "src/app/[locale]/staff/RentalReviewQueue.tsx": "362f199c25e1201d2eb13dc2293403e99fb12926b4a29fe067b52c797ccdb727",
+    "src/app/[locale]/staff/StaffQueue.tsx": "42d420ee1eb50a93a31e7df66f7e773db8452afe1e738508bda51c0310bd5be8",
+    "src/app/[locale]/staff/claim-review.css": "4f5025a0f3c40a5bf2ef1a52c187b2a1aea007cc5461afd4f1f1870276af52ea",
+    "src/app/[locale]/staff/moderation/page.tsx": "2b7dd29c1ebd6e1ecb906151751c41658489020a2884dbd1090da42acff0d239",
+    "src/app/[locale]/staff/staff-ui.css": "095007bf155f813b473ccf345123c0402e89ba8988202e21d46be2496a28a282",
+    "src/app/appearance.css": "21c3d1bb922511fac75f6f55fc31c3a23a73eeb894e9a0be9c322cfcdd63b8e1",
+    "src/app/brand.css": "ef68eb546410c4af273e06e6f5ed80c456c6507599f710273efaf2671268dd24",
+    "src/app/compact-app.css": "27a788fe1172acd6ff1e9f764a2790e63c345fb3090008ab46e12e372dca892c",
+    "src/app/globals.css": "b86c751fce986fa158e8759466c5e5e743781cc76828d1e186a215f88f3d1317",
+    "src/app/portal-unity.css": "df7f53c297febb2b2c6c2f959654c3736120be41ed7f745a9b1c750439be6e2c",
+    "src/app/tablet-responsive.css": "60f09d70e2c4b53d0d8dd8f6aca9b6b33a8841bfcc87405ebb74214272308737",
+    "src/components/BookingManager.tsx": "fc3089aa1df41edb8147269c6fdc18529f3a8ab04e62676acab5f06614fc9ca9",
+    "src/components/BookingWizard.tsx": "0a7756a3a689ae482d9842136c89135a998c35ecb24fb6b657eeafac3d30c7a1",
+    "src/components/NativeAccommodationReviewForm.tsx": "f5947de001692ac3dc03d4878efba8bf60a92a7b70a89ea8407360a0dd7747b3",
+    "src/components/NativeReviewSurfaces.module.css": "154d02c13ed38bfbc3711fd2c9b66d122fb7d3c0ea56234cf433b150e52cf6b4",
+    "src/components/PasaSharedSurfaces.css": "0330031a40d34ad87303c51107fb770005c5796ba8868a2b52e51cf19384f5f9",
+    "src/components/VenueDashboard.tsx": "89b31ed82c02f3bbabca210520839dbe7e7869a402091834fcbad2e386cef107",
+    "src/components/WorkspaceShell.tsx": "a48978c34c3b184dfe82c1f7ef8dd7607a575afee3e402a9268431c27a69b3a2",
+    "src/lib/staff-moderation-queue.ts": "4070878d2a2a0c0827032ae22863260bceb9aa9e5228c0a8b48eab370e63706a",
+    "tests/account-controls.test.tsx": "33c915a2c39201d37b97c8c2a98db26d9f7d1ed4d92941a005fd37b671554d26",
+    "tests/akisuite-booking-read-boundary.test.tsx": "e3934995cf9e5847b8133c30443959d3c771d4167fa7f225f2913e10262b144b",
+    "tests/akisuite-booking-read-ui.test.tsx": "b968a9024380d54a76fb52a1e0e6a8dc1fd1b0871da5d15a5fa10a46cc204382",
+    "tests/workspace-shell.test.tsx": "1266a00256fa3e1cbb64684c324c18a30c10b65278cbc9fef8835a0d6832ad54"
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "exitCode": 0,
+    "log": "/tmp/akipasa-resumed-main-check-final.log",
+    "scope": "Frozen implementation; subsequent metadata-only ledger/receipt additions separately formatted and checked."
+  },
+  "notes": [
+    "First full-check attempt stopped at harness formatting; final rerun retains all assertions.",
+    "First event browser captures were superseded after finite-animation and desktop fixture corrections.",
+    "Source-bound hosted CI must rerun at final committed head."
+  ]
+}

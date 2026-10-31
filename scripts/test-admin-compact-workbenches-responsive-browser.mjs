@@ -332,6 +332,56 @@ try {
           "Admin shared chrome ink",
         );
       }
+      // Branding is visually rendered but deliberately aria-hidden beside the
+      // accessible Home link. Measure Aki explicitly instead of weakening the
+      // existing decorative-text filter or treating orange logo text as body ink.
+      const wordmarkContrast = await page.evaluate(
+        collectAdminWordmarkContrast,
+      );
+      const headerVisible = await page
+        .locator(".app-topbar-mobile")
+        .isVisible();
+      assert.equal(
+        wordmarkContrast.length,
+        headerVisible ? 1 : 0,
+        "Every visible compact header must have one measured Aki wordmark",
+      );
+      assert.ok(
+        wordmarkContrast.every((entry) => entry.contrast >= 4.5),
+        "Compact Aki wordmark contrast: " + JSON.stringify(wordmarkContrast),
+      );
+      let wordmarkNegativeProbe = null;
+      if (
+        route === "privacy" &&
+        state === "ready" &&
+        context.theme === "light" &&
+        context.width === 390
+      ) {
+        // Ephemeral fixture-only CSS proves the old white ink would fail. Never
+        // modify application CSS; remove the probe before actual screenshots.
+        const baseline = await page.addStyleTag({
+          content:
+            ".app-topbar-mobile .brand-wordmark > span:first-child { color: #fff !important; }",
+        });
+        const whiteInk = await page.evaluate(collectAdminWordmarkContrast);
+        assert.equal(
+          whiteInk.length,
+          1,
+          "Negative probe must measure visible Aki",
+        );
+        assert.ok(
+          whiteInk.every((entry) => entry.contrast < 4.5),
+          "Old white ink on light chrome must fail the unchanged threshold",
+        );
+        await baseline.evaluate((element) => element.remove());
+        const restored = await page.evaluate(collectAdminWordmarkContrast);
+        assert.equal(restored.length, 1);
+        assert.ok(
+          restored.every((entry) => entry.contrast >= 4.5),
+          "Actual wordmark ink must recover after fixture probe removal",
+        );
+        wordmarkNegativeProbe = { fixtureOnly: true, whiteInk, restored };
+      }
       if (route === "promotions" && state === "error") {
         assert.deepEqual(
           await page.locator(".workspace-stat strong").allTextContents(),
@@ -520,6 +570,8 @@ try {
         readyVerified,
         nativeMenuVerified,
         chromePalette,
+        wordmarkContrast,
+        wordmarkNegativeProbe,
         textContrast,
         screenshots: [
           stem + "-upper.png",
@@ -690,6 +742,65 @@ function collectAdminTextContrast() {
         text: e.textContent.trim().slice(0, 160),
         foreground: fg,
         background: back,
+        contrast: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05),
+      };
+    });
+}
+
+function collectAdminWordmarkContrast() {
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = 1;
+  const context = canvas.getContext("2d", { willReadFrequently: true });
+  const color = (value) => {
+    context.clearRect(0, 0, 1, 1);
+    context.fillStyle = value;
+    context.fillRect(0, 0, 1, 1);
+    return [...context.getImageData(0, 0, 1, 1).data];
+  };
+  const luminance = (rgb) =>
+    rgb
+      .slice(0, 3)
+      .map((v) => {
+        v /= 255;
+        return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+      })
+      .reduce(
+        (total, value, i) => total + value * [0.2126, 0.7152, 0.0722][i],
+        0,
+      );
+  return [
+    ...document.querySelectorAll(
+      ".app-shell:has(.admin-workspace) .app-topbar-mobile .brand-wordmark",
+    ),
+  ]
+    .filter((wordmark) => wordmark.checkVisibility())
+    .map((wordmark) => {
+      const aki = wordmark.querySelector(":scope > span:first-child");
+      if (!aki || aki.textContent.trim() !== "Aki")
+        throw new Error(
+          "Visible compact wordmark must contain semantic Aki text",
+        );
+      const ancestors = [];
+      for (let current = aki; current; current = current.parentElement)
+        ancestors.push(current);
+      context.clearRect(0, 0, 1, 1);
+      for (const ancestor of ancestors.reverse()) {
+        context.fillStyle = getComputedStyle(ancestor).backgroundColor;
+        context.fillRect(0, 0, 1, 1);
+      }
+      const background = [...context.getImageData(0, 0, 1, 1).data];
+      const foreground = color(getComputedStyle(aki).color);
+      const alpha = foreground[3] / 255;
+      const ink = foreground
+        .slice(0, 3)
+        .map((v, i) => v * alpha + background[i] * (1 - alpha));
+      const a = luminance(ink),
+        b = luminance(background);
+      return {
+        target: "compact-header-Aki",
+        text: "Aki",
+        foreground,
+        background,
         contrast: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05),
       };
     });

@@ -1,0 +1,72 @@
+/* Only AkiPasa's consumer shell. The independent AkiBusiness host keeps its skin. */
+:global(.app-shell) .page.page {
+  --application-panel: #111314;
+  --application-raised: #1c1d1e;
+  --application-edge: #3e3933;
+  --application-ink: #faf7f3;
+  --application-muted: #c8c1b9;
+  --application-accent: #ffb17c;
+  color: var(--application-ink);
+}
+
+:global(html[data-theme="light"]) :global(.app-shell) .page.page {
+  --application-panel: #fffdf9;
+  --application-raised: #f3eee7;
+  --application-edge: #d7cbbd;
+  --application-ink: #29231d;
+  --application-muted: #62574d;
+  --application-accent: #98400d;
+}
+
+:global(.app-shell) .page.page :global(.panel),
+:global(.app-shell) .page.page :global(.business-application-checklist) {
+  background: var(--application-panel);
+  border-color: var(--application-edge);
+  color: var(--application-ink);
+}
+
+:global(.app-shell) .page.page :global(.business-application-hero) {
+  background:
+    radial-gradient(ellipse at 100% 0%, #ff812e1f, transparent 62%),
+    var(--application-panel);
+  border-color: var(--application-edge);
+}
+
+:global(.app-shell) .page.page :is(h1, h2, h3, label) {
+  color: var(--application-ink);
+}
+
+:global(.app-shell) .page.page :global(.lede),
+:global(.app-shell) .page.page :global(.fine-print),
+:global(.app-shell) .page.page :global(.business-application-help) p,
+:global(.app-shell) .page.page :global(.business-application-checklist) li {
+  color: var(--application-muted);
+}
+
+:global(.app-shell) .page.page :global(.eyebrow) {
+  color: var(--application-accent);
+}
+
+:global(.app-shell) .page.page :is(input, select, textarea) {
+  color: var(--application-ink);
+  background: var(--application-raised);
+  border-color: var(--application-edge);
+}
+
+:global(.app-shell) .page.page :is(input, textarea)::placeholder {
+  color: var(--application-muted);
+  opacity: 1;
+}
+
+:global(.app-shell) .page.page :global(.button.secondary) {
+  color: var(--application-ink);
+  background: var(--application-raised);
+  border-color: var(--application-edge);
+}
+
+:global(.app-shell)
+  .page.page
+  :is(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid var(--application-accent);
+  outline-offset: 3px;
+}

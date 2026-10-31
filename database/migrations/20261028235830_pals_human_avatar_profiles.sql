@@ -16,7 +16,7 @@ grant select, insert, update, delete on public.pals_avatar_profiles to service_r
 -- This migration was installed through the managed connector for the
 -- restricted playtest. Policies are conditional so a subsequent repository
 -- migration reconciliation can be replayed without broadening any access.
-do $
+do $$
 begin
   if not exists (
     select 1 from pg_policies
@@ -44,7 +44,7 @@ begin
       with check (user_id = (select auth.uid()));
   end if;
 end
-$;
+$$;
 
 comment on table public.pals_avatar_profiles is
   'Private self-designed AkiPals avatar appearance only; no coordinates, facial recognition, public identity sharing or payment entitlements.';

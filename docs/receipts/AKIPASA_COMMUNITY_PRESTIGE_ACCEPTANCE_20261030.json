@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+  "newRouteAcceptances": {
+    "src/app/[locale]/community/page.tsx": {
+      "reviewer": "Codex venue_event_screens independent responsible UI/function tester",
+      "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/artifacts/13009346667",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/job/124287760201",
+      "sourceSha256": "90357fd6f6ac167d117c33e82d88b980236428d186c85867823d411d0badc222",
+      "additionalScreenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/artifacts/13008643484",
+      "evidenceType": "actual public Next guest page plus actualAppShell protected workflow disposable fixtures, responsibly reviewed",
+      "realAuthenticatedIdentityOrRlsAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    "src/app/[locale]/passports/prestige/hall/page.tsx": {
+      "reviewer": "Codex discovery_screens (independent responsible tester)",
+      "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254618",
+      "evidenceType": "Existing default-off/gated, read-only public Hall UI; optional published projection only. Does not approve activation, award issuance, real provider or physical device.",
+      "realAuthenticatedIdentityOrRlsAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    "src/app/[locale]/passports/prestige/certificate/[publicId]/page.tsx": {
+      "reviewer": "Codex discovery_screens (independent responsible tester)",
+      "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254618",
+      "evidenceType": "Existing default-off/gated read-only public certificate and safe recovery/download presentation. No physical prize promise or launch approval.",
+      "realAuthenticatedIdentityOrRlsAcceptance": false,
+      "physicalDeviceAcceptance": false
+    }
+  },
+  "limits": [
+    "Physical device and actual Supabase/Next transport are not proved by this fixture; remain coordinated release/integration gates, not claimed accepted here.",
+    "Local360 supplement should be included in next hosted run; current hosted artifact94 plus supplemental122 must retain their source labels.",
+    "Actual Next response/cache transport, real Supabase privacy projection and physical-device download are not asserted by page fixture; separate integration/release gates.",
+    "Next hosted run must publish maintained360 extension; local122 is additional source-bound evidence, not mislabelled hosted94.",
+    "Member Prestige and Prestige Privacy remain in progress for actual private-write integration and below-fold native-control evidence.",
+    "No actual Auth/RLS/device/Next-provider transport approval inferred."
+  ],
+  "externalReviewHashes": {
+    "community-independent-1e7b71f-20261030.json": "01d30c8e1a58ebdcf202c7724109d146f276b2fa3fcd9500cdb813246fb2d255",
+    "prestige-independent-responsible-review-1e7b71f-20261030.json": "076dc0a0aab9503ebb365443de49504e3a1bb1fe7056d53fa8ae09c77ce4d572"
+  }
+}

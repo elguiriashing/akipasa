@@ -14,17 +14,23 @@ type ReviewCompany = {
 export function RentalReviewQueue({
   locale,
   companies,
+  queuePage = 1,
 }: {
   locale: "en" | "es";
   companies: ReviewCompany[];
+  queuePage?: number;
 }) {
   const es = locale === "es";
   if (!companies.length)
     return (
       <p className="empty-state">
-        {es
-          ? "No hay empresas de alquiler pendientes."
-          : "No rental companies are waiting for review."}
+        {queuePage > 1
+          ? es
+            ? "No hay empresas en esta página."
+            : "There are no companies on this page."
+          : es
+            ? "No hay empresas de alquiler pendientes."
+            : "No rental companies are waiting for review."}
       </p>
     );
   return (
@@ -64,6 +70,7 @@ export function RentalReviewQueue({
           </small>
           <form action={reviewRentalCompany} className="stack">
             <input type="hidden" name="locale" value={locale} />
+            <input type="hidden" name="queuePage" value={queuePage} />
             <input type="hidden" name="companyId" value={company.id} />
             <label>
               {es

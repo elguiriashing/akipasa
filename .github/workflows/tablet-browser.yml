@@ -16,6 +16,79 @@ env:
   NEXT_PUBLIC_SUPABASE_ANON_KEY: tablet-local-disposable
 
 jobs:
+  remaining-route-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Verify legacy redirects through actual Next HTTP handling
+        run: node scripts/review-remaining-redirect-http.mjs
+      - name: Review remaining Staff, business and Account page compositions
+        run: node scripts/review-remaining-operations-browser.mjs
+      - name: Review Check-in, booking and Map page compositions
+        run: node scripts/test-consumer-route-review-browser.mjs
+      - name: Review composed Map recovery, markers and filters
+        run: node scripts/test-map-route-review-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: remaining-route-review-evidence
+          path: |
+            test-results/remaining-redirect-http/results.json
+            test-results/remaining-redirect-http/next.log
+            test-results/remaining-operations-review
+            test-results/consumer-route-review
+            test-results/map-route-review
+          retention-days: 7
+
+  consumer-workflow-fixtures:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Verify Community forms, history and draft recovery
+        run: node scripts/test-community-workflows-browser.mjs
+      - name: Verify creator detail, studio and safe draft journeys
+        run: node scripts/test-creator-routes-browser.mjs
+      - name: Verify actual Prestige page fixtures and native certificate retry
+        run: node scripts/test-prestige-routes-browser.mjs
+      - name: Verify framework error recovery and loading boundaries
+        run: node scripts/test-pasa-boundaries-browser.mjs
+      - name: Verify root-layout failure recovery
+        run: node scripts/test-global-error-browser.mjs
+      - name: Verify independent business dashboard read failures
+        run: node scripts/test-business-home-read-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: consumer-workflow-evidence
+          path: |
+            test-results/community-workflows
+            test-results/creator-routes
+            test-results/prestige-routes
+            test-results/pasa-boundaries-framework
+            test-results/global-error
+            test-results/business-home-read
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: prestige-route-evidence
+          path: test-results/prestige-routes
+          retention-days: 7
+
   tablet-ui:
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -64,6 +137,18 @@ jobs:
           retention-days: 7
       - run: node scripts/test-staff-claims-browser.mjs
       - run: node scripts/test-staff-ui-upgrades-browser.mjs
+      - name: Verify bounded moderation queue journeys
+        run: node scripts/test-staff-pagination-browser.mjs
+      - name: Verify native administrator review layouts and decisions
+        run: node scripts/test-admin-review-browser.mjs
+      - name: Verify administrator achievement palettes and native disclosures
+        run: node scripts/test-admin-achievement-palette-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: admin-achievement-palette-evidence
+          path: test-results/admin-achievement-palette
+          retention-days: 7
       - run: node scripts/test-stay-ui-upgrades-browser.mjs
       - run: node scripts/test-support-ui-upgrades-browser.mjs
       - uses: actions/upload-artifact@v4
@@ -73,11 +158,27 @@ jobs:
           path: test-results/staff-claims
           retention-days: 7
       - run: node scripts/test-portal-home-browser.mjs
+      - name: Verify private workspace role boundaries
+        run: node scripts/test-workspace-role-browser.mjs
+      - name: Verify AkiCoches rental workspace
+        run: node scripts/test-business-mobility-browser.mjs
+      - name: Verify real MapLibre outage and recovery
+        run: node scripts/test-map-availability-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: portal-home-evidence
-          path: test-results/portal-home
+          path: |
+            test-results/portal-home
+            test-results/workspace-role-browser
+            test-results/business-mobility
+            test-results/map-availability
+            test-results/staff-pagination
+            test-results/admin-review
+            test-results/admin-achievement-palette
+            test-results/staff-ui-upgrades
+            test-results/stay-ui-upgrades
+            test-results/support-ui-upgrades
           retention-days: 7
 
   operations-responsive-evidence:
@@ -104,6 +205,14 @@ jobs:
           path: |
             test-results/admin-compact-workbenches-responsive
             test-results/admin-promotion-read-recovery
+          retention-days: 7
+      - name: Verify Owner read failures and native recovery
+        run: node scripts/test-owner-read-recovery-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: owner-read-recovery-evidence
+          path: test-results/owner-read-recovery
           retention-days: 7
 
   tablet-layout-and-spotlight:
@@ -139,9 +248,17 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - name: Actual protected chapter components with disposable adapters
         run: node scripts/test-passport-chapter-browser.mjs
+      - name: Actual Passport Places states and native controls
+        run: node scripts/test-passport-places-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: passport-small-release-evidence
           path: test-results/passport-protected-chapters
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: passport-places-route-evidence
+          path: test-results/passport-places
           retention-days: 7

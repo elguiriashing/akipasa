@@ -660,3 +660,24 @@ html[data-theme="dark"] body[data-product="akibusiness"] {
     padding-top: 48px;
   }
 }
+
+/* AkiBusiness forms retain their own product palette and native actions. */
+.akibusiness-host
+  .business-workspace
+  .focused-form
+  > .form-actions-right
+  > .button[type="submit"] {
+  flex-basis: auto;
+  min-height: 48px;
+}
+
+html[data-theme="light"]
+  .akibusiness-host
+  .business-workspace
+  :is(.workspace-page-heading > div > span, .event-studio-hero .eyebrow),
+html.theme-light
+  .akibusiness-host
+  .business-workspace
+  :is(.workspace-page-heading > div > span, .event-studio-hero .eyebrow) {
+  color: #8a5a00;
+}

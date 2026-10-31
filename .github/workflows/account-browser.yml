@@ -23,6 +23,13 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium chrome
       - run: node scripts/test-account-browser.mjs
+      - name: Verify personal profile presentation and preserved controls
+        run: node scripts/test-account-personal-browser.mjs
+      - name: Verify password recovery page fixtures and safe return
+        run: node scripts/test-recovery-browser.mjs
+      - name: Verify terms confirmation and consent control presentation
+        run: node scripts/test-terms-accept-browser.mjs
+
       - name: Verify released consumer Account screens and native navigation
         run: node scripts/test-account-release-ui-browser.mjs
       - uses: actions/upload-artifact@v4
@@ -39,16 +46,37 @@ jobs:
         if: always()
         with:
           name: account-responsive-evidence
-          path: test-results/account
+          path: |
+            test-results/account
+            test-results/account-personal
+            test-results/recovery-browser
+            test-results/terms-accept-browser
           retention-days: 7
-  public-ui:
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: recovery-route-evidence
+          path: test-results/recovery-browser
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: terms-accept-route-evidence
+          path: test-results/terms-accept-browser
+          retention-days: 7
+  public-ui-shards:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     env:
       PW_TEST_SCREENSHOT_NO_FONTS_READY: "1"
       NEXT_PUBLIC_DATA_PROVIDER: fixtures
       NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:3999
       NEXT_PUBLIC_SUPABASE_ANON_KEY: public-ui-local-disposable
+      AKIPASA_TONIGHT_ENABLED: "true"
       NEXT_PUBLIC_GOOGLE_AUTH_ENABLED: "true"
     steps:
       - uses: actions/checkout@v4
@@ -58,22 +86,77 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium chrome
-      - run: npm run test:e2e
+      - run: npm run test:e2e -- --shard=${{ matrix.shard }}/2
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: public-ui-evidence
+          name: public-ui-evidence-${{ matrix.shard }}
           path: test-results
+          retention-days: 7
+      # Keep the full archive above; small review packs remain downloadable by
+      # clients that cannot transfer the complete browser/video collection.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: public-http-contracts-${{ matrix.shard }}
+          path: |
+            test-results/**/http-contract-result.json
+            test-results/pasa-route-smoke-*.json
+            test-results/pasa-legacy-*.json
+          if-no-files-found: ignore
           retention-days: 7
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: finished-public-screen-evidence
+          name: public-static-review-${{ matrix.shard }}
+          path: |
+            test-results/pasa-legal-*.png
+            test-results/pasa-legal-*.json
+            test-results/pasa-membership-entry-*.png
+            test-results/pasa-referral-entry-*.png
+            test-results/pasa-hq-gateway-*.png
+            test-results/pasa-waitlist-confirm-*.png
+            test-results/pasa-conversion-*.json
+            test-results/pasa-review-*-roadmap-*.png
+            test-results/pasa-roadmap-back-*.png
+            test-results/pasa-roadmap-back-*.json
+            test-results/pasa-route-evidence-*.json
+          if-no-files-found: ignore
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: public-discovery-review-${{ matrix.shard }}
+          path: |
+            test-results/pasa-review-*.png
+            test-results/pasa-route-evidence-*.json
+            test-results/pasa-passport-*.png
+            test-results/pasa-passport-*.json
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: finished-public-screen-evidence-${{ matrix.shard }}
           path: |
             test-results/finished-public-release
             test-results/community-public
             test-results/finished-public-webview
+          if-no-files-found: ignore
           retention-days: 7
+
+  # Preserve the original required context: every browser shard must succeed.
+  public-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: public-ui-shards
+    if: ${{ always() }}
+    steps:
+      - name: Require the complete browser collection
+        env:
+          PUBLIC_UI_SHARD_RESULT: ${{ needs.public-ui-shards.result }}
+        run: test "$PUBLIC_UI_SHARD_RESULT" = success
 
   onboarding-ui:
     runs-on: ubuntu-latest

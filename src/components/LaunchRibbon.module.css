@@ -1,0 +1,68 @@
+.ribbon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: min(100%, 1240px);
+  margin: 0 auto 12px;
+  padding: 5px 16px;
+  border-bottom: 1px solid #39302a;
+  background: #101112;
+  color: #f9f8f7;
+}
+.spark {
+  flex: 0 0 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff8b48;
+}
+.ribbon p {
+  flex: 1 1 auto;
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.4;
+  color: #e1dcd8;
+}
+.ribbon strong {
+  font-weight: 550;
+}
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+  min-height: 44px;
+  padding: 6px 4px;
+  color: #ffb47e;
+  text-decoration: none;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+.link svg {
+  flex: none;
+}
+.link:hover {
+  color: #fff;
+}
+.link:focus-visible {
+  outline: 3px solid #ffbf8c;
+  outline-offset: 2px;
+}
+@media (max-width: 390px) {
+  .ribbon {
+    gap: 8px;
+    padding-inline: 12px;
+  }
+  .ribbon p {
+    font-size: 0.72rem;
+  }
+  .link {
+    font-size: 0.72rem;
+  }
+}
+@media (min-width: 851px) {
+  .ribbon {
+    padding-right: 76px;
+  }
+}

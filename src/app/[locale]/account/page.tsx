@@ -62,6 +62,14 @@ export default async function AccountOverview({
       detail: es ? "Vuelve a tus favoritos" : "Back to your favourites",
     },
     {
+      href: `/${locale}/akipals`,
+      icon: "gift",
+      label: "AkiPals",
+      detail: es
+        ? "Tu avatar 3D y tu armario privado"
+        : "Your 3D avatar and private wardrobe",
+    },
+    {
       href: `/${locale}/passports`,
       icon: "passport",
       label: "Passport",

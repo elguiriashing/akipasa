@@ -13,3 +13,277 @@
   font-size: clamp(1.65rem, 3vw, 2.45rem);
   letter-spacing: -0.035em;
 }
+
+/* Keep the complete protected Staff workspace in AkiPasa's charcoal/orange
+   language. These tokens are local to Staff; Admin and sister hosts keep their
+   own surfaces. Existing danger/status semantics and native controls remain. */
+html body .app-shell .consumer-workspace.staff-workspace {
+  --staff-paper: #12100e;
+  --staff-raised: #1c1712;
+  --staff-edge: #48382b;
+  --staff-ink: #fff4e8;
+  --staff-muted: #c9bcb0;
+  --staff-orange: #ff812e;
+  --pasa-ui-panel: var(--staff-paper);
+  --pasa-ui-elevated: var(--staff-raised);
+  --pasa-ui-glass: #15110e;
+  --pasa-ui-border: var(--staff-edge);
+  --pasa-ui-text: var(--staff-ink);
+  --pasa-ui-subtle: var(--staff-muted);
+  --pasa-ui-highlight: #ffad72;
+  --surface: var(--staff-paper);
+  --surface-alt: var(--staff-raised);
+  --consumer-soft: #0b0b0a;
+  --consumer-line: var(--staff-edge);
+  --ink: var(--staff-ink);
+  --muted: var(--staff-muted);
+  --line: var(--staff-edge);
+  --primary: var(--staff-orange);
+  --primary-strong: #ffad72;
+  color: var(--staff-ink);
+  background: #080909;
+}
+
+html body .app-shell:has(.staff-workspace),
+html body .app-shell .app-content:has(.staff-workspace) {
+  background: #080909;
+}
+
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  :is(.workspace-sidebar, .workspace-mobile-trigger, .workspace-drawer) {
+  color: var(--staff-ink);
+  border-color: var(--staff-edge);
+  background: #15110e;
+  box-shadow: none;
+}
+
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  .workspace-navigation
+  a {
+  color: var(--staff-muted);
+  border-radius: 999px;
+}
+
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  .workspace-navigation
+  a.active {
+  color: #ffb27b;
+  background: #302013;
+}
+
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  .workspace-section-heading {
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--staff-edge);
+  border-radius: 0;
+  color: var(--staff-ink);
+  background: transparent;
+  box-shadow: none;
+}
+
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  :is(
+    .workspace-section-heading p,
+    .queue-card p,
+    .managed-row small,
+    .empty-state
+  ) {
+  color: var(--staff-muted);
+  line-height: 1.6;
+}
+
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  :is(
+    .panel,
+    .managed-row,
+    .moderation-mode-card,
+    .staff-dashboard-task,
+    .staff-dashboard-metric
+  ) {
+  color: var(--staff-ink);
+  background: var(--staff-paper);
+  border: 1px solid var(--staff-edge);
+  border-radius: 22px;
+  box-shadow: none;
+}
+
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  :is(h1, h2, h3, .queue-card strong) {
+  color: var(--staff-ink);
+  letter-spacing: -0.035em;
+}
+
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  :is(.queue-card-header, .moderation-form) {
+  padding: clamp(18px, 2.2vw, 26px);
+}
+
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  :is(.queue-card-header, .moderation-form, .workspace-brand) {
+  border-color: var(--staff-edge);
+}
+
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) {
+  color: var(--staff-ink);
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  :is(input, textarea)::placeholder {
+  color: #b6a799;
+  opacity: 1;
+}
+
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  .button:not(.danger):not(.secondary) {
+  color: #211105;
+  background: var(--staff-orange);
+  border-color: transparent;
+  border-radius: 999px;
+  min-height: 48px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+html body .app-shell .consumer-workspace.staff-workspace .button.secondary {
+  color: #ffe1c9;
+  background: #251a11;
+  border: 1px solid #745034;
+  border-radius: 999px;
+  min-height: 48px;
+}
+
+html body .app-shell .consumer-workspace.staff-workspace .button:disabled {
+  color: #c4b7ab;
+  background: #332a23;
+  opacity: 1;
+}
+
+html body .app-shell .consumer-workspace.staff-workspace .status-pill {
+  color: #e6d1bd;
+  background: #2b2118;
+  border: 1px solid #5a4431;
+}
+
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  :is(a, button, input, textarea, select, summary):focus-visible {
+  outline: 3px solid #ffb27b;
+  outline-offset: 4px;
+}
+
+@media (max-width: 600px) {
+  html body .app-shell .consumer-workspace.staff-workspace .moderation-form {
+    gap: 12px;
+  }
+}
+
+/* A column's flex basis is height: keep the permanent-delete control compact. */
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  .catalogue-danger-card
+  .form-actions-right
+  > .button.danger {
+  flex: 0 1 auto;
+  min-height: 48px;
+  border-radius: 12px;
+}
+
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  .catalogue-danger-card
+  .form-actions-right
+  > .button.danger:not(:disabled) {
+  border-color: #b95858;
+  background: #9f2d2d;
+  color: #fff;
+}
+
+/* Creator review keeps compact actions and readable locality in both themes. */
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  .creator-review-queue
+  .pill-muted {
+  color: var(--staff-ink);
+  background: var(--staff-raised);
+  border-color: var(--staff-edge);
+}
+
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  .creator-review-queue
+  .inline-actions
+  > .button {
+  flex: 0 1 auto;
+  min-height: 48px;
+}
+
+/* Keep rounded creator review cards inset from their content. */
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  .creator-review-queue
+  > .panel {
+  padding: clamp(18px, 2.2vw, 26px);
+}
+
+/* Staff uses dark surfaces in both themes; inherit its readable active ink. */
+html
+  body
+  .app-shell
+  .consumer-workspace.staff-workspace
+  .workspace-navigation
+  a.active
+  .workspace-glyph {
+  color: inherit;
+  background: transparent;
+}

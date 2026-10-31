@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "newRouteAcceptances": {
+    "src/app/[locale]/membership/page.tsx": {
+      "reviewer": "Codex canonical_plan (independent responsible tester)",
+      "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/artifacts/13009790036",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/job/124287760069",
+      "evidenceType": "actual-next-public-default-gated-conversion",
+      "scope": "Public EN/ES default-gated consumer conversion presentation and existing safe navigation/nativeaudiencetabs. No purchase, enabled referral attribution, realAuth/RLS/provider/tenant/device acceptance inferred."
+    },
+    "src/app/[locale]/referrals/page.tsx": {
+      "reviewer": "Codex canonical_plan (independent responsible tester)",
+      "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/artifacts/13009790036",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610/job/124287760069",
+      "evidenceType": "actual-next-public-default-gated-conversion",
+      "scope": "Public EN/ES default-gated consumer conversion presentation and existing safe navigation/nativeaudiencetabs. No purchase, enabled referral attribution, realAuth/RLS/provider/tenant/device acceptance inferred."
+    },
+    "src/app/[locale]/staff/page.tsx": {
+      "reviewer": "Codex venue_event_screens independent responsible UI/function tester",
+      "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/artifacts/13007764897",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/job/124287760544",
+      "sourceSha256": "4819ae6fe5752dbb51775ea9a25322d7533a57c9e1ff70773d68db9feb277520",
+      "evidenceType": "Actual route/layout/CSS disposable browser fixture; responsible bounded screen UI/native-control review",
+      "scope": "20 dedicated overviewresponsive/paint/focus records plusfull120maintainedbrowser suite; actualcount cards/tasklinks,44px/focus/rolepredicate fixtures; fixturecounter data only.",
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    "src/app/[locale]/admin/page.tsx": {
+      "reviewer": "Codex venue_event_screens independent responsible UI/function tester",
+      "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/artifacts/13007764897",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/job/124287760544",
+      "sourceSha256": "cb79735616e0e23c0c35575f24e120b23ffbfb7f09cff13133a3e37f076aff1b",
+      "evidenceType": "Actual route/layout/CSS disposable browser fixture; responsible bounded screen UI/native-control review",
+      "scope": "Actual error/healthy-sibling count presentation, dash for unavailable,priority linktoPrivacy, real safe retry retained; admin-read-recovery healthy/error unitcontracts separatelyreviewed.",
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    "src/app/[locale]/admin/accommodation-review/page.tsx": {
+      "reviewer": "Codex venue_event_screens independent responsible UI/function tester",
+      "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/artifacts/13007764897",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/job/124287760544",
+      "sourceSha256": "e9e60ab02e46476289c378e07ffd86b3ba63ffcecb46bfe2b9142ef6cdf3b9db",
+      "evidenceType": "Actual route/layout/CSS disposable browser fixture; responsible bounded screen UI/native-control review",
+      "scope": "70native review contexts withENES/themes3603908201440, populated/orphan/empty/error; realreason validity,keyboarddecision focus/hittest,pendingduplicateprevention,stalerecovery/payload,guest/user/staff denied. Conditionalfeatureactivation only,not liveapproval.",
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    "src/app/[locale]/admin/listing-review/page.tsx": {
+      "reviewer": "Codex venue_event_screens independent responsible UI/function tester",
+      "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/artifacts/13007764897",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/job/124287760544",
+      "sourceSha256": "a6d283e844c92d9e1ab5cba84cb846ed7f3d677d6e4308366327163c4906b212",
+      "evidenceType": "Actual route/layout/CSS disposable browser fixture; responsible bounded screen UI/native-control review",
+      "scope": "Same70native contexts; read-only signals explicitly not proof ofabuse, missingeventfallback, canonicalreviewlink; empty/errortruth/nativekeyboardroles/contrasts. No automaticmoderationaction.",
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    "src/app/[locale]/staff/catalogue/page.tsx": {
+      "reviewer": "Codex venue_event_screens independent responsible UI/function tester",
+      "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/artifacts/13007764897",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254675/job/124287760544",
+      "sourceSha256": "6c8ff815bb112939389515a6a3b5590b9ddff1da307b94622f8c1e77183b5e51",
+      "evidenceType": "Actual route/layout/CSS disposable browser fixture; responsible bounded screen UI/native-control review",
+      "scope": "Current fullroute/AppShell readerror+savederror panels/search/status tabs/nativeGETform,retry preservesq/status,44pxtargets/headertypography; maintainedstaffUI/unit search contracts separatelyreviewed. No actual catalogue mutation accepted.",
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    "src/app/[locale]/auth/recover/page.tsx": {
+      "reviewer": "Codex business_screens (responsible tester)",
+      "reviewedCommit": "a7be14b96f142679f3b153f26bd71b8df80ca8cf",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41125453489/artifacts/13011595052",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41125453489/job/124302690060",
+      "sourceSha256": "632239de9f2419a6b542b83a23888bd69ff6ab5320446f284b1124a51d428981",
+      "evidenceType": "Hosted esbuild actualprotectedcomponent +productionCSS with disposable session/throw-onlyactions; not fullLocaleLayout, actualNext, provider password mutation, token lifecycle orphysical Android. Overallrelease gate remains distinct."
+    }
+  },
+  "externalReviewHashes": {
+    "conversion-public-two-hosted-1e7-acceptance-20261030.json": "243e0febf11cf3b092a2aee30cbbb09f6b4231bce69c7a12021d1aefb9c75a48",
+    "operations-independent-acceptance-1e7b71f-20261030.json": "d621f850a8f74da2c9e4c72dd0e8117080741cee4217f291672ec802cf98379e",
+    "recovery-hosted-responsible-review-a7be14b-20261030.json": "d6c3bcffbde9c18be7ba5968ffe99b45c15ba6a9f50dd02ec27e8e77d3010895"
+  },
+  "limits": [
+    "Each route approved only for the actual reviewed evidence scope.",
+    "No purchase, real Auth/RLS/provider/tenant/private mutation or physical-device certification inferred.",
+    "Subscription retains demonstrated native Search/Menu defect until corrected new-source proof.",
+    "Staff venue old light-theme captures are rejected; corrected runner awaits fresh hosted artifacts.",
+    "Overall strict and coordinated production gates remain unchanged."
+  ]
+}

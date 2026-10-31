@@ -1,0 +1,1782 @@
+/*
+ * Shared AkiPasa workbench and secondary-page skin.
+ * Single source of visual treatments for account, staff, admin, privacy,
+ * forms, event/venue details and other secondary routes. Do not copy these
+ * rules into page-specific stylesheets or affect the AkiSuite sister hosts.
+ */
+.app-shell {
+  --pasa-ui-border: rgba(184, 207, 232, 0.17);
+  --pasa-ui-glass: rgba(18, 29, 45, 0.92);
+  --pasa-ui-elevated: #1a273a;
+  --pasa-ui-panel: #111c2b;
+  --pasa-ui-text: #f7f9fd;
+  --pasa-ui-subtle: #c0ccda;
+  --pasa-ui-highlight: #ff9b62;
+  --pasa-ui-radius: clamp(1rem, 2vw, 1.55rem);
+}
+
+html:not([data-theme="light"]) .app-shell .workspace-shell {
+  --surface: var(--pasa-ui-panel);
+  --surface-alt: var(--pasa-ui-elevated);
+  --line: var(--pasa-ui-border);
+  --ink: var(--pasa-ui-text);
+  --muted: var(--pasa-ui-subtle);
+  color: var(--pasa-ui-text);
+}
+
+.app-shell .workspace-grid-system {
+  min-width: 0;
+}
+
+.app-shell .workspace-grid-system .workspace-sidebar {
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1.35rem;
+  background:
+    radial-gradient(circle at 0 0, rgba(255, 125, 49, 0.13), transparent 50%),
+    var(--pasa-ui-glass);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.16);
+}
+
+.app-shell .workspace-grid-system .workspace-brand {
+  border-bottom: 1px solid var(--pasa-ui-border);
+}
+
+.app-shell .workspace-grid-system .workspace-navigation a {
+  border-radius: 0.9rem;
+  text-decoration: none;
+}
+
+.app-shell .workspace-grid-system .workspace-navigation a.active {
+  border-color: rgba(255, 139, 68, 0.4);
+  background: rgba(255, 120, 45, 0.16);
+  color: var(--pasa-ui-highlight);
+}
+
+.app-shell .workspace-grid-system .workspace-mobile-trigger {
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1rem;
+  background: var(--pasa-ui-glass);
+  color: var(--pasa-ui-text);
+}
+
+.app-shell .workspace-grid-system .workspace-page-heading,
+.app-shell .workspace-grid-system .workspace-section-heading {
+  min-width: 0;
+  text-wrap: balance;
+}
+
+.app-shell
+  .workspace-grid-system
+  :is(.workspace-page-heading, .workspace-section-heading)
+  :is(h1, h2) {
+  letter-spacing: -0.05em;
+  line-height: 1.1;
+}
+
+.app-shell
+  .workspace-grid-system
+  :is(.workspace-page-heading, .workspace-section-heading)
+  > div
+  > span {
+  color: var(--pasa-ui-highlight);
+  font-weight: 750;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.app-shell
+  .workspace-grid-system
+  :is(.workspace-page-heading, .workspace-section-heading)
+  p {
+  max-width: 66ch;
+  line-height: 1.55;
+}
+
+.app-shell .workspace-grid-system .workspace-grid-body {
+  min-width: 0;
+}
+
+.app-shell
+  .workspace-grid-system
+  :is(.workspace-empty, .account-control-card, .queue-card) {
+  min-width: 0;
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1.25rem;
+  background: var(--pasa-ui-panel);
+}
+
+.app-shell
+  .account-workspace
+  :is(.account-control-card, .account-next-step, .account-collection-card) {
+  border-color: var(--pasa-ui-border);
+  border-radius: 1.3rem;
+  background: var(--pasa-ui-panel);
+}
+
+.app-shell .account-workspace .account-control-heading {
+  min-width: 0;
+}
+
+.app-shell
+  .account-workspace
+  :is(.account-controls-page, .account-collection-page)
+  :is(input, select, textarea) {
+  min-height: 44px;
+  border-color: var(--pasa-ui-border);
+  border-radius: 0.8rem;
+}
+
+.app-shell
+  .account-workspace
+  :is(.account-controls-page, .account-collection-page)
+  :is(button, .button, summary):focus-visible {
+  outline: 3px solid #ffb783;
+  outline-offset: 3px;
+}
+
+.app-shell
+  :is(.admin-workspace, .staff-workspace)
+  :is(.operations-hero, .staff-dashboard-hero) {
+  border: 1px solid rgba(255, 145, 81, 0.3);
+  border-radius: 1.6rem;
+  background:
+    radial-gradient(circle at 92% 2%, rgba(255, 121, 39, 0.2), transparent 47%),
+    linear-gradient(135deg, #20273b, #101a2a 85%);
+}
+
+.app-shell
+  :is(.admin-workspace, .staff-workspace)
+  :is(.staff-dashboard-task, .staff-dashboard-metric, .managed-row) {
+  border-color: var(--pasa-ui-border);
+  border-radius: 1.15rem;
+}
+
+.app-shell
+  :is(.admin-workspace, .staff-workspace)
+  :is(.managed-row, .staff-dashboard-task) {
+  background: var(--pasa-ui-panel);
+}
+
+.app-shell
+  :is(.admin-workspace, .staff-workspace)
+  :is(.staff-dashboard-task, .managed-row):focus-within {
+  outline: 2px solid #ffac78;
+  outline-offset: 2px;
+}
+
+/* Cards and page headings shared by public legal and secondary pages. */
+.app-shell
+  .app-content
+  :is(.legal-page, .privacy-page, .terms-page, .photo-credits-page)
+  :is(.panel, .card) {
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1.25rem;
+  background: var(--pasa-ui-panel);
+}
+
+.app-shell
+  .app-content
+  :is(.legal-page, .privacy-page, .terms-page, .photo-credits-page)
+  h1 {
+  font-size: clamp(2.15rem, 5vw, 3.8rem);
+  letter-spacing: -0.055em;
+  line-height: 1.08;
+}
+
+.app-shell .spotlight-page :is(.spotlight-actions, .spotlight-secondary) {
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.app-shell
+  .spotlight-page
+  :is(.event-spotlight-about, .venue-spotlight-information) {
+  border-color: var(--pasa-ui-border);
+}
+
+html[data-theme="light"] .app-shell {
+  --pasa-ui-border: rgba(35, 54, 76, 0.18);
+  --pasa-ui-glass: rgba(255, 255, 255, 0.94);
+  --pasa-ui-elevated: #fffaf4;
+  --pasa-ui-panel: #ffffff;
+  --pasa-ui-text: #1b2a39;
+  --pasa-ui-subtle: #475569;
+  --pasa-ui-highlight: #a9470e;
+}
+
+html[data-theme="light"]
+  .app-shell
+  :is(.admin-workspace, .staff-workspace)
+  :is(.operations-hero, .staff-dashboard-hero) {
+  background:
+    radial-gradient(
+      circle at 92% 2%,
+      rgba(255, 121, 39, 0.12),
+      transparent 47%
+    ),
+    #fffaf4;
+  color: #1b2a39;
+}
+
+@media (max-width: 850px) {
+  .app-shell .workspace-grid-system .workspace-mobile-trigger {
+    min-height: 48px;
+  }
+
+  .app-shell .workspace-grid-system .workspace-drawer {
+    border-color: var(--pasa-ui-border);
+    background: var(--pasa-ui-panel);
+  }
+
+  .app-shell .workspace-grid-system .workspace-grid-body {
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .app-shell .workspace-grid-system .workspace-sidebar,
+  .app-shell .workspace-grid-system .workspace-mobile-trigger {
+    background: var(--pasa-ui-panel);
+  }
+}
+
+/* The profile introduction is a real-person hero, not an invented stats card. */
+.app-shell .account-workspace .account-welcome {
+  min-height: 145px;
+  gap: clamp(0.7rem, 2vw, 1.5rem);
+  padding: clamp(1rem, 2.5vw, 2rem);
+  border: 1px solid rgba(255, 129, 49, 0.32);
+  border-radius: 1.6rem;
+  background:
+    radial-gradient(
+      circle at 95% 15%,
+      rgba(255, 114, 35, 0.22),
+      transparent 48%
+    ),
+    linear-gradient(135deg, #1b2335, #0b1422);
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.22);
+}
+
+.app-shell .account-workspace .account-avatar {
+  width: clamp(3.8rem, 6vw, 5.5rem);
+  height: clamp(3.8rem, 6vw, 5.5rem);
+  border: 3px solid #ffa16f;
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  box-shadow: 0 0 0 6px rgba(255, 123, 44, 0.13);
+}
+
+.app-shell .account-workspace .account-welcome-copy h1 {
+  margin: 0.2rem 0;
+  color: #ffffff;
+  font-size: clamp(1.8rem, 4.1vw, 3rem);
+  font-weight: 850;
+  line-height: 1.08;
+  letter-spacing: -0.055em;
+  overflow-wrap: anywhere;
+}
+
+.app-shell .account-workspace .account-welcome-copy > span {
+  color: #ffa16b;
+}
+
+.app-shell .account-workspace .account-welcome-copy p {
+  color: #d6dfeb;
+  line-height: 1.5;
+}
+
+.app-shell .account-workspace .account-icon-link {
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid rgba(255, 179, 123, 0.3);
+  background: rgba(16, 29, 47, 0.86);
+  color: #fff;
+}
+
+.app-shell .account-workspace .account-next-step {
+  border: 1px solid rgba(255, 132, 52, 0.3);
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(255, 118, 39, 0.35),
+      transparent 45%
+    ),
+    linear-gradient(135deg, #22243a, #0b1728 77%);
+}
+
+.app-shell .account-workspace .account-shortcuts > a {
+  min-height: 5rem;
+  border-color: var(--pasa-ui-border);
+  background: var(--pasa-ui-panel);
+}
+
+.app-shell .account-workspace .account-shortcut-icon {
+  border-radius: 0.9rem;
+  background: rgba(255, 121, 40, 0.16);
+  color: #ffae79;
+}
+
+.app-shell .account-workspace .account-shortcuts > a:focus-visible {
+  outline: 3px solid #ffb783;
+  outline-offset: 3px;
+}
+
+html[data-theme="light"] .app-shell .account-workspace .account-welcome {
+  border-color: rgba(188, 90, 27, 0.25);
+  background:
+    radial-gradient(
+      circle at 95% 15%,
+      rgba(255, 133, 52, 0.14),
+      transparent 48%
+    ),
+    #fff9f1;
+}
+
+html[data-theme="light"]
+  .app-shell
+  .account-workspace
+  .account-welcome-copy
+  h1 {
+  color: #1b2a39;
+}
+
+html[data-theme="light"] .app-shell .account-workspace .account-welcome-copy p {
+  color: #4b5868;
+}
+
+/*
+ * Unified route-aware surface system. AppShell sets data-pasa-surface from
+ * a single route classifier. No individual page redefines navigation.
+ * Scoped to AkiPasa to preserve sister products and auth behaviour.
+ */
+.app-shell
+  .app-content[data-pasa-surface]
+  :is(
+    .shell,
+    .dashboard,
+    .narrow-page,
+    .creator-studio-page,
+    .account-completion
+  ) {
+  min-width: 0;
+}
+
+.app-shell
+  .app-content[data-pasa-surface]
+  :is(.shell, .dashboard, .narrow-page)
+  > .hero:not(.event-spotlight-hero):not(.venue-spotlight-hero) {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid rgba(255, 131, 49, 0.22);
+  border-radius: var(--pasa-ui-radius);
+  background:
+    radial-gradient(
+      ellipse at 91% 7%,
+      rgba(248, 105, 35, 0.19),
+      transparent 53%
+    ),
+    linear-gradient(135deg, #1a2435, #0b1320 80%);
+  color: #f9fafc;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.18);
+}
+
+.app-shell
+  .app-content[data-pasa-surface]
+  :is(.shell, .dashboard, .narrow-page)
+  > .hero
+  :is(h1, h2) {
+  color: #f9fafc;
+  max-width: 22ch;
+  font-size: clamp(2rem, 5vw, 3.9rem);
+  font-weight: 850;
+  line-height: 1.09;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+
+.app-shell
+  .app-content[data-pasa-surface]
+  :is(.shell, .dashboard, .narrow-page)
+  > .hero
+  :is(.eyebrow, .kicker) {
+  color: #ffaf7b;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+}
+
+.app-shell
+  .app-content[data-pasa-surface]
+  :is(.shell, .dashboard, .narrow-page)
+  > .hero
+  :is(p, .lede) {
+  max-width: 64ch;
+  color: #d2dcea;
+  line-height: 1.6;
+}
+
+.app-shell
+  .app-content[data-pasa-surface]
+  :is(.panel, .booking-card, .console-card, .account-completion-card) {
+  min-width: 0;
+  border-radius: var(--pasa-ui-radius);
+}
+
+/* The verified visit screen keeps its venue proof and actions together. */
+.app-shell .app-content[data-pasa-surface="checkin"] .pasa-checkin-visit {
+  width: min(100%, 52rem);
+  margin-inline: auto;
+}
+
+.app-shell
+  .app-content[data-pasa-surface="checkin"]
+  .pasa-checkin-visit
+  > .auth-panel {
+  border: 1px solid var(--pasa-ui-border);
+  background: var(--pasa-ui-panel);
+  color: var(--pasa-ui-text);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+}
+
+html[data-theme="light"]
+  .app-shell
+  .app-content[data-pasa-surface="checkin"]
+  .pasa-checkin-visit
+  > .auth-panel {
+  background: #fffaf4;
+  color: #1b2a39;
+}
+
+.app-shell
+  .app-content[data-pasa-surface="checkin"]
+  .pasa-checkin-visit
+  .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.app-shell
+  .app-content[data-pasa-surface="checkin"]
+  .pasa-checkin-visit
+  .actions
+  > button {
+  min-height: 48px;
+}
+
+@media (max-width: 600px) {
+  .app-shell
+    .app-content[data-pasa-surface="checkin"]
+    .pasa-checkin-visit
+    .actions
+    > button {
+    flex: 1 1 100%;
+  }
+}
+
+.app-shell
+  .app-content[data-pasa-surface="booking"]
+  :is(.booking-card, .panel) {
+  border: 1px solid var(--pasa-ui-border);
+  background: var(--pasa-ui-panel);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.17);
+}
+
+.app-shell
+  .app-content[data-pasa-surface="booking"]
+  :is(input, select, textarea) {
+  min-width: 0;
+  max-width: 100%;
+  min-height: 44px;
+  border-radius: 0.8rem;
+}
+
+.app-shell
+  .app-content[data-pasa-surface="booking"]
+  :is(.button, button, summary):focus-visible {
+  outline: 3px solid #ffc08c;
+  outline-offset: 3px;
+}
+
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  :is(.legal .panel, .legal .prose, .shell > .panel, .privacy-card) {
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: var(--pasa-ui-radius);
+  background: var(--pasa-ui-panel);
+}
+
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  :is(.legal, .shell)
+  :is(h2, h3) {
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.app-shell
+  .app-content[data-pasa-surface="auth"]
+  :is(.account-completion, .auth-journey, .auth-focus-panel) {
+  max-width: 100%;
+}
+
+.app-shell .app-content[data-pasa-surface="auth"] .account-completion-card {
+  border: 1px solid rgba(255, 145, 79, 0.25);
+  border-radius: 1.7rem;
+  background:
+    radial-gradient(circle at 98% 0%, rgba(255, 127, 52, 0.2), transparent 52%),
+    var(--pasa-ui-panel);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+}
+
+.app-shell
+  .app-content[data-pasa-surface="auth"]
+  :is(.account-completion, .auth-journey)
+  :is(input, select, textarea, button) {
+  min-height: 44px;
+}
+
+.app-shell
+  .app-content[data-pasa-surface="creators"]
+  :is(.creator-directory-hero, .creator-studio-hero) {
+  overflow: hidden;
+  border: 1px solid rgba(255, 138, 66, 0.27);
+  border-radius: var(--pasa-ui-radius);
+  background:
+    radial-gradient(
+      circle at 90% 15%,
+      rgba(248, 119, 43, 0.25),
+      transparent 49%
+    ),
+    linear-gradient(135deg, #191715, #090b0d);
+  color: #fff;
+}
+
+.app-shell
+  .app-content[data-pasa-surface="creators"]
+  :is(.creator-studio-page, .creator-directory-page)
+  :is(.panel, .creator-card) {
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: var(--pasa-ui-radius);
+  background: var(--pasa-ui-panel);
+}
+
+.app-shell
+  .app-content[data-pasa-surface="operations"]
+  :is(.owner-hero, .business-application-hero) {
+  border: 1px solid rgba(255, 151, 77, 0.29);
+  border-radius: var(--pasa-ui-radius);
+  background:
+    radial-gradient(
+      ellipse at 87% 0%,
+      rgba(255, 126, 45, 0.2),
+      transparent 50%
+    ),
+    linear-gradient(135deg, #1b293f, #0e1929 85%);
+}
+
+.app-shell
+  .app-content[data-pasa-surface="operations"]
+  :is(.business-application-page, .owner-console-page)
+  :is(.panel, .console-card, .managed-row) {
+  border-color: var(--pasa-ui-border);
+  border-radius: var(--pasa-ui-radius);
+}
+
+.app-shell .app-content[data-pasa-surface="referral"] .referral-workspace {
+  min-width: 0;
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: var(--pasa-ui-radius);
+  background: var(--pasa-ui-panel);
+}
+
+.app-shell
+  .app-content[data-pasa-surface="membership"]
+  :is(.membership-app-header, .membership-hero) {
+  border-radius: var(--pasa-ui-radius);
+}
+
+.app-shell
+  .app-content[data-pasa-surface="membership"]
+  :is(.membership-plan, .membership-free-row) {
+  border-radius: 1.2rem;
+}
+
+.app-shell
+  .app-content[data-pasa-surface]
+  :is(a, button, summary, input, select, textarea):focus-visible {
+  outline: 3px solid #ffb77c;
+  outline-offset: 3px;
+}
+
+html[data-theme="light"]
+  .app-shell
+  .app-content[data-pasa-surface="legal"]
+  :is(.legal .panel, .legal .prose, .shell > .panel, .privacy-card) {
+  color: #203145;
+}
+
+html[data-theme="light"]
+  .app-shell
+  .app-content[data-pasa-surface="booking"]
+  :is(.booking-card, .panel) {
+  color: #203145;
+}
+
+html[data-theme="light"]
+  .app-shell
+  .app-content[data-pasa-surface="auth"]
+  .account-completion-card {
+  background: #fff9f1;
+  color: #1f2b38;
+}
+
+html[data-theme="light"]
+  .app-shell
+  .app-content[data-pasa-surface="creators"]
+  :is(.creator-studio-page, .creator-directory-page)
+  :is(.panel, .creator-card) {
+  color: #1d2d40;
+}
+
+@media (max-width: 850px) {
+  .app-shell
+    .app-content[data-pasa-surface]
+    :is(.shell, .dashboard, .narrow-page)
+    > .hero:not(.event-spotlight-hero):not(.venue-spotlight-hero) {
+    padding: clamp(1.2rem, 5vw, 1.8rem);
+    border-radius: 1.25rem;
+  }
+
+  .app-shell
+    .app-content[data-pasa-surface="operations"]
+    :is(.owner-console-page, .business-application-page) {
+    min-width: 0;
+    padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .app-shell
+    .app-content[data-pasa-surface="operations"]
+    :is(.owner-hero, .business-application-hero) {
+    background: #131d2a;
+  }
+}
+
+/* Booking conversion surfaces: shared by event and venue requests.
+ * Scoped to the booking route; no reservation/auth/payment logic changes. */
+.app-shell .app-content[data-pasa-surface="booking"] .narrow-page {
+  width: min(100%, 72rem);
+  padding-inline: clamp(1rem, 3.4vw, 2.8rem);
+}
+.app-shell .app-content[data-pasa-surface="booking"] .narrow-page > .hero {
+  padding: clamp(1.5rem, 5vw, 3.5rem);
+  margin-block: clamp(1rem, 2.5vw, 2rem);
+}
+.app-shell .app-content[data-pasa-surface="booking"] .booking-card {
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  margin-block: 1.25rem;
+}
+.app-shell .app-content[data-pasa-surface="booking"] .booking-card > h2 {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+.app-shell .app-content[data-pasa-surface="booking"] .booking-card .stack {
+  display: grid;
+  gap: clamp(0.85rem, 2vw, 1.3rem);
+  margin-block-start: 1.5rem;
+}
+.app-shell .app-content[data-pasa-surface="booking"] .booking-card label {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+  font-weight: 650;
+}
+.app-shell
+  .app-content[data-pasa-surface="booking"]
+  .booking-card
+  :is(input:not([type="hidden"]), select, textarea) {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.75rem 0.95rem;
+  border: 1px solid var(--pasa-ui-border);
+  background: var(--pasa-ui-elevated);
+  color: var(--pasa-ui-text);
+  color-scheme: dark;
+}
+html[data-theme="light"]
+  .app-shell
+  .app-content[data-pasa-surface="booking"]
+  .booking-card
+  :is(input:not([type="hidden"]), select, textarea) {
+  color-scheme: light;
+}
+.app-shell .app-content[data-pasa-surface="booking"] .booking-card textarea {
+  min-height: 7rem;
+  resize: vertical;
+}
+.app-shell
+  .app-content[data-pasa-surface="booking"]
+  .booking-card
+  button[type="submit"] {
+  min-height: 52px;
+  width: 100%;
+  border-radius: 1rem;
+  font-weight: 800;
+}
+.app-shell .app-content[data-pasa-surface="booking"] .narrow-page > .back-link {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  margin-block: 0.75rem 2rem;
+}
+@media (min-width: 760px) {
+  .app-shell .app-content[data-pasa-surface="booking"] .booking-card .stack {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .app-shell
+    .app-content[data-pasa-surface="booking"]
+    .booking-card
+    .stack
+    > label:has(textarea),
+  .app-shell
+    .app-content[data-pasa-surface="booking"]
+    .booking-card
+    .stack
+    > button[type="submit"] {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 759px) {
+  .app-shell .app-content[data-pasa-surface="booking"] .narrow-page > .hero {
+    padding: 1.4rem;
+  }
+}
+
+/* Public legal and attribution screens share the same designed reading
+ * surface without changing policy text, licences or product permissions. */
+.app-shell .app-content[data-pasa-surface="legal"] .pasa-legal-page {
+  --legal-panel: #111213;
+  --legal-ink: #faf7f3;
+  --legal-muted: #c9c5bf;
+  --legal-line: rgba(255, 177, 124, 0.18);
+  --legal-link: #ffb17c;
+  width: min(100%, 78rem);
+  min-width: 0;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+  padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+}
+
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page.shell.legal
+  > .pasa-legal-hero.hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: clamp(1.75rem, 5vw, 4rem);
+  border: 1px solid rgba(255, 159, 94, 0.32);
+  border-radius: clamp(1.25rem, 3vw, 2rem);
+  background:
+    radial-gradient(
+      ellipse at 90% 0%,
+      rgba(255, 131, 50, 0.25),
+      transparent 54%
+    ),
+    linear-gradient(135deg, #211611, #090a0b 82%);
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.16);
+  color: #ffffff;
+}
+
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page.shell.legal
+  > .pasa-legal-hero.hero
+  h1 {
+  max-width: 21ch;
+  margin-block: 0.5rem 0.85rem;
+  color: inherit;
+  font-size: clamp(2rem, 5.5vw, 4rem);
+  line-height: 1.08;
+  letter-spacing: -0.055em;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page.shell.legal
+  > .pasa-legal-hero.hero
+  .eyebrow {
+  color: #ffb37d;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page.shell.legal
+  > .pasa-legal-hero.hero
+  :is(p, .lede) {
+  max-width: 67ch;
+  color: #ded8d1;
+  line-height: 1.65;
+}
+
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page
+  .pasa-legal-prose {
+  width: 100%;
+  max-width: none;
+  margin-inline: auto;
+  margin-block: clamp(1rem, 2.5vw, 2rem);
+  padding: clamp(1.35rem, 3.5vw, 2.7rem);
+  border: 1px solid var(--legal-line);
+  border-radius: clamp(1.2rem, 3vw, 1.8rem);
+  background: var(--legal-panel);
+  color: var(--legal-ink);
+  line-height: 1.75;
+}
+
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page
+  .pasa-legal-prose
+  h2 {
+  margin-block: 1.5rem 0.5rem;
+  color: var(--legal-ink);
+  font-size: clamp(1.25rem, 2.5vw, 1.65rem);
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-prose
+  h2:first-child {
+  margin-top: 0;
+}
+
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page
+  .pasa-legal-prose
+  p {
+  margin-block: 0.45rem 1rem;
+  color: var(--legal-muted);
+  overflow-wrap: anywhere;
+}
+
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page
+  .pasa-photo-credit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: clamp(0.8rem, 2vw, 1.35rem);
+  margin-block: clamp(1rem, 2.5vw, 2rem);
+  min-width: 0;
+}
+
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page
+  .pasa-photo-credit-card {
+  min-width: 0;
+  padding: clamp(1.25rem, 2.4vw, 1.85rem);
+  border: 1px solid var(--legal-line);
+  border-radius: 1.35rem;
+  background: var(--legal-panel);
+  color: var(--legal-ink);
+  box-shadow: 0 12px 33px rgba(0, 0, 0, 0.1);
+}
+
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page
+  .pasa-photo-credit-card
+  h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.2rem, 2vw, 1.55rem);
+  overflow-wrap: anywhere;
+}
+
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page
+  .pasa-photo-credit-card
+  p {
+  color: var(--legal-muted);
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page
+  .pasa-photo-credit-card
+  a {
+  display: inline-block;
+  max-width: 100%;
+  color: var(--legal-link);
+  font-weight: 750;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  overflow-wrap: anywhere;
+}
+
+html[data-theme="light"]
+  .app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page.shell.legal
+  > .pasa-legal-hero.hero {
+  border-color: rgba(180, 79, 23, 0.26);
+  background:
+    radial-gradient(
+      ellipse at 92% 0%,
+      rgba(253, 154, 75, 0.19),
+      transparent 53%
+    ),
+    #fff9f1;
+  color: #241e19;
+  box-shadow: 0 16px 35px rgba(65, 43, 20, 0.09);
+}
+
+html[data-theme="light"]
+  .app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page.shell.legal
+  > .pasa-legal-hero.hero
+  .eyebrow {
+  color: #a34514;
+}
+
+html[data-theme="light"]
+  .app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page.shell.legal
+  > .pasa-legal-hero.hero
+  :is(p, .lede) {
+  color: #5e534b;
+}
+
+/* Policy pages read as one centered editorial column; credits keep their grid. */
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page:has(.pasa-legal-prose) {
+  max-width: 62rem;
+}
+html[data-theme="light"]
+  .app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page {
+  --legal-panel: #fffdfa;
+  --legal-ink: #241e19;
+  --legal-muted: #5e534b;
+  --legal-line: rgba(111, 66, 34, 0.2);
+  --legal-link: #963e10;
+}
+.app-shell
+  .app-content[data-pasa-surface="legal"]
+  .pasa-legal-page
+  a:focus-visible {
+  outline: 3px solid var(--legal-link);
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+
+@media (max-width: 600px) {
+  .app-shell
+    .app-content[data-pasa-surface="legal"]
+    .pasa-legal-page.shell.legal
+    > .pasa-legal-hero.hero {
+    padding: 1.4rem;
+  }
+  .app-shell
+    .app-content[data-pasa-surface="legal"]
+    .pasa-legal-page
+    .pasa-legal-prose {
+    padding: 1.25rem;
+  }
+}
+
+/* Business application journey: one visual surface, unchanged review actions. */
+.app-shell .business-application-page {
+  width: min(100%, 82rem);
+  margin-inline: auto;
+  padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+}
+
+.app-shell .business-application-page .business-application-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(17rem, 1fr);
+  align-items: center;
+  gap: clamp(1rem, 3vw, 3rem);
+  padding: clamp(1.4rem, 4vw, 3.25rem);
+}
+
+.app-shell .business-application-page .business-application-checklist {
+  min-width: 0;
+  padding: clamp(1.1rem, 2vw, 1.75rem);
+  border: 1px solid rgba(255, 169, 102, 0.32);
+  border-radius: 1.25rem;
+  background: rgba(13, 22, 37, 0.58);
+  color: #f4f7fb;
+}
+
+.app-shell .business-application-page .business-application-checklist li {
+  margin-block: 0.55rem;
+  line-height: 1.5;
+}
+
+.app-shell .business-application-page .business-application-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-block: clamp(1rem, 3vw, 2rem);
+  padding: 0;
+  list-style: none;
+}
+
+.app-shell .business-application-page .business-application-steps > li {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: clamp(1rem, 2vw, 1.3rem);
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1.15rem;
+  background: var(--pasa-ui-panel);
+  color: var(--pasa-ui-text);
+}
+
+.app-shell .business-application-page .business-application-steps > li.active {
+  border-color: rgba(255, 145, 65, 0.68);
+  box-shadow: inset 0 0 0 1px rgba(255, 145, 65, 0.22);
+}
+
+.app-shell .business-application-page .business-application-steps li > span {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 2rem;
+  place-items: center;
+  border-radius: 0.65rem;
+  background: rgba(255, 145, 65, 0.18);
+  color: var(--pasa-ui-highlight);
+  font-weight: 800;
+}
+
+.app-shell .business-application-page .business-application-steps small {
+  display: block;
+  margin-top: 0.3rem;
+  color: var(--pasa-ui-subtle);
+  line-height: 1.4;
+}
+
+.app-shell .business-application-page .business-application-form-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(16rem, 0.85fr);
+  align-items: start;
+  gap: clamp(1rem, 2.5vw, 2rem);
+}
+
+.app-shell .business-application-page .business-application-form,
+.app-shell .business-application-page .business-application-help,
+.app-shell .business-application-page .business-application-status {
+  min-width: 0;
+  padding: clamp(1.2rem, 2.5vw, 2rem);
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1.3rem;
+  background: var(--pasa-ui-panel);
+  color: var(--pasa-ui-text);
+}
+
+.app-shell .business-application-page .business-application-form label {
+  font-weight: 700;
+}
+
+.app-shell .business-application-page .business-application-form input,
+.app-shell .business-application-page .business-application-form select,
+.app-shell .business-application-page .business-application-form textarea {
+  width: 100%;
+  max-width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 0.85rem;
+  background: var(--pasa-ui-elevated);
+  color: var(--pasa-ui-text);
+}
+
+.app-shell .business-application-page .business-application-form textarea {
+  min-height: 8rem;
+}
+
+.app-shell .business-application-page .business-application-form button {
+  min-height: 52px;
+}
+
+html[data-theme="light"]
+  .app-shell
+  .business-application-page
+  .business-application-checklist {
+  border-color: rgba(169, 84, 29, 0.27);
+  background: rgba(255, 255, 255, 0.88);
+  color: #213145;
+}
+
+@media (max-width: 800px) {
+  .app-shell .business-application-page .business-application-hero,
+  .app-shell .business-application-page .business-application-form-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .app-shell .business-application-page .business-application-steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell .business-application-page .business-application-hero {
+    padding: 1.35rem;
+  }
+}
+
+/* Protected terms confirmation reuses the Pasa auth shell and legal visual
+ * tokens. Neither the recorded terms version nor the server action changes. */
+.app-shell .pasa-terms-accept-page {
+  --pasa-ui-panel: #111213;
+  --pasa-ui-elevated: #1c1a18;
+  --pasa-ui-text: #faf7f3;
+  --pasa-ui-subtle: #cec6bd;
+  --pasa-ui-border: #484039;
+  --pasa-ui-highlight: #ffb17c;
+  width: min(100%, 70rem);
+  min-width: 0;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+  padding-bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
+}
+
+.app-shell
+  .app-content[data-pasa-surface]
+  .shell.pasa-terms-accept-page
+  > .hero.pasa-terms-accept-hero {
+  padding: clamp(1.5rem, 4.8vw, 3.5rem);
+  border: 1px solid rgba(255, 151, 86, 0.3);
+  border-radius: clamp(1.25rem, 3vw, 2rem);
+  background: linear-gradient(135deg, #291d15, #0d0e0f);
+  color: #fff;
+}
+
+.app-shell .shell.pasa-terms-accept-page > .hero.pasa-terms-accept-hero h1 {
+  max-width: 22ch;
+  margin-block: 0.5rem 0.9rem;
+  color: inherit;
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  letter-spacing: -0.055em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+.app-shell .shell.pasa-terms-accept-page > .hero.pasa-terms-accept-hero .lede {
+  max-width: 64ch;
+  color: #ded5cb;
+  line-height: 1.65;
+}
+
+.app-shell
+  .app-content[data-pasa-surface]
+  .shell.pasa-terms-accept-page
+  > .hero.pasa-terms-accept-hero
+  .pasa-terms-accept-version {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid rgba(255, 181, 124, 0.38);
+  border-radius: 999px;
+  color: #ffcdab;
+  font-size: 0.85rem;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.app-shell .pasa-terms-accept-documents {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  margin-block: clamp(1rem, 3vw, 2rem);
+}
+
+.app-shell .pasa-terms-accept-documents a {
+  display: grid;
+  min-width: 0;
+  min-height: 100px;
+  align-content: center;
+  gap: 0.65rem;
+  padding: clamp(1rem, 2.3vw, 1.6rem);
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1.25rem;
+  background: var(--pasa-ui-panel);
+  color: var(--pasa-ui-text);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.app-shell .pasa-terms-accept-documents a span {
+  color: var(--pasa-ui-highlight);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.045em;
+}
+
+.app-shell .pasa-terms-accept-documents a strong {
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+}
+
+.app-shell .pasa-terms-accept-panel {
+  width: 100%;
+  max-width: none;
+  padding: clamp(1.3rem, 3.2vw, 2.5rem);
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1.5rem;
+  background: var(--pasa-ui-panel);
+  color: var(--pasa-ui-text);
+}
+
+.app-shell .pasa-terms-accept-panel h2 {
+  margin-block: 0 1.5rem;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  letter-spacing: -0.035em;
+}
+
+.app-shell .pasa-terms-accept-consent {
+  display: grid;
+  grid-template-columns: 1.3rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.9rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1rem;
+  background: var(--pasa-ui-elevated);
+  color: var(--pasa-ui-text);
+  line-height: 1.55;
+}
+
+.app-shell .pasa-terms-accept-consent input {
+  width: 1.3rem;
+  height: 1.3rem;
+  min-height: 1.3rem;
+  margin-top: 0.2rem;
+  accent-color: #fb862e;
+}
+
+.app-shell .pasa-terms-accept-consent a {
+  color: var(--pasa-ui-highlight);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.app-shell .pasa-terms-accept-submit {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 1rem;
+  border-radius: 0.95rem;
+  font-weight: 800;
+}
+
+.app-shell
+  .app-content[data-pasa-surface]
+  .shell.pasa-terms-accept-page
+  > .hero.pasa-terms-accept-hero
+  .eyebrow {
+  color: var(--pasa-ui-highlight);
+}
+
+html[data-theme="light"] .app-shell .pasa-terms-accept-page {
+  --pasa-ui-panel: #fffdfa;
+  --pasa-ui-elevated: #f5ede4;
+  --pasa-ui-text: #27211c;
+  --pasa-ui-subtle: #64584d;
+  --pasa-ui-border: #d3c3b3;
+  --pasa-ui-highlight: #974010;
+}
+
+html[data-theme="light"]
+  .app-shell
+  .app-content[data-pasa-surface]
+  .shell.pasa-terms-accept-page
+  > .hero.pasa-terms-accept-hero {
+  border-color: rgba(178, 92, 28, 0.24);
+  background: #fff9f2;
+  color: #27211c;
+}
+
+html[data-theme="light"]
+  .app-shell
+  .shell.pasa-terms-accept-page
+  > .hero.pasa-terms-accept-hero
+  .lede {
+  color: #64584d;
+}
+
+html[data-theme="light"]
+  .app-shell
+  .app-content[data-pasa-surface]
+  .shell.pasa-terms-accept-page
+  > .hero.pasa-terms-accept-hero
+  .pasa-terms-accept-version {
+  color: #93400e;
+  border-color: rgba(153, 73, 20, 0.32);
+}
+
+@media (max-width: 600px) {
+  .app-shell .pasa-terms-accept-documents {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell .pasa-terms-accept-hero {
+    padding: 1.5rem;
+  }
+}
+
+/* Consumer conversion entrypoints. Shared presentation, existing checkout and
+ * referral actions remain server-owned and independently gated. */
+/* Local conversion tokens never alter other AppShell routes or sister hosts. */
+.app-shell :is(.pasa-referral-entry, .pasa-membership-page) {
+  --conversion-panel: #111314;
+  --conversion-raised: #1d1e1f;
+  --conversion-edge: #423b33;
+  --conversion-ink: #faf7f3;
+  --conversion-muted: #c8c1b9;
+  --conversion-accent: #ffb17c;
+}
+
+html[data-theme="light"]
+  .app-shell
+  :is(.pasa-referral-entry, .pasa-membership-page) {
+  --conversion-panel: #fffdf9;
+  --conversion-raised: #f3eee7;
+  --conversion-edge: #dacdbd;
+  --conversion-ink: #29231d;
+  --conversion-muted: #62574d;
+  --conversion-accent: #98400d;
+}
+
+.app-shell .pasa-conversion-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-width: 0;
+  padding: clamp(1.5rem, 4.5vw, 3.5rem);
+  border: 1px solid rgba(255, 160, 98, 0.32);
+  border-radius: clamp(1.35rem, 2.8vw, 2rem);
+  background:
+    radial-gradient(circle at 90% 3%, rgba(255, 135, 53, 0.3), transparent 48%),
+    linear-gradient(135deg, #201913, #0d0f10 83%);
+  color: var(--conversion-ink);
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.18);
+}
+
+.app-shell .pasa-conversion-kicker {
+  display: block;
+  color: var(--conversion-accent);
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.app-shell .pasa-conversion-hero h1 {
+  max-width: 20ch;
+  margin-block: 0.7rem 1rem;
+  color: var(--conversion-ink);
+  font-size: clamp(2rem, 5vw, 3.85rem);
+  font-weight: 850;
+  line-height: 1.1;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.app-shell .pasa-conversion-hero p {
+  max-width: 66ch;
+  margin-block: 0.65rem 1rem;
+  color: var(--conversion-muted);
+  line-height: 1.65;
+}
+
+.app-shell .pasa-conversion-status {
+  display: inline-flex;
+  max-width: 100%;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid rgba(255, 185, 124, 0.48);
+  border-radius: 999px;
+  color: #ffcca5;
+  font-size: 0.9rem;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.app-shell .pasa-conversion-panel {
+  display: grid;
+  min-width: 0;
+  gap: 1rem;
+  padding: clamp(1.35rem, 3vw, 2.4rem);
+  border: 1px solid var(--conversion-edge);
+  border-radius: 1.45rem;
+  background: var(--conversion-panel);
+  color: var(--conversion-ink);
+}
+
+.app-shell .pasa-conversion-panel h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 3vw, 2.1rem);
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+}
+
+.app-shell .pasa-conversion-panel p {
+  max-width: 68ch;
+  margin: 0;
+  color: var(--conversion-muted);
+  line-height: 1.6;
+}
+
+.app-shell .pasa-conversion-link,
+.app-shell .pasa-conversion-submit {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.15rem;
+  border: 1px solid #ff9c5f;
+  border-radius: 0.85rem;
+  background: #ff893c;
+  color: #1a1720;
+  font: inherit;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.app-shell .pasa-conversion-secondary {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  color: var(--conversion-accent);
+  font-weight: 750;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.app-shell .pasa-conversion-link:focus-visible,
+.app-shell .pasa-conversion-submit:focus-visible,
+.app-shell .pasa-conversion-secondary:focus-visible {
+  outline: 3px solid #ffb783;
+  outline-offset: 4px;
+}
+
+.app-shell .pasa-referral-entry {
+  display: grid;
+  width: min(100%, 75rem);
+  min-width: 0;
+  gap: clamp(1rem, 2.4vw, 1.5rem);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+  padding-bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
+}
+
+.app-shell .pasa-referral-code-label {
+  color: var(--conversion-muted);
+  font-weight: 750;
+}
+
+.app-shell .pasa-referral-code {
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.7rem 1.1rem;
+  border: 1px solid var(--conversion-edge);
+  border-radius: 0.85rem;
+  background: var(--conversion-raised);
+  color: var(--conversion-ink);
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  letter-spacing: 0.08em;
+  overflow-wrap: anywhere;
+}
+
+.app-shell .pasa-conversion-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.85rem 1.5rem;
+}
+
+.app-shell .pasa-membership-page {
+  width: min(100%, 96rem);
+  min-width: 0;
+  margin-inline: auto;
+  padding-bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
+}
+
+.app-shell .pasa-membership-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 1.5rem;
+  margin-bottom: clamp(1rem, 2.5vw, 1.8rem);
+}
+
+.app-shell .pasa-membership-heading {
+  min-width: 0;
+}
+
+.app-shell .pasa-membership-manage {
+  white-space: nowrap;
+}
+
+html[data-theme="light"] .app-shell .pasa-conversion-hero {
+  border-color: rgba(169, 89, 33, 0.25);
+  background:
+    radial-gradient(
+      circle at 90% 3%,
+      rgba(255, 132, 49, 0.16),
+      transparent 49%
+    ),
+    #fff9f1;
+  color: var(--conversion-ink);
+}
+
+html[data-theme="light"] .app-shell .pasa-conversion-hero h1 {
+  color: var(--conversion-ink);
+}
+
+html[data-theme="light"] .app-shell .pasa-conversion-hero p {
+  color: var(--conversion-muted);
+}
+
+html[data-theme="light"] .app-shell .pasa-conversion-kicker,
+html[data-theme="light"] .app-shell .pasa-conversion-status {
+  color: #923e0c;
+}
+
+html[data-theme="light"] .app-shell .pasa-conversion-status {
+  border-color: rgba(151, 66, 19, 0.32);
+}
+
+@media (max-width: 760px) {
+  .app-shell .pasa-membership-intro {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell .pasa-membership-manage,
+  .app-shell .pasa-conversion-actions > * {
+    width: 100%;
+    white-space: normal;
+  }
+}
+
+/* Owner-only operational cockpit. Reuse existing Workspace and role gates. */
+.app-shell .app-content[data-pasa-surface="operations"] .owner-console-page {
+  width: min(100%, 84rem);
+  min-width: 0;
+  padding-bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
+}
+.app-shell
+  .app-content[data-pasa-surface="operations"]
+  .owner-console-page
+  .owner-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(1.2rem, 4vw, 3rem);
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+  border: 1px solid rgba(255, 153, 88, 0.32);
+  border-radius: 1.75rem;
+  background:
+    radial-gradient(
+      circle at 91% 4%,
+      rgba(255, 131, 49, 0.26),
+      transparent 48%
+    ),
+    linear-gradient(135deg, #1e2b42, #0c1726 85%);
+  color: #f8fafc;
+}
+.app-shell .owner-console-page .owner-command-kicker {
+  display: block;
+  color: #ffbe8c;
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.app-shell .owner-console-page .owner-hero h2 {
+  max-width: 17ch;
+  margin: 0.75rem 0;
+  color: #fff;
+  font-size: clamp(2rem, 5vw, 3.7rem);
+  line-height: 1.06;
+  letter-spacing: -0.055em;
+  overflow-wrap: anywhere;
+}
+.app-shell .owner-console-page .owner-hero p {
+  max-width: 56ch;
+  color: #dce5f0;
+  line-height: 1.6;
+}
+.app-shell .owner-console-page .owner-command-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+.app-shell .owner-console-page .owner-command-actions a {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.1rem;
+  border: 1px solid rgba(255, 179, 118, 0.55);
+  border-radius: 0.85rem;
+  color: #fff;
+  font-weight: 800;
+  text-decoration: none;
+}
+.app-shell .owner-console-page .owner-command-actions a:first-child {
+  background: #ff963f;
+  border-color: #ff963f;
+  color: #1b202d;
+}
+.app-shell .owner-console-page .owner-command-actions a:focus-visible,
+.app-shell .owner-console-page .owner-launch-grid a:focus-visible {
+  outline: 3px solid #ffbc82;
+  outline-offset: 4px;
+}
+.app-shell .owner-console-page .owner-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding: 0;
+  border: 0;
+}
+.app-shell .owner-console-page .owner-metric-grid > article {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1.1rem;
+  background: var(--pasa-ui-panel);
+  color: var(--pasa-ui-text);
+}
+.app-shell .owner-console-page .owner-metric-grid strong {
+  font-size: clamp(1.5rem, 3vw, 2.3rem);
+  overflow-wrap: anywhere;
+}
+.app-shell .owner-console-page .owner-console-grid {
+  gap: 1rem;
+}
+.app-shell .owner-console-page .owner-console-grid > section {
+  min-width: 0;
+  padding: clamp(1.1rem, 2vw, 1.8rem);
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 1.35rem;
+  background: var(--pasa-ui-panel);
+  color: var(--pasa-ui-text);
+}
+.app-shell .owner-console-page .owner-launch-grid {
+  gap: 0.65rem;
+}
+.app-shell .owner-console-page .owner-launch-grid > a {
+  min-width: 0;
+  min-height: 56px;
+  padding: 0.85rem;
+  border: 1px solid var(--pasa-ui-border);
+  border-radius: 0.85rem;
+  background: var(--pasa-ui-elevated);
+  color: var(--pasa-ui-text);
+  overflow-wrap: anywhere;
+}
+.app-shell .owner-console-page .owner-agent-radar article,
+.app-shell .owner-console-page .owner-activity-stream article {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+html[data-theme="light"]
+  .app-shell
+  .app-content[data-pasa-surface="operations"]
+  .owner-console-page
+  .owner-hero {
+  border-color: rgba(173, 79, 24, 0.27);
+  background:
+    radial-gradient(
+      circle at 90% 5%,
+      rgba(255, 135, 60, 0.16),
+      transparent 49%
+    ),
+    #fff8f0;
+  color: #17283a;
+}
+html[data-theme="light"] .app-shell .owner-console-page .owner-hero h2 {
+  color: #17283a;
+}
+html[data-theme="light"] .app-shell .owner-console-page .owner-hero p {
+  color: #43536a;
+}
+html[data-theme="light"] .app-shell .owner-console-page .owner-command-kicker {
+  color: #9d420a;
+}
+html[data-theme="light"]
+  .app-shell
+  .owner-console-page
+  .owner-command-actions
+  a:not(:first-child) {
+  color: #6f300a;
+  border-color: rgba(154, 69, 18, 0.45);
+}
+@media (max-width: 900px) {
+  .app-shell .owner-console-page .owner-metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .app-shell .owner-console-page .owner-console-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  .app-shell
+    .app-content[data-pasa-surface="operations"]
+    .owner-console-page
+    .owner-hero {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 1.4rem;
+  }
+  .app-shell .owner-console-page .owner-hero-orbit {
+    display: none;
+  }
+  .app-shell .owner-console-page .owner-command-actions a {
+    flex: 1 1 100%;
+  }
+  .app-shell .owner-console-page .owner-metric-grid > article:last-child {
+    grid-column: 1 / -1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell .owner-console-page .owner-hero-orbit i {
+    animation: none;
+  }
+}
+
+/* Creator tabs share the same neutral night chrome as their form panels. */
+html:not([data-theme="light"])
+  .app-shell
+  .app-content[data-pasa-surface="creators"]
+  .studio-tab-list {
+  background: var(--pasa-raised);
+}

@@ -27,10 +27,21 @@ export default async function MembershipPage({
   const signedIn = Boolean(user);
 
   return (
-    <main className="shell membership-page membership-app">
-      <header className="membership-app-header">
-        <h1>{es ? "Membresía" : "Membership"}</h1>
+    <main className="shell membership-page membership-app pasa-membership-page">
+      <header className="membership-app-header pasa-conversion-hero pasa-membership-intro">
+        <div className="pasa-membership-heading">
+          <span className="pasa-conversion-kicker">
+            AKIPASA / {es ? "MEMBRESÍAS" : "MEMBERSHIP"}
+          </span>
+          <h1>{es ? "Membresía" : "Membership"}</h1>
+          <p>
+            {es
+              ? "Descubre sin suscripción, mejora la ficha de tu negocio o accede a herramientas empresariales independientes. Elige lo que necesitas."
+              : "Explore without a subscription, upgrade a business listing or choose separate business tools. Pick what fits."}
+          </p>
+        </div>
         <Link
+          className="pasa-conversion-link pasa-membership-manage"
           href={
             signedIn
               ? `/${locale}/account/subscription?from=${akiSuiteApp(query.from)}`

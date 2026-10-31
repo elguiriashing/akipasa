@@ -19,5 +19,5 @@ backups/
 automation/.dev.vars
 automation/worker-configuration.d.ts
 supabase/.temp
-
-/public/pals/runtime/
+# Deterministic bundled 3D avatar runtime (built before Next/OpenNext)
+public/pals/runtime/

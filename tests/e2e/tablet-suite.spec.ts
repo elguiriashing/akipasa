@@ -184,10 +184,18 @@ test("AkiBusiness login and modes fit tablets and split windows", async ({
   await page.route(
     /http:\/\/(?:127\.0\.0\.1|localhost):\d+\//,
     async (route) => {
-      // Compiled assets are host-independent; keep their native browser transport.
-      if (new URL(route.request().url()).pathname.startsWith("/_next/static/"))
+      // Compiled assets, vendored fonts and immutable PWA icons retain their
+      // real local HTTP transport instead of a second Node-side proxy request.
+      const path = new URL(route.request().url()).pathname;
+      if (
+        path.startsWith("/_next/static/") ||
+        path.startsWith("/assets/fonts/") ||
+        path.startsWith("/pwa/")
+      )
         return route.continue();
       const response = await route.fetch({
+        // Retry one connection reset for GET only, never an HTTP failure or write.
+        maxRetries: route.request().method() === "GET" ? 1 : 0,
         headers: { ...route.request().headers(), host: "business.akipasa.com" },
       });
       await route.fulfill({ response });
@@ -221,4 +229,5 @@ test("AkiBusiness login and modes fit tablets and split windows", async ({
         });
       }
     }
+  await page.unrouteAll({ behavior: "wait" });
 });

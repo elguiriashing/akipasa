@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import styles from "./creator.module.css";
 import { StudioTabs } from "@/components/community/StudioTabs";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -23,8 +24,11 @@ export default async function CreatorStudioPage({
   if (!isLocale(locale)) notFound();
   const es = locale === "es";
   const query = await searchParams;
-  const { supabase, user } = await requireUser(locale);
-  const { data: profile } = await supabase
+  const { supabase, user } = await requireUser(
+    locale,
+    `/${locale}/community/creator`,
+  );
+  const { data: profile, error: profileError } = await supabase
     .from("creator_profiles")
     .select(
       "slug,display_name,headline_es,headline_en,bio_es,bio_en,locality,province,avatar_url,cover_url,website_url,instagram_url,youtube_url,state,verification_state",
@@ -32,11 +36,11 @@ export default async function CreatorStudioPage({
     .eq("profile_id", user.id)
     .maybeSingle();
   const [
-    { data: categories },
-    { data: selectedCategories },
-    { data: hostedEvents },
-    { data: submittedEvents },
-    { data: verificationEligibility },
+    { data: categories, error: categoriesError },
+    { data: selectedCategories, error: selectedCategoriesError },
+    { data: hostedEvents, error: hostedEventsError },
+    { data: submittedEvents, error: submittedEventsError },
+    { data: verificationEligibility, error: eligibilityError },
   ] = await Promise.all([
     supabase.from("categories").select("id,name_es,name_en").order("name_es"),
     supabase
@@ -57,6 +61,45 @@ export default async function CreatorStudioPage({
       p_profile: user.id,
     }),
   ]);
+  if (profileError || categoriesError || selectedCategoriesError) {
+    return (
+      <div className={styles.studio}>
+        <WorkspaceShell
+          title={es ? "Mi perfil creador" : "Creator studio"}
+          eyebrow={es ? "Comunidad" : "Community"}
+          description={
+            es
+              ? "Tu página, tus eventos y tu identidad."
+              : "Your page, your events and your identity."
+          }
+          navigationTitle={es ? "Comunidad" : "Community"}
+          homeHref={`/${locale}/community`}
+          items={communityCreatorItems(locale)}
+        >
+          <section className="panel stack creator-recovery" role="alert">
+            <span className="eyebrow">
+              {es
+                ? "Estudio temporalmente no disponible"
+                : "Studio temporarily unavailable"}
+            </span>
+            <h2>
+              {es
+                ? "No se pudo recuperar tu perfil completo"
+                : "Your complete profile could not be loaded"}
+            </h2>
+            <p>
+              {es
+                ? "Los formularios estarán disponibles cuando podamos confirmar tu perfil y tus categorías. Tu información guardada se conserva."
+                : "The editors will be available when your profile and categories can be confirmed. Your saved information is retained."}
+            </p>
+            <Link className="button" href={`/${locale}/community/creator`}>
+              {es ? "Reintentar" : "Retry"}
+            </Link>
+          </section>
+        </WorkspaceShell>
+      </div>
+    );
+  }
   const eligibility = verificationEligibility as {
     eligible?: boolean;
     published_events?: number;
@@ -68,437 +111,524 @@ export default async function CreatorStudioPage({
     (selectedCategories || []).map((item) => item.category_id),
   );
   return (
-    <WorkspaceShell
-      title={es ? "Mi perfil creador" : "Creator studio"}
-      eyebrow={es ? "Comunidad" : "Community"}
-      description={
-        es
-          ? "Gestiona tu pagina publica, categorias, eventos y solicitud de verificacion."
-          : "Manage your public page, categories, events and verification request."
-      }
-      navigationTitle={es ? "Comunidad" : "Community"}
-      homeHref={`/${locale}/community`}
-      items={communityCreatorItems(locale)}
-    >
-      <div className="creator-studio-page">
-        <section className="creator-directory-hero creator-studio-hero">
-          <div>
+    <div className={styles.studio}>
+      <WorkspaceShell
+        hidePageHeading
+        title={es ? "Mi perfil creador" : "Creator studio"}
+        eyebrow={es ? "Comunidad" : "Community"}
+        description={
+          es
+            ? "Gestiona tu pagina publica, categorias, eventos y solicitud de verificacion."
+            : "Manage your public page, categories, events and verification request."
+        }
+        navigationTitle={es ? "Comunidad" : "Community"}
+        homeHref={`/${locale}/community`}
+        items={communityCreatorItems(locale)}
+      >
+        <div className="creator-studio-page">
+          <section className="creator-directory-hero creator-studio-hero">
+            <img
+              className={styles.scene}
+              src="/images/akipasa/nightlife-editorial.webp"
+              alt=""
+            />
+            <div>
+              <span className="eyebrow">
+                {es ? "AkiPasa / Estudio creador" : "AkiPasa / Creator studio"}
+              </span>
+              <h1>
+                {es
+                  ? "Tu próxima gran idea empieza aquí."
+                  : "Your next great idea starts here."}
+              </h1>
+              <p>
+                {es
+                  ? "Construye tu escaparate y deja que tu catálogo crezca con cada evento publicado."
+                  : "Build your showcase and let your catalogue grow with every published event."}
+              </p>
+            </div>
+            <div className={styles.identity}>
+              <div className={styles.portrait} aria-hidden="true">
+                {profile?.avatar_url ? (
+                  <img src={profile.avatar_url} alt="" />
+                ) : (
+                  <span>{(profile?.display_name || "A").slice(0, 1)}</span>
+                )}
+              </div>
+              <div>
+                <span className={styles.identityLabel}>
+                  {es ? "Tu identidad creadora" : "Your creator identity"}
+                </span>
+                <strong>
+                  {profile?.display_name ||
+                    (es ? "Hazlo tuyo" : "Make it yours")}
+                </strong>
+              </div>
+            </div>
+            <div className="creator-studio-hero-actions">
+              {profile?.slug && profile.state === "published" && (
+                <Link
+                  className="button"
+                  href={`/${locale}/community/creators/${profile.slug}`}
+                >
+                  {es ? "Ver página pública" : "View public page"}
+                </Link>
+              )}
+              <span
+                className={`creator-studio-status is-${profile?.state || "draft"}`}
+              >
+                <i aria-hidden="true" />
+                {profile?.state === "published"
+                  ? es
+                    ? "Publicado"
+                    : "Published"
+                  : es
+                    ? "Borrador"
+                    : "Draft"}
+              </span>
+            </div>
+          </section>
+          {query.updated && (
+            <p className="notice">
+              {es ? "Perfil actualizado." : "Profile updated."}
+            </p>
+          )}
+          {query.error && query.error !== "verification-requirements" && (
+            <p className="notice" role="alert">
+              {es
+                ? "No se pudo completar el cambio. Revisa los datos y vuelve a intentarlo."
+                : "The change could not be completed. Check the details and try again."}
+            </p>
+          )}
+          {query.error === "verification-requirements" && (
+            <p className="notice">
+              {es
+                ? "Tu perfil todavia no cumple los requisitos de verificacion. Revisa el progreso al final de esta pagina."
+                : "Your profile does not meet the verification requirements yet. Review your progress at the bottom of this page."}
+            </p>
+          )}
+          <div className={styles.editorIntro}>
             <span className="eyebrow">
-              {es ? "Comunidad creadora" : "Creator community"}
+              {es ? "Tu espacio creativo" : "Your creative space"}
             </span>
-            <h2>{es ? "Mi estudio" : "Creator studio"}</h2>
+            <h2>
+              {es ? "Dale forma a tu página." : "Make your page your own."}
+            </h2>
             <p>
               {es
-                ? "Construye tu escaparate y deja que tu catálogo crezca con cada evento publicado."
-                : "Build your showcase and let your catalogue grow with every published event."}
+                ? "Tu historia, tu imagen y los planes que compartes."
+                : "Your story, your look and the plans you share."}
             </p>
           </div>
-          <div className="creator-studio-hero-actions">
-            {profile?.slug && profile.state === "published" && (
-              <Link
-                className="button"
-                href={`/${locale}/community/creators/${profile.slug}`}
-              >
-                {es ? "Ver página pública" : "View public page"}
-              </Link>
-            )}
-            <span
-              className={`creator-studio-status is-${profile?.state || "draft"}`}
-            >
-              <i aria-hidden="true" />
-              {profile?.state === "published"
-                ? es
-                  ? "Publicado"
-                  : "Published"
-                : es
-                  ? "Borrador"
-                  : "Draft"}
-            </span>
-          </div>
-        </section>
-        {query.updated && (
-          <p className="notice">
-            {es ? "Perfil actualizado." : "Profile updated."}
-          </p>
-        )}
-        {query.error === "verification-requirements" && (
-          <p className="notice">
-            {es
-              ? "Tu perfil todavia no cumple los requisitos de verificacion. Revisa el progreso al final de esta pagina."
-              : "Your profile does not meet the verification requirements yet. Review your progress at the bottom of this page."}
-          </p>
-        )}
-        <StudioTabs locale={locale}>
-          <section className="panel profile-media-manager" id="showcase">
-            <div className="creator-studio-section-heading">
-              <div>
-                <span className="eyebrow">
-                  {es ? "Identidad visual" : "Visual identity"}
-                </span>
-                <h2>
+          <StudioTabs locale={locale}>
+            <section className="panel profile-media-manager" id="showcase">
+              <div className="creator-studio-section-heading">
+                <div>
+                  <span className="eyebrow">
+                    {es ? "Identidad visual" : "Visual identity"}
+                  </span>
+                  <h2>
+                    {es
+                      ? "Haz que tu página sea reconocible"
+                      : "Make your page unmistakably yours"}
+                  </h2>
+                </div>
+                <p>
                   {es
-                    ? "Haz que tu página sea reconocible"
-                    : "Make your page unmistakably yours"}
-                </h2>
+                    ? "Tu foto y portada también se sincronizan con tu perfil de cuenta."
+                    : "Your photo and cover stay synchronized with your account profile."}
+                </p>
               </div>
-              <p>
-                {es
-                  ? "Tu foto y portada también se sincronizan con tu perfil de cuenta."
-                  : "Your photo and cover stay synchronized with your account profile."}
-              </p>
-            </div>
-            <div className="two-col">
-              {(["avatar", "banner"] as const).map((kind) => (
-                <form
-                  action={uploadProfileMedia}
-                  className="creator-media-upload"
-                  key={kind}
-                >
-                  <input type="hidden" name="locale" value={locale} />
-                  <input type="hidden" name="kind" value={kind} />
-                  <input type="hidden" name="returnTo" value="creator" />
-                  <div className={`creator-media-preview is-${kind}`}>
-                    {(
-                      kind === "avatar"
-                        ? profile?.avatar_url
-                        : profile?.cover_url
-                    ) ? (
-                      <img
-                        src={
-                          (kind === "avatar"
-                            ? profile?.avatar_url
-                            : profile?.cover_url) || ""
-                        }
-                        alt=""
+              <div className="two-col">
+                {(["avatar", "banner"] as const).map((kind) => (
+                  <form
+                    action={uploadProfileMedia}
+                    className="creator-media-upload"
+                    key={kind}
+                  >
+                    <input type="hidden" name="locale" value={locale} />
+                    <input type="hidden" name="kind" value={kind} />
+                    <input type="hidden" name="returnTo" value="creator" />
+                    <div className={`creator-media-preview is-${kind}`}>
+                      {(
+                        kind === "avatar"
+                          ? profile?.avatar_url
+                          : profile?.cover_url
+                      ) ? (
+                        <img
+                          src={
+                            (kind === "avatar"
+                              ? profile?.avatar_url
+                              : profile?.cover_url) || ""
+                          }
+                          alt=""
+                        />
+                      ) : (
+                        <span>
+                          {kind === "avatar"
+                            ? (profile?.display_name || "A").slice(0, 1)
+                            : "AkiPasa"}
+                        </span>
+                      )}
+                    </div>
+                    <label>
+                      {kind === "avatar"
+                        ? es
+                          ? "Foto de perfil"
+                          : "Profile photo"
+                        : es
+                          ? "Imagen de portada"
+                          : "Cover image"}
+                      <input
+                        name="file"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        required
                       />
-                    ) : (
-                      <span>
-                        {kind === "avatar"
-                          ? (profile?.display_name || "A").slice(0, 1)
-                          : "AkiPasa"}
-                      </span>
-                    )}
-                  </div>
-                  <label>
-                    {kind === "avatar"
-                      ? es
-                        ? "Foto de perfil"
-                        : "Profile photo"
-                      : es
-                        ? "Imagen de portada"
-                        : "Cover image"}
-                    <input
-                      name="file"
-                      type="file"
-                      accept="image/jpeg,image/png,image/webp"
-                      required
-                    />
-                  </label>
-                  <button className="button secondary" type="submit">
-                    {es ? "Actualizar" : "Update"}
-                  </button>
-                </form>
-              ))}
-            </div>
-          </section>
-          <form
-            action={saveCreatorProfile}
-            className="panel stack focused-form creator-studio-form"
-            id="profile"
-          >
-            <div className="creator-studio-section-heading">
-              <div>
-                <span className="eyebrow">
-                  {es ? "Página pública" : "Public page"}
-                </span>
-                <h2>
-                  {es ? "Cuenta tu historia" : "Tell people what you create"}
-                </h2>
+                    </label>
+                    <button className="button secondary" type="submit">
+                      {es ? "Actualizar" : "Update"}
+                    </button>
+                  </form>
+                ))}
               </div>
-              <p>
-                {es
-                  ? "Los campos en español e inglés permiten que tu página llegue a más personas."
-                  : "Spanish and English fields help your page reach more people."}
-              </p>
-            </div>
-            <input type="hidden" name="locale" value={locale} />
-            <div className="two-col">
+            </section>
+            <form
+              action={saveCreatorProfile}
+              className="panel stack focused-form creator-studio-form"
+              id="profile"
+            >
+              <div className="creator-studio-section-heading">
+                <div>
+                  <span className="eyebrow">
+                    {es ? "Página pública" : "Public page"}
+                  </span>
+                  <h2>
+                    {es ? "Cuenta tu historia" : "Tell people what you create"}
+                  </h2>
+                </div>
+                <p>
+                  {es
+                    ? "Los campos en español e inglés permiten que tu página llegue a más personas."
+                    : "Spanish and English fields help your page reach more people."}
+                </p>
+              </div>
+              <input type="hidden" name="locale" value={locale} />
+              <div className="two-col">
+                <label>
+                  {es ? "Nombre público" : "Public name"}
+                  <input
+                    name="displayName"
+                    required
+                    minLength={2}
+                    maxLength={100}
+                    defaultValue={profile?.display_name || ""}
+                  />
+                </label>
+                <label>
+                  {es ? "Dirección de tu página" : "Your page address"}
+                  <input
+                    name="slug"
+                    required
+                    pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
+                    defaultValue={profile?.slug || ""}
+                    placeholder="alex-creates"
+                  />
+                </label>
+              </div>
+              <div className="two-col">
+                <label>
+                  {es ? "Titular" : "Headline"}
+                  <input
+                    name="headlineEs"
+                    maxLength={180}
+                    defaultValue={profile?.headline_es || ""}
+                  />
+                </label>
+              </div>
               <label>
-                {es ? "Nombre público" : "Public name"}
-                <input
-                  name="displayName"
-                  required
-                  minLength={2}
-                  maxLength={100}
-                  defaultValue={profile?.display_name || ""}
-                />
-              </label>
-              <label>
-                Slug
-                <input
-                  name="slug"
-                  required
-                  pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
-                  defaultValue={profile?.slug || ""}
-                  placeholder="alex-creates"
-                />
-              </label>
-            </div>
-            <div className="two-col">
-              <label>
-                {es ? "Titular" : "Headline"}
-                <input
-                  name="headlineEs"
-                  maxLength={180}
-                  defaultValue={profile?.headline_es || ""}
-                />
-              </label>
-            </div>
-            <label>
-              {es ? "Biografía" : "Biography"}
-              <textarea
-                name="bioEs"
-                required
-                minLength={40}
-                maxLength={4000}
-                defaultValue={profile?.bio_es || ""}
-              />
-            </label>
-            <details className="studio-optional">
-              <summary>
-                {es ? "Traducción al inglés" : "English translation"}
-              </summary>{" "}
-              <label>
-                Headline (EN)
-                <input
-                  name="headlineEn"
-                  maxLength={180}
-                  defaultValue={profile?.headline_en || ""}
-                />
-              </label>{" "}
-              <label>
-                Biography (EN)
+                {es ? "Biografía" : "Biography"}
                 <textarea
-                  name="bioEn"
+                  name="bioEs"
+                  required
                   minLength={40}
                   maxLength={4000}
-                  defaultValue={profile?.bio_en || ""}
+                  defaultValue={profile?.bio_es || ""}
                 />
               </label>
-            </details>
-            <div className="two-col">
-              <label>
-                {es ? "Zona" : "Area"}
-                <input
-                  name="locality"
-                  maxLength={120}
-                  defaultValue={profile?.locality || ""}
-                />
-              </label>
-              <label>
-                {es ? "Provincia" : "Province"}
-                <input
-                  name="province"
-                  maxLength={120}
-                  defaultValue={profile?.province || ""}
-                />
-              </label>
-            </div>
-            <details className="studio-optional">
-              <summary>
-                {es ? "Enlaces e imágenes por URL" : "Links and image URLs"}
-              </summary>
+              <details className="studio-optional">
+                <summary>
+                  {es ? "Traducción al inglés" : "English translation"}
+                </summary>{" "}
+                <label>
+                  Headline (EN)
+                  <input
+                    name="headlineEn"
+                    maxLength={180}
+                    defaultValue={profile?.headline_en || ""}
+                  />
+                </label>{" "}
+                <label>
+                  Biography (EN)
+                  <textarea
+                    name="bioEn"
+                    minLength={40}
+                    maxLength={4000}
+                    defaultValue={profile?.bio_en || ""}
+                  />
+                </label>
+              </details>
               <div className="two-col">
                 <label>
-                  {es
-                    ? "Foto de perfil (URL HTTPS)"
-                    : "Profile photo (HTTPS URL)"}
+                  {es ? "Zona" : "Area"}
                   <input
-                    name="avatarUrl"
-                    type="url"
-                    defaultValue={profile?.avatar_url || ""}
+                    name="locality"
+                    maxLength={120}
+                    defaultValue={profile?.locality || ""}
                   />
                 </label>
                 <label>
-                  {es ? "Portada (URL HTTPS)" : "Cover (HTTPS URL)"}
+                  {es ? "Provincia" : "Province"}
                   <input
-                    name="coverUrl"
-                    type="url"
-                    defaultValue={profile?.cover_url || ""}
+                    name="province"
+                    maxLength={120}
+                    defaultValue={profile?.province || ""}
                   />
                 </label>
               </div>
-              <div className="two-col">
-                <label>
-                  Website
-                  <input
-                    name="websiteUrl"
-                    type="url"
-                    defaultValue={profile?.website_url || ""}
-                  />
-                </label>
-                <label>
-                  Instagram
-                  <input
-                    name="instagramUrl"
-                    type="url"
-                    defaultValue={profile?.instagram_url || ""}
-                  />
-                </label>
-              </div>
-              <label>
-                YouTube
-                <input
-                  name="youtubeUrl"
-                  type="url"
-                  defaultValue={profile?.youtube_url || ""}
-                />
-              </label>
-            </details>
-            <details className="studio-optional">
-              <summary>
-                {es ? "Categorías (hasta 6)" : "Categories (up to 6)"}
-              </summary>
-              <fieldset className="creator-category-picker">
-                <legend>
-                  {es ? "Categorías (hasta 6)" : "Categories (up to 6)"}
-                </legend>
-                <div>
-                  {(categories || []).map((category) => (
-                    <label key={category.id}>
-                      <input
-                        type="checkbox"
-                        name="categoryIds"
-                        value={category.id}
-                        defaultChecked={selectedCategoryIds.has(category.id)}
-                      />
-                      <span>
-                        {es
-                          ? category.name_es
-                          : category.name_en || category.name_es}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-            </details>
-            <label>
-              {es ? "Visibilidad" : "Visibility"}
-              <select name="publish" defaultValue={profile?.state || "draft"}>
-                <option value="draft">{es ? "Borrador" : "Draft"}</option>
-                <option value="published">{es ? "Público" : "Public"}</option>
-              </select>
-            </label>
-            <button className="button button-strong studio-save" type="submit">
-              {es ? "Guardar perfil" : "Save profile"}
-            </button>
-          </form>
-          <section className="panel stack creator-event-manager" id="events">
-            <div className="card-title-row">
-              <div>
-                <span className="eyebrow">
-                  {es ? "Tu programación" : "Your programme"}
-                </span>
-                <h2>{es ? "Mis eventos" : "My events"}</h2>
-                <p>
-                  {es
-                    ? "Gestiona tus propuestas y abre el catalogo que ya se ha publicado."
-                    : "Track your submissions and open the catalogue that is already published."}
-                </p>
-              </div>
-              <Link
-                className="button"
-                href={`/${locale}/community?view=suggest`}
-              >
-                {es ? "Anadir evento" : "Add event"}
-              </Link>
-            </div>
-            <div className="managed-list">
-              {(hostedEvents || []).map((event) => (
-                <Link
-                  className="managed-row"
-                  key={event.id}
-                  href={`/${locale}/events/${event.slug}`}
-                >
-                  <div>
-                    <strong>
-                      {locale === "en"
-                        ? event.title_en || event.title_es
-                        : event.title_es}
-                    </strong>
-                    <span>{es ? "Evento publicado" : "Published event"}</span>
-                  </div>
-                  <span className="status-pill">{event.status}</span>
-                </Link>
-              ))}
-              {(submittedEvents || [])
-                .filter((event) => !event.published_event_id)
-                .map((event) => (
-                  <div className="managed-row" key={event.id}>
-                    <div>
-                      <strong>{event.title}</strong>
-                      <span>
-                        {new Date(event.created_at).toLocaleDateString(locale)}
-                      </span>
-                    </div>
-                    <span className="status-pill">{event.state}</span>
-                  </div>
-                ))}
-              {!hostedEvents?.length && !submittedEvents?.length && (
-                <p className="empty-state">
-                  {es
-                    ? "Aun no has creado ningun evento."
-                    : "You have not created an event yet."}
-                </p>
-              )}
-            </div>
-          </section>
-        </StudioTabs>
-        {profile?.state === "published" &&
-          !["verified", "pending"].includes(profile.verification_state) && (
-            <form
-              action={requestCreatorVerification}
-              className="panel creator-verification-callout"
-            >
-              <input type="hidden" name="locale" value={locale} />
-              <div>
-                {eligibility && (
-                  <p>
+              <details className="studio-optional">
+                <summary>
+                  {es ? "Enlaces e imágenes por URL" : "Links and image URLs"}
+                </summary>
+                <div className="two-col">
+                  <label>
                     {es
-                      ? `${eligibility.published_events || 0} de ${eligibility.required_events || 0} eventos publicados / ${eligibility.participants || 0} de ${eligibility.required_participants || 0} participantes.`
-                      : `${eligibility.published_events || 0} of ${eligibility.required_events || 0} published events / ${eligibility.participants || 0} of ${eligibility.required_participants || 0} participants.`}
-                  </p>
-                )}
-                <strong>
-                  {es ? "Solicitar verificación" : "Request verification"}
-                </strong>
-                <p>
-                  {es
-                    ? "El equipo revisará identidad, historial y cumplimiento."
-                    : "The team will review identity, history and compliance."}
-                </p>
-              </div>
+                      ? "Foto de perfil (URL HTTPS)"
+                      : "Profile photo (HTTPS URL)"}
+                    <input
+                      name="avatarUrl"
+                      type="url"
+                      defaultValue={profile?.avatar_url || ""}
+                    />
+                  </label>
+                  <label>
+                    {es ? "Portada (URL HTTPS)" : "Cover (HTTPS URL)"}
+                    <input
+                      name="coverUrl"
+                      type="url"
+                      defaultValue={profile?.cover_url || ""}
+                    />
+                  </label>
+                </div>
+                <div className="two-col">
+                  <label>
+                    Website
+                    <input
+                      name="websiteUrl"
+                      type="url"
+                      defaultValue={profile?.website_url || ""}
+                    />
+                  </label>
+                  <label>
+                    Instagram
+                    <input
+                      name="instagramUrl"
+                      type="url"
+                      defaultValue={profile?.instagram_url || ""}
+                    />
+                  </label>
+                </div>
+                <label>
+                  YouTube
+                  <input
+                    name="youtubeUrl"
+                    type="url"
+                    defaultValue={profile?.youtube_url || ""}
+                  />
+                </label>
+              </details>
+              <details className="studio-optional">
+                <summary>
+                  {es ? "Categorías (hasta 6)" : "Categories (up to 6)"}
+                </summary>
+                <fieldset className="creator-category-picker">
+                  <legend>
+                    {es ? "Categorías (hasta 6)" : "Categories (up to 6)"}
+                  </legend>
+                  <div>
+                    {(categories || []).map((category) => (
+                      <label key={category.id}>
+                        <input
+                          type="checkbox"
+                          name="categoryIds"
+                          value={category.id}
+                          defaultChecked={selectedCategoryIds.has(category.id)}
+                        />
+                        <span>
+                          {es
+                            ? category.name_es
+                            : category.name_en || category.name_es}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+              </details>
+              <label>
+                {es ? "Visibilidad" : "Visibility"}
+                <select name="publish" defaultValue={profile?.state || "draft"}>
+                  <option value="draft">{es ? "Borrador" : "Draft"}</option>
+                  <option value="published">{es ? "Público" : "Public"}</option>
+                </select>
+              </label>
               <button
-                className="button"
+                className="button button-strong studio-save"
                 type="submit"
-                disabled={eligibility ? !eligibility.eligible : false}
               >
-                {eligibility && !eligibility.eligible
-                  ? es
-                    ? "Aun no disponible"
-                    : "Not available yet"
-                  : es
-                    ? "Enviar solicitud"
-                    : "Submit request"}
+                {es ? "Guardar perfil" : "Save profile"}
               </button>
             </form>
+            <section className="panel stack creator-event-manager" id="events">
+              <div className="card-title-row">
+                <div>
+                  <span className="eyebrow">
+                    {es ? "Tu programación" : "Your programme"}
+                  </span>
+                  <h2>{es ? "Mis eventos" : "My events"}</h2>
+                  <p>
+                    {es
+                      ? "Gestiona tus propuestas y abre el catalogo que ya se ha publicado."
+                      : "Track your submissions and open the catalogue that is already published."}
+                  </p>
+                </div>
+                <Link
+                  className="button"
+                  href={`/${locale}/community?view=suggest`}
+                >
+                  {es ? "Anadir evento" : "Add event"}
+                </Link>
+              </div>
+              <div className="managed-list">
+                {(hostedEventsError || submittedEventsError) && (
+                  <div className="creator-recovery" role="alert">
+                    <p>
+                      {es
+                        ? "No se pudo cargar todo tu historial de eventos. Los resultados disponibles se muestran a continuación."
+                        : "Your complete event history could not be loaded. Available results are shown below."}
+                    </p>
+                    <Link href={`/${locale}/community/creator`}>
+                      {es ? "Reintentar" : "Retry"}
+                    </Link>
+                  </div>
+                )}
+                {(hostedEvents || []).map((event) => (
+                  <Link
+                    className="managed-row"
+                    key={event.id}
+                    href={`/${locale}/events/${event.slug}`}
+                  >
+                    <div>
+                      <strong>
+                        {locale === "en"
+                          ? event.title_en || event.title_es
+                          : event.title_es}
+                      </strong>
+                      <span>{es ? "Evento publicado" : "Published event"}</span>
+                    </div>
+                    <span className="status-pill">{event.status}</span>
+                  </Link>
+                ))}
+                {(submittedEvents || [])
+                  .filter((event) => !event.published_event_id)
+                  .map((event) => (
+                    <div className="managed-row" key={event.id}>
+                      <div>
+                        <strong>{event.title}</strong>
+                        <span>
+                          {new Date(event.created_at).toLocaleDateString(
+                            locale,
+                          )}
+                        </span>
+                      </div>
+                      <span className="status-pill">{event.state}</span>
+                    </div>
+                  ))}
+                {!hostedEventsError &&
+                  !submittedEventsError &&
+                  !hostedEvents?.length &&
+                  !submittedEvents?.length && (
+                    <p className="empty-state">
+                      {es
+                        ? "Aun no has creado ningun evento."
+                        : "You have not created an event yet."}
+                    </p>
+                  )}
+              </div>
+            </section>
+          </StudioTabs>
+          {profile?.state === "published" &&
+            !["verified", "pending"].includes(profile.verification_state) &&
+            (eligibilityError || !eligibility ? (
+              <section className="panel stack creator-recovery" role="alert">
+                <h2>
+                  {es
+                    ? "No se pudo comprobar la verificación"
+                    : "Verification eligibility could not be checked"}
+                </h2>
+                <p>
+                  {es
+                    ? "Vuelve a intentarlo para consultar el progreso y enviar una solicitud."
+                    : "Retry to see your progress and submit a request."}
+                </p>
+                <Link href={`/${locale}/community/creator`}>
+                  {es ? "Reintentar" : "Retry"}
+                </Link>
+              </section>
+            ) : (
+              <form
+                action={requestCreatorVerification}
+                className="panel creator-verification-callout"
+              >
+                <input type="hidden" name="locale" value={locale} />
+                <div>
+                  {eligibility && (
+                    <p>
+                      {es
+                        ? `${eligibility.published_events || 0} de ${eligibility.required_events || 0} eventos publicados / ${eligibility.participants || 0} de ${eligibility.required_participants || 0} participantes.`
+                        : `${eligibility.published_events || 0} of ${eligibility.required_events || 0} published events / ${eligibility.participants || 0} of ${eligibility.required_participants || 0} participants.`}
+                    </p>
+                  )}
+                  <strong>
+                    {es ? "Solicitar verificación" : "Request verification"}
+                  </strong>
+                  <p>
+                    {es
+                      ? "El equipo revisará identidad, historial y cumplimiento."
+                      : "The team will review identity, history and compliance."}
+                  </p>
+                </div>
+                <button
+                  className="button"
+                  type="submit"
+                  disabled={!eligibility.eligible}
+                >
+                  {eligibility && !eligibility.eligible
+                    ? es
+                      ? "Aun no disponible"
+                      : "Not available yet"
+                    : es
+                      ? "Enviar solicitud"
+                      : "Submit request"}
+                </button>
+              </form>
+            ))}
+          {profile?.verification_state === "pending" && (
+            <p className="notice">
+              {es ? "Verificación en revisión." : "Verification is in review."}
+            </p>
           )}
-        {profile?.verification_state === "pending" && (
-          <p className="notice">
-            {es ? "Verificación en revisión." : "Verification is in review."}
-          </p>
-        )}
-      </div>
-    </WorkspaceShell>
+        </div>
+      </WorkspaceShell>
+    </div>
   );
 }

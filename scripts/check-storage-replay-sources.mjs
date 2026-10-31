@@ -1,0 +1,348 @@
+#!/usr/bin/env node
+// Fixed local source-integrity inspection only: no DB, network or subprocess.
+import { createHash } from "node:crypto";
+import { lstatSync, readFileSync, readdirSync, realpathSync } from "node:fs";
+import { isDeepStrictEqual } from "node:util";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+export const BUNDLE_PATH = "database/replay-only/official-storage";
+const deepFreeze = (value) => {
+  if (value && typeof value === "object") {
+    for (const child of Object.values(value)) deepFreeze(child);
+    Object.freeze(value);
+  }
+  return value;
+};
+export const EXPECTED_PROVENANCE = deepFreeze({
+  version: 1,
+  mode: "immutable-replay-only-source-bundle",
+  upstreamRepository: "https://github.com/supabase/storage",
+  upstreamCommit: "96aec65e7e22573befef05728327ad4d8e7207b2",
+  observedDate: "2026-10-30",
+  byteComparison:
+    "exact-upstream-equals-original-localQA-equals-scoped-snapshot",
+  license: {
+    file: "LICENSE",
+    spdx: "Apache-2.0",
+    bytes: 11337,
+    sha256: "87420ad3debbb44af3e5aac29f5bafd4427eef7a28c6e5eae199bdde1ad7c2e2",
+    copyright: "2019 Supabase",
+    upstreamNoticePresent: false,
+  },
+  noStandaloneExecution: true,
+  pristineFixtureOnly: true,
+  productionMigration: false,
+  databaseExecutionSupported: false,
+  requiresFreshAuth: true,
+  requiresCurrentPlatformReview: true,
+  requiresCurrentAccountCoverage: true,
+  storageHttpAcceptance: false,
+  freshOrderedGuardAcceptance: false,
+  fullCanonicalParity: false,
+  sourceOrder: [
+    "0002-storage-schema.sql",
+    "0003-pathtoken-column.sql",
+    "0004-add-migrations-rls.sql",
+    "0005-add-size-functions.sql",
+    "0006-change-column-name-in-get-size.sql",
+    "0007-add-rls-to-buckets.sql",
+    "0008-add-public-to-buckets.sql",
+    "0009-fix-search-function.sql",
+    "00010-search-files-search-function.sql",
+    "0011-add-trigger-to-auto-update-updated_at-column.sql",
+    "0012-add-automatic-avif-detection-flag.sql",
+    "0013-add-bucket-custom-limits.sql",
+    "0014-use-bytes-for-max-size.sql",
+    "0015-add-can-insert-object-function.sql",
+    "0016-add-version.sql",
+    "0017-drop-owner-foreign-key.sql",
+    "0018-add_owner_id_column_deprecate_owner.sql",
+  ],
+  sources: [
+    {
+      file: "0002-storage-schema.sql",
+      bytes: 7916,
+      sha256:
+        "c638dbaccf8829122fc2e05148bcb82596baf288cd497bed7a2cdaa5a4d99e09",
+      upstreamPath: "migrations/tenant/0002-storage-schema.sql",
+      upstreamUrl:
+        "https://raw.githubusercontent.com/supabase/storage/96aec65e7e22573befef05728327ad4d8e7207b2/migrations/tenant/0002-storage-schema.sql",
+      scopedSnapshot: "source/storage/storage-0002-pinned.sql",
+    },
+    {
+      file: "0003-pathtoken-column.sql",
+      bytes: 1019,
+      sha256:
+        "db57ad79bd7ecf1ea6a8099b38bf376886d6b2181ba65b9e9c0556ed245dea8b",
+      upstreamPath: "migrations/tenant/0003-pathtoken-column.sql",
+      upstreamUrl:
+        "https://raw.githubusercontent.com/supabase/storage/96aec65e7e22573befef05728327ad4d8e7207b2/migrations/tenant/0003-pathtoken-column.sql",
+      scopedSnapshot: "source/storage/0003-pathtoken-column.sql",
+    },
+    {
+      file: "0004-add-migrations-rls.sql",
+      bytes: 57,
+      sha256:
+        "05b32aad858e4644202e6ac43413cfee30e61d7e9ad51c42b082cfb21235c7bd",
+      upstreamPath: "migrations/tenant/0004-add-migrations-rls.sql",
+      upstreamUrl:
+        "https://raw.githubusercontent.com/supabase/storage/96aec65e7e22573befef05728327ad4d8e7207b2/migrations/tenant/0004-add-migrations-rls.sql",
+      scopedSnapshot: "source/storage/0004-add-migrations-rls.sql",
+    },
+    {
+      file: "0005-add-size-functions.sql",
+      bytes: 367,
+      sha256:
+        "ce7f8b2e360f49df2a0f7d8ed0fd4bc63c6907f2890e84cfc377d9050118fb06",
+      upstreamPath: "migrations/tenant/0005-add-size-functions.sql",
+      upstreamUrl:
+        "https://raw.githubusercontent.com/supabase/storage/96aec65e7e22573befef05728327ad4d8e7207b2/migrations/tenant/0005-add-size-functions.sql",
+      scopedSnapshot: "source/storage/0005-add-size-functions.sql",
+    },
+    {
+      file: "0006-change-column-name-in-get-size.sql",
+      bytes: 376,
+      sha256:
+        "d4acac148b3a952336a9f739cdbdee22a573bca5cda247a8272beacd0b6a1aa0",
+      upstreamPath: "migrations/tenant/0006-change-column-name-in-get-size.sql",
+      upstreamUrl:
+        "https://raw.githubusercontent.com/supabase/storage/96aec65e7e22573befef05728327ad4d8e7207b2/migrations/tenant/0006-change-column-name-in-get-size.sql",
+      scopedSnapshot: "source/storage/0006-change-column-name-in-get-size.sql",
+    },
+    {
+      file: "0007-add-rls-to-buckets.sql",
+      bytes: 54,
+      sha256:
+        "c87aa8ea3c6509171728880538cc26e7233896a8f927af3bc5b351a1706610e3",
+      upstreamPath: "migrations/tenant/0007-add-rls-to-buckets.sql",
+      upstreamUrl:
+        "https://raw.githubusercontent.com/supabase/storage/96aec65e7e22573befef05728327ad4d8e7207b2/migrations/tenant/0007-add-rls-to-buckets.sql",
+      scopedSnapshot: "source/storage/0007-add-rls-to-buckets.sql",
+    },
+    {
+      file: "0008-add-public-to-buckets.sql",
+      bytes: 84,
+      sha256:
+        "1d881092aea62e83493f1a9c4cb4f101f3035a08d62be84a7e7970ee0c6f0f48",
+      upstreamPath: "migrations/tenant/0008-add-public-to-buckets.sql",
+      upstreamUrl:
+        "https://raw.githubusercontent.com/supabase/storage/96aec65e7e22573befef05728327ad4d8e7207b2/migrations/tenant/0008-add-public-to-buckets.sql",
+      scopedSnapshot: "source/storage/0008-add-public-to-buckets.sql",
+    },
+    {
+      file: "0009-fix-search-function.sql",
+      bytes: 855,
+      sha256:
+        "841c3ee6ed4885bc59f55db8d6eec293c6188a670d049737552c03a0ba714dc9",
+      upstreamPath: "migrations/tenant/0009-fix-search-function.sql",
+      upstreamUrl:
+        "https://raw.githubusercontent.com/supabase/storage/96aec65e7e22573befef05728327ad4d8e7207b2/migrations/tenant/0009-fix-search-function.sql",
+      scopedSnapshot: "source/storage/0009-fix-search-function.sql",
+    },
+    {
+      file: "00010-search-files-search-function.sql",
+      bytes: 2099,
+      sha256:
+        "41d2b264437766b360ad421c4b1b80e5bb34c1503779408eefe5827238b2a098",
+      upstreamPath: "migrations/tenant/00010-search-files-search-function.sql",
+      upstreamUrl:
+        "https://raw.githubusercontent.com/supabase/storage/96aec65e7e22573befef05728327ad4d8e7207b2/migrations/tenant/00010-search-files-search-function.sql",
+      scopedSnapshot: "source/storage/00010-search-files-search-function.sql",
+    },
+    {
+      file: "0011-add-trigger-to-auto-update-updated_at-column.sql",
+      bytes: 355,
+      sha256:
+        "922302d623209192a5a85c6bdd0bf21b64cc3bded6e1d048c66d98c7dfdd83eb",
+      upstreamPath:
+        "migrations/tenant/0011-add-trigger-to-auto-update-updated_at-column.sql",
+      upstreamUrl:
+        "https://raw.githubusercontent.com/supabase/storage/96aec65e7e22573befef05728327ad4d8e7207b2/migrations/tenant/0011-add-trigger-to-auto-update-updated_at-column.sql",
+      scopedSnapshot:
+        "source/storage/0011-add-trigger-to-auto-update-updated_at-column.sql",
+    },
+    {
+      file: "0012-add-automatic-avif-detection-flag.sql",
+      bytes: 92,
+      sha256:
+        "55ba2318864bfc0cc1f4db871d0874c70d445fa8f2b12e4543960403bd88ee9a",
+      upstreamPath:
+        "migrations/tenant/0012-add-automatic-avif-detection-flag.sql",
+      upstreamUrl:
+        "https://raw.githubusercontent.com/supabase/storage/96aec65e7e22573befef05728327ad4d8e7207b2/migrations/tenant/0012-add-automatic-avif-detection-flag.sql",
+      scopedSnapshot:
+        "source/storage/0012-add-automatic-avif-detection-flag.sql",
+    },
+    {
+      file: "0013-add-bucket-custom-limits.sql",
+      bytes: 180,
+      sha256:
+        "07d0b1e8299b70eeeda0841969772aecdbd0788eda9dbada7806afdc8ed9d06e",
+      upstreamPath: "migrations/tenant/0013-add-bucket-custom-limits.sql",
+      upstreamUrl:
+        "https://raw.githubusercontent.com/supabase/storage/96aec65e7e22573befef05728327ad4d8e7207b2/migrations/tenant/0013-add-bucket-custom-limits.sql",
+      scopedSnapshot: "source/storage/0013-add-bucket-custom-limits.sql",
+    },
+    {
+      file: "0014-use-bytes-for-max-size.sql",
+      bytes: 567,
+      sha256:
+        "9e34ab4fc380e1cdd4748bcac368cd628c247962bdd58f8311a44f1b29e918ec",
+      upstreamPath: "migrations/tenant/0014-use-bytes-for-max-size.sql",
+      upstreamUrl:
+        "https://raw.githubusercontent.com/supabase/storage/96aec65e7e22573befef05728327ad4d8e7207b2/migrations/tenant/0014-use-bytes-for-max-size.sql",
+      scopedSnapshot: "source/storage/0014-use-bytes-for-max-size.sql",
+    },
+    {
+      file: "0015-add-can-insert-object-function.sql",
+      bytes: 415,
+      sha256:
+        "572c4c802fce193ed5d63eba166922b5469d863d1eae460dd06cdcb1594bab9a",
+      upstreamPath: "migrations/tenant/0015-add-can-insert-object-function.sql",
+      upstreamUrl:
+        "https://raw.githubusercontent.com/supabase/storage/96aec65e7e22573befef05728327ad4d8e7207b2/migrations/tenant/0015-add-can-insert-object-function.sql",
+      scopedSnapshot: "source/storage/0015-add-can-insert-object-function.sql",
+    },
+    {
+      file: "0016-add-version.sql",
+      bytes: 80,
+      sha256:
+        "a4c7a068bb3212a015879859f3c7b8e1ed92998a671fbf3a9bdfd827cf5e0e67",
+      upstreamPath: "migrations/tenant/0016-add-version.sql",
+      upstreamUrl:
+        "https://raw.githubusercontent.com/supabase/storage/96aec65e7e22573befef05728327ad4d8e7207b2/migrations/tenant/0016-add-version.sql",
+      scopedSnapshot: "source/storage/0016-add-version.sql",
+    },
+    {
+      file: "0017-drop-owner-foreign-key.sql",
+      bytes: 77,
+      sha256:
+        "00edfd4aefba445959c977fd1a510bd7900dcf9679bbc24615d43ad9768dd0da",
+      upstreamPath: "migrations/tenant/0017-drop-owner-foreign-key.sql",
+      upstreamUrl:
+        "https://raw.githubusercontent.com/supabase/storage/96aec65e7e22573befef05728327ad4d8e7207b2/migrations/tenant/0017-drop-owner-foreign-key.sql",
+      scopedSnapshot: "source/storage/0017-drop-owner-foreign-key.sql",
+    },
+    {
+      file: "0018-add_owner_id_column_deprecate_owner.sql",
+      bytes: 418,
+      sha256:
+        "c895bce18e7900b793a61a8bac57e02d18a51ac3683ddcf6e169919164025c8f",
+      upstreamPath:
+        "migrations/tenant/0018-add_owner_id_column_deprecate_owner.sql",
+      upstreamUrl:
+        "https://raw.githubusercontent.com/supabase/storage/96aec65e7e22573befef05728327ad4d8e7207b2/migrations/tenant/0018-add_owner_id_column_deprecate_owner.sql",
+      scopedSnapshot:
+        "source/storage/0018-add_owner_id_column_deprecate_owner.sql",
+    },
+  ],
+});
+const FILES = [
+  ...EXPECTED_PROVENANCE.sourceOrder,
+  "LICENSE",
+  "PROVENANCE.json",
+  "README.md",
+];
+const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
+export function readStorageReplayBundle(directory) {
+  const root = path.resolve(directory);
+  if (
+    lstatSync(root).isSymbolicLink() ||
+    realpathSync(root) !== root ||
+    !lstatSync(root).isDirectory()
+  )
+    throw new Error(
+      "Bundle must be a real directory without symlinked parents",
+    );
+  const entries = readdirSync(root, { withFileTypes: true });
+  if (
+    entries.length !== FILES.length ||
+    entries.some((e) => !FILES.includes(e.name) || !e.isFile())
+  )
+    throw new Error("Bundle requires exactly the fixed regular-file allowlist");
+  return {
+    provenance: JSON.parse(
+      readFileSync(path.join(root, "PROVENANCE.json"), "utf8"),
+    ),
+    files: entries.map((e) => e.name),
+    snapshots: new Map(
+      [...EXPECTED_PROVENANCE.sourceOrder, "LICENSE"].map((file) => [
+        file,
+        readFileSync(path.join(root, file)),
+      ]),
+    ),
+  };
+}
+export function validateStorageReplayBundle({ provenance, files, snapshots }) {
+  const errors = [];
+  if (!isDeepStrictEqual(provenance, EXPECTED_PROVENANCE))
+    errors.push(
+      "Pinned provenance, explicit order or nonexecution conditions differ",
+    );
+  if (
+    !Array.isArray(files) ||
+    files.length !== FILES.length ||
+    new Set(files).size !== FILES.length ||
+    files.some((f) => !FILES.includes(f))
+  )
+    errors.push("Missing, duplicate, unsafe or extra file");
+  const expected = [
+    ...EXPECTED_PROVENANCE.sources,
+    EXPECTED_PROVENANCE.license,
+  ];
+  if (
+    !(snapshots instanceof Map) ||
+    snapshots.size !== expected.length ||
+    [...snapshots.keys()].some((f) => !expected.some((e) => e.file === f))
+  )
+    errors.push("Unexpected snapshot set");
+  for (const e of expected) {
+    const bytes = snapshots instanceof Map ? snapshots.get(e.file) : undefined;
+    if (
+      !Buffer.isBuffer(bytes) ||
+      bytes.length !== e.bytes ||
+      hash(bytes) !== e.sha256
+    )
+      errors.push(`Pinned byte/hash drift: ${e.file}`);
+  }
+  return {
+    sourceIntegrityValid: errors.length === 0,
+    sourceCount: 17,
+    noStandaloneExecution: true,
+    pristineFixtureOnly: true,
+    requiresFreshAuth: true,
+    requiresCurrentPlatformReview: true,
+    requiresCurrentAccountCoverage: true,
+    databaseExecutionSupported: false,
+    storageHttpAcceptance: false,
+    freshOrderedGuardAcceptance: false,
+    fullCanonicalParity: false,
+    errors,
+  };
+}
+export function runCli(args = process.argv.slice(2)) {
+  if (args.length > 1 || (args.length === 1 && args[0] !== "--check")) {
+    console.error(
+      "Read-only source checker supports only --check; no apply or execution mode.",
+    );
+    return 1;
+  }
+  try {
+    const root = fileURLToPath(new URL("../", import.meta.url));
+    const result = validateStorageReplayBundle(
+      readStorageReplayBundle(path.join(root, BUNDLE_PATH)),
+    );
+    console.log(JSON.stringify(result, null, 2));
+    return result.sourceIntegrityValid ? 0 : 1;
+  } catch (error) {
+    console.error(
+      error instanceof Error ? error.message : "Source validation failed",
+    );
+    return 1;
+  }
+}
+if (
+  process.argv[1] &&
+  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+)
+  process.exitCode = runCli();

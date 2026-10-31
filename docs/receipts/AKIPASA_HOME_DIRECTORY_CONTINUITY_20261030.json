@@ -1,0 +1,480 @@
+{
+  "observedAt": "2026-10-30T00:10:22.125149+00:00",
+  "baselineCommit": "f489be663ac896da9451c8a61b44dd46d98dd74d",
+  "testedWorkingTree": true,
+  "sourceHashes": {
+    "src/app/[locale]/page.tsx": "903fccde4c539e44090c94c87d98d1dfeeb6d8a323f021d052991b33a02676f3",
+    "src/app/[locale]/home-venues.module.css": "534c059d08b1838e873e905602dc60e6bc74c05f95e97ebccdf93dd9f208ab3e",
+    "tests/e2e/pasa-home-venue-cards.spec.ts": "4ae4fdfdefa337c8961dab92ff0fa7cb233b7db21747e3ddc8ba6dcacffbd37c"
+  },
+  "scope": "Home nearby-venue presentation only; server reads, ranking, truthful metadata, 20-row pagination and localized destinations unchanged.",
+  "photoBoundary": "NearbyVenue exposes no photograph; abstract CSS lighting and shared venue icon are decorative, not invented venue imagery or availability.",
+  "build": {
+    "passed": true,
+    "command": "NEXT_PUBLIC_DATA_PROVIDER=fixtures NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:3999 NEXT_PUBLIC_SUPABASE_ANON_KEY=home-local-disposable NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true npm run build",
+    "log": "/tmp/akipasa-home-venue-cards-build.log",
+    "logSha256": "27c13a4ef5c7b89558969f0176bdeb659ea83631c8b89395f7767415d5825d5f",
+    "disposableLiteralKeyOnly": true
+  },
+  "browser": {
+    "passed": 23,
+    "failed": 0,
+    "skipped": 0,
+    "newCardCases": 16,
+    "existingHomeSearchCases": 4,
+    "existingPaginationAndMapCases": 3,
+    "command": "PLAYWRIGHT_BASE_URL=http://127.0.0.1:3107 BOOKING_BROWSER_PATH=/home/agent/.cache/ms-playwright/chromium-1228/chrome-linux64/chrome NEXT_PUBLIC_DATA_PROVIDER=fixtures NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:3999 NEXT_PUBLIC_SUPABASE_ANON_KEY=home-local-disposable NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true node scripts/run-e2e.mjs tests/e2e/pasa-home-venue-cards.spec.ts tests/e2e/pasa-home-entrance.spec.ts tests/e2e/result-pagination.spec.ts --workers=2 --output=test-results/home-venue-cards-playwright",
+    "log": "/tmp/akipasa-home-venue-cards-browser-final.log",
+    "logSha256": "97cbc98ae4a1eeaf267198f187bda48f2d5dcdf80569f74afe540456001f7b1f",
+    "contrastSamples": 1280,
+    "minimumContrast": 8.748350409473417,
+    "requiredContrast": 4.5,
+    "contrastMethod": "Actual text against opaque card base and every computed radial-gradient stop, including alpha composition.",
+    "assertions": [
+      "20 cards; original localized destinations and claim state",
+      "No viewport overflow; meaningful card geometry and focus outline",
+      "Reduced motion disables transition",
+      "First card centre is unobscured in normal scrolled viewport",
+      "Keyboard Enter opens original venue route and Back restores cards",
+      "Unchanged pagination Next/Previous and location preservation",
+      "Unchanged shared search opening/focus/Escape",
+      "Unchanged map list and API cursor pagination"
+    ]
+  },
+  "cases": [
+    {
+      "locale": "en",
+      "theme": "dark",
+      "width": 1440,
+      "emulation": "desktop Chromium context",
+      "cards": 20,
+      "contrastSamples": 80,
+      "minimumContrast": 8.748350409473417,
+      "result": "test-results/home-venue-cards/en-dark-1440.json",
+      "resultSha256": "a1e4f666b8e88a684a3b4553008d2f5537cbeac6d5c47679b18c7d15ec9c2520",
+      "screenshots": {
+        "screenshot": {
+          "path": "test-results/home-venue-cards/en-dark-1440-venue-directory.png",
+          "sha256": "76b6c8a0c81b3f472d417c0c172b60ab9608fb4fa4d8d8d092d944b41b45a779"
+        },
+        "viewportScreenshot": {
+          "path": "test-results/home-venue-cards/en-dark-1440-viewport.png",
+          "sha256": "dd1ce68cf1c283cc7239838d21c263f858cc154a99d6045de1a8d60b8ad56d23"
+        },
+        "opening": {
+          "path": "test-results/home-venue-cards/en-dark-1440-opening.png",
+          "sha256": "7e0c0c9c9fc2a5f4b5bc976207bd82a789ad3733d0e0c46e63699e7311a79fe9"
+        }
+      }
+    },
+    {
+      "locale": "en",
+      "theme": "dark",
+      "width": 360,
+      "emulation": "Android-like phone",
+      "cards": 20,
+      "contrastSamples": 80,
+      "minimumContrast": 8.748350409473417,
+      "result": "test-results/home-venue-cards/en-dark-360.json",
+      "resultSha256": "78e145855d6d4e3d2848617815d6ba7bfa40e6b0d937fdf093e97d4d8b66aa7a",
+      "screenshots": {
+        "screenshot": {
+          "path": "test-results/home-venue-cards/en-dark-360-venue-directory.png",
+          "sha256": "6dd7d3e47188f097ae1a0d2b00fb153e33ac2f491ae234aa33913301d35d2e66"
+        },
+        "viewportScreenshot": {
+          "path": "test-results/home-venue-cards/en-dark-360-viewport.png",
+          "sha256": "98268a2c89dda079d5aae51b1eec560635139b21ea705a69a13fbbecb35c01e4"
+        },
+        "opening": {
+          "path": "test-results/home-venue-cards/en-dark-360-opening.png",
+          "sha256": "7a10c3ccc4dcd799083c1e4ecdb7f0fdcefdd1aa8eeb95dfb1d243ac5f726927"
+        }
+      }
+    },
+    {
+      "locale": "en",
+      "theme": "dark",
+      "width": 390,
+      "emulation": "Android-like phone",
+      "cards": 20,
+      "contrastSamples": 80,
+      "minimumContrast": 8.748350409473417,
+      "result": "test-results/home-venue-cards/en-dark-390.json",
+      "resultSha256": "349184faff6468a94226c8a24cd72de0d0a96e007ca7357346d6ef8474997128",
+      "screenshots": {
+        "screenshot": {
+          "path": "test-results/home-venue-cards/en-dark-390-venue-directory.png",
+          "sha256": "63963a9891c5d34aab03ca50e83b2c341cb0e487d285b9f325afd50b1022c754"
+        },
+        "viewportScreenshot": {
+          "path": "test-results/home-venue-cards/en-dark-390-viewport.png",
+          "sha256": "72a834cfb8600764fcd1c471bef7ff060b20e93c41a7f722298fce606c64156f"
+        },
+        "opening": {
+          "path": "test-results/home-venue-cards/en-dark-390-opening.png",
+          "sha256": "3a709bd68927c58895ff1e4a0586b91b577a6900d3d5bddda51b10bd6c6a42c3"
+        }
+      }
+    },
+    {
+      "locale": "en",
+      "theme": "dark",
+      "width": 820,
+      "emulation": "touch-enabled tablet viewport with desktop UA",
+      "cards": 20,
+      "contrastSamples": 80,
+      "minimumContrast": 8.748350409473417,
+      "result": "test-results/home-venue-cards/en-dark-820.json",
+      "resultSha256": "79c85def9f4280eddb0cae42274f24973fa33007b32e57abf1a6ebdc9a8563c3",
+      "screenshots": {
+        "screenshot": {
+          "path": "test-results/home-venue-cards/en-dark-820-venue-directory.png",
+          "sha256": "5b4fe628359a36f9f8bdb4b79f28f7e89af87392c642c212216252a37625f1c1"
+        },
+        "viewportScreenshot": {
+          "path": "test-results/home-venue-cards/en-dark-820-viewport.png",
+          "sha256": "512e5a07303cf97cd7c90d50388e051512ea4485a6443b16863dc9e1ae1a40d6"
+        },
+        "opening": {
+          "path": "test-results/home-venue-cards/en-dark-820-opening.png",
+          "sha256": "de48b9fe66522e071c71dec54f9356997ac3d598e60df9fff3f89b15adc46ef0"
+        }
+      }
+    },
+    {
+      "locale": "en",
+      "theme": "light",
+      "width": 1440,
+      "emulation": "desktop Chromium context",
+      "cards": 20,
+      "contrastSamples": 80,
+      "minimumContrast": 8.748350409473417,
+      "result": "test-results/home-venue-cards/en-light-1440.json",
+      "resultSha256": "5958f51ce17bdb1a6c307abc3f877a8dc9adbd00054f651330e692a4f59da1be",
+      "screenshots": {
+        "screenshot": {
+          "path": "test-results/home-venue-cards/en-light-1440-venue-directory.png",
+          "sha256": "16f76487dcb02544c9d850411172b6cf84e5bc828c68ec5902a461df29b55155"
+        },
+        "viewportScreenshot": {
+          "path": "test-results/home-venue-cards/en-light-1440-viewport.png",
+          "sha256": "1ebe1d9df98b5476c827c8289c0deff303d1ca5b25adc8c4345c48198e992b37"
+        },
+        "opening": {
+          "path": "test-results/home-venue-cards/en-light-1440-opening.png",
+          "sha256": "3f44b9fa8ca759bd1a0552d9967b4fb0389e890444047018e9966656f8dd0c3f"
+        }
+      }
+    },
+    {
+      "locale": "en",
+      "theme": "light",
+      "width": 360,
+      "emulation": "Android-like phone",
+      "cards": 20,
+      "contrastSamples": 80,
+      "minimumContrast": 8.748350409473417,
+      "result": "test-results/home-venue-cards/en-light-360.json",
+      "resultSha256": "7c3f6bfd84a902a6b44619055c82d4951f66cadbc849d2686b84593e4a54407b",
+      "screenshots": {
+        "screenshot": {
+          "path": "test-results/home-venue-cards/en-light-360-venue-directory.png",
+          "sha256": "dcc80ece56cd9ea846869aaa56a2f4947a21ded156819061ff2999b05d5d878e"
+        },
+        "viewportScreenshot": {
+          "path": "test-results/home-venue-cards/en-light-360-viewport.png",
+          "sha256": "f8e33577cbc3adcf7d7745aaa71e1430d7940131786af381b64c26a5cec0a755"
+        },
+        "opening": {
+          "path": "test-results/home-venue-cards/en-light-360-opening.png",
+          "sha256": "43be6fa20c60dc27be363be76d580063047fa3f7ff5c945a7e4ed01eb9bb6657"
+        }
+      }
+    },
+    {
+      "locale": "en",
+      "theme": "light",
+      "width": 390,
+      "emulation": "Android-like phone",
+      "cards": 20,
+      "contrastSamples": 80,
+      "minimumContrast": 8.748350409473417,
+      "result": "test-results/home-venue-cards/en-light-390.json",
+      "resultSha256": "ae1208386d9349f0e81787c6e976a0ecb4306d1daad175c916b320cfe2c6bb84",
+      "screenshots": {
+        "screenshot": {
+          "path": "test-results/home-venue-cards/en-light-390-venue-directory.png",
+          "sha256": "ca86c8c4d5df35f5e6666093b621df6bdf5608b7478dc9a0ccbbf209360a0f2a"
+        },
+        "viewportScreenshot": {
+          "path": "test-results/home-venue-cards/en-light-390-viewport.png",
+          "sha256": "c5fb3749ffa9c5272e05a140859e5dd500009c730660f7b39130d05f48cbbc04"
+        },
+        "opening": {
+          "path": "test-results/home-venue-cards/en-light-390-opening.png",
+          "sha256": "aec55490fa9af852b771ea8e11a8a2f15dcd2508b109cab9890e46c21956dc25"
+        }
+      }
+    },
+    {
+      "locale": "en",
+      "theme": "light",
+      "width": 820,
+      "emulation": "touch-enabled tablet viewport with desktop UA",
+      "cards": 20,
+      "contrastSamples": 80,
+      "minimumContrast": 8.748350409473417,
+      "result": "test-results/home-venue-cards/en-light-820.json",
+      "resultSha256": "1fb558adda8840056691cf1e6fd83758ec192779678f045e73e1ccd75110b1ed",
+      "screenshots": {
+        "screenshot": {
+          "path": "test-results/home-venue-cards/en-light-820-venue-directory.png",
+          "sha256": "b01175c9275c3ff9e711b1176f65e067b108446d51e53f33008d0280f0437d7d"
+        },
+        "viewportScreenshot": {
+          "path": "test-results/home-venue-cards/en-light-820-viewport.png",
+          "sha256": "e39aed42f7b2e02e0d249f6ee83be86c8e7fdf58e2740c36fcc27a9c5dc9900a"
+        },
+        "opening": {
+          "path": "test-results/home-venue-cards/en-light-820-opening.png",
+          "sha256": "0cbd87085f732dd19fadd10e828a90f38b1054b1978e5967f251cd5b66a84a14"
+        }
+      }
+    },
+    {
+      "locale": "es",
+      "theme": "dark",
+      "width": 1440,
+      "emulation": "desktop Chromium context",
+      "cards": 20,
+      "contrastSamples": 80,
+      "minimumContrast": 8.748350409473417,
+      "result": "test-results/home-venue-cards/es-dark-1440.json",
+      "resultSha256": "19a9b5df919b1125b8f0b757c02defb3b71f1b53debefd062a0b9261641897e2",
+      "screenshots": {
+        "screenshot": {
+          "path": "test-results/home-venue-cards/es-dark-1440-venue-directory.png",
+          "sha256": "e740269408241732c33014a2b7e1a3d0108e4635055f620bce3ff7aefd13d3cb"
+        },
+        "viewportScreenshot": {
+          "path": "test-results/home-venue-cards/es-dark-1440-viewport.png",
+          "sha256": "09488852f327dea6ac0159ad1596622353a87f73e60e3b911e05b607eead2b5a"
+        },
+        "opening": {
+          "path": "test-results/home-venue-cards/es-dark-1440-opening.png",
+          "sha256": "fb0426ffb7e0f4af8e65990c8848b5d1af3a1b8e048fc6da02d82867c4d6ace4"
+        }
+      }
+    },
+    {
+      "locale": "es",
+      "theme": "dark",
+      "width": 360,
+      "emulation": "Android-like phone",
+      "cards": 20,
+      "contrastSamples": 80,
+      "minimumContrast": 8.748350409473417,
+      "result": "test-results/home-venue-cards/es-dark-360.json",
+      "resultSha256": "d1cb0075b8a9b00949467935394ae9285272abc9a34d87b70cb05eeb28ce9260",
+      "screenshots": {
+        "screenshot": {
+          "path": "test-results/home-venue-cards/es-dark-360-venue-directory.png",
+          "sha256": "9ea14cd49c744d8a1d23670d9897f1003bc185ce0d2fe9107a61374706414f73"
+        },
+        "viewportScreenshot": {
+          "path": "test-results/home-venue-cards/es-dark-360-viewport.png",
+          "sha256": "3b6f11773a71fcffbb4aa89472caa0c2ceeedb637d45b68bc454eb71af18f2ea"
+        },
+        "opening": {
+          "path": "test-results/home-venue-cards/es-dark-360-opening.png",
+          "sha256": "f0aa5e7ce002e8bd801e8b2dc9feb5d854c40c0aa0f947ba0eff903f4b247bc2"
+        }
+      }
+    },
+    {
+      "locale": "es",
+      "theme": "dark",
+      "width": 390,
+      "emulation": "Android-like phone",
+      "cards": 20,
+      "contrastSamples": 80,
+      "minimumContrast": 8.748350409473417,
+      "result": "test-results/home-venue-cards/es-dark-390.json",
+      "resultSha256": "410ae09788ab5853214cf5efe034ea00a3dbff17fd8d0830db10d6196cfa2756",
+      "screenshots": {
+        "screenshot": {
+          "path": "test-results/home-venue-cards/es-dark-390-venue-directory.png",
+          "sha256": "36e04c5b24954eea235b7dbbc3d56dbcc7a43ef82acedd3d703d417ff90cf9ea"
+        },
+        "viewportScreenshot": {
+          "path": "test-results/home-venue-cards/es-dark-390-viewport.png",
+          "sha256": "4754c70aaa4182664abfb42552026d3935e175cf2843d4bf8f5d7a4673e08dca"
+        },
+        "opening": {
+          "path": "test-results/home-venue-cards/es-dark-390-opening.png",
+          "sha256": "329c43d513018ea7588378eee1409668c9907a8d21296c27a5ddc7df4f86e842"
+        }
+      }
+    },
+    {
+      "locale": "es",
+      "theme": "dark",
+      "width": 820,
+      "emulation": "touch-enabled tablet viewport with desktop UA",
+      "cards": 20,
+      "contrastSamples": 80,
+      "minimumContrast": 8.748350409473417,
+      "result": "test-results/home-venue-cards/es-dark-820.json",
+      "resultSha256": "c658d525bc3b6da8dc86d3c3454027570464c11a6afa1e3860954c0e2c2f912f",
+      "screenshots": {
+        "screenshot": {
+          "path": "test-results/home-venue-cards/es-dark-820-venue-directory.png",
+          "sha256": "4f64a2ee55e17fa3da29a98a36ef56581b46c67306778a070babc48f75c27a26"
+        },
+        "viewportScreenshot": {
+          "path": "test-results/home-venue-cards/es-dark-820-viewport.png",
+          "sha256": "aa2fee01887f7a10ee4e3ef678b5cbdecf1156cc4aa7761e78f59b1aad47c97b"
+        },
+        "opening": {
+          "path": "test-results/home-venue-cards/es-dark-820-opening.png",
+          "sha256": "6b59a1f060e187f616c64f461ea13471932874ac2bd8182b9b1b0393bf43dd25"
+        }
+      }
+    },
+    {
+      "locale": "es",
+      "theme": "light",
+      "width": 1440,
+      "emulation": "desktop Chromium context",
+      "cards": 20,
+      "contrastSamples": 80,
+      "minimumContrast": 8.748350409473417,
+      "result": "test-results/home-venue-cards/es-light-1440.json",
+      "resultSha256": "48942464028ce76dacf8c653feae37e7cad7429b2e3cc7119d53454d864c8ae9",
+      "screenshots": {
+        "screenshot": {
+          "path": "test-results/home-venue-cards/es-light-1440-venue-directory.png",
+          "sha256": "de7670311b79b15d2f106b9a999c3743d521189e9d5d1734be41134b0a96ab11"
+        },
+        "viewportScreenshot": {
+          "path": "test-results/home-venue-cards/es-light-1440-viewport.png",
+          "sha256": "10339f9967b54860c4113d1f0a1e65e83629aa8a2306276f23143ca204ccc97a"
+        },
+        "opening": {
+          "path": "test-results/home-venue-cards/es-light-1440-opening.png",
+          "sha256": "8721413e6fbdcb1ee54b23478120ba6d8c4ee31bc322eb6700dceb2c8a4df032"
+        }
+      }
+    },
+    {
+      "locale": "es",
+      "theme": "light",
+      "width": 360,
+      "emulation": "Android-like phone",
+      "cards": 20,
+      "contrastSamples": 80,
+      "minimumContrast": 8.748350409473417,
+      "result": "test-results/home-venue-cards/es-light-360.json",
+      "resultSha256": "62e67846fcdc9538f1a5a852e2245dc97013dbd3a0ef9043815fe7056b6c8b08",
+      "screenshots": {
+        "screenshot": {
+          "path": "test-results/home-venue-cards/es-light-360-venue-directory.png",
+          "sha256": "f0c82f99b4d5bcb3562771b6e0b921d7a7a8dbbe2f5b55803dff8fdd41f55d2b"
+        },
+        "viewportScreenshot": {
+          "path": "test-results/home-venue-cards/es-light-360-viewport.png",
+          "sha256": "6e8cdccc8efbdbf1371b1810ff0fa45a3a850e582fb2614e4a85f1ad89d5df88"
+        },
+        "opening": {
+          "path": "test-results/home-venue-cards/es-light-360-opening.png",
+          "sha256": "54a738486320e50bc08fee364362b5a2c7a74bc8431174c738ef02dd06819f93"
+        }
+      }
+    },
+    {
+      "locale": "es",
+      "theme": "light",
+      "width": 390,
+      "emulation": "Android-like phone",
+      "cards": 20,
+      "contrastSamples": 80,
+      "minimumContrast": 8.748350409473417,
+      "result": "test-results/home-venue-cards/es-light-390.json",
+      "resultSha256": "b8d942256a28e5d3120d8f362de48f7ef51ec2cc5f67df886d5b17761c9d18c9",
+      "screenshots": {
+        "screenshot": {
+          "path": "test-results/home-venue-cards/es-light-390-venue-directory.png",
+          "sha256": "8e83670bfca527c7fa8c4f0cd612237221848c2b094039f26a2ff69c40701a19"
+        },
+        "viewportScreenshot": {
+          "path": "test-results/home-venue-cards/es-light-390-viewport.png",
+          "sha256": "9e9da00a243cde6fc75f6f907789cbfed56c652a42c2243cbf6bfeeb146a78cc"
+        },
+        "opening": {
+          "path": "test-results/home-venue-cards/es-light-390-opening.png",
+          "sha256": "487fa9caa926011128e0b4d533c9e5fd259646efd67509fbe6306e1735ac78f4"
+        }
+      }
+    },
+    {
+      "locale": "es",
+      "theme": "light",
+      "width": 820,
+      "emulation": "touch-enabled tablet viewport with desktop UA",
+      "cards": 20,
+      "contrastSamples": 80,
+      "minimumContrast": 8.748350409473417,
+      "result": "test-results/home-venue-cards/es-light-820.json",
+      "resultSha256": "20957244b1589e7735d7e239b3a0c476b62b6623593eeeba78c1581d52715336",
+      "screenshots": {
+        "screenshot": {
+          "path": "test-results/home-venue-cards/es-light-820-venue-directory.png",
+          "sha256": "bfbe82112ee5397b866fe1cfce858d1cc48bcede4ad7255baa0e225b1029cfc5"
+        },
+        "viewportScreenshot": {
+          "path": "test-results/home-venue-cards/es-light-820-viewport.png",
+          "sha256": "bbeed77a5933dbf8c6519ac2c9aca3047261041da16c63e7daf975057895e5d3"
+        },
+        "opening": {
+          "path": "test-results/home-venue-cards/es-light-820-opening.png",
+          "sha256": "a7e0ba3c7be2948c4a2ea941f47cde32b4371730f9212cffbb6d6ee21565284d"
+        }
+      }
+    }
+  ],
+  "inspection": {
+    "reviewers": ["Codex /root/route_audit", "Codex /root integration"],
+    "screenshots": [
+      "test-results/home-venue-cards/en-dark-390-viewport.png",
+      "test-results/home-venue-cards/es-light-360-viewport.png",
+      "test-results/home-venue-cards/en-light-1440-viewport.png"
+    ],
+    "finding": "Readable coherent two-column phone/four-column desktop cards; visible focus outline, retained header/dock, readable long fixture names/addresses; no blocking defect observed in inspected captures. Full-section captures contain normal fixed-header/dock screenshot artefacts; normal viewport captures are provided.",
+    "routeAcceptance": false
+  },
+  "limits": {
+    "actualNextServer": true,
+    "fixtureCatalogueAndSupabaseAdapter": true,
+    "realBackendAuthRLS": false,
+    "physicalAndroid": false,
+    "independentDependencyInstall": false,
+    "desktop1440": "Desktop Chrome UA, isMobile false, touch false",
+    "tablet820": "Desktop Chrome UA, isMobile false, touch true",
+    "phones360390": "Pixel7 Android-like UA and touch/mobile emulation; not physical hardware"
+  },
+  "diagnosticAttemptsRetained": [
+    {
+      "log": "/tmp/akipasa-home-venue-cards-device-context-failure.log",
+      "reason": "Describe-level device spread included worker-scoped defaultBrowserType; corrected explicit context fields."
+    },
+    {
+      "log": "/tmp/akipasa-home-venue-cards-missing-chrome.log",
+      "reason": "Chrome channel executable absent; used already installed Chromium executable without installation."
+    }
+  ],
+  "acceptedRoutes": 0,
+  "merged": false,
+  "deployed": false,
+  "productionDataOrConfigurationChanged": false
+}

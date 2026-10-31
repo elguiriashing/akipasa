@@ -187,7 +187,7 @@ it("shows a read failure separately from an empty catalogue", () => {
     <BusinessHome locale="en" places={[]} readError deleteAction={vi.fn()} />,
   );
   expect(screen.getByRole("alert")).toHaveTextContent(
-    "Could not load your places",
+    "Could not load all your places",
   );
   expect(screen.queryByText("Your first business starts here")).toBeNull();
 });

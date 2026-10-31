@@ -354,6 +354,15 @@ html[data-theme="light"] .owner-swatch-synthwave i {
    content inset. Keep it above their 60px dock; the canonical Pasa dock, Map
    and Passport retain their own placements. Closing privacy never saves it. */
 @media (max-width: 850px) {
+  /* Native keyboard focus can otherwise scroll the trigger back under the
+     canonical dock even though its existing seven-rem inset is sufficient. */
+  html:not([data-owner-focus="true"])
+    body:has(.pasa-dock):not(:has(.auth-theme-akipasa, .map-page))
+    > .privacy-preferences:not(.privacy-preferences--passport)
+    > button {
+    scroll-margin-block-end: calc(7rem + env(safe-area-inset-bottom, 0px));
+  }
+
   html:not([data-owner-focus="true"])
     body:has(.app-shell .app-bottom-nav:not(.pasa-dock)):not(
       :has(.pasa-dock)

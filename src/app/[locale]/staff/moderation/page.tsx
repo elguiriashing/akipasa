@@ -1,6 +1,6 @@
 import "../claim-review.css";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { WorkspacePageHeader } from "@/components/WorkspaceShell";
 import { requireUser } from "@/lib/auth";
 import { canModerate } from "@/lib/roles";
@@ -9,52 +9,71 @@ import { StaffQueue, type StaffQueueItem } from "../StaffQueue";
 import { setAutomaticModeration } from "../../moderation/actions";
 import { RentalReviewQueue } from "../RentalReviewQueue";
 
-const queues = [
-  "venues",
-  "events",
-  "offers",
-  "community",
-  "claims",
-  "rentals",
-] as const;
-type Queue = (typeof queues)[number];
+import {
+  STAFF_MODERATION_QUEUES as queues,
+  STAFF_QUEUE_PAGE_SIZE,
+  STAFF_QUEUE_MAX_PAGE,
+  parseStaffQueue,
+  parseStaffQueuePage,
+  staffModerationHref,
+  type StaffModerationQueue as Queue,
+} from "@/lib/staff-moderation-queue";
 
 async function loadQueue(
   supabase: Awaited<ReturnType<typeof requireUser>>["supabase"],
   queue: Queue,
-  claimOffset = 0,
+  offset = 0,
 ) {
   if (queue === "venues")
     return supabase
       .from("venues")
-      .select("id,name,address,status,created_at")
+      .select("id,name,address,status,created_at", { count: "exact" })
       .eq("status", "pending")
-      .order("created_at");
+      .order("created_at", { ascending: true })
+      .order("id", { ascending: true })
+      .range(offset, offset + STAFF_QUEUE_PAGE_SIZE - 1);
   if (queue === "events")
     return supabase
       .from("events")
-      .select("id,title_es,title_en,status,created_at,venues(name)")
+      .select("id,title_es,title_en,status,created_at,venues(name)", {
+        count: "exact",
+      })
       .eq("status", "pending")
-      .order("created_at");
+      .order("created_at", { ascending: true })
+      .order("id", { ascending: true })
+      .range(offset, offset + STAFF_QUEUE_PAGE_SIZE - 1);
   if (queue === "offers")
     return supabase
       .from("offers")
-      .select("id,title_es,title_en,status,created_at,venues(name)")
+      .select("id,title_es,title_en,status,created_at,venues(name)", {
+        count: "exact",
+      })
       .eq("status", "pending")
-      .order("created_at");
+      .order("created_at", { ascending: true })
+      .order("id", { ascending: true })
+      .range(offset, offset + STAFF_QUEUE_PAGE_SIZE - 1);
   if (queue === "community")
     return supabase
       .from("event_submissions")
-      .select("id,title,venue_name,venue_address,state,created_at")
+      .select("id,title,venue_name,venue_address,state,created_at", {
+        count: "exact",
+      })
       .eq("state", "pending")
-      .order("created_at");
+      .order("created_at", { ascending: true })
+      .order("id", { ascending: true })
+      .range(offset, offset + STAFF_QUEUE_PAGE_SIZE - 1);
   if (queue === "rentals")
     return supabase
       .from("car_rental_companies")
-      .select("id,name,city,address,phone,website_url,submitted_by,created_at")
+      .select(
+        "id,name,city,address,phone,website_url,submitted_by,created_at",
+        { count: "exact" },
+      )
       .eq("status", "pending_review")
-      .order("created_at");
-  return supabase.rpc("staff_pending_venue_claims", { p_offset: claimOffset });
+      .order("created_at", { ascending: true })
+      .order("id", { ascending: true })
+      .range(offset, offset + STAFF_QUEUE_PAGE_SIZE - 1);
+  return supabase.rpc("staff_pending_venue_claims", { p_offset: offset });
 }
 
 export default async function StaffModerationPage({
@@ -67,9 +86,7 @@ export default async function StaffModerationPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
-  const queue: Queue = queues.includes(query.queue as Queue)
-    ? (query.queue as Queue)
-    : "venues";
+  const queue = parseStaffQueue(query.queue);
   const { supabase, user } = await requireUser(
     locale,
     `/${locale}/staff/moderation`,
@@ -80,20 +97,54 @@ export default async function StaffModerationPage({
     .eq("id", user.id)
     .maybeSingle();
   if (!profile || !canModerate(profile.app_role)) notFound();
-  const claimPage = /^\d{1,5}$/.test(query.page || "")
-    ? Math.min(10001, Math.max(1, Number(query.page)))
-    : 1;
+  const claimPage = parseStaffQueuePage(query.page);
   const [
-    { data, error: queueError },
+    { data, error: queueError, count: queueCount },
     { data: automaticMode, error: automaticModeError },
   ] = await Promise.all([
-    loadQueue(supabase, queue, (claimPage - 1) * 20),
+    loadQueue(supabase, queue, (claimPage - 1) * STAFF_QUEUE_PAGE_SIZE),
     supabase
       .from("automatic_moderation_settings")
       .select("enabled,changed_at")
       .eq("singleton", true)
       .maybeSingle(),
   ]);
+  const total =
+    queue === "claims"
+      ? data?.[0]?.total_count == null
+        ? null
+        : Number(data[0].total_count)
+      : queueCount;
+  const totalKnown =
+    typeof total === "number" && Number.isSafeInteger(total) && total >= 0;
+  if (
+    queue !== "claims" &&
+    !queueError &&
+    totalKnown &&
+    claimPage > Math.max(1, Math.ceil(total / STAFF_QUEUE_PAGE_SIZE))
+  ) {
+    redirect(
+      staffModerationHref(
+        locale,
+        queue,
+        Math.max(1, Math.ceil(total / STAFF_QUEUE_PAGE_SIZE)),
+        {
+          updated:
+            query.updated === "decision" ||
+            query.updated === "review" ||
+            query.updated === "automatic-mode"
+              ? query.updated
+              : undefined,
+          error:
+            query.error === "decision" ||
+            query.error === "review" ||
+            query.error === "automatic-mode"
+              ? query.error
+              : undefined,
+        },
+      ),
+    );
+  }
   // Deep-linked claims can be anywhere in the paginated queue. Never render
   // the *wrong* claim if the requested one is missing/closed.
   let claimItems = data || [];
@@ -124,7 +175,7 @@ export default async function StaffModerationPage({
     offers: es ? "Ofertas" : "Offers",
     community: es ? "Comunidad" : "Community",
     claims: es ? "Reclamaciones" : "Claims",
-    rentals: "AkiConduzco",
+    rentals: "AkiCoches",
   };
   const target =
     queue === "venues"
@@ -203,6 +254,8 @@ export default async function StaffModerationPage({
           {automaticModeKnown ? (
             <form action={setAutomaticModeration}>
               <input type="hidden" name="locale" value={locale} />
+              <input type="hidden" name="queue" value={queue} />
+              <input type="hidden" name="queuePage" value={claimPage} />
               <input
                 type="hidden"
                 name="enabled"
@@ -237,7 +290,7 @@ export default async function StaffModerationPage({
           ) : (
             <Link
               className="button secondary"
-              href={`/${locale}/staff/moderation?queue=${queue}`}
+              href={staffModerationHref(locale, queue, claimPage)}
             >
               {es ? "Reintentar" : "Retry"}
             </Link>
@@ -262,14 +315,20 @@ export default async function StaffModerationPage({
       <section>
         {queue !== "claims" && <h2>{labels[queue]}</h2>}
         {queueError ? (
-          <p className="notice" role="alert">
-            {es
-              ? "No se pudo cargar la cola. Vuelve a intentarlo."
-              : "Could not load the queue. Please try again."}
-          </p>
+          <div className="notice" role="alert">
+            <p>
+              {es
+                ? "No se pudo cargar la cola. Vuelve a intentarlo."
+                : "Could not load the queue. Please try again."}
+            </p>
+            <Link href={staffModerationHref(locale, queue, claimPage)}>
+              {es ? "Reintentar" : "Retry"}
+            </Link>
+          </div>
         ) : queue === "rentals" ? (
           <RentalReviewQueue
             locale={locale}
+            queuePage={claimPage}
             companies={
               (data || []) as Parameters<
                 typeof RentalReviewQueue
@@ -289,6 +348,7 @@ export default async function StaffModerationPage({
                 | "venue_claim"
             }
             claimPage={claimPage}
+            queuePage={claimPage}
             selectedClaimId={query.claim}
             approve={
               queue === "community" || queue === "claims"
@@ -296,6 +356,34 @@ export default async function StaffModerationPage({
                 : "published"
             }
           />
+        )}
+        {queue !== "claims" && !queueError && (
+          <nav
+            className="workspace-subnav"
+            aria-label={es ? "Páginas de moderación" : "Moderation pages"}
+          >
+            {claimPage > 1 && (
+              <Link href={staffModerationHref(locale, queue, claimPage - 1)}>
+                {es ? "Anterior" : "Previous"}
+              </Link>
+            )}
+            <span role="status">
+              {es ? "Página" : "Page"} {claimPage} ·{" "}
+              {totalKnown
+                ? `${total} ${es ? "pendientes" : "pending"}`
+                : es
+                  ? "Total no disponible"
+                  : "Total unavailable"}
+            </span>
+            {claimPage < STAFF_QUEUE_MAX_PAGE &&
+              (totalKnown
+                ? claimPage * STAFF_QUEUE_PAGE_SIZE < total
+                : data?.length === STAFF_QUEUE_PAGE_SIZE) && (
+                <Link href={staffModerationHref(locale, queue, claimPage + 1)}>
+                  {es ? "Siguiente" : "Next"}
+                </Link>
+              )}
+          </nav>
         )}
         {queue === "claims" && !queueError && (
           <nav

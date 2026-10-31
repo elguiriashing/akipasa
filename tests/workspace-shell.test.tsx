@@ -58,7 +58,7 @@ afterEach(() => {
   document.body.className = "";
 });
 
-it("retains active discovery filters across desktop and mobile Discover/Map links", () => {
+it("retains active discovery filters across desktop and mobile Home/Map links", () => {
   navigation.pathname = "/en/map";
   navigation.search =
     "locality=madrid&locationName=Madrid+Centro&latitude=40.4168&longitude=-3.7038&radius=15&time=tonight&category=music&price=paid&accessible=on&eventPage=3&list=1";
@@ -68,7 +68,7 @@ it("retains active discovery filters across desktop and mobile Discover/Map link
     </AppShell>,
   );
 
-  for (const link of screen.getAllByRole("link", { name: "Discover" })) {
+  for (const link of screen.getAllByRole("link", { name: "Home" })) {
     const url = new URL(link.getAttribute("href")!, "https://akipasa.com");
     expect(url.pathname).toBe("/en");
     expect(url.searchParams.get("category")).toBe("music");
@@ -80,6 +80,44 @@ it("retains active discovery filters across desktop and mobile Discover/Map link
   for (const link of screen.getAllByRole("link", { name: "Map" })) {
     expect(link).toHaveAttribute("aria-current", "page");
     expect(link.getAttribute("href")).toContain("category=music");
+  }
+});
+
+it("keeps one consumer dock on public/Profile screens but never duplicates operational or authentication navigation", () => {
+  for (const pathname of ["/en", "/en/map", "/en/community", "/en/account"]) {
+    navigation.pathname = pathname;
+    const view = render(
+      <AppShell locale="en" signedIn={pathname.endsWith("/account")}>
+        <main>Consumer page</main>
+      </AppShell>,
+    );
+    expect(
+      view.container.querySelectorAll(".app-bottom-nav.pasa-dock"),
+      pathname,
+    ).toHaveLength(1);
+    view.unmount();
+  }
+
+  for (const pathname of [
+    "/en/admin",
+    "/en/admin/users",
+    "/en/staff",
+    "/en/business",
+    "/en/owner",
+    "/en/auth",
+    "/en/onboarding",
+  ]) {
+    navigation.pathname = pathname;
+    const view = render(
+      <AppShell locale="en" signedIn={true}>
+        <main>Workspace or sign-in page</main>
+      </AppShell>,
+    );
+    expect(
+      view.container.querySelectorAll(".app-bottom-nav.pasa-dock"),
+      pathname,
+    ).toHaveLength(0);
+    view.unmount();
   }
 });
 
@@ -115,6 +153,49 @@ it("contains mobile More focus, makes the background inert and restores its open
 });
 
 describe("progressive disclosure workspace shell", () => {
+  it.each(["account", "staff", "admin", "community", "business", "owner"])(
+    "dismisses %s menus on history-style route changes without closing same-route updates",
+    (workspace) => {
+      navigation.pathname = `/en/${workspace}`;
+      const shell = () => (
+        <WorkspaceShell
+          title="Workspace"
+          eyebrow="Navigation"
+          description="Focused workflow"
+          homeHref={`/en/${workspace}`}
+          items={[
+            { href: `/en/${workspace}`, label: "Overview", icon: "home" },
+          ]}
+        >
+          <p>Current content</p>
+        </WorkspaceShell>
+      );
+      const view = render(shell());
+      const opener = screen.getByRole("button", {
+        name: "Navigation Workspace menu",
+      });
+      fireEvent.click(opener);
+      view.rerender(shell());
+      expect(opener).toHaveAttribute("aria-expanded", "true");
+
+      navigation.pathname = `/en/${workspace}/details`;
+      view.rerender(shell());
+      expect(opener).toHaveAttribute("aria-expanded", "false");
+
+      fireEvent.click(opener);
+      navigation.search = "view=history&page=2";
+      view.rerender(shell());
+      expect(opener).toHaveAttribute("aria-expanded", "false");
+
+      fireEvent.click(opener);
+      view.rerender(shell());
+      expect(opener).toHaveAttribute("aria-expanded", "true");
+      navigation.pathname = `/es/${workspace}/details`;
+      view.rerender(shell());
+      expect(opener).toHaveAttribute("aria-expanded", "false");
+    },
+  );
+
   it("keeps crowded desktop workspace navigation horizontally reachable", () => {
     const source = readFileSync(
       resolve(process.cwd(), "src/components/WorkspaceShell.tsx"),

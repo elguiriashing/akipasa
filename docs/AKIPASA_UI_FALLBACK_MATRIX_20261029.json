@@ -1,0 +1,110 @@
+{
+  "version": 1,
+  "description": "Fallback-state companion to the103-page route inventory. In progress is not release acceptance. Review these states with their parent routes and source-bound browser/device evidence.",
+  "boundaries": {
+    "src/app/not-found.tsx": {
+      "scope": "consumer",
+      "status": "accepted",
+      "note": "Standalone product-aware missing-route view; actual status/noindex/locale and product home evidence required. Individually reviewed actual hosted native Next fallback/component source and screenshots at67bd; overall real Auth/RLS and physical-device release approval remain separate.",
+      "acceptance": {
+        "reviewer": "Codex venue_event_screens independent responsible tester",
+        "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378575/artifacts/13006090570",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378575/job/124257651998",
+        "sourceSha256": "ed434fabd6d34a1db66b1354566a3903be8f9197b35cc45efb87b312dab6db52",
+        "evidenceType": "actual isolated Next native fallback with copied production components; disposable contexts",
+        "screenshotEntry": "pasa-boundaries-framework/en-390-dark-not-a-route.png",
+        "realAuthenticatedRoleOrRlsAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
+    },
+    "src/app/error.tsx": {
+      "scope": "consumer",
+      "status": "accepted",
+      "note": "Standalone route/layout-child error surface; explicit read refresh/reset, no private error text. Individually reviewed actual hosted native Next fallback/component source and screenshots at67bd; overall real Auth/RLS and physical-device release approval remain separate.",
+      "acceptance": {
+        "reviewer": "Codex venue_event_screens independent responsible tester",
+        "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378575/artifacts/13006090570",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378575/job/124257651998",
+        "sourceSha256": "b04590ba1333d40136b995a36cbcd868911e205f1c45cf56aec8684e3a568570",
+        "evidenceType": "actual isolated Next native fallback with copied production components; disposable contexts",
+        "screenshotEntry": "pasa-boundaries-framework/en-390-dark-root-error.png",
+        "realAuthenticatedRoleOrRlsAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
+    },
+    "src/app/[locale]/not-found.tsx": {
+      "scope": "consumer",
+      "status": "accepted",
+      "note": "Missing-route view inside existing localized shell; preserve404 and existing authorization/redirect contracts. Individually reviewed actual hosted native Next fallback/component source and screenshots at67bd; overall real Auth/RLS and physical-device release approval remain separate.",
+      "acceptance": {
+        "reviewer": "Codex venue_event_screens independent responsible tester",
+        "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378575/artifacts/13006090570",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378575/job/124257651998",
+        "sourceSha256": "f461834497b8da5fe1953f0414a4c6350063ef1565bb2df45f37cbc481842a8d",
+        "evidenceType": "actual isolated Next native fallback with copied production components; disposable contexts",
+        "screenshotEntry": "pasa-boundaries-framework/en-390-dark-missing.png",
+        "realAuthenticatedRoleOrRlsAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
+    },
+    "src/app/[locale]/error.tsx": {
+      "scope": "consumer",
+      "status": "accepted",
+      "note": "Localized recoverable route error; manual retry revalidates reads without replaying form actions. Individually reviewed actual hosted native Next fallback/component source and screenshots at67bd; overall real Auth/RLS and physical-device release approval remain separate.",
+      "acceptance": {
+        "reviewer": "Codex venue_event_screens independent responsible tester",
+        "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378575/artifacts/13006090570",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378575/job/124257651998",
+        "sourceSha256": "e899c56e78f7403b101b882f7940b4b07ce656d8b6b7549ca6ae9b02a24e5bef",
+        "evidenceType": "actual isolated Next native fallback with copied production components; disposable contexts",
+        "screenshotEntry": "pasa-boundaries-framework/en-390-dark-error.png",
+        "realAuthenticatedRoleOrRlsAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
+    },
+    "src/app/[locale]/admin/loading.tsx": {
+      "scope": "operations",
+      "status": "accepted",
+      "note": "Existing administrator loading boundary, reused embedded indeterminate view; no new public streaming boundary. Individually reviewed actual hosted native Next fallback/component source and screenshots at67bd; overall real Auth/RLS and physical-device release approval remain separate.",
+      "acceptance": {
+        "reviewer": "Codex venue_event_screens independent responsible tester",
+        "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378575/artifacts/13006090570",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378575/job/124257651998",
+        "sourceSha256": "5e0c803629c562777c1fec507ff4e80847caadbc035cd3f3c82b72f6f4703933",
+        "evidenceType": "actual isolated Next native fallback with copied production components; disposable contexts",
+        "screenshotEntry": "pasa-boundaries-framework/en-390-dark-admin-loading.png",
+        "realAuthenticatedRoleOrRlsAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
+    },
+    "src/app/global-error.tsx": {
+      "scope": "shared",
+      "status": "accepted",
+      "note": "Root-layout failure bypasses product context: neutral bilingual AkiSuite document, explicit manual GET retry, no error details. Individually reviewed actual hosted native Next fallback/component source and screenshots at67bd; overall real Auth/RLS and physical-device release approval remain separate.",
+      "acceptance": {
+        "reviewer": "Codex venue_event_screens independent responsible tester",
+        "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378575/artifacts/13006090570",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378575/job/124257651998",
+        "sourceSha256": "09e6e34c4f2b3873de097ad5cb8955b97cc94d84147d81116b71457ffc1787a0",
+        "evidenceType": "actual isolated Next root-layout error with copied production global-error document; disposable GET recovery",
+        "screenshotEntry": "global-error/light-390-failure.png",
+        "realAuthenticatedRoleOrRlsAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
+    }
+  },
+  "preservedSeparateProductBoundaries": [
+    "src/app/akiduermo/error.tsx",
+    "src/app/akiduermo/not-found.tsx"
+  ],
+  "deliberatelyNotInstalled": {
+    "src/app/[locale]/loading.tsx": "Actual Next framework testing changed404 to200 when this global loading boundary streamed. Preserve original404/307 assertions; use only the existing authorized Admin boundary."
+  },
+  "accepted": 6
+}

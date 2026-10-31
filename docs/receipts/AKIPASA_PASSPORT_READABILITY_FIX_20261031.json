@@ -1,0 +1,170 @@
+{
+  "version": 1,
+  "completedAt": "2026-10-31T12:04:04.285978+00:00",
+  "owner": "Codex release_github",
+  "baseCommit": "d6859859ece002436838be215c16c284fcfe7222",
+  "sourceBinding": "Base commit plus the explicit final sourceHashes below. Changes were uncommitted during verification; the root integration owner must bind the final committed source before release.",
+  "scope": "Repair two demonstrated Passport-only text contrast defects without changing component code, data, permissions, actions, XP or shared/Admin CSS.",
+  "changedFiles": [
+    "src/components/PassportBook.module.css",
+    "scripts/test-passport-chapter-browser.mjs"
+  ],
+  "runtimeChange": {
+    "file": "src/components/PassportBook.module.css",
+    "addedLines": 6,
+    "removedLines": 0,
+    "rules": [
+      {
+        "selector": ".page:not(:has(.cover)) .chapter :global(.stamp-card .card-title-row h3)",
+        "color": "var(--paper-ink)"
+      },
+      {
+        "selector": ".bookmarks .motionControls p",
+        "color": "#d7c5ae"
+      }
+    ]
+  },
+  "regressionChange": "Preserve every previous chapter/ownership/privacy/contrast assertion and all 194 contexts. Add computed contrast for actual loyalty headings and the reduced-motion status, record those measurements, and save an actual failure screenshot plus CSS/runner hashes before a contrast assertion fails.",
+  "baselineEvidence": {
+    "loyalty": {
+      "measuredFailure": {
+        "locale": "en",
+        "theme": "dark",
+        "width": 360,
+        "state": "populated",
+        "chapter": "stamps",
+        "label": "Fixture programme",
+        "target": "loyalty-title",
+        "contrast": 1.0140753707484251,
+        "sourceHashes": {
+          "src/components/PassportBook.module.css": "e4b661f8452f5d0aa4310b8849e66689e776f9cb2a7ff29ff216051c17d43dec",
+          "scripts/test-passport-chapter-browser.mjs": "41f6f91f4917ca7e98b94dc0b88eb230aa7d4a297954257368d88e16fe857aab"
+        }
+      },
+      "generatedScreenshot": {
+        "path": "akipasa-review/test-results/passport-protected-chapters/en-dark-360-populated-stamps-contrast-failure.png",
+        "sha256": "3a85361731e12ef15adc3646946695d4cc20de578b1326c5d455ded3674cf17c"
+      },
+      "originalSpanishArtifact": {
+        "path": "review-evidence/passport-small-release/es-dark-360-populated-stamps.png",
+        "sha256": "93a69364b7410fce23c5bd30c9d0dc68cb9c9884f71e6c84d4a2759d0cfc065c"
+      },
+      "log": {
+        "path": "reviews/passport-baseline-title.log",
+        "sha256": "f2a6122c0de452cd29815f4720263a58dcde593d7f713e909c18c3c0e26b0df3"
+      }
+    },
+    "motion": {
+      "measuredFailure": {
+        "locale": "en",
+        "theme": "light",
+        "width": 360,
+        "state": "populated",
+        "chapter": "progress",
+        "label": "Reduced motion is enabled.",
+        "target": "motion-status",
+        "contrast": 2.8738649709056907,
+        "sourceHashes": {
+          "src/components/PassportBook.module.css": "3b85bd014853b4a3a875bc3d4636bac85c7790f7a8c88d5e9fde3ab994fe1bf4",
+          "scripts/test-passport-chapter-browser.mjs": "41f6f91f4917ca7e98b94dc0b88eb230aa7d4a297954257368d88e16fe857aab"
+        }
+      },
+      "qualification": "The failing computed style was captured at the first light 360px case with the navigation rail in its mobile state. The original visible 820px artifact was separately inspected and shows the same low-contrast status. Its measurement run already includes the loyalty-only fix; hashes make that sequencing explicit.",
+      "generatedScreenshot": {
+        "path": "akipasa-review/test-results/passport-protected-chapters/en-light-360-populated-progress-contrast-failure.png",
+        "sha256": "e70a995f7900695fb4e3615a3f60c1b6d9ad912762c74f2c9ae76c10f944d7f2"
+      },
+      "originalVisibleTabletArtifact": {
+        "path": "review-evidence/passport-small-release/en-light-820-populated-badges.png",
+        "sha256": "d1689d9dc748bb6f6906c47826281a2fa4ae10f32e53450cc0dbd8869fe3bd77"
+      },
+      "log": {
+        "path": "reviews/passport-baseline-motion.log",
+        "sha256": "cae2b98a9d522f69e053be35c3de67229fd797f5b2dc218a714ae4992f0266e3"
+      }
+    }
+  },
+  "finalEvidence": {
+    "results": {
+      "path": "akipasa-review/test-results/passport-protected-chapters/results.json",
+      "sha256": "70dd8f1f2281d4e85ae573e58ee2cfc3c416e9c4c7c24a46321e0862a3dd0ce5"
+    },
+    "sourceHashes": {
+      "src/app/[locale]/passports/page.tsx": "de9e3a07b0a628d31d07c6b1e9574be7f70450f1e95fc6d978a64b15891a378e",
+      "src/components/PassportBook.tsx": "b17b21ce39a297787f139221a43635681df2073563c0e63212a4554643e1649c",
+      "src/components/PassportBook.module.css": "c72ed10a6f6b1c800eee7ddc3ed9750f387960f0a848120541ab3f2b0342973c",
+      "scripts/test-passport-chapter-browser.mjs": "41f6f91f4917ca7e98b94dc0b88eb230aa7d4a297954257368d88e16fe857aab"
+    },
+    "sourceHashesMatchCurrentFiles": true,
+    "browser": "Chromium153.0.8010.0, executable /tmp/chromium; no project dependency changes",
+    "command": "BOOKING_BROWSER_PATH=/tmp/chromium node scripts/test-passport-chapter-browser.mjs",
+    "casesPassed": 194,
+    "originalContextCoverage": "192 EN/ES x dark/light x360/390/820/1440 x populated/empty/unavailable x4chapters, plus2earned-city cases, unchanged",
+    "contrast": {
+      "loyalty-title": {
+        "sampleCount": 16,
+        "minimumRatio": 13.762708333411608,
+        "maximumRatio": 13.762708333411608
+      },
+      "motion-status": {
+        "sampleCount": 194,
+        "minimumRatio": 11.040893683974462,
+        "maximumRatio": 11.040893683974462
+      }
+    },
+    "pageErrors": [],
+    "blockedRequests": [],
+    "actionAttempts": 0,
+    "log": {
+      "path": "reviews/passport-final-chapters.log",
+      "sha256": "83e6ab045b437772f79f42098543c12b66da2fcb690ebd07159065705d338816"
+    },
+    "inspectedAfterImages": [
+      {
+        "path": "akipasa-review/test-results/passport-protected-chapters/es-dark-360-populated-stamps.png",
+        "sha256": "6084ac7b72c2495c0d4889a93117149488ef4be180ff78d986f15090e801388c"
+      },
+      {
+        "path": "akipasa-review/test-results/passport-protected-chapters/en-light-820-populated-badges.png",
+        "sha256": "ed8bc77dc4ad9b29175472223e8978b2f684f3b347d2cc475fb0febba335807d"
+      }
+    ]
+  },
+  "otherVerification": {
+    "ownerAppearanceRegression": {
+      "command": "vitest run tests/owner-console.test.ts",
+      "passed": 19,
+      "log": {
+        "path": "reviews/passport-appearance-regression.log",
+        "sha256": "ad5caf3ed04576f56a2f33bfb02cf61f1d72751dbe3f5e3cc8ca3878dcadabee"
+      }
+    },
+    "focusedEslint": "pass",
+    "prettier": "pass",
+    "nodeSyntax": "pass",
+    "gitDiffCheck": "pass",
+    "adminProofSourceFilesCompared": 162,
+    "adminProofHashDifferences": [],
+    "pageAndBookTsx": "unchanged from original artifact hashes"
+  },
+  "independentVisualReview": {
+    "reviewer": "Codex release_cloudflare consumer reviewer",
+    "finding": "Independently inspected both exact after images: Spanish narrow loyalty title now reads clearly in dark brown on cream; English light/tablet reduced-motion notice is readable beige on black. Both original defects are visually resolved."
+  },
+  "limitations": [
+    "Actual page and book rendered with synthetic identity/read/action adapters; no real authentication or provider session is claimed.",
+    "No production or isolated-backend RLS, tenant, private-write, reward/XP or physical Android acceptance is inferred.",
+    "This receipt resolves two visual defects; the root and consumer reviewer own route acceptance and the full release decision.",
+    "One first local launch was blocked by sandbox localhost EPERM before browser execution; the same runner succeeded through authorized execution escalation.",
+    "No remote writes, commit, merge, deployment, schema mutation, billable provider invocation or customer-state change was performed."
+  ],
+  "publication": {
+    "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+    "reviewedSourceTree": "7de020d02387bb7196fe56fdc4f930e23500d852",
+    "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+    "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+    "hostedExecution": "Fresh final-head workflows required; no future run ID or artifact is asserted.",
+    "sourceBinding": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added."
+  },
+  "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895"
+}

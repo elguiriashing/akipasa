@@ -1,0 +1,171 @@
+{
+  "status": "applied-and-postconditions-verified",
+  "projectRef": "vhpbvcfkcteswlsdjrfl",
+  "authorization": "Alex: So 332 is done? If so, let's work on getting it to live, if anything's remaining, get it done, checked, then live",
+  "qaAcceptance": {
+    "passed": 93,
+    "requests": 167,
+    "reportSha256": "768246260730907f8f7131206ce5612475d25344d4f5ef48dec72d4bb4867712"
+  },
+  "migrations": [
+    {
+      "source": "database/migrations/20261030114106_protect_staff_claim_account_eligibility.sql",
+      "sha256": "154fe91bf7a8a80d433a0a6c5827f22a90bac1ac3e2de99e95063afea24fa160",
+      "managedVersion": "20261031153153",
+      "applySuccess": true
+    },
+    {
+      "source": "database/migrations/20261030163000_add_checkin_venue_preview.sql",
+      "sha256": "8f863eb676dabfed65955f7febadd1fc4f75b921a040a26e0697c7de4e9cbaeb",
+      "managedVersion": "20261031153156",
+      "applySuccess": true
+    }
+  ],
+  "preflight": {
+    "functions": [
+      {
+        "acl": "{postgres=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+        "owner": "postgres",
+        "config": ["search_path=\"\""],
+        "secdef": true,
+        "body_md5": "8f86056e9c2e1c73dde8d34a56b213bc",
+        "signature": "account_features_allowed()",
+        "definition_md5": "d40c0bd5a77eab45a995449c542774a7"
+      },
+      {
+        "acl": "{postgres=X/postgres,service_role=X/postgres,authenticated=X/postgres}",
+        "owner": "postgres",
+        "config": ["search_path=\"\""],
+        "secdef": true,
+        "body_md5": "154545dcdaf45d679cc35adeaf1677b7",
+        "signature": "staff_pending_venue_claim_by_id(uuid)",
+        "definition_md5": "c49199892edff53e68364f05507f953d"
+      }
+    ],
+    "credential_boundary": {
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "rls": true,
+      "owner": "postgres",
+      "force_rls": false
+    }
+  },
+  "postflight": {
+    "history": [
+      {
+        "name": "protect_staff_claim_account_eligibility",
+        "version": "20261031153153"
+      },
+      {
+        "name": "add_checkin_venue_preview",
+        "version": "20261031153156"
+      }
+    ],
+    "functions": [
+      {
+        "acl": "{postgres=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+        "owner": "postgres",
+        "config": ["search_path=\"\""],
+        "secdef": true,
+        "body_md5": "8f86056e9c2e1c73dde8d34a56b213bc",
+        "signature": "account_features_allowed()",
+        "anon_execute": false,
+        "definition_md5": "d40c0bd5a77eab45a995449c542774a7",
+        "authenticated_execute": true
+      },
+      {
+        "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+        "owner": "postgres",
+        "config": ["search_path=\"\""],
+        "secdef": true,
+        "body_md5": "0ddaa8de6cb95a43ff735951050f8d1f",
+        "signature": "checkin_venue_preview(uuid)",
+        "anon_execute": false,
+        "definition_md5": "bb6ead42e904578ad29312da1af2c8fa",
+        "authenticated_execute": true
+      },
+      {
+        "acl": "{postgres=X/postgres,service_role=X/postgres,authenticated=X/postgres}",
+        "owner": "postgres",
+        "config": ["search_path=\"\""],
+        "secdef": true,
+        "body_md5": "085d3d37194bf241cb0fd23f92ca2478",
+        "signature": "staff_pending_venue_claim_by_id(uuid)",
+        "anon_execute": false,
+        "definition_md5": "d9702f865fc8d4d38abcb5650bd721fe",
+        "authenticated_execute": true
+      }
+    ],
+    "credential_boundary": {
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "rls": true,
+      "owner": "postgres",
+      "force_rls": false
+    }
+  },
+  "boundary": "Only two reviewed function forwards. No production customer DML, no Pals reinstall, no profile-column repair, no historical bulk replay. Credential owner/RLS/ACL unchanged. Full credential policy expressions and all18 existing profile UPDATE-column privileges exactly match QA; the15-column replay repair is a subset already satisfied in production. Application PR and deployment still pending at this receipt.",
+  "credentialPolicyPostflight": {
+    "credential_policies": [
+      {
+        "name": "venue_checkin_credentials_manage",
+        "check": "(is_venue_member(venue_id, ARRAY['manager'::venue_member_role, 'owner'::venue_member_role]) OR has_platform_role(ARRAY['moderator'::app_role, 'administrator'::app_role]))",
+        "roles": ["authenticated"],
+        "using": "(is_venue_member(venue_id, ARRAY['manager'::venue_member_role, 'owner'::venue_member_role]) OR has_platform_role(ARRAY['moderator'::app_role, 'administrator'::app_role]))",
+        "command": "*",
+        "permissive": true
+      }
+    ],
+    "profile_update_columns": [
+      "attendance_visibility",
+      "avatar_url",
+      "banner_url",
+      "bio",
+      "birth_year",
+      "contact_visibility",
+      "display_name",
+      "gender",
+      "instagram_url",
+      "locality",
+      "phone",
+      "preferred_locale",
+      "profile_visibility",
+      "province",
+      "public_email",
+      "updated_at",
+      "username",
+      "website_url"
+    ]
+  },
+  "qaCredentialPolicyPostflight": {
+    "credential_policies": [
+      {
+        "name": "venue_checkin_credentials_manage",
+        "check": "(is_venue_member(venue_id, ARRAY['manager'::venue_member_role, 'owner'::venue_member_role]) OR has_platform_role(ARRAY['moderator'::app_role, 'administrator'::app_role]))",
+        "roles": ["authenticated"],
+        "using": "(is_venue_member(venue_id, ARRAY['manager'::venue_member_role, 'owner'::venue_member_role]) OR has_platform_role(ARRAY['moderator'::app_role, 'administrator'::app_role]))",
+        "command": "*",
+        "permissive": true
+      }
+    ],
+    "profile_update_columns": [
+      "attendance_visibility",
+      "avatar_url",
+      "banner_url",
+      "bio",
+      "birth_year",
+      "contact_visibility",
+      "display_name",
+      "gender",
+      "instagram_url",
+      "locality",
+      "phone",
+      "preferred_locale",
+      "profile_visibility",
+      "province",
+      "public_email",
+      "updated_at",
+      "username",
+      "website_url"
+    ]
+  },
+  "finalPoliciesAndProfileUpdateGrantsExactlyMatchQa": true
+}

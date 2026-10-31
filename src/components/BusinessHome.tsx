@@ -27,11 +27,13 @@ export function BusinessHome({
   locale,
   places,
   readError = false,
+  retryHref,
   deleteAction,
 }: {
   locale: "en" | "es";
   places: ManagedPlace[];
   readError?: boolean;
+  retryHref?: string;
   deleteAction: (formData: FormData) => void | Promise<void>;
 }) {
   const es = locale === "es";
@@ -131,7 +133,9 @@ export function BusinessHome({
                 : "Choose a place to open its tools."}
             </p>
           </div>
-          <span className={styles.total}>{places.length}</span>
+          <span className={styles.total}>
+            {readError ? "—" : places.length}
+          </span>
         </div>
         <div className={styles.toolbar}>
           <label className={styles.search}>
@@ -207,39 +211,48 @@ export function BusinessHome({
             >
               {label}
               <span>
-                {
-                  places.filter(
-                    (place) => value === "all" || place.product === value,
-                  ).length
-                }
+                {readError
+                  ? "—"
+                  : places.filter(
+                      (place) => value === "all" || place.product === value,
+                    ).length}
               </span>
             </button>
           ))}
         </div>
         <p className={styles.result} role="status">
-          {filtered.length} {es ? "lugares" : "places"}
+          {readError
+            ? es
+              ? "Resultados parciales; total no disponible"
+              : "Partial results; total unavailable"
+            : `${filtered.length} ${es ? "lugares" : "places"}`}
           {filtered.length > pageSize
             ? ` · ${es ? "Página" : "Page"} ${currentPage} / ${pages}`
             : ""}
         </p>
-        {readError ? (
+        {readError && (
           <div className={styles.empty} role="alert">
             <Icon name="inbox" size={32} />
             <h3>
               {es
-                ? "No pudimos cargar tus negocios"
-                : "Could not load your places"}
+                ? "No pudimos cargar todos tus negocios"
+                : "Could not load all your places"}
             </h3>
             <p>
               {es
                 ? "Vuelve a cargar la página para intentarlo de nuevo."
                 : "Reload the page to try again."}
             </p>
-            <button type="button" onClick={() => location.reload()}>
-              {es ? "Reintentar" : "Try again"}
-            </button>
+            {retryHref ? (
+              <Link href={retryHref}>{es ? "Reintentar" : "Try again"}</Link>
+            ) : (
+              <button type="button" onClick={() => location.reload()}>
+                {es ? "Reintentar" : "Try again"}
+              </button>
+            )}
           </div>
-        ) : shown.length ? (
+        )}
+        {shown.length ? (
           <div className={styles.grid}>
             {shown.map((place) => (
               <article
@@ -322,7 +335,7 @@ export function BusinessHome({
               </article>
             ))}
           </div>
-        ) : (
+        ) : !readError ? (
           <div className={styles.empty}>
             <Icon name="business" size={32} />
             <h3>
@@ -354,8 +367,8 @@ export function BusinessHome({
               </Link>
             )}
           </div>
-        )}
-        {!readError && pages > 1 && (
+        ) : null}
+        {pages > 1 && (
           <nav
             className={styles.pagination}
             aria-label={es ? "Páginas de negocios" : "Places pages"}
@@ -368,6 +381,11 @@ export function BusinessHome({
               {es ? "Anterior" : "Previous"}
             </button>
             <span>
+              {readError
+                ? es
+                  ? "Páginas cargadas · "
+                  : "Loaded pages · "
+                : ""}
               {currentPage} / {pages}
             </span>
             <button

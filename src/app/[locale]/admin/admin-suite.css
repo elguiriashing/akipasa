@@ -841,3 +841,12 @@ html:not([data-owner-focus="true"])
   background: var(--admin-chrome-raised);
   border-color: var(--admin-chrome-line);
 }
+
+/* Main's compact header uses white wordmark ink on dark surfaces. The active
+   workspace/detail chrome also supports light mode, so inherit its matching ink. */
+html:not([data-owner-focus="true"])
+  body:has(.admin-workspace)
+  .app-topbar-mobile
+  .brand-wordmark {
+  color: var(--admin-chrome-ink);
+}

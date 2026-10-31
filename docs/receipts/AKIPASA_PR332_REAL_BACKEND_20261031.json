@@ -1,0 +1,439 @@
+{
+  "schemaVersion": 1,
+  "projectRef": "ngzexyddtnswonjnckco",
+  "runId": "1c4773c1-0555-4105-83de-a0f9bcaf1d39",
+  "startedAt": "2026-10-31T15:28:23.582Z",
+  "source": {
+    "head": "a48e2c32c6eb1072f0608dae331b35ea5c9e4879",
+    "sha256": {
+      "database/migrations/0027_admin_user_crm.sql": "a861f8220e171a5fbc95c09c941685f3eedeac1a0a84982b231df485490a534f",
+      "database/migrations/0084_product_readiness_loyalty_reporting.sql": "64df15848c97cd35c2956e5e8602e297371666b81475f0dbe2c9cdf117fe47af",
+      "database/migrations/20261012180000_akisuite_subscription_entitlements.sql": "293c8ce593dcd51ca5c5a620b9366da1e4d179c7e6a8c9da195163116d11c8cf",
+      "database/migrations/20261020170448_account_completion_age_declaration.sql": "d7ee43da23b267306e68f6c95623139132ccb2afb0046eeda60841ea1c605b36",
+      "database/migrations/20261020180946_account_completion_database_coverage.sql": "a92d44084d329ffc1d8d3261c3c37629b07a22b8ae91b24fcabdf601c69ed831",
+      "database/migrations/20261020190818_account_identity_existence_guard.sql": "f2fe42b66be9bfcdb454195817503c1b02ade0e9179a3c7ec0f96817bf3bda4c",
+      "database/migrations/20261030114106_protect_staff_claim_account_eligibility.sql": "154fe91bf7a8a80d433a0a6c5827f22a90bac1ac3e2de99e95063afea24fa160",
+      "database/migrations/20261030163000_add_checkin_venue_preview.sql": "8f863eb676dabfed65955f7febadd1fc4f75b921a040a26e0697c7de4e9cbaeb",
+      "supabase/migrations/20261009160000_booking_notification_email.sql": "0637cc2de573960e20de0fd7947f64cd54338c9c38c8914c6f3b79ee39fc58df",
+      "supabase/migrations/20261009170000_booking_release_integrity.sql": "7f53b5f9b8e6f0fc873675e11ad198673563a9b84198d81c366c704ad0acc95a",
+      "src/app/[locale]/check-in/[token]/actions.ts": "21d15b0e1e7e53ca598421ecbcb41ac4cf0fbe9e4b0478e90a34bbef5809aee8"
+    }
+  },
+  "schemaReceiptId": "PR332_CLEAN_HOSTED_SCHEMA_20261031",
+  "fixtureDeclaration": {
+    "disposableQa": true,
+    "providersDisabled": true,
+    "verification": "release-owner declaration; not inferred from a successful RPC"
+  },
+  "mode": "real-auth-and-backend",
+  "mutationOptIns": {
+    "booking": true,
+    "checkin": true
+  },
+  "checkinLocationEvidence": "Explicitly simulated fixture coordinates; no physical attendance or device-location claim.",
+  "limitations": [
+    "This bounds real Auth/JWT/PostgREST/RLS and the listed RPCs; it does not certify full production schema parity.",
+    "No physical Android/browser session, Next.js middleware/server-action transport, provider fulfilment, payment, email delivery or reward redemption is exercised.",
+    "The direct check-in RPC does not test the server action's best-effort trusted behaviour logging.",
+    "QA identities and fixtures are administratively provisioned separately by the release owner; signup/email provisioning is not exercised. The harness requires real GoTrue login and never supplies a synthetic JWT."
+  ],
+  "checks": [
+    {
+      "id": "auth.consumer_a.real_password_and_provider_user",
+      "status": "passed"
+    },
+    {
+      "id": "identity.consumer_a.role_and_eligibility",
+      "status": "passed"
+    },
+    {
+      "id": "auth.consumer_b.real_password_and_provider_user",
+      "status": "passed"
+    },
+    {
+      "id": "identity.consumer_b.role_and_eligibility",
+      "status": "passed"
+    },
+    {
+      "id": "auth.administrator.real_password_and_provider_user",
+      "status": "passed"
+    },
+    {
+      "id": "identity.administrator.role_and_eligibility",
+      "status": "passed"
+    },
+    {
+      "id": "auth.moderator.real_password_and_provider_user",
+      "status": "passed"
+    },
+    {
+      "id": "identity.moderator.role_and_eligibility",
+      "status": "passed"
+    },
+    {
+      "id": "auth.organiser.real_password_and_provider_user",
+      "status": "passed"
+    },
+    {
+      "id": "identity.organiser.role_and_eligibility",
+      "status": "passed"
+    },
+    {
+      "id": "auth.pending_consumer.real_password_and_provider_user",
+      "status": "passed"
+    },
+    {
+      "id": "identity.pending_consumer.role_and_eligibility",
+      "status": "passed"
+    },
+    {
+      "id": "auth.underage_consumer.real_password_and_provider_user",
+      "status": "passed"
+    },
+    {
+      "id": "identity.underage_consumer.role_and_eligibility",
+      "status": "passed"
+    },
+    {
+      "id": "auth.pending_moderator.real_password_and_provider_user",
+      "status": "passed"
+    },
+    {
+      "id": "identity.pending_moderator.role_and_eligibility",
+      "status": "passed"
+    },
+    {
+      "id": "auth.underage_moderator.real_password_and_provider_user",
+      "status": "passed"
+    },
+    {
+      "id": "identity.underage_moderator.role_and_eligibility",
+      "status": "passed"
+    },
+    {
+      "id": "admin.exact_target_positive",
+      "status": "passed"
+    },
+    {
+      "id": "admin.denied.anonymous",
+      "status": "passed"
+    },
+    {
+      "id": "admin.denied.consumer_a",
+      "status": "passed"
+    },
+    {
+      "id": "admin.denied.consumer_b",
+      "status": "passed"
+    },
+    {
+      "id": "admin.denied.moderator",
+      "status": "passed"
+    },
+    {
+      "id": "admin.denied.organiser",
+      "status": "passed"
+    },
+    {
+      "id": "admin.denied.pending_consumer",
+      "status": "passed"
+    },
+    {
+      "id": "admin.denied.underage_consumer",
+      "status": "passed"
+    },
+    {
+      "id": "admin.denied.pending_moderator",
+      "status": "passed"
+    },
+    {
+      "id": "admin.denied.underage_moderator",
+      "status": "passed"
+    },
+    {
+      "id": "staff.exact_pending_claim.administrator",
+      "status": "passed"
+    },
+    {
+      "id": "staff.filtered.administrator.approvedId",
+      "status": "passed"
+    },
+    {
+      "id": "staff.filtered.administrator.rejectedId",
+      "status": "passed"
+    },
+    {
+      "id": "staff.filtered.administrator.missingId",
+      "status": "passed"
+    },
+    {
+      "id": "staff.exact_pending_claim.moderator",
+      "status": "passed"
+    },
+    {
+      "id": "staff.filtered.moderator.approvedId",
+      "status": "passed"
+    },
+    {
+      "id": "staff.filtered.moderator.rejectedId",
+      "status": "passed"
+    },
+    {
+      "id": "staff.filtered.moderator.missingId",
+      "status": "passed"
+    },
+    {
+      "id": "staff.denied.anonymous",
+      "status": "passed"
+    },
+    {
+      "id": "staff.denied.consumer_a",
+      "status": "passed"
+    },
+    {
+      "id": "staff.denied.consumer_b",
+      "status": "passed"
+    },
+    {
+      "id": "staff.denied.organiser",
+      "status": "passed"
+    },
+    {
+      "id": "staff.denied.pending_consumer",
+      "status": "passed"
+    },
+    {
+      "id": "staff.denied.underage_consumer",
+      "status": "passed"
+    },
+    {
+      "id": "staff.denied.pending_moderator",
+      "status": "passed"
+    },
+    {
+      "id": "staff.denied.underage_moderator",
+      "status": "passed"
+    },
+    {
+      "id": "fixture.consumer_a.private_ledgers_empty_and_no_membership",
+      "status": "passed"
+    },
+    {
+      "id": "preview.consumer_a.allowlisted_payload",
+      "status": "passed"
+    },
+    {
+      "id": "preview.consumer_a.inactiveToken.empty",
+      "status": "passed"
+    },
+    {
+      "id": "preview.consumer_a.hiddenVenueToken.empty",
+      "status": "passed"
+    },
+    {
+      "id": "preview.consumer_a.missingToken.empty",
+      "status": "passed"
+    },
+    {
+      "id": "preview.consumer_a.credential_table_private",
+      "status": "passed"
+    },
+    {
+      "id": "preview.consumer_a.no_attendance_xp_or_progress",
+      "status": "passed"
+    },
+    {
+      "id": "fixture.consumer_b.private_ledgers_empty_and_no_membership",
+      "status": "passed"
+    },
+    {
+      "id": "preview.consumer_b.allowlisted_payload",
+      "status": "passed"
+    },
+    {
+      "id": "preview.consumer_b.inactiveToken.empty",
+      "status": "passed"
+    },
+    {
+      "id": "preview.consumer_b.hiddenVenueToken.empty",
+      "status": "passed"
+    },
+    {
+      "id": "preview.consumer_b.missingToken.empty",
+      "status": "passed"
+    },
+    {
+      "id": "preview.consumer_b.credential_table_private",
+      "status": "passed"
+    },
+    {
+      "id": "preview.consumer_b.no_attendance_xp_or_progress",
+      "status": "passed"
+    },
+    {
+      "id": "preview.denied.anonymous",
+      "status": "passed"
+    },
+    {
+      "id": "preview.denied.pending_consumer",
+      "status": "passed"
+    },
+    {
+      "id": "preview.denied.underage_consumer",
+      "status": "passed"
+    },
+    {
+      "id": "preview.denied.pending_moderator",
+      "status": "passed"
+    },
+    {
+      "id": "preview.denied.underage_moderator",
+      "status": "passed"
+    },
+    {
+      "id": "isolation.consumer_a.own_booking_visible",
+      "status": "passed"
+    },
+    {
+      "id": "isolation.consumer_a.other_booking_hidden",
+      "status": "passed"
+    },
+    {
+      "id": "isolation.consumer_a.history_rpc_owned_only",
+      "status": "passed"
+    },
+    {
+      "id": "isolation.consumer_b.own_booking_visible",
+      "status": "passed"
+    },
+    {
+      "id": "isolation.consumer_b.other_booking_hidden",
+      "status": "passed"
+    },
+    {
+      "id": "isolation.consumer_b.history_rpc_owned_only",
+      "status": "passed"
+    },
+    {
+      "id": "booking.public_inventory_aggregate_only_and_fresh",
+      "status": "passed"
+    },
+    {
+      "id": "booking.write_denied.anonymous",
+      "status": "passed"
+    },
+    {
+      "id": "booking.write_denied.pending_consumer",
+      "status": "passed"
+    },
+    {
+      "id": "booking.write_denied.underage_consumer",
+      "status": "passed"
+    },
+    {
+      "id": "booking.write_denied.pending_moderator",
+      "status": "passed"
+    },
+    {
+      "id": "booking.write_denied.underage_moderator",
+      "status": "passed"
+    },
+    {
+      "id": "booking.cross_owner_update_denied.consumer_a",
+      "status": "passed"
+    },
+    {
+      "id": "booking.cross_owner_update_denied.consumer_b",
+      "status": "passed"
+    },
+    {
+      "id": "booking.concurrent_capacity_one",
+      "status": "passed"
+    },
+    {
+      "id": "booking.retry_same_key_is_idempotent",
+      "status": "passed"
+    },
+    {
+      "id": "booking.same_key_changed_request_rejected",
+      "status": "passed"
+    },
+    {
+      "id": "booking.exactly_one_persisted_and_inventory_zero",
+      "status": "passed"
+    },
+    {
+      "id": "checkin.fixture_verified_no_premium_or_programs",
+      "status": "passed"
+    },
+    {
+      "id": "checkin.write_denied.anonymous",
+      "status": "passed"
+    },
+    {
+      "id": "checkin.write_denied.pending_consumer",
+      "status": "passed"
+    },
+    {
+      "id": "checkin.write_denied.underage_consumer",
+      "status": "passed"
+    },
+    {
+      "id": "checkin.write_denied.pending_moderator",
+      "status": "passed"
+    },
+    {
+      "id": "checkin.write_denied.underage_moderator",
+      "status": "passed"
+    },
+    {
+      "id": "checkin.invalid_latitude.rejected_without_ledger_change",
+      "status": "passed"
+    },
+    {
+      "id": "checkin.invalid_accuracy.rejected_without_ledger_change",
+      "status": "passed"
+    },
+    {
+      "id": "checkin.simulated_outside_geofence_no_xp",
+      "status": "passed"
+    },
+    {
+      "id": "checkin.simulated_valid_awards_exactly_one_xp_entry",
+      "status": "passed"
+    },
+    {
+      "id": "checkin.repeat_is_idempotent_no_extra_xp",
+      "status": "passed"
+    },
+    {
+      "id": "checkin.consumer_b_cannot_read_a_attendance_or_xp",
+      "status": "passed"
+    }
+  ],
+  "createdRows": [
+    {
+      "table": "booking_requests",
+      "id": "468d8030-fdfe-42cc-85ea-1267a62b1e8e",
+      "ownerLabel": "consumer_a"
+    },
+    {
+      "table": "check_ins",
+      "id": "a60b7138-d2eb-49bf-9f11-ba1111df2919",
+      "ownerLabel": "consumer_a",
+      "state": "outside_geofence"
+    },
+    {
+      "table": "check_ins",
+      "id": "91457ced-4835-4e25-b97f-5c9f65fb2fff",
+      "ownerLabel": "consumer_a",
+      "state": "accepted",
+      "declaredSimulatedCoordinates": true
+    }
+  ],
+  "omitted": [],
+  "requestCount": 167,
+  "complete": true,
+  "status": "passed-bounded-real-backend-acceptance",
+  "finishedAt": "2026-10-31T15:28:56.880Z"
+}

@@ -1038,3 +1038,12 @@ html:not([data-owner-focus="true"])
     );
   }
 }
+
+/* Main's compact header uses white wordmark ink on dark surfaces. The active
+   workspace/detail chrome also supports light mode, so inherit its matching ink. */
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-event)
+  .app-topbar-mobile
+  .brand-wordmark {
+  color: var(--spotlight-chrome-ink);
+}

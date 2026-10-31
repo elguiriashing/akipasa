@@ -1,3 +1,4 @@
+import styles from "../../../events/[slug]/book/consumer-action.module.css";
 import { BookingWizard } from "@/components/BookingWizard";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
@@ -21,7 +22,7 @@ export default async function VenueBookingPage({
     locale,
     `/${locale}/venues/${slug}/book`,
   );
-  const { data: venue } = await supabase
+  const { data: venue, error: venueError } = await supabase
     .from("venues")
     .select(
       "id,name,slug,venue_booking_settings(mode,active,external_url,instructions_es,instructions_en,requires_deposit,deposit_cents)",
@@ -29,6 +30,40 @@ export default async function VenueBookingPage({
     .eq("slug", slug)
     .eq("status", "published")
     .maybeSingle();
+  if (venueError) {
+    return (
+      <main className={`shell narrow-page ${styles.page}`}>
+        <header className={styles.intro}>
+          <div className={`eyebrow ${styles.kicker}`}>
+            AkiPasa · {es ? "Reservas" : "Bookings"}
+          </div>
+          <h1>{es ? "Reserva en el local" : "Venue booking"}</h1>
+        </header>
+        <section className="panel booking-card" role="alert">
+          <h2>
+            {es ? "Disponibilidad no disponible" : "Availability unavailable"}
+          </h2>
+          <p>
+            {es
+              ? "No se ha podido cargar la información de reserva. No podemos confirmar si quedan plazas."
+              : "Booking information could not be loaded. We cannot confirm whether places remain."}
+          </p>
+          <Link
+            className="button secondary"
+            href={`/${locale}/venues/${slug}/book`}
+          >
+            {es ? "Reintentar" : "Retry"}
+          </Link>
+        </section>
+        <Link
+          className={`back-link ${styles.returnLink}`}
+          href={`/${locale}/venues/${slug}`}
+        >
+          {es ? "Volver al local" : "Back to venue"}
+        </Link>
+      </main>
+    );
+  }
   if (!venue) notFound();
   const settings: any = venue.venue_booking_settings;
   if (!settings?.active || settings.mode === "disabled") notFound();
@@ -43,7 +78,10 @@ export default async function VenueBookingPage({
     "booking_available_slots",
     { p_venue: venue.id },
   );
-  const visibleSlots = (availability || []) as Array<{
+  const unavailable = Boolean(
+    availabilityError || !Array.isArray(availability),
+  );
+  const visibleSlots = (unavailable ? [] : availability) as Array<{
     id: string;
     starts_at: string;
     ends_at: string;
@@ -58,35 +96,51 @@ export default async function VenueBookingPage({
       .filter((s) => s.offering_id)
       .map((s) => [s.offering_id!, s.offering_name || ""]),
   );
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("display_name,public_email,phone")
-    .eq("id", user.id)
-    .maybeSingle();
+  const profileRead = !unavailable
+    ? await supabase
+        .from("profiles")
+        .select("display_name,public_email,phone")
+        .eq("id", user.id)
+        .maybeSingle()
+    : null;
+  const profile = profileRead?.data;
   return (
-    <main className="shell narrow-page">
-      <section className="hero">
-        <div className="eyebrow">AkiPasa · {es ? "Reservas" : "Bookings"}</div>
+    <main className={`shell narrow-page ${styles.page}`}>
+      <header className={styles.intro}>
+        <div className={`eyebrow ${styles.kicker}`}>
+          AkiPasa · {es ? "Reservas" : "Bookings"}
+        </div>
         <h1>{venue.name}</h1>
         <p>
           {es
             ? "Elige cuándo quieres venir."
             : "Choose when you want to visit."}
         </p>
-      </section>
-      {query.error && (
+      </header>
+      {query.error && !unavailable && (
         <p className="notice">
           {es
             ? "No se ha podido completar la reserva. Prueba otro horario."
             : "Could not complete your booking. Please try another slot."}
         </p>
       )}
-      {availabilityError && (
-        <p className="notice" role="alert">
-          {es
-            ? "No se ha podido cargar la disponibilidad. Vuelve a intentarlo."
-            : "Availability could not be loaded. Please try again."}
-        </p>
+      {unavailable && (
+        <section className="panel booking-card" role="alert">
+          <h2>
+            {es ? "Disponibilidad no disponible" : "Availability unavailable"}
+          </h2>
+          <p>
+            {es
+              ? "No se ha podido cargar la disponibilidad. No podemos confirmar si quedan plazas."
+              : "Availability could not be loaded. We cannot confirm whether places remain."}
+          </p>
+          <Link
+            className="button secondary"
+            href={`/${locale}/venues/${slug}/book`}
+          >
+            {es ? "Reintentar" : "Retry"}
+          </Link>
+        </section>
       )}
       {(es
         ? settings.instructions_es
@@ -108,7 +162,7 @@ export default async function VenueBookingPage({
             : "No payment is taken when sending this request."}
         </p>
       )}
-      {!availabilityError && (
+      {!unavailable && (
         <BookingWizard
           locale={locale}
           slug={slug}
@@ -124,7 +178,10 @@ export default async function VenueBookingPage({
           submit={requestVenueBooking}
         />
       )}
-      <Link className="back-link" href={`/${locale}/venues/${slug}`}>
+      <Link
+        className={`back-link ${styles.returnLink}`}
+        href={`/${locale}/venues/${slug}`}
+      >
         {es ? "Volver al local" : "Back to venue"}
       </Link>
     </main>

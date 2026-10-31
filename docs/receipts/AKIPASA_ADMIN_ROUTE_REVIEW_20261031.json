@@ -1,0 +1,1480 @@
+{
+  "version": 1,
+  "reviewedAt": "2026-10-31T11:50:26.553454+00:00",
+  "reviewer": "Codex release_github independent Admin visual/function reviewer",
+  "scope": "18 previously in-progress Admin route visual and bounded functional acceptances",
+  "candidateCommit": "d6859859ece002436838be215c16c284fcfe7222",
+  "artifactSourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+  "identicalTreeSha": "595b0410f3b4a7ace7d4fe388d2eeec5879cdc9d",
+  "provenance": {
+    "treeEqualityVerifiedUsing": "GitHub git/commits GET for candidate and synthetic merge; both returned the identical tree SHA",
+    "syntheticMergeParents": [
+      "76cb96df21bf9404d50db373cf57bb0287fd9a80",
+      "d6859859ece002436838be215c16c284fcfe7222"
+    ],
+    "sourceDirty": false,
+    "adminInitialFinalHashesEqual": true,
+    "promotionsInitialFinalHashesEqual": true,
+    "adminRunnerSha256": "5ac6e859ca83d3fbd7c4aee07e9ecaa8f1f9b054cda807a199b43b7cc8fd2685",
+    "promotionsRunnerSha256": "8f23f108c2ce3d79c59c1ecc6f5f6e7fd4333ea8c46d045bb2f79bae7898267b",
+    "adminResultsSha256": "2ee799cb6d928473ea868537954f13de0138ca62302b08befd63659f8a45fb53",
+    "promotionsResultsSha256": "28b769aa4d52cb16abb02a0cda61583c22fa9f59778cb0333da88a4ab2a55e69",
+    "adminSourceHashes": {
+      "src/app/layout.tsx": "f92bc6d860b7bc376c0bbef3a9bca42d50d1aea481bb995660a97c39cdaa0936",
+      "package.json": "1298af849c9dbff52f6c3f391386dbce9519e2bb12677e4e8bb42348c7114c43",
+      "package-lock.json": "1f981d778b95529e0ea44bc3004f64a2f26f7e446b7ada2de781f9dbbe526a94",
+      "src/app/globals.css": "53e2f4b7dec5fa5469e328d81ee0f2773f06d4998967e0dd47d58e9d54c62402",
+      "src/app/compact-app.css": "27a788fe1172acd6ff1e9f764a2790e63c345fb3090008ab46e12e372dca892c",
+      "src/app/brand.css": "ef68eb546410c4af273e06e6f5ed80c456c6507599f710273efaf2671268dd24",
+      "src/app/appearance.css": "580e07b84302a5d479ef53f5bd6e25ca0a5e518c23a3390fb6ad27e8114bb836",
+      "src/app/tablet-responsive.css": "60f09d70e2c4b53d0d8dd8f6aca9b6b33a8841bfcc87405ebb74214272308737",
+      "src/app/portal-unity.css": "a7cf5e13a0118a4cdf367ca91ad8626e1670d59eb0ab9bdaf0bf0f4a0572778a",
+      "src/components/pasa-finished-public.css": "28346381838b70482e92b393326d8bbf5c86a19698508a665c44085359166980",
+      "node_modules/scheduler/cjs/scheduler.production.js": "679adff761d31e9426604f80c0e99be44a3e6f4c6834b0218ecf0312a67c171f",
+      "node_modules/scheduler/index.js": "145965504d60007bc25486ab930b0367867dcd5d579ccd343c148d69349a7cfb",
+      "node_modules/react/cjs/react.production.js": "965edba67063b554f10db864640741b6265e6c5451622bc8af04f3aefa3d3383",
+      "node_modules/react/index.js": "60caffdecbdc5db3bc4ec4e83df9488345ccb271d07533b9210bf5750918d97e",
+      "node_modules/react-dom/cjs/react-dom.production.js": "33afd43ad2475b79b62959f5e7a0f68bc1acd934f86b214242ecee4e9176729c",
+      "node_modules/react-dom/index.js": "ba1a3e33489f868371561777607e3ee5091df0f7ea3f1a10f789d6b86e4c1505",
+      "node_modules/react-dom/cjs/react-dom-client.production.js": "fa643912f696c41308da86904df5f4b875739e034de6fa1ae0315f5edad41e7f",
+      "node_modules/react-dom/client.js": "00e348ab3d6bc2eef908345d0bc4e008c95bcfecec060dfda5c4967953761396",
+      "node_modules/react/cjs/react-jsx-runtime.production.js": "1e46f15002696985e80c61d47aaa30dabb03c954270a690f5f7dfbbacfa9002b",
+      "node_modules/react/jsx-runtime.js": "b392951a77d0a2e6a6bd017e49d768481ae5b63c4109c6c31f622cf7b2433edc",
+      "src/components/BrandLogo.tsx": "04f2de22ee6163137aaedcde12a080bfe74bcbda6e6ff47aec5249fb3995b328",
+      "src/components/Icons.tsx": "084e97961811c62f6ffd59515e4b92defdac5d9d6d686f36a2bd6b2f57eedb49",
+      "src/components/LaunchRibbon.module.css": "b6a0109cc591b9894b65a6a27af3b0d66d4e0410f124b35c8916ecfc2a112aeb",
+      "src/components/LaunchRibbon.tsx": "31c2bf74a858233ba5e38dea2623adc066954b068e6452103bb69c914a3eff49",
+      "src/components/SpainLocationPicker.tsx": "cf444cc8609d499eb6aa02cf795d31b772736e49cf728acc69fabf8c8be0ed17",
+      "src/lib/geo.ts": "b8100ba0b7973e801b5cb62eb71429f544bfb51d99b70cefb1fb864570e985aa",
+      "src/lib/locations.ts": "5b501ceb4f3e980dfde9b64f6fb90dc0a59fb34d60d9564da9e8ad834f2afb85",
+      "src/components/UseMyLocation.tsx": "a5292859389a1da01091f364bfd0fa5b826fa28a555a19d73480ff7b84ca87f1",
+      "src/components/VenueQuickSearch.module.css": "457e290f4636d87b8ea183dae433d17e718dc083f90f7e4daf316045151cc753",
+      "src/components/VenueQuickSearch.tsx": "815202272f371eb2c820534ce7bffd2594ee5e7825a1aaa56335473b357e2099",
+      "src/lib/discovery-location.ts": "e3f759f3e4bb8499b2fb505dd642b7feaab2d040dc7276889a54d00ee4da5c36",
+      "src/lib/messages.ts": "3df3aaf5608bcbd291ed897abf84b4b13b14e0ba564bff9edaa953c6c45e2c4f",
+      "src/lib/discovery-filter-validation.ts": "80c8f43c70e85dfc4e67c77f08e18b6d3d3ca8feb547b4d732e0fd998d8557cc",
+      "src/components/GlobalSearch.tsx": "43009af8842c7bbe248d5e35b9a8f8bb2f3883ba5f4865c33437dd4d50b42f43",
+      "src/components/LanguageLink.tsx": "223ec2a8ecd59a150d632b4e81a5d58a9524ed6b404d95b09f969d849ffd9fe5",
+      "src/components/PasaDiscoveryNavigation.css": "d926665f1f5fd95db51946e532658f8291b70860bc4d00cd266d4bf7050c0829",
+      "src/components/ThemeModeControls.tsx": "a4d3755ecf378624b2f05eb709d2b2352c7f2a5571bc943dbf3f162f37883d2a",
+      "src/components/useSuiteReferral.ts": "1becd06f429135bd89fe9cee1cbc39f54b22350211a263432422241a7e4d24a1",
+      "src/lib/suite-navigation.ts": "20841a17472e926949746d57b9c03f42ba0c45570fe96082f5fab4b1c96bac9a",
+      "src/components/DiscoveryNavigation.css": "01fe38a052504d652d8c146bd842322f45524c988691bb8df9c79f20698d30d6",
+      "src/components/DiscoveryNavigation.tsx": "803922b858552e11c31fc8359b4078ac401ce8243461361adbfc89debb399450",
+      "src/lib/discovery-navigation.ts": "3b528c5ec8d99ac65f5b8b3a960f829e88b0da6d354920666b6ca6a8610c9ca8",
+      "src/components/PasaBottomDock.tsx": "a126a218965fce74b8f6b72b7562196e1e1de69316b36fb09fe81ac152908e52",
+      "src/components/PasaBottomDock.css": "d4c8b7f404e19fd8b98d8b1d0e03f9e14de00539ddeb2c25a98a7ce5c5eee94f",
+      "src/components/PasaCinematic.css": "f5b80b832b3626f5864473d8764f04bcea6d4993c9dc7d1ee6f583b5196e8368",
+      "src/components/PasaSharedSurfaces.css": "e6335b16f87d65d3ba6d64212343678d4a5db25662b7e75cecc3122ef4e26fa6",
+      "src/lib/pasa-surface-families.ts": "5f426f2be2d4da92bfb1ccf5f8152bdd4ae3ebb8530f7da175c38f323ab97f7a",
+      "src/lib/roles.ts": "6e0bc650d1125662984c221f1cc07cd0a6bbf89bf6bd624f01d552d7b454332d",
+      "src/components/ConsoleSwitcher.tsx": "8921ab7985be62de2d4a031b4e1cbc80c31382eb72adfd85429dd5d3cd282386",
+      "src/components/AppShell.tsx": "4d5d2f42369751f4968a640d5f7aa80c6157b64d72bcf26162427abfbfff5072",
+      "src/app/[locale]/admin/admin-compact.css": "fe64236e4840fa3cf037fb5ab2a9b696bbeb988206625b57d6285e2d8602641c",
+      "src/app/[locale]/admin/admin-suite.css": "8bbc72df00d0581e6e434779d2efb7c3cf01b1a111338c2e092343347aa32389",
+      "src/components/WorkspaceShell.tsx": "a48978c34c3b184dfe82c1f7ef8dd7607a575afee3e402a9268431c27a69b3a2",
+      "src/lib/config.ts": "99bcd28eb21688269d1115aef445e529f5eb5bc7b2bcb09303e19a8fd845a5db",
+      "src/app/[locale]/admin/layout.tsx": "04cbb7065de65d2959fb445304a7e7ac6a620794e26910f1563cdc78324f282a",
+      "src/app/[locale]/admin/RewardsTabs.tsx": "cf3ad081067b757f2336e25613de38618c26aec17ee9e3e52d540284fe27cc4e",
+      "node_modules/zod/dist/esm/v3/helpers/util.js": "906ef685e5853d496e293ee8f8a2bb8b1ed2d078a1bcdfedb2dfd61d75b6330c",
+      "node_modules/zod/dist/esm/v3/ZodError.js": "35e40bfa65a6c067430bbf1f9730685e2c90caa95f7aa919d591f837fec58df3",
+      "node_modules/zod/dist/esm/v3/locales/en.js": "3cd911f334e266ea07496ddb2956374ad360a3ccc37125ea8fd58df241dd9632",
+      "node_modules/zod/dist/esm/v3/errors.js": "d40831f478288d76e82bbbcc3b7e95c8513b6e76471f2d49a37c979bc57d492d",
+      "node_modules/zod/dist/esm/v3/helpers/parseUtil.js": "b57484013bb360bac2e334d58fcd5f6cbfa63ffcc7d8ff3dbbb3380ca659b956",
+      "node_modules/zod/dist/esm/v3/helpers/typeAliases.js": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "node_modules/zod/dist/esm/v3/helpers/errorUtil.js": "68589c0cf44c8b4ad19b77418f53caad2cd1dbc8d714f526e1876ebdee4828c5",
+      "node_modules/zod/dist/esm/v3/types.js": "146b4af18b89be96c2b6af90d5169ed3775503c0c48dde8d4889b7a03b55acdf",
+      "node_modules/zod/dist/esm/v3/external.js": "5d26d2e47e2352def36f89a3e8bf8581da22b7f857e07ef3114cd52cf4813445",
+      "node_modules/zod/dist/esm/v3/index.js": "3db2efd285e7328d8014b54a7fce3f4861ebcdc655df40517092ed0050983617",
+      "node_modules/zod/dist/esm/index.js": "d5d39a24c759df40480a4bfc0daffd364489702fdbcbdfc1711cde34f8739995",
+      "src/lib/achievement-scopes.json": "eb0ec6b5fe9da1f4cef776359420917c941ed7586b6e7bc1b474599b370d2baa",
+      "src/lib/achievements.ts": "8f0ca3584fdb890e86abc363abc1fe57c2c61466877bf8556dfd0cf44c5d737a",
+      "src/app/[locale]/admin/achievements/achievements.module.css": "635f2db34f441d7516849e809bc26061071c985ab77354f9082ce3c802b982c6",
+      "src/app/[locale]/admin/achievements/AchievementManager.tsx": "78b5344c76f456c6acd0283b82aed086715575331b92cfb894871173142852bd",
+      "src/app/[locale]/admin/achievements/page.tsx": "1670e83bb9924baf58596600bdf2490ed6ac2667933d4da7e7b799d6d6f6b1b4",
+      "src/app/[locale]/admin/achievements/venues/VenueCategoryEditor.tsx": "46c1d785283d3fcfe3c9a91c244b7086d824410d720aa1d066d565df556356d7",
+      "src/app/[locale]/admin/achievements/venues/page.tsx": "2a36fa1f5d199fa71e0e18e168661173ef215a1ed6f4121d977a8f47196ef8a0",
+      "src/app/[locale]/admin/ai-team/ai-team.module.css": "dbafa13a1bc32b508f04c3b2a85301d671f0b2200f6cdf9d58a2e192384d3f5d",
+      "src/app/[locale]/admin/ai-team/AITeamDashboard.tsx": "9dc10c783f243107668b542fe90e4a04594eae896609f2d9112e04609e7d914b",
+      "src/app/[locale]/admin/ai-team/page.tsx": "117707dcebc59b97a11750b5e7460c15ba455e9f8181f5092fa24ebc730f56ec",
+      "src/app/[locale]/admin/AdminReadState.tsx": "ec37f97e9450150d52df33fd4b64aae8b089530bbfed6a5e79111a5d6c41bd1c",
+      "src/app/[locale]/admin/AdminSearchList.tsx": "d52831060d9e75005b0279787ef39f1377ade016a0b5b44dcb27c5a01efe72a6",
+      "src/app/[locale]/admin/audit/page.tsx": "9c123fbc6871d787f46cc9f64a1e1f893ff5db5be7c38b5a135d19c37cedc4cc",
+      "src/app/[locale]/admin/business-applications/page.tsx": "d733fedad8d189afa3a21a6f6e6b2af4997c0073849a4baf2836102a9fd8ace1",
+      "src/app/[locale]/admin/AdminWorkbench.tsx": "6d407cfb99b65438818c227454bd1df13ef4645b82c99aa87a5a4c018247223a",
+      "node_modules/tslib/tslib.es6.mjs": "0929993220938091ede542d688b0fdb87dad99a7e77678e1983c32d18a503339",
+      "node_modules/@supabase/functions-js/dist/module/helper.js": "b68c1869da88161063d23f7944c71bc1c444229b22bca0680386f4ab33e0c967",
+      "node_modules/@supabase/functions-js/dist/module/types.js": "bb251c280cb70f197775c8e5a66f38246ea2a09e4283ca11f954c557af37fe2e",
+      "node_modules/@supabase/functions-js/dist/module/FunctionsClient.js": "5477eaad844840c96783c4a9ebd42948b5acb8e9d15e353e0bc2f01f17bb3f99",
+      "node_modules/@supabase/functions-js/dist/module/index.js": "cbbfe306ef3197b924ce2e7cad93e2271165995cfff05bfba29d16122477235b",
+      "node_modules/@supabase/postgrest-js/dist/index.mjs": "afda25f52b6722f40f70f845fa1569b0b978c23d3e92eb9e453327751b78c00e",
+      "node_modules/@supabase/realtime-js/dist/module/lib/websocket-factory.js": "629232bc6bd2f354504f383dbce81de37c5544bb4fcb7835b865d697ff7bdbb0",
+      "node_modules/@supabase/realtime-js/dist/module/lib/version.js": "4204a2d954158ba3d85b48cc1910f7ad9b24f11a76b27ebd214447c98ce852c6",
+      "node_modules/@supabase/realtime-js/dist/module/lib/constants.js": "23d0a68e19cfb5dfcb512690caacddd8dd1de28cd742c2f076c16de82e221a65",
+      "node_modules/@supabase/realtime-js/dist/module/lib/serializer.js": "d4b778ad571f17005d83dde8b7c2814bf51e87663dd59f8bad64b4f192b6db77",
+      "node_modules/@supabase/realtime-js/dist/module/lib/transformers.js": "a907c21984ed100e56cac3b952e32faf108f4f5efe23dfbcdd3fb63a76581d74",
+      "node_modules/@supabase/phoenix/priv/static/phoenix.mjs": "6e095ff0168d6005f52e1f27cfa029ac4eb31214545d659847e023ac87e40b0f",
+      "node_modules/@supabase/realtime-js/dist/module/phoenix/presenceAdapter.js": "a4aeee2de6268a3a4001cf5fdb0771e663eb2c6ee6f034b8cae8a605c213ea68",
+      "node_modules/@supabase/realtime-js/dist/module/RealtimePresence.js": "462bb638ab2ad7ee41b71cccf64a35c9c3f3610003c80fb831b1758d84742e11",
+      "node_modules/@supabase/realtime-js/dist/module/lib/normalizeChannelError.js": "6a80956a048f351557bf4372a13837b67e214af5a3570e67dcc5f23663b4ab2b",
+      "node_modules/@supabase/realtime-js/dist/module/phoenix/channelAdapter.js": "fb11d798ed7550d8cecba3d8295de1a5ddb88dc45429605346e7581bf2866896",
+      "node_modules/@supabase/realtime-js/dist/module/RealtimePostgresFilterBuilder.js": "e05a58149d9cc0f9ac8fb1a7915db7e13d7c8e5a4988a1b7ad8a7b328a797050",
+      "node_modules/@supabase/realtime-js/dist/module/RealtimeChannel.js": "b6166e3de765d01d77d9f4287b50a4700ca2d8fcdfbeb4e809643d6ecf588774",
+      "node_modules/@supabase/realtime-js/dist/module/phoenix/socketAdapter.js": "a316775d3658a1f678897023e40f5ca6485c475b3d88812dfae8a853fbc320d5",
+      "node_modules/@supabase/realtime-js/dist/module/RealtimeClient.js": "789cd25bfef71c2bba66b8f82e17ca0506f3f19aff0912fe4faefa8272ae0430",
+      "node_modules/@supabase/realtime-js/dist/module/index.js": "0615b93f9c384133d7a703749eb4c8477f25adaea99f4eefc4eec73b2bfa1aa4",
+      "node_modules/iceberg-js/dist/index.mjs": "15ed0530ab67a7bfb541eb2cea764023c159312b7f1888e42c029840fafd381d",
+      "node_modules/@supabase/storage-js/dist/index.mjs": "307e960c734702e5d5081177f3a917da21c9faca66d4e86a9a1ef6b14f811d47",
+      "node_modules/@supabase/auth-js/dist/module/lib/version.js": "4204a2d954158ba3d85b48cc1910f7ad9b24f11a76b27ebd214447c98ce852c6",
+      "node_modules/@supabase/auth-js/dist/module/lib/constants.js": "a4d395c65228d78f63af7fbbc7dfcf08817acdff1ee3e24079cab95b15f35782",
+      "node_modules/@supabase/auth-js/dist/module/lib/errors.js": "fcbfa357dab595c78a4e934b828808e59fe3aded885f90240e349d9fcfb76e59",
+      "node_modules/@supabase/auth-js/dist/module/lib/base64url.js": "2c04328375ce233068e3defa27649a5991f1f1686753e4e4649a9586f30aac0f",
+      "node_modules/@supabase/auth-js/dist/module/lib/helpers.js": "057cb41abc14506192a97d7dc9575bf05a5682adb090a3f12030302d728b7b5d",
+      "node_modules/@supabase/auth-js/dist/module/lib/fetch.js": "390f5170c7268de732111ecd2d9789b9acce7a6d6d0977782c24590db1ffd14d",
+      "node_modules/@supabase/auth-js/dist/module/lib/types.js": "962955ac9e78967535cadacb3e50fd412066df07c8ef78fbc8483ab6f39032f9",
+      "node_modules/@supabase/auth-js/dist/module/GoTrueAdminApi.js": "f6236079e0e648395d4db3dcf4ab595b82adab721b147e4aa6e9b4be67749eba",
+      "node_modules/@supabase/auth-js/dist/module/lib/local-storage.js": "b43bf10da0dbcc5bc91c902c05624b82fc640de82555026c40d03e85549d9f13",
+      "node_modules/@supabase/auth-js/dist/module/lib/locks.js": "502d390b2aa21c173155f067632df36c69f014116fd652e8ff33404df8a99f25",
+      "node_modules/@supabase/auth-js/dist/module/lib/polyfills.js": "cd45893a74c685ad8267585114c890cd2515ef584fa79ffc19b134a4333f0544",
+      "node_modules/@supabase/auth-js/dist/module/lib/web3/ethereum.js": "3c8177cf4fe06f5c675778b0bd296fd20d5f313202471f4117e7e43a358a6a47",
+      "node_modules/@supabase/auth-js/dist/module/lib/webauthn.errors.js": "0ee6d345e33a254c30e444d7d2466a410519999b7128a83c43c79ab2c1851516",
+      "node_modules/@supabase/auth-js/dist/module/lib/webauthn.js": "51aaa42576603f805702620e72d3940c14e9f757b25a89e2b8bf3218e00c5f25",
+      "node_modules/@supabase/auth-js/dist/module/GoTrueClient.js": "52cce4c1d0b534d9517baff4dca8a8f178ea4e0eb38a9fbd9de54bec578767ad",
+      "node_modules/@supabase/auth-js/dist/module/AuthAdminApi.js": "f18bf53f4c43d232f849f9000c1f61bdd43eee7bceb42f829339c5053b6eee41",
+      "node_modules/@supabase/auth-js/dist/module/AuthClient.js": "684b46b2be095e71fe7546e72f6791753f1cae9ebdaacd167b4905a5b7a87903",
+      "node_modules/@supabase/auth-js/dist/module/index.js": "9be5694df0e46b33d4f3b7bb8bad0ecef05ce343a5734376d6b4c93a8233eba7",
+      "node_modules/@supabase/supabase-js/dist/index.mjs": "723200a11e95504bde68dcc1a1acec7d6020838221ee309a60bcbf7e8bdf4804",
+      "src/lib/supabase/public.ts": "f84a3366dadb65ac9df3b2e2825ab76e6fc1b1b6894af88d1d821e9627bb0408",
+      "src/lib/unclaimed-venues.ts": "ccf054ffa81f3f23c1759ac8582a119fbae451efd39219c009d1ca28eade9e1c",
+      "src/app/[locale]/admin/CatalogueSettings.tsx": "73bd1e91c540668fe7cc0ca47c0978ccc99a2841c911bf47109d75aa5af20d9b",
+      "src/app/[locale]/admin/FocusedCatalogue.tsx": "de31330ea0bb4f5e39ddfc64d15a2de4c141a1631e4b95469f3b07057b4fd6b6",
+      "src/app/[locale]/admin/catalogue/page.tsx": "3cc6717c09af0592f6d2a888ed71f68242ddbfda103e4eb4eeff149406095d68",
+      "src/lib/passport-prestige.ts": "f1ed388909f77abc2bce1d3d6e515bbbba13a370dc4a2e046f7abd724f99db2c",
+      "src/lib/passport-collection.ts": "2d16e7c72f6a485d7b2a355c391988bef13ca6f5ab1e716ac7b575daa506cf29",
+      "src/components/CityStamps.module.css": "246ef5efd95ddad2d8116f364197ec8f3cf2cf5ca60426c9cfdc528cd720b022",
+      "src/components/CityStamps.tsx": "42eb4c228082e0cc9c2991a6ce2414e4c7afa333f2b977a86954987a1a86f75f",
+      "src/app/[locale]/admin/passports/awards/awards.module.css": "a18f6d0fe8746d9c9f8036dd75a3e2d85367b4a10196cf733050bc14dc5f18cf",
+      "src/app/[locale]/admin/passports/awards/AwardManager.tsx": "8a3a64b6632dba01c89bf8a6e302d86705ca89ce393425e6c1e3ba47f1978404",
+      "src/app/[locale]/admin/passports/awards/page.tsx": "bef48f0aacee24bb7902f6fdd9637727e251f48706ee4d83a9c712cfeef0879d",
+      "src/app/[locale]/admin/passports/page.tsx": "984faae12207a936cfe18d212abd017cf1fadb634844b43b0ce0e604e207d836",
+      "src/components/passport-prestige.module.css": "4e72cdc8618879845e99a0a4d7f96a473172b321cc1e1ca69d0e69c4a15f6a2e",
+      "src/app/[locale]/admin/passports/prestige/PrestigeDeliveryControls.tsx": "24ccb9e798b3c834cdfbe3309ee4d0e710c534ba8383e2476ee9758fd1f0994f",
+      "src/app/[locale]/admin/passports/prestige/PrestigeStudio.tsx": "5970bfeb124bbb3e26ed9f7ae9276b8d1e8d0216e3292ce55aa268d091194704",
+      "src/app/[locale]/admin/passports/prestige/page.tsx": "0bd2f879481c9b4624b122ce67888040e1848784a2801ca4fd7f6e188103f905",
+      "src/components/ConsoleChrome.tsx": "3ea7133439292a14acaf99fb26e88cd1099157fc0010904d57d596d4eca28976",
+      "src/app/[locale]/admin/personalisation/page.tsx": "1adffe2864e9b95bcdb173b2c5152771f82724af97be2e93b57826d079b79fa4",
+      "src/app/[locale]/admin/privacy/page.tsx": "3a3036e66174184cf6a03e0fe6dc85ad881ec514d0fed2384f180a080f6c244d",
+      "src/lib/promotion-labels.ts": "55abb9cf0663aa45fe96de32818817a505752bede7a923f2afe4ee8c5d4169e3",
+      "src/app/[locale]/admin/promotions/page.tsx": "2fee3dcae19d08b262624dc596dea9da2617e857c5497cbdba8dd4aec6f12d95",
+      "src/lib/referrals.ts": "c6787e06fe29eed9cc0f8e134fb1ebabe4e1683850dfcf85dfd6bfdd2c81c952",
+      "src/app/[locale]/account/referrals/referrals.css": "fb2915358c486fce7a61968b7adacbb2a97adf346ccb3f730c1621a50c33cfaf",
+      "src/app/[locale]/admin/referrals/page.tsx": "d0fe901da9ab34b8e4ceafd28d3eceeaf03ecbc0d2161aa6b19e921ba7b51afd",
+      "src/components/aki-selector/aki-selector.css": "9348d6ac6f1fd77a7b2e54d28ad95a0193ecddd49f40a90d916cd905ab414048",
+      "src/components/aki-selector/AkiSelector.tsx": "986a07a63c68c2bea4f856fcc24a6988a7a1d6f357511cdda4c63b098260ac4f",
+      "src/components/aki-selector/aki-selector-lab.css": "0e66c819da0e61f3208f8772742d6321a6ad60f778957cce09e5510eff7c1763",
+      "src/components/aki-selector/AkiSelectorLab.tsx": "ac34391e44853971e24694def4a710d641d048f7331c65119d7bbc5bcae90bad",
+      "src/app/[locale]/admin/selector-lab/page.tsx": "6829a8ade634da71276c23ba81d388ac9a1864f78262c1b1e01447f59d8bfd20",
+      "src/app/[locale]/admin/settings/page.tsx": "4c26081efda9b3fcfa9cfdd197c0229fd6a9a2883e7eec95e3f24766ce3593be",
+      "src/lib/admin-users.ts": "2a962314b19386f7f64be1d7fef8f893c2583804b669d8ff9c7c3bf7ddb29fec",
+      "src/app/[locale]/admin/users/[id]/page.tsx": "ffa872c1eef46e6ce83939bfe2876479f667dd10985aa4ed8407397d0895a417",
+      "src/app/[locale]/admin/users/UserSearch.tsx": "5d0718efe7f1caf281a5f3cf8889cc4d111a1814a36ff25f17c9aee7dbbc1ca6",
+      "src/app/[locale]/admin/users/page.tsx": "ab25c630310aa0f867764be03564f6322efa9e8907ef4daa806de7b9754a4114",
+      "src/lib/venue-relevance.ts": "8a7c101d576b3dfce28be1222d730d0f02bf2cd3ec0845475db4aa16d853bb23",
+      "src/components/VenueRelevanceReview.tsx": "5ae18b150be5e4f300c03cf2426d4bce34dbf313e5cd65650e427265346fad64",
+      "src/app/[locale]/admin/venue-relevance/page.tsx": "3201418dd3fb704819164adeef0666772c374894b640df969716ca6572497d10"
+    },
+    "promotionsSourceHashes": {
+      "src/app/layout.tsx": "f92bc6d860b7bc376c0bbef3a9bca42d50d1aea481bb995660a97c39cdaa0936",
+      "package.json": "1298af849c9dbff52f6c3f391386dbce9519e2bb12677e4e8bb42348c7114c43",
+      "package-lock.json": "1f981d778b95529e0ea44bc3004f64a2f26f7e446b7ada2de781f9dbbe526a94",
+      "src/app/globals.css": "53e2f4b7dec5fa5469e328d81ee0f2773f06d4998967e0dd47d58e9d54c62402",
+      "src/app/compact-app.css": "27a788fe1172acd6ff1e9f764a2790e63c345fb3090008ab46e12e372dca892c",
+      "src/app/brand.css": "ef68eb546410c4af273e06e6f5ed80c456c6507599f710273efaf2671268dd24",
+      "src/app/appearance.css": "580e07b84302a5d479ef53f5bd6e25ca0a5e518c23a3390fb6ad27e8114bb836",
+      "src/app/tablet-responsive.css": "60f09d70e2c4b53d0d8dd8f6aca9b6b33a8841bfcc87405ebb74214272308737",
+      "src/app/portal-unity.css": "a7cf5e13a0118a4cdf367ca91ad8626e1670d59eb0ab9bdaf0bf0f4a0572778a",
+      "src/components/pasa-finished-public.css": "28346381838b70482e92b393326d8bbf5c86a19698508a665c44085359166980",
+      "node_modules/scheduler/cjs/scheduler.production.js": "679adff761d31e9426604f80c0e99be44a3e6f4c6834b0218ecf0312a67c171f",
+      "node_modules/scheduler/index.js": "145965504d60007bc25486ab930b0367867dcd5d579ccd343c148d69349a7cfb",
+      "node_modules/react/cjs/react.production.js": "965edba67063b554f10db864640741b6265e6c5451622bc8af04f3aefa3d3383",
+      "node_modules/react/index.js": "60caffdecbdc5db3bc4ec4e83df9488345ccb271d07533b9210bf5750918d97e",
+      "node_modules/react-dom/cjs/react-dom.production.js": "33afd43ad2475b79b62959f5e7a0f68bc1acd934f86b214242ecee4e9176729c",
+      "node_modules/react-dom/index.js": "ba1a3e33489f868371561777607e3ee5091df0f7ea3f1a10f789d6b86e4c1505",
+      "node_modules/react-dom/cjs/react-dom-client.production.js": "fa643912f696c41308da86904df5f4b875739e034de6fa1ae0315f5edad41e7f",
+      "node_modules/react-dom/client.js": "00e348ab3d6bc2eef908345d0bc4e008c95bcfecec060dfda5c4967953761396",
+      "node_modules/react/cjs/react-jsx-runtime.production.js": "1e46f15002696985e80c61d47aaa30dabb03c954270a690f5f7dfbbacfa9002b",
+      "node_modules/react/jsx-runtime.js": "b392951a77d0a2e6a6bd017e49d768481ae5b63c4109c6c31f622cf7b2433edc",
+      "src/components/BrandLogo.tsx": "04f2de22ee6163137aaedcde12a080bfe74bcbda6e6ff47aec5249fb3995b328",
+      "src/components/Icons.tsx": "084e97961811c62f6ffd59515e4b92defdac5d9d6d686f36a2bd6b2f57eedb49",
+      "src/components/LaunchRibbon.module.css": "b6a0109cc591b9894b65a6a27af3b0d66d4e0410f124b35c8916ecfc2a112aeb",
+      "src/components/LaunchRibbon.tsx": "31c2bf74a858233ba5e38dea2623adc066954b068e6452103bb69c914a3eff49",
+      "src/components/SpainLocationPicker.tsx": "cf444cc8609d499eb6aa02cf795d31b772736e49cf728acc69fabf8c8be0ed17",
+      "src/lib/geo.ts": "b8100ba0b7973e801b5cb62eb71429f544bfb51d99b70cefb1fb864570e985aa",
+      "src/lib/locations.ts": "5b501ceb4f3e980dfde9b64f6fb90dc0a59fb34d60d9564da9e8ad834f2afb85",
+      "src/components/UseMyLocation.tsx": "a5292859389a1da01091f364bfd0fa5b826fa28a555a19d73480ff7b84ca87f1",
+      "src/components/VenueQuickSearch.module.css": "457e290f4636d87b8ea183dae433d17e718dc083f90f7e4daf316045151cc753",
+      "src/components/VenueQuickSearch.tsx": "815202272f371eb2c820534ce7bffd2594ee5e7825a1aaa56335473b357e2099",
+      "src/lib/discovery-location.ts": "e3f759f3e4bb8499b2fb505dd642b7feaab2d040dc7276889a54d00ee4da5c36",
+      "src/lib/messages.ts": "3df3aaf5608bcbd291ed897abf84b4b13b14e0ba564bff9edaa953c6c45e2c4f",
+      "src/lib/discovery-filter-validation.ts": "80c8f43c70e85dfc4e67c77f08e18b6d3d3ca8feb547b4d732e0fd998d8557cc",
+      "src/components/GlobalSearch.tsx": "43009af8842c7bbe248d5e35b9a8f8bb2f3883ba5f4865c33437dd4d50b42f43",
+      "src/components/LanguageLink.tsx": "223ec2a8ecd59a150d632b4e81a5d58a9524ed6b404d95b09f969d849ffd9fe5",
+      "src/components/PasaDiscoveryNavigation.css": "d926665f1f5fd95db51946e532658f8291b70860bc4d00cd266d4bf7050c0829",
+      "src/components/ThemeModeControls.tsx": "a4d3755ecf378624b2f05eb709d2b2352c7f2a5571bc943dbf3f162f37883d2a",
+      "src/components/useSuiteReferral.ts": "1becd06f429135bd89fe9cee1cbc39f54b22350211a263432422241a7e4d24a1",
+      "src/lib/suite-navigation.ts": "20841a17472e926949746d57b9c03f42ba0c45570fe96082f5fab4b1c96bac9a",
+      "src/components/DiscoveryNavigation.css": "01fe38a052504d652d8c146bd842322f45524c988691bb8df9c79f20698d30d6",
+      "src/components/DiscoveryNavigation.tsx": "803922b858552e11c31fc8359b4078ac401ce8243461361adbfc89debb399450",
+      "src/lib/discovery-navigation.ts": "3b528c5ec8d99ac65f5b8b3a960f829e88b0da6d354920666b6ca6a8610c9ca8",
+      "src/components/PasaBottomDock.tsx": "a126a218965fce74b8f6b72b7562196e1e1de69316b36fb09fe81ac152908e52",
+      "src/components/PasaBottomDock.css": "d4c8b7f404e19fd8b98d8b1d0e03f9e14de00539ddeb2c25a98a7ce5c5eee94f",
+      "src/components/PasaCinematic.css": "f5b80b832b3626f5864473d8764f04bcea6d4993c9dc7d1ee6f583b5196e8368",
+      "src/components/PasaSharedSurfaces.css": "e6335b16f87d65d3ba6d64212343678d4a5db25662b7e75cecc3122ef4e26fa6",
+      "src/lib/pasa-surface-families.ts": "5f426f2be2d4da92bfb1ccf5f8152bdd4ae3ebb8530f7da175c38f323ab97f7a",
+      "src/lib/roles.ts": "6e0bc650d1125662984c221f1cc07cd0a6bbf89bf6bd624f01d552d7b454332d",
+      "src/components/ConsoleSwitcher.tsx": "8921ab7985be62de2d4a031b4e1cbc80c31382eb72adfd85429dd5d3cd282386",
+      "src/components/AppShell.tsx": "4d5d2f42369751f4968a640d5f7aa80c6157b64d72bcf26162427abfbfff5072",
+      "src/app/[locale]/admin/admin-compact.css": "fe64236e4840fa3cf037fb5ab2a9b696bbeb988206625b57d6285e2d8602641c",
+      "src/app/[locale]/admin/admin-suite.css": "8bbc72df00d0581e6e434779d2efb7c3cf01b1a111338c2e092343347aa32389",
+      "src/components/WorkspaceShell.tsx": "a48978c34c3b184dfe82c1f7ef8dd7607a575afee3e402a9268431c27a69b3a2",
+      "src/lib/config.ts": "99bcd28eb21688269d1115aef445e529f5eb5bc7b2bcb09303e19a8fd845a5db",
+      "src/app/[locale]/admin/layout.tsx": "04cbb7065de65d2959fb445304a7e7ac6a620794e26910f1563cdc78324f282a",
+      "src/app/[locale]/admin/AdminReadState.tsx": "ec37f97e9450150d52df33fd4b64aae8b089530bbfed6a5e79111a5d6c41bd1c",
+      "src/lib/promotion-labels.ts": "55abb9cf0663aa45fe96de32818817a505752bede7a923f2afe4ee8c5d4169e3",
+      "src/app/[locale]/admin/AdminSearchList.tsx": "d52831060d9e75005b0279787ef39f1377ade016a0b5b44dcb27c5a01efe72a6",
+      "src/app/[locale]/admin/promotions/page.tsx": "2fee3dcae19d08b262624dc596dea9da2617e857c5497cbdba8dd4aec6f12d95"
+    }
+  },
+  "evidence": {
+    "runId": 41164318371,
+    "jobId": 124428462610,
+    "artifactId": 13029016202,
+    "actualNext": false,
+    "actualAppShell": true,
+    "syntheticAuth": true,
+    "adminContexts": 832,
+    "adminRenderedContexts": 800,
+    "expectedDenials": 32,
+    "nativeWorkspaceMenus": 600,
+    "promotionsContexts": 24,
+    "promotionsNativeGetRecoveries": 16,
+    "inspectedImageCount": 132,
+    "visuallyReviewedRouteFamilies": 18
+  },
+  "reviewedRunnerAssertions": [
+    "actual route component and AdminLayout within actual AppShell using synthetic read/auth adapters",
+    "no render failure or browser console error in the recorded contexts",
+    "no horizontal page overflow",
+    "all rendered pages nonblank; successful populated states contain their expected synthetic record or explicitly aggregate/static content",
+    "explicit read-error text; expected user-detail notFound responses counted separately",
+    "native shared workspace menu hit tests, pointer and Enter open, Escape close wherever mobile menu is visible",
+    "zero action invocations; no privileged writes"
+  ],
+  "artifactQualifications": [
+    "SelectorLab has no read-data state; repeated inputs are not three distinct states.",
+    "User detail missing/error intentionally calls notFound; no fabricated fallback screenshot.",
+    "Prestige/referrals enabled ONLY in compile-local synthetic fixture; production gates unchanged.",
+    "Personalisation empty is valid all-zero metrics, ranking remains unavailable."
+  ],
+  "limitations": [
+    "This is formal bounded screen/presentation and recorded native-control acceptance using the existing matrix standard. It does not approve the full PR release.",
+    "No actual authenticated session, production or isolated-backend RLS, tenant boundary, private write, provider, billing, verified XP, storage or physical Android acceptance is inferred.",
+    "Static screenshots do not establish every hidden form or mutation interaction. Previously existing action contracts and global protected-journey gates remain separately required.",
+    "Only the listed image files were visually inspected; the other context records were reviewed structurally. No claim that all 1,632 screenshots were individually viewed.",
+    "Application source was not modified. Review used artifact images, result records, read-only runner assertion inspection and Git commit-tree provenance; no full tests or CI were rerun."
+  ],
+  "acceptedRouteCount": 18,
+  "rejectedRouteCount": 0,
+  "blockingDefects": [],
+  "routes": [
+    {
+      "route": "src/app/[locale]/admin/achievements/page.tsx",
+      "family": "achievements",
+      "decision": "accept_bounded_route_ui",
+      "matrixStatusRecommendation": "accepted",
+      "blockingDefects": [],
+      "reviewer": "Codex release_github independent Admin visual/function reviewer",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "routeSourceSha256": "1670e83bb9924baf58596600bdf2490ed6ac2667933d4da7e7b799d6d6f6b1b4",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+      "inspectedImages": [
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-achievements-ready-upper.png",
+          "sha256": "ae0a664907e2986915399e58fbc3b1a8a9c52e964092caf65ecc70dca8ba08de"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-achievements-ready-lower.png",
+          "sha256": "f5c0d5e10120f2976a75357291b8a8fa6a95d720428c93690641ce7f92516e2e"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-achievements-ready-upper.png",
+          "sha256": "b2d048aa566903ba246253f699e5607e89136c83b18558c85a3dafc86b6c9ce1"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-achievements-ready-lower.png",
+          "sha256": "d5e624e832c7134f33b3dc51e1099bee9c60acf4772d976d3dcfd3aa74b7ccf0"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-820-achievements-empty-lower.png",
+          "sha256": "9ce36c0e2211be9f3115cf011da4916f64d58eb915eb7d9fbc4ad8c186ccc275"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-360-achievements-empty-upper.png",
+          "sha256": "e77498992a3aaf6d13c5fc843b01d63de3cafcd3a950d7eb0d2aaeb3105e5a88"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-360-achievements-error-lower.png",
+          "sha256": "9f7622fee61485e0eba79bebb1ac47a49c44e85020ecf9cde116c8ab63758417"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-360-achievements-ready-editor.png",
+          "sha256": "e23f4ba2fd45d7c62ff0892ae78ab3e6ac74b1efd1bdb0afd01a7e350f2b76dc"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-820-achievements-ready-editor.png",
+          "sha256": "12d13e6ec75acb4c1f3f81078ef8710dda8710063dd37a3a53674c3224347e28"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-360-achievements-error-upper.png",
+          "sha256": "0bb61f0ef2987d219b8555b38fde60b5d38ae3ea8939112bd5aa851a4f46235f"
+        }
+      ],
+      "visualObservations": [
+        "Reward navigation, milestone count, search/filter controls and populated achievement card remain legible on 390px dark, 1440px light and 820px empty views.",
+        "Inspected actual 360px dark and 820px light creation dialogs: labelled fields, draft default, XP preview, close/cancel/save controls and explanation are visible at the relevant viewport/scroll extent.",
+        "The error upper capture shows a clear localized unavailable message; its nearly blank lower capture is a scrolled state, not a blank route."
+      ],
+      "recordedFunctionalEvidence": {
+        "requestedContexts": 48,
+        "renderedContexts": 48,
+        "expectedMissingRecordDenials": 0,
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "viewportWidths": [360, 390, 820, 1440],
+        "nativeWorkspaceMenuContexts": 36,
+        "maximumHorizontalOverflow": 0,
+        "textContrastSampleCount": 64,
+        "minimumMeasuredTextContrast": 6.025264370334965,
+        "wordmarkSampleCount": 36,
+        "minimumMeasuredWordmarkContrast": 15.989431827984154,
+        "errors": 0,
+        "mutatingActions": 0
+      },
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    {
+      "route": "src/app/[locale]/admin/achievements/venues/page.tsx",
+      "family": "achievements/venues",
+      "decision": "accept_bounded_route_ui",
+      "matrixStatusRecommendation": "accepted",
+      "blockingDefects": [],
+      "reviewer": "Codex release_github independent Admin visual/function reviewer",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "routeSourceSha256": "2a36fa1f5d199fa71e0e18e168661173ef215a1ed6f4121d977a8f47196ef8a0",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+      "inspectedImages": [
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-achievements-venues-ready-upper.png",
+          "sha256": "56ac32c8f8ec3d0ddcd40d10af5f473f93b47342508e1f94128f6102cfdf3691"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-achievements-venues-ready-lower.png",
+          "sha256": "1cccd52c0c9481ebb4f80cad9f2f0203d9fc82ddb431d3b7dcd3c2818d5dc7b3"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-achievements-venues-ready-upper.png",
+          "sha256": "25df93fc03e7f828bfa030b0e21be2acda98259cb9d79a779f730cabd72cc634"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-achievements-venues-ready-lower.png",
+          "sha256": "c0ecae2eeb479c6e50e6ff17a641736a60974d295d996e060823798ff79a00c3"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-820-achievements-venues-empty-lower.png",
+          "sha256": "5c9df90f1d7342f12ca278cdea17edefa103ae34be5553f57befbea963f69420"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-360-achievements-venues-empty-upper.png",
+          "sha256": "ca12bfb63bec8897dfeb17afa95605e88ca3bd65862f50ca8d13d362c6cabb0c"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-360-achievements-venues-error-lower.png",
+          "sha256": "c46a0e4a2e144e11ad9e9ede88364fe3ca88e31e385d01fea6e266af1a513841"
+        }
+      ],
+      "visualObservations": [
+        "Venue classification heading, verification explanation, search and collapsed synthetic venue row fit phone and desktop.",
+        "Tablet empty state distinguishes zero venues; Spanish error capture reports failed loading rather than an empty successful list."
+      ],
+      "recordedFunctionalEvidence": {
+        "requestedContexts": 48,
+        "renderedContexts": 48,
+        "expectedMissingRecordDenials": 0,
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "viewportWidths": [360, 390, 820, 1440],
+        "nativeWorkspaceMenuContexts": 36,
+        "maximumHorizontalOverflow": 0,
+        "textContrastSampleCount": 0,
+        "minimumMeasuredTextContrast": null,
+        "wordmarkSampleCount": 36,
+        "minimumMeasuredWordmarkContrast": 15.989431827984154,
+        "errors": 0,
+        "mutatingActions": 0
+      },
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    {
+      "route": "src/app/[locale]/admin/ai-team/page.tsx",
+      "family": "ai-team",
+      "decision": "accept_bounded_route_ui",
+      "matrixStatusRecommendation": "accepted",
+      "blockingDefects": [],
+      "reviewer": "Codex release_github independent Admin visual/function reviewer",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "routeSourceSha256": "117707dcebc59b97a11750b5e7460c15ba455e9f8181f5092fa24ebc730f56ec",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+      "inspectedImages": [
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-ai-team-ready-upper.png",
+          "sha256": "cd8793bca6a34dedd7a729e4d74ebd179466de7d0832517256e3990874cbcd9b"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-ai-team-ready-lower.png",
+          "sha256": "5917454c2169187bc1e7048f41fbade3e396d16c5a7130554dccac48d4974fd6"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-ai-team-ready-upper.png",
+          "sha256": "6512dbe101d3b3f723a9c267ad4677a8f7762ee31c764d6457b554cb30900e1b"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-ai-team-ready-lower.png",
+          "sha256": "b43929d44a3b05a948953aa136db54ebef89f8e7dd3cc98e31699de048fa7b54"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-820-ai-team-empty-lower.png",
+          "sha256": "4d8e43896e3f01a84237dac157bca745b78de3fa7d00c4fbb2a53db0cf19f028"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-360-ai-team-empty-upper.png",
+          "sha256": "7b70d5860ab66b648db21e23df3d692183d5e577dc85242bcc0ea9e2ffcb22cd"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-360-ai-team-error-lower.png",
+          "sha256": "90705fec23dafae8a139c06e0ac01d17631ab346517b8356fc530877eee04d1a"
+        }
+      ],
+      "visualObservations": [
+        "Agent overview, permission/budget explanation, synthetic agent panel and message area remain readable across reviewed themes.",
+        "Provider-not-configured notice and unavailable-budget recovery are visible; paid calls remain represented as blocked in these fixtures.",
+        "Read-only UI review does not certify provider execution, agent approvals or external actions."
+      ],
+      "recordedFunctionalEvidence": {
+        "requestedContexts": 48,
+        "renderedContexts": 48,
+        "expectedMissingRecordDenials": 0,
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "viewportWidths": [360, 390, 820, 1440],
+        "nativeWorkspaceMenuContexts": 36,
+        "maximumHorizontalOverflow": 0,
+        "textContrastSampleCount": 0,
+        "minimumMeasuredTextContrast": null,
+        "wordmarkSampleCount": 36,
+        "minimumMeasuredWordmarkContrast": 15.989431827984154,
+        "errors": 0,
+        "mutatingActions": 0
+      },
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    {
+      "route": "src/app/[locale]/admin/audit/page.tsx",
+      "family": "audit",
+      "decision": "accept_bounded_route_ui",
+      "matrixStatusRecommendation": "accepted",
+      "blockingDefects": [],
+      "reviewer": "Codex release_github independent Admin visual/function reviewer",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "routeSourceSha256": "9c123fbc6871d787f46cc9f64a1e1f893ff5db5be7c38b5a135d19c37cedc4cc",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+      "inspectedImages": [
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-audit-ready-upper.png",
+          "sha256": "1532d9f06091a02f576d4f640ad9198ddbfcc1bcf720bc0344495cb5e2c566b0"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-audit-ready-lower.png",
+          "sha256": "ecbcc86e0a2d25b623e9baffa49f355799c93faf4f5066f4df9a486313474c1a"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-audit-ready-upper.png",
+          "sha256": "83e11a4ab9c376a2f707c73185623afc561a09fc4bddf5932dc65be2b9030742"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-audit-ready-lower.png",
+          "sha256": "b1397ed689f92cbabc807226f62ab10e617d3247f6e1f69d07f84e923adee48e"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-820-audit-empty-lower.png",
+          "sha256": "4b8bd3a3b0df5fea29ace39b6cdf03583450a3f6c6c5672a63125f73840705c9"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-360-audit-empty-upper.png",
+          "sha256": "4cae37a1da8a49fc0d3be182aa57eedc5d107c5ad2b250926dfabf13b4634825"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-360-audit-error-lower.png",
+          "sha256": "aea14d3438953c2bc39ce7e03c9163f3d7ebeff045d2343a2d35ed2e5797aba4"
+        }
+      ],
+      "visualObservations": [
+        "Audit heading, search/status row, synthetic event badge, timestamp and content are readable without horizontal clipping.",
+        "Empty and unavailable/retry states are visibly distinct; desktop spacing and mobile single-column record remain coherent."
+      ],
+      "recordedFunctionalEvidence": {
+        "requestedContexts": 48,
+        "renderedContexts": 48,
+        "expectedMissingRecordDenials": 0,
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "viewportWidths": [360, 390, 820, 1440],
+        "nativeWorkspaceMenuContexts": 36,
+        "maximumHorizontalOverflow": 0,
+        "textContrastSampleCount": 32,
+        "minimumMeasuredTextContrast": 5.969252928741087,
+        "wordmarkSampleCount": 36,
+        "minimumMeasuredWordmarkContrast": 15.989431827984154,
+        "errors": 0,
+        "mutatingActions": 0
+      },
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    {
+      "route": "src/app/[locale]/admin/business-applications/page.tsx",
+      "family": "business-applications",
+      "decision": "accept_bounded_route_ui",
+      "matrixStatusRecommendation": "accepted",
+      "blockingDefects": [],
+      "reviewer": "Codex release_github independent Admin visual/function reviewer",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "routeSourceSha256": "d733fedad8d189afa3a21a6f6e6b2af4997c0073849a4baf2836102a9fd8ace1",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+      "inspectedImages": [
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-business-applications-ready-upper.png",
+          "sha256": "da7602aa0f5dcf8e8e2a07dda1640a95cb67c3255a0ca99ec3a8b0554d8cea83"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-business-applications-ready-lower.png",
+          "sha256": "2dd6ffb7880d529ea6a113cd753ab92a3e0e4a1ddd127289dbc23af6ccc02b67"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-business-applications-ready-upper.png",
+          "sha256": "02f9ee4c941c89693b6937aa79f2bb0d6721910e818d081dd82e94d07f17bfda"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-business-applications-ready-lower.png",
+          "sha256": "7ef3be4c6796d6f718c43a5bc6782161fccb88b067ed75cac4d634dc19f5d3cc"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-820-business-applications-empty-lower.png",
+          "sha256": "95365e7cff0423ba8d66312d5781b11b87b91994a97a4d94e6e2bdc29cfce77c"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-360-business-applications-empty-upper.png",
+          "sha256": "1a8369f2b1accbd31583cb5808c7aa41cfbcc040449da094b5d076ffb5ad8f5d"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-360-business-applications-error-lower.png",
+          "sha256": "ee4a6c487149e4de34414293e8efc36064ca4a2210ebea1bb63058333dffa5c8"
+        }
+      ],
+      "visualObservations": [
+        "Application summary, pending state, payment status, received timestamp and review disclosure fit the phone layout; desktop presents a compact card.",
+        "Empty and read-failure states are visibly distinct and give a clear retry path.",
+        "Collapsed review form mutation behavior is not certified by these screenshots."
+      ],
+      "recordedFunctionalEvidence": {
+        "requestedContexts": 48,
+        "renderedContexts": 48,
+        "expectedMissingRecordDenials": 0,
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "viewportWidths": [360, 390, 820, 1440],
+        "nativeWorkspaceMenuContexts": 36,
+        "maximumHorizontalOverflow": 0,
+        "textContrastSampleCount": 0,
+        "minimumMeasuredTextContrast": null,
+        "wordmarkSampleCount": 36,
+        "minimumMeasuredWordmarkContrast": 15.989431827984154,
+        "errors": 0,
+        "mutatingActions": 0
+      },
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    {
+      "route": "src/app/[locale]/admin/catalogue/page.tsx",
+      "family": "catalogue",
+      "decision": "accept_bounded_route_ui",
+      "matrixStatusRecommendation": "accepted",
+      "blockingDefects": [],
+      "reviewer": "Codex release_github independent Admin visual/function reviewer",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "routeSourceSha256": "3cc6717c09af0592f6d2a888ed71f68242ddbfda103e4eb4eeff149406095d68",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+      "inspectedImages": [
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-catalogue-ready-upper.png",
+          "sha256": "63acc6da6aa06771d4b2d79b1ea5d3c302f054feeb09f9c6eb83e2729e37dbe8"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-catalogue-ready-lower.png",
+          "sha256": "ed30494c5382003fa2298db6253e53ccac7777a6b14854df83a1d4d8bf1f7fd3"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-catalogue-ready-upper.png",
+          "sha256": "2dde920b1128fc066fc9195c7452b4f8f467bdeb31fbfc212b063607c42f4caa"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-catalogue-ready-lower.png",
+          "sha256": "632fd826de4ebc483162b529bcfa3311f59514e48a1c82e128862333f8e8e357"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-820-catalogue-empty-lower.png",
+          "sha256": "54ae4344427fbf3311fea7abb7b8ccb766c3496cfa32e18f708c000c029af996"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-360-catalogue-empty-upper.png",
+          "sha256": "befe4f590f6d53186e2a97513b76676f1ac149340644abc62c4344590b58635b"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-360-catalogue-error-lower.png",
+          "sha256": "a53176f67b086aa353e544b23ddd6164f37955d08c2c8aa2868b16610b47de41"
+        }
+      ],
+      "visualObservations": [
+        "Category/locality tabs and the directory/editor layout adapt to mobile record/editor tabs and wider two-column view.",
+        "Inspected desktop editor labels and reason field; empty directory and unavailable/retry states are readable.",
+        "Database category/locality writes remain outside this route presentation acceptance."
+      ],
+      "recordedFunctionalEvidence": {
+        "requestedContexts": 48,
+        "renderedContexts": 48,
+        "expectedMissingRecordDenials": 0,
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "viewportWidths": [360, 390, 820, 1440],
+        "nativeWorkspaceMenuContexts": 36,
+        "maximumHorizontalOverflow": 0,
+        "textContrastSampleCount": 0,
+        "minimumMeasuredTextContrast": null,
+        "wordmarkSampleCount": 36,
+        "minimumMeasuredWordmarkContrast": 15.989431827984154,
+        "errors": 0,
+        "mutatingActions": 0
+      },
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    {
+      "route": "src/app/[locale]/admin/passports/page.tsx",
+      "family": "passports",
+      "decision": "accept_bounded_route_ui",
+      "matrixStatusRecommendation": "accepted",
+      "blockingDefects": [],
+      "reviewer": "Codex release_github independent Admin visual/function reviewer",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "routeSourceSha256": "984faae12207a936cfe18d212abd017cf1fadb634844b43b0ce0e604e207d836",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+      "inspectedImages": [
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-passports-ready-upper.png",
+          "sha256": "6d0aa1a753c9f5d6434118f94efaf2e75b67e0ecf088b1dd9b2bbb1779d700cb"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-passports-ready-lower.png",
+          "sha256": "4a779df05ec7ddeb78c7401a185a158c584c56ab672499548de45600b8e5c03a"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-passports-ready-upper.png",
+          "sha256": "270d325d4b703dec45f8804749b91c6ccd2a38c829445467dfb84d56b1973fa3"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-passports-ready-lower.png",
+          "sha256": "441a0bfc4bc5ba9d1c75970ceddb7fa230118d73997af0e83bedf2caec22bf2e"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-820-passports-empty-lower.png",
+          "sha256": "da41bacc51364da2bb46cb63a043b3c20f6e1a5a80769249d471a5431a69c32d"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-360-passports-empty-upper.png",
+          "sha256": "12d60dbb8b38fca710be9e8d3956f34beb625198566c3c5a60ff47311b87c3ba"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-360-passports-error-lower.png",
+          "sha256": "e1b850631efb1d2f09207464b36bf1b8581c13e668db23deb2c1efba2a2e808f"
+        }
+      ],
+      "visualObservations": [
+        "Reward tabs, campaign search/status, date range and published badge are legible; creation remains disclosed only when needed.",
+        "The failed venue read withholds creation and explains why; failed campaign reads show an independent retry message."
+      ],
+      "recordedFunctionalEvidence": {
+        "requestedContexts": 48,
+        "renderedContexts": 48,
+        "expectedMissingRecordDenials": 0,
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "viewportWidths": [360, 390, 820, 1440],
+        "nativeWorkspaceMenuContexts": 36,
+        "maximumHorizontalOverflow": 0,
+        "textContrastSampleCount": 0,
+        "minimumMeasuredTextContrast": null,
+        "wordmarkSampleCount": 36,
+        "minimumMeasuredWordmarkContrast": 15.989431827984154,
+        "errors": 0,
+        "mutatingActions": 0
+      },
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    {
+      "route": "src/app/[locale]/admin/passports/awards/page.tsx",
+      "family": "passports/awards",
+      "decision": "accept_bounded_route_ui",
+      "matrixStatusRecommendation": "accepted",
+      "blockingDefects": [],
+      "reviewer": "Codex release_github independent Admin visual/function reviewer",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "routeSourceSha256": "bef48f0aacee24bb7902f6fdd9637727e251f48706ee4d83a9c712cfeef0879d",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+      "inspectedImages": [
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-passports-awards-ready-upper.png",
+          "sha256": "d674e120232ee6780883cf42742e25a9eda3f5b5fbc2cce1d5d37210a4058cf5"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-passports-awards-ready-lower.png",
+          "sha256": "99d93a8b040adaebdc15fb7817ae68311ea16d4faf8dcf4785239f3708b62339"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-passports-awards-ready-upper.png",
+          "sha256": "32515fb6120c46f51b17ab3bdaea8979f5f80d5354e1667f36b02d0d040b9fd7"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-passports-awards-ready-lower.png",
+          "sha256": "3fa3a8d1cad8414250bb17ce9898ba6d249c88854a61c14bfe01470c2a845085"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-820-passports-awards-empty-lower.png",
+          "sha256": "b8a5ff07b38b08945ff9699cd255c09696ad97f19b7dae7ea6578e61534e1326"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-360-passports-awards-empty-upper.png",
+          "sha256": "056161fc84f33910930fb55ecc4297742099937f7a34385fa2e74cdadbae3616"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-360-passports-awards-error-lower.png",
+          "sha256": "69d242602627817a4363881e432168bcad3e8785522271c84366d9cef967ed82"
+        }
+      ],
+      "visualObservations": [
+        "Member lookup, Prestige and classification links, result identity and the no-visit/XP-change explanation are readable.",
+        "Actual runner evidence exercises native Tab then Enter on member search; empty results and failed lookup remain distinct.",
+        "No stamp/award grant or XP-producing action was executed or accepted."
+      ],
+      "recordedFunctionalEvidence": {
+        "requestedContexts": 48,
+        "renderedContexts": 48,
+        "expectedMissingRecordDenials": 0,
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "viewportWidths": [360, 390, 820, 1440],
+        "nativeWorkspaceMenuContexts": 36,
+        "maximumHorizontalOverflow": 0,
+        "textContrastSampleCount": 0,
+        "minimumMeasuredTextContrast": null,
+        "wordmarkSampleCount": 36,
+        "minimumMeasuredWordmarkContrast": 15.989431827984154,
+        "errors": 0,
+        "mutatingActions": 0
+      },
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    {
+      "route": "src/app/[locale]/admin/passports/prestige/page.tsx",
+      "family": "passports/prestige",
+      "decision": "accept_bounded_route_ui",
+      "matrixStatusRecommendation": "accepted",
+      "blockingDefects": [],
+      "reviewer": "Codex release_github independent Admin visual/function reviewer",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "routeSourceSha256": "0bd2f879481c9b4624b122ce67888040e1848784a2801ca4fd7f6e188103f905",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+      "inspectedImages": [
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-passports-prestige-ready-upper.png",
+          "sha256": "595c77d84534abad40091dfb49df98f1fdda6974980a1b88736f2c9fa4b62e3f"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-passports-prestige-ready-lower.png",
+          "sha256": "70d9f4a9e51a4cc38c9bb5e826f3e37bd1ace494a78fb499587a9bba4890620a"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-passports-prestige-ready-upper.png",
+          "sha256": "04ca7cc4cfbdb1f80cbd156ae1189f75f634c0c2f9422f0774761cc3bc93f91a"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-passports-prestige-ready-lower.png",
+          "sha256": "5733a0e2bd0cfd5c6152e7242ff1b8db54f350eb9dc3b0fa03496ee63a8e173a"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-820-passports-prestige-empty-lower.png",
+          "sha256": "b4a10301382f6b8b965e2ddd3534b443dc8a0f69760897c589f122c5d80d5260"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-360-passports-prestige-empty-upper.png",
+          "sha256": "a2a86dc8bd5ac7bdd59bd83c2d20f83ceae469ab7064a84200714ee6794f5588"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-360-passports-prestige-error-lower.png",
+          "sha256": "6e4ff04f9e600a002a892b53c4d71c944afb1fb130b8dcc2861b72c0268f3af1"
+        }
+      ],
+      "visualObservations": [
+        "Milestone form, draft intent, disabled shipping/purchase messaging and fraud-revocation reason panel remain readable on phone and desktop.",
+        "Unavailable data produces a localized closed state. Feature-enabled content is compile-local synthetic evidence only.",
+        "No physical prize, address collection, shipping, payment, award or revocation operation is accepted."
+      ],
+      "recordedFunctionalEvidence": {
+        "requestedContexts": 48,
+        "renderedContexts": 48,
+        "expectedMissingRecordDenials": 0,
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "viewportWidths": [360, 390, 820, 1440],
+        "nativeWorkspaceMenuContexts": 36,
+        "maximumHorizontalOverflow": 0,
+        "textContrastSampleCount": 0,
+        "minimumMeasuredTextContrast": null,
+        "wordmarkSampleCount": 36,
+        "minimumMeasuredWordmarkContrast": 15.989431827984154,
+        "errors": 0,
+        "mutatingActions": 0
+      },
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    {
+      "route": "src/app/[locale]/admin/personalisation/page.tsx",
+      "family": "personalisation",
+      "decision": "accept_bounded_route_ui",
+      "matrixStatusRecommendation": "accepted",
+      "blockingDefects": [],
+      "reviewer": "Codex release_github independent Admin visual/function reviewer",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "routeSourceSha256": "1adffe2864e9b95bcdb173b2c5152771f82724af97be2e93b57826d079b79fa4",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+      "inspectedImages": [
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-personalisation-ready-upper.png",
+          "sha256": "33c140470ffb618b6dfb95c38960cfe1b27dd8b16adccddb72e06a21910967b7"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-personalisation-ready-lower.png",
+          "sha256": "737a2cd6088937effc8f22cda5ebed764f7bcab654a0cbf68809d42fc9083605"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-personalisation-ready-upper.png",
+          "sha256": "9e6782e2dc71b44f279c51aa0dc2c14683949e3af15baa6f5c3000e4b3e64da6"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-personalisation-ready-lower.png",
+          "sha256": "6f4a84a9238eac472d3c9329e8be077b4c8132482c869494870f1448b379ff8f"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-820-personalisation-empty-lower.png",
+          "sha256": "c7ad4adf7e60d490db38d092727188bf876f1fc68fc2e3c5c9bf5affdf75da0f"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-360-personalisation-empty-upper.png",
+          "sha256": "a5d5ae488a040d406dc3c5f257618525e809295cf0740910078a082b98c88517"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-360-personalisation-error-lower.png",
+          "sha256": "67d226f243b1342518a6dc13fb9465e50108828d98a45c630d380ff604e68b74"
+        }
+      ],
+      "visualObservations": [
+        "Aggregate metric tiles, funnel and signal panels stay readable at phone and desktop widths.",
+        "Zero-metric empty state and unavailable read state differ; ranking remains explicitly unavailable instead of fabricated.",
+        "No individual history or real analytics correctness is inferred from synthetic numbers."
+      ],
+      "recordedFunctionalEvidence": {
+        "requestedContexts": 48,
+        "renderedContexts": 48,
+        "expectedMissingRecordDenials": 0,
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "viewportWidths": [360, 390, 820, 1440],
+        "nativeWorkspaceMenuContexts": 36,
+        "maximumHorizontalOverflow": 0,
+        "textContrastSampleCount": 0,
+        "minimumMeasuredTextContrast": null,
+        "wordmarkSampleCount": 36,
+        "minimumMeasuredWordmarkContrast": 15.989431827984154,
+        "errors": 0,
+        "mutatingActions": 0
+      },
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    {
+      "route": "src/app/[locale]/admin/privacy/page.tsx",
+      "family": "privacy",
+      "decision": "accept_bounded_route_ui",
+      "matrixStatusRecommendation": "accepted",
+      "blockingDefects": [],
+      "reviewer": "Codex release_github independent Admin visual/function reviewer",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "routeSourceSha256": "3a3036e66174184cf6a03e0fe6dc85ad881ec514d0fed2384f180a080f6c244d",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+      "inspectedImages": [
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-privacy-ready-upper.png",
+          "sha256": "5d768dba8d22115dcf4497aeb5186bb525dcd119c2a80f08e0e92218db0ff7a7"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-privacy-ready-lower.png",
+          "sha256": "5c596bdce66c67191e31d32c1a97b83169a149cd9fe1c61ee14e3dbdf89c11c3"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-privacy-ready-upper.png",
+          "sha256": "446e0f77dedf914967d0da3cf7473a95a79c1dc53f623e2c78ecaf43e2165794"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-privacy-ready-lower.png",
+          "sha256": "42b0b7f17b39edecd5921bd897d160d7f06502c885942b856ce00b99d8421c9f"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-820-privacy-empty-lower.png",
+          "sha256": "8ff66f777b0006281e810040445c9141ab55e89a3140830a80d2941f2eec5863"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-360-privacy-empty-upper.png",
+          "sha256": "1d10822b6b9b9b440bce03973fefc41678600689ef76fe5f21de9dba0eafe145"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-360-privacy-error-lower.png",
+          "sha256": "be322f66ec0a774874bbf92166e25c2e1981480645afb921f57f3d63d59ae6fa"
+        }
+      ],
+      "visualObservations": [
+        "Request summary/status, search and disclosure remain readable in both themes; empty and unavailable/retry states are clear.",
+        "The fixture contains a synthetic request only; request processing, deletion/export execution and actual permissions remain outside this review."
+      ],
+      "recordedFunctionalEvidence": {
+        "requestedContexts": 48,
+        "renderedContexts": 48,
+        "expectedMissingRecordDenials": 0,
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "viewportWidths": [360, 390, 820, 1440],
+        "nativeWorkspaceMenuContexts": 36,
+        "maximumHorizontalOverflow": 0,
+        "textContrastSampleCount": 0,
+        "minimumMeasuredTextContrast": null,
+        "wordmarkSampleCount": 36,
+        "minimumMeasuredWordmarkContrast": 15.989431827984154,
+        "errors": 0,
+        "mutatingActions": 0
+      },
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    {
+      "route": "src/app/[locale]/admin/promotions/page.tsx",
+      "family": "promotions",
+      "decision": "accept_bounded_route_ui",
+      "matrixStatusRecommendation": "accepted",
+      "blockingDefects": [],
+      "reviewer": "Codex release_github independent Admin visual/function reviewer",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "routeSourceSha256": "2fee3dcae19d08b262624dc596dea9da2617e857c5497cbdba8dd4aec6f12d95",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+      "inspectedImages": [
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-promotions-ready-upper.png",
+          "sha256": "f53fa610e62a7d7de6eac7991c9c948d567fe9440430c86dc9a434ea62a59f7a"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-promotions-ready-lower.png",
+          "sha256": "cd93417834f1894c99846c1b0b1e23e9c8c3f261713812532e9aca7c379a82af"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-promotions-ready-upper.png",
+          "sha256": "5ea6d0e06d4500e44b15270530773240fbe0b1460800b075656bf4d6ae41422f"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-promotions-ready-lower.png",
+          "sha256": "b1170f53edeb234f47db1a20c035427f1c36766c6785f93d301b2ba80ab0ce9d"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-820-promotions-empty-lower.png",
+          "sha256": "494b9fede566a6622ce577f82078d6bf8660fb54e0f0fb42fe3fdd1304a0971b"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-360-promotions-empty-upper.png",
+          "sha256": "599fbfd2f7cde2d9357408f5fe6cf78a89ee0dbe05908e786713ea4a8375c857"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-360-promotions-error-lower.png",
+          "sha256": "085e233edd873c372b571c7ae444978a64620f190159b402cb97d3c7f8eda8fe"
+        },
+        {
+          "artifactPath": "admin-promotion-read-recovery/en-dark-390-all-full.png",
+          "sha256": "20b6c1b75c84180a91673bba50f3b083e10d6b3e836e42b90b5b8b029fa50698"
+        },
+        {
+          "artifactPath": "admin-promotion-read-recovery/en-dark-390-all-recovered.png",
+          "sha256": "6803746b6879d154ce284d78bf30052f4187018baff88158189a3f2d8dc21bd2"
+        },
+        {
+          "artifactPath": "admin-promotion-read-recovery/es-light-1440-requests-full.png",
+          "sha256": "da25ec2df5d406d9347eddb8117311f56a4c028c51e1622892e369b819502cee"
+        }
+      ],
+      "visualObservations": [
+        "Overview counts, scheduling disclosure, recent features and commercial-request sections remain readable through the page bottom.",
+        "Full targeted error screenshot shows unknown counts and three independent retries; recovery restores counts without hiding healthy sibling data.",
+        "The targeted 24-context evidence verifies stale-data suppression, dependent editor availability and 16 native GET recoveries without writes."
+      ],
+      "recordedFunctionalEvidence": {
+        "requestedContexts": 48,
+        "renderedContexts": 48,
+        "expectedMissingRecordDenials": 0,
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "viewportWidths": [360, 390, 820, 1440],
+        "nativeWorkspaceMenuContexts": 36,
+        "maximumHorizontalOverflow": 0,
+        "textContrastSampleCount": 32,
+        "minimumMeasuredTextContrast": 6.129390522656906,
+        "wordmarkSampleCount": 36,
+        "minimumMeasuredWordmarkContrast": 15.989431827984154,
+        "errors": 0,
+        "mutatingActions": 0
+      },
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    {
+      "route": "src/app/[locale]/admin/referrals/page.tsx",
+      "family": "referrals",
+      "decision": "accept_bounded_route_ui",
+      "matrixStatusRecommendation": "accepted",
+      "blockingDefects": [],
+      "reviewer": "Codex release_github independent Admin visual/function reviewer",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "routeSourceSha256": "d0fe901da9ab34b8e4ceafd28d3eceeaf03ecbc0d2161aa6b19e921ba7b51afd",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+      "inspectedImages": [
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-referrals-ready-upper.png",
+          "sha256": "0b7cfddf0acd35240705c88c6f41b58af972660b19f6e64e576f8ef936cef81e"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-referrals-ready-lower.png",
+          "sha256": "51d9e7aa4b87e50ae965c5e728cd612642e21463167646f5a44cab1551b2baa9"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-referrals-ready-upper.png",
+          "sha256": "d7c95f6d6d82cab9f3feaf4c62bc5c42686b4873376173d810e46621d5c8fb0c"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-referrals-ready-lower.png",
+          "sha256": "61b89c7cd4cf3e55e9553943edbdcd6d4ad9503893ff2c07472adc78e96efba4"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-820-referrals-empty-lower.png",
+          "sha256": "abcf8bb1d044d16e6a21de3b6e167f5e4ac8e874289ec5677adf250722dd8466"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-360-referrals-empty-upper.png",
+          "sha256": "6b7b8c0e593dc7971f55ceea4d801c745af13798e937361df568cfdc752473e0"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-360-referrals-error-lower.png",
+          "sha256": "4353e9d4616e64681f514430159ffd56549ae659f458c865385008b8b61b0699"
+        }
+      ],
+      "visualObservations": [
+        "Programme, representative and dispute sections remain legible on phone, desktop and tablet, including lower billing-evidence notices.",
+        "Discounts, commission and disbursement remain explicitly disabled; read failures are visible.",
+        "Feature is enabled only in the synthetic fixture. No financial/provider/assignment mutation is certified."
+      ],
+      "recordedFunctionalEvidence": {
+        "requestedContexts": 48,
+        "renderedContexts": 48,
+        "expectedMissingRecordDenials": 0,
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "viewportWidths": [360, 390, 820, 1440],
+        "nativeWorkspaceMenuContexts": 36,
+        "maximumHorizontalOverflow": 0,
+        "textContrastSampleCount": 0,
+        "minimumMeasuredTextContrast": null,
+        "wordmarkSampleCount": 36,
+        "minimumMeasuredWordmarkContrast": 15.989431827984154,
+        "errors": 0,
+        "mutatingActions": 0
+      },
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    {
+      "route": "src/app/[locale]/admin/selector-lab/page.tsx",
+      "family": "selector-lab",
+      "decision": "accept_bounded_route_ui",
+      "matrixStatusRecommendation": "accepted",
+      "blockingDefects": [],
+      "reviewer": "Codex release_github independent Admin visual/function reviewer",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "routeSourceSha256": "6829a8ade634da71276c23ba81d388ac9a1864f78262c1b1e01447f59d8bfd20",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+      "inspectedImages": [
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-selector-lab-ready-upper.png",
+          "sha256": "f987d39a9e1e5c9b40e4427a5faa2ae427483fc18135f0f83f9b8ca1cbc2a0a4"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-selector-lab-ready-lower.png",
+          "sha256": "6e47f4319bd177805fd0ee446e2ccf4cedbf46072ceb095a1d70d085fc8adb37"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-selector-lab-ready-upper.png",
+          "sha256": "a9227006e146b422bef3f77e603315c80f72d0736829ef0dfb572ce12aedb614"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-selector-lab-ready-lower.png",
+          "sha256": "728e27bcfd5c721b74d82a51e67f421cf4cad5a40736ef8cfb6568b4ce9a20c2"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-820-selector-lab-ready-lower.png",
+          "sha256": "8f8b7d45d103f11761811e271a030439cdff1d0400fb9bef27626da32c2345ad"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-360-selector-lab-ready-upper.png",
+          "sha256": "2c1cb6f4edb8e62fe00cd4fa5e09bf9fa0300846714e3f1a8b2152db5cababbd"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-360-selector-lab-ready-lower.png",
+          "sha256": "b87642f54930b8bdcda9bb167195e3a00853a48499227516134197f1402942c4"
+        }
+      ],
+      "visualObservations": [
+        "Private-session explanation, category tabs, preview, arrows and lower engine/appearance settings fit all reviewed sizes.",
+        "The dark preview/panel is intentionally preserved even with a light surrounding page.",
+        "This route has no distinct read-data empty/error states; 16 real contexts are counted, not three fabricated states."
+      ],
+      "recordedFunctionalEvidence": {
+        "requestedContexts": 16,
+        "renderedContexts": 16,
+        "expectedMissingRecordDenials": 0,
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "viewportWidths": [360, 390, 820, 1440],
+        "nativeWorkspaceMenuContexts": 12,
+        "maximumHorizontalOverflow": 0,
+        "textContrastSampleCount": 112,
+        "minimumMeasuredTextContrast": 6.421051134569468,
+        "wordmarkSampleCount": 12,
+        "minimumMeasuredWordmarkContrast": 15.989431827984154,
+        "errors": 0,
+        "mutatingActions": 0
+      },
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    {
+      "route": "src/app/[locale]/admin/settings/page.tsx",
+      "family": "settings",
+      "decision": "accept_bounded_route_ui",
+      "matrixStatusRecommendation": "accepted",
+      "blockingDefects": [],
+      "reviewer": "Codex release_github independent Admin visual/function reviewer",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "routeSourceSha256": "4c26081efda9b3fcfa9cfdd197c0229fd6a9a2883e7eec95e3f24766ce3593be",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+      "inspectedImages": [
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-settings-ready-upper.png",
+          "sha256": "5b160ed7d64c1a3e55e11e7dada2e9ce9d11b6c17450a63828718b38dbfad105"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-settings-ready-lower.png",
+          "sha256": "de50300929b177891823d0e3a53c8c34fb51f83aabd5dd2ede4ad80a4580b0ee"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-settings-ready-upper.png",
+          "sha256": "ce73020a84eaff978ab85a86c24e4c5f7840033b170a55d6632d7255f98d40d6"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-settings-ready-lower.png",
+          "sha256": "fd3d184f7962cebe519a9f74779244d3e4d82f3e161ab305e2a85988beaa5df2"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-820-settings-empty-lower.png",
+          "sha256": "f88a21071decd174fcf0d363a6fabc7eeb9c11073b4efc8b06ffdd624544151b"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-360-settings-empty-upper.png",
+          "sha256": "5aa953dd9402e4a68a5bcd4766d61c27ed798d207d5bfe32eff29c352ddc4fbd"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-360-settings-error-lower.png",
+          "sha256": "5f31ff78661b7641d0f4258adf4b3ca84acba2c2687ed687de08290153e2278f"
+        }
+      ],
+      "visualObservations": [
+        "Feature directory, selected record and reason editor have readable mobile tabs and desktop columns.",
+        "Empty directory and failed-read recovery remain distinct; controls explicitly require a change reason.",
+        "No platform flag was saved and no production configuration behavior is accepted."
+      ],
+      "recordedFunctionalEvidence": {
+        "requestedContexts": 48,
+        "renderedContexts": 48,
+        "expectedMissingRecordDenials": 0,
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "viewportWidths": [360, 390, 820, 1440],
+        "nativeWorkspaceMenuContexts": 36,
+        "maximumHorizontalOverflow": 0,
+        "textContrastSampleCount": 0,
+        "minimumMeasuredTextContrast": null,
+        "wordmarkSampleCount": 36,
+        "minimumMeasuredWordmarkContrast": 15.989431827984154,
+        "errors": 0,
+        "mutatingActions": 0
+      },
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    {
+      "route": "src/app/[locale]/admin/users/page.tsx",
+      "family": "users",
+      "decision": "accept_bounded_route_ui",
+      "matrixStatusRecommendation": "accepted",
+      "blockingDefects": [],
+      "reviewer": "Codex release_github independent Admin visual/function reviewer",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "routeSourceSha256": "ab25c630310aa0f867764be03564f6322efa9e8907ef4daa806de7b9754a4114",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+      "inspectedImages": [
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-users-ready-upper.png",
+          "sha256": "bed1477af7af550d6980e5320e9d216d3112f0fc977092acee943bc3253d0d37"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-users-ready-lower.png",
+          "sha256": "d9aee661898127a8700d785c1fe14dccbf7d202c9af3cf690a37202ca821f9d0"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-users-ready-upper.png",
+          "sha256": "4b1dfa3491fec3a4b69f82ce1a47c0149a990f260594e72e14d9c5f209650bb1"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-users-ready-lower.png",
+          "sha256": "9d3427006565d3eac397eef2abe7d905933c7ff0349645defdfd35444440c1f7"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-820-users-empty-lower.png",
+          "sha256": "eb162818ae8fbd04993061e796ef077ba82b21b116a3fb10390ef70b8e4cf71e"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-360-users-empty-upper.png",
+          "sha256": "6b035b2c9ee0f7f156d19c78cb51e4595bf0505f3770a5bf8f349fef09ad0f53"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-360-users-error-lower.png",
+          "sha256": "c3e0aeac07ebf898dbb93d243edad646d13d4e7845d37c886e10824c60d0adf4"
+        }
+      ],
+      "visualObservations": [
+        "Search label, focus ring, results, role/status and no-match/error text are readable on phone and desktop.",
+        "Runner performs unobstructed three-point search hit checks and a real native search submission against the synthetic adapter; no full user directory is presented as preloaded."
+      ],
+      "recordedFunctionalEvidence": {
+        "requestedContexts": 48,
+        "renderedContexts": 48,
+        "expectedMissingRecordDenials": 0,
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "viewportWidths": [360, 390, 820, 1440],
+        "nativeWorkspaceMenuContexts": 36,
+        "maximumHorizontalOverflow": 0,
+        "textContrastSampleCount": 0,
+        "minimumMeasuredTextContrast": null,
+        "wordmarkSampleCount": 36,
+        "minimumMeasuredWordmarkContrast": 15.989431827984154,
+        "errors": 0,
+        "mutatingActions": 0
+      },
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    {
+      "route": "src/app/[locale]/admin/users/[id]/page.tsx",
+      "family": "users/[id]",
+      "decision": "accept_bounded_route_ui",
+      "matrixStatusRecommendation": "accepted",
+      "blockingDefects": [],
+      "reviewer": "Codex release_github independent Admin visual/function reviewer",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "routeSourceSha256": "ffa872c1eef46e6ce83939bfe2876479f667dd10985aa4ed8407397d0895a417",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+      "inspectedImages": [
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-users-[id]-ready-upper.png",
+          "sha256": "cf0065d592aa060600db09f4fddf7b82c26a247b898f4983e58a04620608a1ea"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-users-[id]-ready-lower.png",
+          "sha256": "2408086f365c5c173d790b1485bff13bfab62e2a8461ffa6694474a2f892272b"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-users-[id]-ready-upper.png",
+          "sha256": "48bd6ed27482ad5b8f8044a7b334cb4abb9b56f5de5511e4c7330ad53292f484"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-users-[id]-ready-lower.png",
+          "sha256": "863e1a8fc500afc5091d30c196b636e9d02df6e8285def77c1c9c973b2b1fbfd"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-820-users-[id]-ready-lower.png",
+          "sha256": "5ddc76efdfd44bcd33402edcde0004e77a2b7e52824e5e1bf6771521e4d86138"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-360-users-[id]-ready-upper.png",
+          "sha256": "84d07a18a20e4d39f98cfac7b87aa2920eaa160c6be859b4136b31f39987666f"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-360-users-[id]-ready-lower.png",
+          "sha256": "5692a85af835e575f9ba8516a4ecb83e04bf7155eb9eac9eda2db234ec343d9f"
+        }
+      ],
+      "visualObservations": [
+        "Single-record account identity, membership count, role explanation and back-to-search control remain readable across sizes.",
+        "The viewed record is the synthetic current identity and correctly states that the user cannot change their own role.",
+        "Missing/unavailable records intentionally call notFound in 32 cases; no fallback screenshot or real authorization proof is fabricated."
+      ],
+      "recordedFunctionalEvidence": {
+        "requestedContexts": 48,
+        "renderedContexts": 16,
+        "expectedMissingRecordDenials": 32,
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "viewportWidths": [360, 390, 820, 1440],
+        "nativeWorkspaceMenuContexts": 12,
+        "maximumHorizontalOverflow": 0,
+        "textContrastSampleCount": 0,
+        "minimumMeasuredTextContrast": null,
+        "wordmarkSampleCount": 12,
+        "minimumMeasuredWordmarkContrast": 15.989431827984154,
+        "errors": 0,
+        "mutatingActions": 0
+      },
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    },
+    {
+      "route": "src/app/[locale]/admin/venue-relevance/page.tsx",
+      "family": "venue-relevance",
+      "decision": "accept_bounded_route_ui",
+      "matrixStatusRecommendation": "accepted",
+      "blockingDefects": [],
+      "reviewer": "Codex release_github independent Admin visual/function reviewer",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "routeSourceSha256": "3201418dd3fb704819164adeef0666772c374894b640df969716ca6572497d10",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+      "inspectedImages": [
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-venue-relevance-ready-upper.png",
+          "sha256": "7877ed85abd7abc7dc7f141208011a48625b0bcf7ed7ff11890d1909019b745b"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/en-dark-390-venue-relevance-ready-lower.png",
+          "sha256": "8af4f012371bd30d3ff729c601ba127293d21ec0a92cd345e5e321e93a59de74"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-venue-relevance-ready-upper.png",
+          "sha256": "d09b94dc47630e2e55c0030f7962349f0c16c21a63d9d82f0ca7ca866a2d41fb"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-1440-venue-relevance-ready-lower.png",
+          "sha256": "e13b78fbf4b5ff68da04c9c9ffc423e0a2bb7d7cb1d51fec88682395c1df8ca4"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-820-venue-relevance-empty-lower.png",
+          "sha256": "8b053ce4f2fb6765bf1b8f6bfc3255dad27dde85743f054188a84583e1ccfcf2"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-light-360-venue-relevance-empty-upper.png",
+          "sha256": "ec498eae357a80e5b0edb995a9863f3465789d5cbfe5f0f62f779e249b9b42ba"
+        },
+        {
+          "artifactPath": "admin-compact-workbenches-responsive/es-dark-360-venue-relevance-error-lower.png",
+          "sha256": "6a358f688d2663e8fa80ed000d657d12c1846e9b8501db570ce4392e700eb6bb"
+        }
+      ],
+      "visualObservations": [
+        "Proposal search/filter/refresh, selected card, count and pagination fit mobile; wider view displays the existing decision and audited-reason panel.",
+        "Empty proposal lists, disabled pagination and read error are visible.",
+        "Nested editor scroll, decision submission and privileged catalogue mutations are not independently certified by these static captures."
+      ],
+      "recordedFunctionalEvidence": {
+        "requestedContexts": 48,
+        "renderedContexts": 48,
+        "expectedMissingRecordDenials": 0,
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "viewportWidths": [360, 390, 820, 1440],
+        "nativeWorkspaceMenuContexts": 36,
+        "maximumHorizontalOverflow": 0,
+        "textContrastSampleCount": 0,
+        "minimumMeasuredTextContrast": null,
+        "wordmarkSampleCount": 36,
+        "minimumMeasuredWordmarkContrast": 15.989431827984154,
+        "errors": 0,
+        "mutatingActions": 0
+      },
+      "realAuthRlsProviderOrMutationAcceptance": false,
+      "physicalDeviceAcceptance": false
+    }
+  ]
+}

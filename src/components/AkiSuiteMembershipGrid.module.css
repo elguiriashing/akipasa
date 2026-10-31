@@ -82,8 +82,7 @@
 /* AkiPasa consumer adapter only. Canonical shared studios and sister hosts keep
    their original product themes, prices, audiences and checkout behavior. */
 :global(.app-shell)
-  :global(.pasa-consumer-account)
-  :global(.subscription-app)
+  :global(:is(.pasa-membership-page, .subscription-app))
   .root {
   --membership-panel: #111314;
   --membership-raised: #1d1e1f;
@@ -95,8 +94,7 @@
 
 :global(html[data-theme="light"])
   :global(.app-shell)
-  :global(.pasa-consumer-account)
-  :global(.subscription-app)
+  :global(:is(.pasa-membership-page, .subscription-app))
   .root {
   --membership-panel: #fffdf9;
   --membership-raised: #f3eee7;
@@ -107,8 +105,7 @@
 }
 
 :global(.app-shell)
-  :global(.pasa-consumer-account)
-  :global(.subscription-app)
+  :global(:is(.pasa-membership-page, .subscription-app))
   .root
   > [data-product="AkiPasa"] {
   --accent: var(--membership-accent);
@@ -121,8 +118,7 @@
 }
 
 :global(.app-shell)
-  :global(.pasa-consumer-account)
-  :global(.subscription-app)
+  :global(:is(.pasa-membership-page, .subscription-app))
   .root
   [data-product="AkiPasa"]
   :is(h1, h2, h3, strong) {
@@ -130,8 +126,7 @@
 }
 
 :global(.app-shell)
-  :global(.pasa-consumer-account)
-  :global(.subscription-app)
+  :global(:is(.pasa-membership-page, .subscription-app))
   .root
   [data-product="AkiPasa"]
   :is(p, li, small, footer, span) {
@@ -139,8 +134,7 @@
 }
 
 :global(.app-shell)
-  :global(.pasa-consumer-account)
-  :global(.subscription-app)
+  :global(:is(.pasa-membership-page, .subscription-app))
   .root
   [data-product="AkiPasa"]
   :is(header, ul) {
@@ -148,8 +142,7 @@
 }
 
 :global(.app-shell)
-  :global(.pasa-consumer-account)
-  :global(.subscription-app)
+  :global(:is(.pasa-membership-page, .subscription-app))
   .root
   [data-product="AkiPasa"]
   [data-offer] {
@@ -158,8 +151,7 @@
 }
 
 :global(.app-shell)
-  :global(.pasa-consumer-account)
-  :global(.subscription-app)
+  :global(:is(.pasa-membership-page, .subscription-app))
   .root
   [data-product="AkiPasa"]
   [data-offer][data-highlighted] {
@@ -172,8 +164,7 @@
 }
 
 :global(.app-shell)
-  :global(.pasa-consumer-account)
-  :global(.subscription-app)
+  :global(:is(.pasa-membership-page, .subscription-app))
   .root
   [data-product="AkiPasa"]
   :is(header > span, [data-offer] > p:first-child) {
@@ -181,8 +172,7 @@
 }
 
 :global(.app-shell)
-  :global(.pasa-consumer-account)
-  :global(.subscription-app)
+  :global(:is(.pasa-membership-page, .subscription-app))
   .root
   [data-product="AkiPasa"]
   [role="tablist"] {
@@ -191,8 +181,7 @@
 }
 
 :global(.app-shell)
-  :global(.pasa-consumer-account)
-  :global(.subscription-app)
+  :global(:is(.pasa-membership-page, .subscription-app))
   .root
   [data-product="AkiPasa"]
   [role="tab"] {
@@ -200,8 +189,7 @@
 }
 
 :global(.app-shell)
-  :global(.pasa-consumer-account)
-  :global(.subscription-app)
+  :global(:is(.pasa-membership-page, .subscription-app))
   .root
   [data-product="AkiPasa"]
   [role="tab"][aria-selected="true"] {
@@ -210,8 +198,7 @@
 }
 
 :global(.app-shell)
-  :global(.pasa-consumer-account)
-  :global(.subscription-app)
+  :global(:is(.pasa-membership-page, .subscription-app))
   .root
   [data-product="AkiPasa"]
   :is([data-offer] a, [data-offer] button, aside a) {
@@ -221,16 +208,14 @@
 }
 
 :global(.app-shell)
-  :global(.pasa-consumer-account)
-  :global(.subscription-app)
+  :global(:is(.pasa-membership-page, .subscription-app))
   .root
   :is(.workspaceChoice, .footnote, .personalPromo p) {
   color: var(--membership-muted);
 }
 
 :global(.app-shell)
-  :global(.pasa-consumer-account)
-  :global(.subscription-app)
+  :global(:is(.pasa-membership-page, .subscription-app))
   .root
   :is(
     .workspaceChoice select,
@@ -244,8 +229,7 @@
 }
 
 :global(.app-shell)
-  :global(.pasa-consumer-account)
-  :global(.subscription-app)
+  :global(:is(.pasa-membership-page, .subscription-app))
   .root
   [data-product="AkiPasa"]
   :is(a, button, select):focus-visible {

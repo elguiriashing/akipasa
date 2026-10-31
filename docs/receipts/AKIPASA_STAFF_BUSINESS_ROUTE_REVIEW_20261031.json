@@ -1,0 +1,776 @@
+{
+  "version": 2,
+  "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+  "reviewDate": "2026-10-31",
+  "reviewState": "completed: 11 route decisions accepted within explicit UI/function or redirect-only scopes",
+  "productionChanged": false,
+  "applicationCodeChanged": true,
+  "routes": [
+    {
+      "path": "src/app/[locale]/staff/creators/page.tsx",
+      "decision": "accepted",
+      "reviewer": "Codex staff_business_review independent responsible tester",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029355129",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371",
+      "evidenceType": "actual-page-plus-StaffLayout-AppShell with disposable adapters; independent current screenshot and native-control result review",
+      "inspectedImages": [
+        {
+          "artifactFile": "portal-home/staff-ui-upgrades/creators-en-light-360-healthy-populated-full.png",
+          "sha256": "2f15da16799dd1aa2477f912b0c278525e862cf9071d31fb92bd3e2d53f16e17"
+        },
+        {
+          "artifactFile": "portal-home/staff-ui-upgrades/creators-es-dark-390-healthy-populated-full.png",
+          "sha256": "0606a2a2d1083cf58fbd7df3bd787334016b1c99bbb045527bd24ffb71d2024a"
+        },
+        {
+          "artifactFile": "portal-home/staff-ui-upgrades/creators-en-dark-820-healthy-empty-full.png",
+          "sha256": "1d7484f1cc98f3aaa8a33b5d8e57ed127a153791d2875c599221e4d9c91123e5"
+        },
+        {
+          "artifactFile": "portal-home/staff-ui-upgrades/creators-es-light-1440-healthy-empty-full.png",
+          "sha256": "5155c3b3c9432742dcd75fe8025e8acb2015173e3e34493e3f2cb23c13378140"
+        },
+        {
+          "artifactFile": "portal-home/staff-ui-upgrades/creators-en-dark-360.png",
+          "sha256": "8b145cfb3331dc66f1b6c9193810977dd512d754cf0a73428235a00b9163027f"
+        }
+      ],
+      "sourceEvidence": "portal-home/staff-ui-upgrades/staff-healthy-queues-evidence.json",
+      "sourceHashesMatch": true,
+      "cases": 32,
+      "observations": [
+        "Populated, empty and failed-read/failed-decision states are distinguishable.",
+        "Phone controls and lower content fit the viewport; native decision heights remain >=48px, clear focus outline, no clipping observed.",
+        "Creator card gutters and locality text remain readable; native decision inputs and actions are separated clearly."
+      ],
+      "limitations": [
+        "Synthetic identities and reads; actual page/component layouts and production CSS; no real Auth/RLS/tenant/provider acceptance inferred.",
+        "No customer data, decisions, submissions, rewards, consent changes, or other production mutations.",
+        "Physical Android and final full-release approval remain separate; route approval is bounded UI/function evidence."
+      ]
+    },
+    {
+      "path": "src/app/[locale]/staff/support/page.tsx",
+      "decision": "accepted",
+      "reviewer": "Codex staff_business_review independent responsible tester",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029355129",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371",
+      "evidenceType": "actual-page-plus-StaffLayout-AppShell with disposable adapters; independent current screenshot and native-control result review",
+      "inspectedImages": [
+        {
+          "artifactFile": "portal-home/staff-ui-upgrades/support-en-light-360-healthy-populated-full.png",
+          "sha256": "9e0c32ba51576aeadfcd9b002664c5b19af6d6367c0af58e50eaa877caa9ccdf"
+        },
+        {
+          "artifactFile": "portal-home/staff-ui-upgrades/support-es-dark-390-healthy-populated-full.png",
+          "sha256": "2056c14a9e64733f6d0b4b7bb9ff9bb90915fbd7ab0f8c51567c91bebfdd3c87"
+        },
+        {
+          "artifactFile": "portal-home/staff-ui-upgrades/support-en-dark-820-healthy-empty-full.png",
+          "sha256": "d199bec52ea99bed39e70efa98e3635e9ce0c6141ca01672adffe4bcb7467be0"
+        },
+        {
+          "artifactFile": "portal-home/staff-ui-upgrades/support-es-light-1440-healthy-empty-full.png",
+          "sha256": "73ae7b9edd30b51a1640f0dd1a65067c5d9ad1bf6f40a2a88f0e72f0ec978c76"
+        },
+        {
+          "artifactFile": "portal-home/staff-ui-upgrades/support-en-dark-360.png",
+          "sha256": "cd40bffa397ea4fb2a0b07f432fd5ff2f771b6967f0ee7ca2500d09732e1beeb"
+        }
+      ],
+      "sourceEvidence": "portal-home/staff-ui-upgrades/staff-healthy-queues-evidence.json",
+      "sourceHashesMatch": true,
+      "cases": 32,
+      "observations": [
+        "Populated, empty and failed-read/failed-decision states are distinguishable.",
+        "Phone controls and lower content fit the viewport; native decision heights remain >=48px, clear focus outline, no clipping observed.",
+        "Support reason is a native single-line input; long content scrolls horizontally within the control without widening the page."
+      ],
+      "limitations": [
+        "Synthetic identities and reads; actual page/component layouts and production CSS; no real Auth/RLS/tenant/provider acceptance inferred.",
+        "No customer data, decisions, submissions, rewards, consent changes, or other production mutations.",
+        "Physical Android and final full-release approval remain separate; route approval is bounded UI/function evidence."
+      ]
+    },
+    {
+      "path": "src/app/[locale]/business/page.tsx",
+      "decision": "accepted",
+      "reviewer": "Codex staff_business_review independent responsible tester",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13028725999",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371",
+      "evidenceType": "actual business page and workspace component with synthetic reads; all ten failure/state families independently inspected",
+      "inspectedImages": [
+        {
+          "artifactFile": "consumer/business-home-read/empty-en-dark-360.png",
+          "sha256": "da2f06afd0bbfb74d723615dfd1aac87bcc707e106690a0d9e0b1bfe69367299"
+        },
+        {
+          "artifactFile": "consumer/business-home-read/venue_members-es-light-390.png",
+          "sha256": "edbfab3140ed6a577d35325de55008707d1f986cd9f4ad3e830c1ab5f06c6302"
+        },
+        {
+          "artifactFile": "consumer/business-home-read/venues-en-dark-820.png",
+          "sha256": "1f1080b4d8488bb63598e340fc139e673c7ad314146aa265ecca6ec5c49bbd8a"
+        },
+        {
+          "artifactFile": "consumer/business-home-read/profiles-es-light-1440.png",
+          "sha256": "7c94c880856fb21bc35a220a3e3014a4ff24b1f60422259bdbb4f4ea34c711ca"
+        },
+        {
+          "artifactFile": "consumer/business-home-read/categories-en-light-360.png",
+          "sha256": "4272fd45fa998bcf6dfa3f2447ae62ed8809c8e81363db22cf7856605e47c64e"
+        },
+        {
+          "artifactFile": "consumer/business-home-read/managed-events-es-dark-390.png",
+          "sha256": "8bcd164467cecfe6bdd6ab3048a5087732375bb9cea96af0fa43429ac5141f53"
+        },
+        {
+          "artifactFile": "consumer/business-home-read/loyalty_programs-en-dark-360.png",
+          "sha256": "3163cb28bc7a01bcdd7f42f224a9a6ebef5402640364b39b636b93f2c4153638"
+        },
+        {
+          "artifactFile": "consumer/business-home-read/reward_redemptions-es-light-390.png",
+          "sha256": "49a9d626aace17bfed61bea6cad933a5afb0b2ded214daaeda4483f6ac3fe61a"
+        },
+        {
+          "artifactFile": "consumer/business-home-read/promotion_requests-en-light-820.png",
+          "sha256": "fadfced4c446415989f085fad5e3f13a27417116f906ccf3c50124d1f86d7ba0"
+        },
+        {
+          "artifactFile": "consumer/business-home-read/venue_claims-es-dark-1440.png",
+          "sha256": "b1499fcb51ca371884f232fabea59741cbcb91cde89866ec1eeb3ef1b615b235"
+        }
+      ],
+      "sourceEvidence": "consumer/business-home-read/evidence.json",
+      "sourceHashesMatch": true,
+      "cases": 160,
+      "observations": [
+        "Partial failures preserve healthy sections; unavailable counts remain unknown; retry links remain visible.",
+        "Events, loyalty, promotion and venue-management controls remain legible through lower sections on phone/tablet/desktop.",
+        "Inspected long event form upper/middle/lower sections at native phone scale; required disabled submit and readable fields retained.",
+        "Secondary Growth Centre eyebrow is faint yellow on light background; main heading remains readable. Recorded as existing visual polish observation, not evidence that all text contrast was measured."
+      ],
+      "limitations": [
+        "Synthetic identities and reads; actual page/component layouts and production CSS; no real Auth/RLS/tenant/provider acceptance inferred.",
+        "No customer data, decisions, submissions, rewards, consent changes, or other production mutations.",
+        "Physical Android and final full-release approval remain separate; route approval is bounded UI/function evidence.",
+        "This artifact renders the actual business page/workspace in its operational-host fixture; full authenticated Next/provider composition remains a global release check."
+      ]
+    },
+    {
+      "path": "src/app/[locale]/staff/moderation/page.tsx",
+      "decision": "accepted",
+      "reviewer": "Codex staff_business_review independent responsible tester",
+      "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+      "reviewedSourceNote": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added.",
+      "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+      "publicationState": "PR #332 is the authorized publication container; source-bound local capture is complete. No new hosted CI artifact is claimed by this receipt.",
+      "evidenceType": "actual-page composition and production CSS in local Chromium with explicit synthetic read/auth boundaries; forbidden mutations",
+      "sourceEvidence": "test-results/remaining-operations-review/results-composed-six-routes.json",
+      "sourceEvidenceSha256": "874f47221880aea296d466a85205878812462753b28876e3169c1969daa13c85",
+      "sourceHashesStableDuringCapture": true,
+      "pageSha256MatchesCurrent": true,
+      "pageSha256": "2b7dd29c1ebd6e1ecb906151751c41658489020a2884dbd1090da42acff0d239",
+      "cases": 12,
+      "contexts": [
+        "en-light-360",
+        "es-dark-390",
+        "en-dark-1440",
+        "es-light-820"
+      ],
+      "inspectedImages": [
+        {
+          "artifactFile": "test-results/remaining-operations-review/moderation-en-light-360-populated.png",
+          "sha256": "46f8240e6f9dc5f52a57bc19b43aabd8b725648749e0435e947f877c5500cf3c"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/moderation-es-dark-390-populated.png",
+          "sha256": "cb52aea0cec3e54adf31dd230d75ba6269ebb72465fe8fdf74ea5f99c785f5df"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/moderation-en-dark-1440-empty.png",
+          "sha256": "51a55acfaab777251d79102c20b8546f4dd6bc31aa45d6b22e31e7201948d147"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/moderation-es-light-820-failed.png",
+          "sha256": "fe1ab0a2034dc2041934e04fe5be25a5307aa8f065e01d979147fcbd5f8dd049"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/moderation-es-dark-390-failed.png",
+          "sha256": "002ea1926589e3bbcfcba82b69266428aec4e12d2c4bbb8914231c745d75eb52"
+        }
+      ],
+      "observations": [
+        "Actual Moderation page is composed with StaffLayout, AppShell and production CSS, with populated, empty and failed queue reads. Phone/tablet/desktop headings, native decisions and navigation remain readable with no horizontal overflow.",
+        "Workspace menu opens with Enter, closes with Escape and restores trigger focus. Manual moderation state and localized queue failure remain distinct from an empty queue.",
+        "Spanish phone failure was inspected at native resolution: Retry remains a readable single label. Existing staff-pagination artifact supplies complementary queue/pagination and native decision-fixture evidence without being treated as full-layout evidence."
+      ],
+      "limitations": [
+        "Synthetic identities and reads; actual page/component layouts and production CSS; no real Auth/RLS/tenant/provider acceptance inferred.",
+        "No customer data, decisions, submissions, rewards, consent changes, or other production mutations.",
+        "Physical Android and final full-release approval remain separate; route approval is bounded UI/function evidence.",
+        "Chromium 153.0.8010.0 on the local test host; local bundling and Next adapter boundaries are explicit. This is not a full real Next/server/provider session."
+      ],
+      "sourceBindingNote": "All source hashes were equal before and after capture. A later Operations-only wrapper change and an Operations-only QA geometry assertion do not change these six rendered routes. Unrendered Operations source remains explicitly recorded at its original captured hash; final Operations evidence is separate.",
+      "currentRuntimeDifferenceOutsideRenderedRoute": {
+        "path": "src/app/[locale]/account/subscription/operations/page.tsx",
+        "captured": "d8b42563c19c8f4f2d28235005f6008aebf4d20fa58bdb5af37641b3439ac1f9",
+        "current": "fb90cc7ad7154626a24802402ee55abe93be5666abd37b10d70f26e576219228",
+        "reason": "Only Operations changed after this six-route capture; it was not rendered in these cases and has separate final evidence."
+      },
+      "supplementalEvidence": [
+        "portal-home/staff-pagination/browser-evidence.json"
+      ],
+      "postCaptureUnmatchedCssDelta": {
+        "path": "src/components/PasaCinematic.css",
+        "capturedSha256": "f5b80b832b3626f5864473d8764f04bcea6d4993c9dc7d1ee6f583b5196e8368",
+        "currentSha256": "2070cf72788406246f87b964982397e581a6a73b3945e93c1038cf7ca0aa5906",
+        "reconciliation": "See document-level scoped Map-only selector review. Before/after hashes at capture remain equal; current global CSS equality is not claimed."
+      },
+      "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+      "publication": {
+        "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "reviewedSourceTree": "7de020d02387bb7196fe56fdc4f930e23500d852",
+        "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+        "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+        "hostedExecution": "Fresh final-head workflows required; no future run ID or artifact is asserted.",
+        "sourceBinding": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added."
+      }
+    },
+    {
+      "path": "src/app/[locale]/staff/promotions/page.tsx",
+      "decision": "accepted",
+      "reviewer": "Codex staff_business_review independent responsible tester",
+      "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+      "reviewedSourceNote": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added.",
+      "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+      "publicationState": "PR #332 is the authorized publication container; source-bound local capture is complete. No new hosted CI artifact is claimed by this receipt.",
+      "evidenceType": "actual-page composition and production CSS in local Chromium with explicit synthetic read/auth boundaries; forbidden mutations",
+      "sourceEvidence": "test-results/remaining-operations-review/results-composed-six-routes.json",
+      "sourceEvidenceSha256": "874f47221880aea296d466a85205878812462753b28876e3169c1969daa13c85",
+      "sourceHashesStableDuringCapture": true,
+      "pageSha256MatchesCurrent": true,
+      "pageSha256": "74a15231a43c74997cad021bb9fede0d2c2ac0ca34be1bdbf4655fc2d79cc226",
+      "cases": 12,
+      "contexts": [
+        "en-light-360",
+        "es-dark-390",
+        "en-dark-1440",
+        "es-light-820"
+      ],
+      "inspectedImages": [
+        {
+          "artifactFile": "test-results/remaining-operations-review/promotions-en-light-360-populated.png",
+          "sha256": "086783e8077dce8a7c8f568cc9b467ab80ee59a58f43bd2ce3f2ce2389748958"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/promotions-es-dark-390-populated.png",
+          "sha256": "ec4540aa18a5bbfa8c170b75ac43ea95a8540ac5b9820ebaf90e518c6f436b8b"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/promotions-en-dark-1440-empty.png",
+          "sha256": "0a86a993ff15560072913a204e23025f6c27960b35f51ac5468d2abf2d973423"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/promotions-es-light-820-failed.png",
+          "sha256": "37d31f2eafae96429978764af99088b41c98c9df260a4d7d3252aaa847748909"
+        }
+      ],
+      "observations": [
+        "Actual Promotions page, StaffLayout and AppShell show a bounded request inbox, distinct status counts and readable native details cards.",
+        "Actual search narrows two rows to one and restores both when cleared. Enter opens and closes the native details control. Empty and unavailable states are visually distinct.",
+        "Four representative full-page images were independently inspected across both locales, both themes and phone/tablet/desktop widths. No horizontal overflow, page errors or outbound/provider requests occurred."
+      ],
+      "limitations": [
+        "Synthetic identities and reads; actual page/component layouts and production CSS; no real Auth/RLS/tenant/provider acceptance inferred.",
+        "No customer data, decisions, submissions, rewards, consent changes, or other production mutations.",
+        "Physical Android and final full-release approval remain separate; route approval is bounded UI/function evidence.",
+        "Chromium 153.0.8010.0 on the local test host; local bundling and Next adapter boundaries are explicit. This is not a full real Next/server/provider session."
+      ],
+      "sourceBindingNote": "All source hashes were equal before and after capture. A later Operations-only wrapper change and an Operations-only QA geometry assertion do not change these six rendered routes. Unrendered Operations source remains explicitly recorded at its original captured hash; final Operations evidence is separate.",
+      "currentRuntimeDifferenceOutsideRenderedRoute": {
+        "path": "src/app/[locale]/account/subscription/operations/page.tsx",
+        "captured": "d8b42563c19c8f4f2d28235005f6008aebf4d20fa58bdb5af37641b3439ac1f9",
+        "current": "fb90cc7ad7154626a24802402ee55abe93be5666abd37b10d70f26e576219228",
+        "reason": "Only Operations changed after this six-route capture; it was not rendered in these cases and has separate final evidence."
+      },
+      "postCaptureUnmatchedCssDelta": {
+        "path": "src/components/PasaCinematic.css",
+        "capturedSha256": "f5b80b832b3626f5864473d8764f04bcea6d4993c9dc7d1ee6f583b5196e8368",
+        "currentSha256": "2070cf72788406246f87b964982397e581a6a73b3945e93c1038cf7ca0aa5906",
+        "reconciliation": "See document-level scoped Map-only selector review. Before/after hashes at capture remain equal; current global CSS equality is not claimed."
+      },
+      "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+      "publication": {
+        "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "reviewedSourceTree": "7de020d02387bb7196fe56fdc4f930e23500d852",
+        "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+        "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+        "hostedExecution": "Fresh final-head workflows required; no future run ID or artifact is asserted.",
+        "sourceBinding": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added."
+      }
+    },
+    {
+      "path": "src/app/[locale]/business/apply/page.tsx",
+      "decision": "accepted",
+      "reviewer": "Codex staff_business_review independent responsible tester",
+      "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+      "reviewedSourceNote": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added.",
+      "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+      "publicationState": "PR #332 is the authorized publication container; source-bound local capture is complete. No new hosted CI artifact is claimed by this receipt.",
+      "evidenceType": "actual-page composition and production CSS in local Chromium with explicit synthetic read/auth boundaries; forbidden mutations",
+      "sourceEvidence": "test-results/remaining-operations-review/results-composed-six-routes.json",
+      "sourceEvidenceSha256": "874f47221880aea296d466a85205878812462753b28876e3169c1969daa13c85",
+      "sourceHashesStableDuringCapture": true,
+      "pageSha256MatchesCurrent": true,
+      "pageSha256": "2679e0579e53c12ad47f1deed55f333325663275295ee85f76a33c20654193a6",
+      "cases": 4,
+      "contexts": [
+        "en-light-360",
+        "es-dark-390",
+        "en-dark-1440",
+        "es-light-820"
+      ],
+      "inspectedImages": [
+        {
+          "artifactFile": "test-results/remaining-operations-review/apply-en-light-360-populated.png",
+          "sha256": "ec6dba18ae2b9a277597c3e3d58c974f2a96b5af51a9cf5072d87b18addc6539"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/apply-es-dark-390-populated.png",
+          "sha256": "2dfc97a76e6d1c4e485463412a68e723bf252e3d41762c1130c4cc31c075ec63"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/apply-en-dark-1440-populated.png",
+          "sha256": "3159c061f26e0e9ae0bf61af3333d51c6b6dbefbbeb649b1e7880bda1468ffc9"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/apply-es-light-820-populated.png",
+          "sha256": "3b8a0bd69ee7589cb2f3284d6f6bad8d716be20f5e7bc1feea7cdfedf4717bb1"
+        }
+      ],
+      "observations": [
+        "Actual application page and actual SpainAddressAutocomplete render with AppShell; no address input replacement remains in the accepted captures.",
+        "Hero, three-step explanation, labeled required fields, optional website and help panel remain readable through the complete phone form and tablet/desktop layout.",
+        "Native form validity rejects the empty required-field state. No application was submitted and no geocoder/provider request was made; this is form and layout acceptance, not submission or provider validation."
+      ],
+      "limitations": [
+        "Synthetic identities and reads; actual page/component layouts and production CSS; no real Auth/RLS/tenant/provider acceptance inferred.",
+        "No customer data, decisions, submissions, rewards, consent changes, or other production mutations.",
+        "Physical Android and final full-release approval remain separate; route approval is bounded UI/function evidence.",
+        "Chromium 153.0.8010.0 on the local test host; local bundling and Next adapter boundaries are explicit. This is not a full real Next/server/provider session."
+      ],
+      "sourceBindingNote": "All source hashes were equal before and after capture. A later Operations-only wrapper change and an Operations-only QA geometry assertion do not change these six rendered routes. Unrendered Operations source remains explicitly recorded at its original captured hash; final Operations evidence is separate.",
+      "currentRuntimeDifferenceOutsideRenderedRoute": {
+        "path": "src/app/[locale]/account/subscription/operations/page.tsx",
+        "captured": "d8b42563c19c8f4f2d28235005f6008aebf4d20fa58bdb5af37641b3439ac1f9",
+        "current": "fb90cc7ad7154626a24802402ee55abe93be5666abd37b10d70f26e576219228",
+        "reason": "Only Operations changed after this six-route capture; it was not rendered in these cases and has separate final evidence."
+      },
+      "postCaptureUnmatchedCssDelta": {
+        "path": "src/components/PasaCinematic.css",
+        "capturedSha256": "f5b80b832b3626f5864473d8764f04bcea6d4993c9dc7d1ee6f583b5196e8368",
+        "currentSha256": "2070cf72788406246f87b964982397e581a6a73b3945e93c1038cf7ca0aa5906",
+        "reconciliation": "See document-level scoped Map-only selector review. Before/after hashes at capture remain equal; current global CSS equality is not claimed."
+      },
+      "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+      "publication": {
+        "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "reviewedSourceTree": "7de020d02387bb7196fe56fdc4f930e23500d852",
+        "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+        "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+        "hostedExecution": "Fresh final-head workflows required; no future run ID or artifact is asserted.",
+        "sourceBinding": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added."
+      }
+    },
+    {
+      "path": "src/app/[locale]/business/early-partner/page.tsx",
+      "decision": "accepted",
+      "reviewer": "Codex staff_business_review independent responsible tester",
+      "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+      "reviewedSourceNote": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added.",
+      "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+      "publicationState": "PR #332 is the authorized publication container; source-bound local capture is complete. No new hosted CI artifact is claimed by this receipt.",
+      "evidenceType": "actual-page composition and production CSS in local Chromium with explicit synthetic read/auth boundaries; forbidden mutations",
+      "sourceEvidence": "test-results/remaining-operations-review/results-composed-six-routes.json",
+      "sourceEvidenceSha256": "874f47221880aea296d466a85205878812462753b28876e3169c1969daa13c85",
+      "sourceHashesStableDuringCapture": true,
+      "pageSha256MatchesCurrent": true,
+      "pageSha256": "0c961bb4c40a33cd74403c60f06ac5730b162407ac14f85e68893dc0c109f970",
+      "cases": 12,
+      "contexts": [
+        "en-light-360",
+        "es-dark-390",
+        "en-dark-1440",
+        "es-light-820"
+      ],
+      "inspectedImages": [
+        {
+          "artifactFile": "test-results/remaining-operations-review/partner-en-light-360-populated.png",
+          "sha256": "5cd4dd5f3fd84db9c6ae629bbe2cd47c52e172380c2e922556d1159fe261f296"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/partner-es-dark-390-populated.png",
+          "sha256": "1e969b5386e50f722b22bcebd7e944ccb4446153eac3783cde0331c7c4f39b07"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/partner-en-dark-1440-populated.png",
+          "sha256": "c86606956bcc71729473639bfb84c30caf9a86d4c2c9ecde38643b1018741397"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/partner-es-light-820-populated.png",
+          "sha256": "ea610ca604f9efc76ca897ae251485e4c092abdcda6203f1499b588f062f62c4"
+        }
+      ],
+      "observations": [
+        "Actual approved-claim feedback form is readable across the four contexts. Both radio questions, optional textarea, private-feedback explanation and contact opt-in are visible.",
+        "The contact opt-in is unchecked by default in every rendered case. There were no submissions or reward mutations.",
+        "Empty/unreadable approved-claim fixture returns the route not-found contract in eight cases. These are synthetic entitlement contracts, not proof of production authorization or RLS."
+      ],
+      "limitations": [
+        "Synthetic identities and reads; actual page/component layouts and production CSS; no real Auth/RLS/tenant/provider acceptance inferred.",
+        "No customer data, decisions, submissions, rewards, consent changes, or other production mutations.",
+        "Physical Android and final full-release approval remain separate; route approval is bounded UI/function evidence.",
+        "Chromium 153.0.8010.0 on the local test host; local bundling and Next adapter boundaries are explicit. This is not a full real Next/server/provider session.",
+        "The eight denied cases inspect a not-found contract without rendering a substitute error page or accepting a destination."
+      ],
+      "sourceBindingNote": "All source hashes were equal before and after capture. A later Operations-only wrapper change and an Operations-only QA geometry assertion do not change these six rendered routes. Unrendered Operations source remains explicitly recorded at its original captured hash; final Operations evidence is separate.",
+      "currentRuntimeDifferenceOutsideRenderedRoute": {
+        "path": "src/app/[locale]/account/subscription/operations/page.tsx",
+        "captured": "d8b42563c19c8f4f2d28235005f6008aebf4d20fa58bdb5af37641b3439ac1f9",
+        "current": "fb90cc7ad7154626a24802402ee55abe93be5666abd37b10d70f26e576219228",
+        "reason": "Only Operations changed after this six-route capture; it was not rendered in these cases and has separate final evidence."
+      },
+      "postCaptureUnmatchedCssDelta": {
+        "path": "src/components/PasaCinematic.css",
+        "capturedSha256": "f5b80b832b3626f5864473d8764f04bcea6d4993c9dc7d1ee6f583b5196e8368",
+        "currentSha256": "2070cf72788406246f87b964982397e581a6a73b3945e93c1038cf7ca0aa5906",
+        "reconciliation": "See document-level scoped Map-only selector review. Before/after hashes at capture remain equal; current global CSS equality is not claimed."
+      },
+      "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+      "publication": {
+        "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "reviewedSourceTree": "7de020d02387bb7196fe56fdc4f930e23500d852",
+        "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+        "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+        "hostedExecution": "Fresh final-head workflows required; no future run ID or artifact is asserted.",
+        "sourceBinding": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added."
+      }
+    },
+    {
+      "path": "src/app/[locale]/business/venue/[id]/page.tsx",
+      "decision": "accepted",
+      "reviewer": "Codex staff_business_review independent responsible tester",
+      "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+      "reviewedSourceNote": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added.",
+      "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+      "publicationState": "PR #332 is the authorized publication container; source-bound local capture is complete. No new hosted CI artifact is claimed by this receipt.",
+      "evidenceType": "actual-page composition and production CSS in local Chromium with explicit synthetic read/auth boundaries; forbidden mutations",
+      "sourceEvidence": "test-results/remaining-operations-review/results-composed-six-routes.json",
+      "sourceEvidenceSha256": "874f47221880aea296d466a85205878812462753b28876e3169c1969daa13c85",
+      "sourceHashesStableDuringCapture": true,
+      "pageSha256MatchesCurrent": true,
+      "pageSha256": "43bf96ebf8ca0534c9bd7f489b40e1c2e97a0ec17d8b8af6697244ad6d9bc20a",
+      "cases": 12,
+      "contexts": [
+        "en-light-360",
+        "es-dark-390",
+        "en-dark-1440",
+        "es-light-820"
+      ],
+      "inspectedImages": [
+        {
+          "artifactFile": "test-results/remaining-operations-review/venue-en-light-360-populated.png",
+          "sha256": "3c40b08a45b0a02104a8a5d3f2ab60c74c533b9b2eefa9c9b494906abe95c05b"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/venue-es-dark-390-populated.png",
+          "sha256": "d38d93c153e56b13d192c8a706c333e15a47dbabe606a5116967272678aeb439"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/venue-en-dark-1440-empty.png",
+          "sha256": "7cd3e59f70b53ad1870d03f946f25ce7f9156212a9b190cd2901df422f784b8d"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/venue-es-light-820-failed.png",
+          "sha256": "7a03ca391091eb8ab0e4e954b6484d0f3dca3525dd95f9b8141417f0d993f705"
+        }
+      ],
+      "observations": [
+        "Actual Business Venue page with AppShell shows the owned-venue overview, setup steps and truthful unavailable analytics; actual catalogue empty and catalogue read-failure sections were captured.",
+        "Native section navigation remains contained at phone/tablet widths. The catalogue error keeps editing paused and exposes Retry instead of presenting a fresh empty catalogue.",
+        "The existing booking-read-boundary artifact supplies complementary BookingManager read/recovery evidence. It is explicitly component evidence, not the full Venue page or provider acceptance."
+      ],
+      "limitations": [
+        "Synthetic identities and reads; actual page/component layouts and production CSS; no real Auth/RLS/tenant/provider acceptance inferred.",
+        "No customer data, decisions, submissions, rewards, consent changes, or other production mutations.",
+        "Physical Android and final full-release approval remain separate; route approval is bounded UI/function evidence.",
+        "Chromium 153.0.8010.0 on the local test host; local bundling and Next adapter boundaries are explicit. This is not a full real Next/server/provider session.",
+        "Venue acceptance here covers full overview/catalogue composition plus separately reviewed booking subsection evidence; all write workflows and every private tab/role combination remain outside this read-only capture."
+      ],
+      "sourceBindingNote": "All source hashes were equal before and after capture. A later Operations-only wrapper change and an Operations-only QA geometry assertion do not change these six rendered routes. Unrendered Operations source remains explicitly recorded at its original captured hash; final Operations evidence is separate.",
+      "currentRuntimeDifferenceOutsideRenderedRoute": {
+        "path": "src/app/[locale]/account/subscription/operations/page.tsx",
+        "captured": "d8b42563c19c8f4f2d28235005f6008aebf4d20fa58bdb5af37641b3439ac1f9",
+        "current": "fb90cc7ad7154626a24802402ee55abe93be5666abd37b10d70f26e576219228",
+        "reason": "Only Operations changed after this six-route capture; it was not rendered in these cases and has separate final evidence."
+      },
+      "supplementalEvidence": [
+        "booking-browser/booking-read-boundary/evidence.json"
+      ],
+      "postCaptureUnmatchedCssDelta": {
+        "path": "src/components/PasaCinematic.css",
+        "capturedSha256": "f5b80b832b3626f5864473d8764f04bcea6d4993c9dc7d1ee6f583b5196e8368",
+        "currentSha256": "2070cf72788406246f87b964982397e581a6a73b3945e93c1038cf7ca0aa5906",
+        "reconciliation": "See document-level scoped Map-only selector review. Before/after hashes at capture remain equal; current global CSS equality is not claimed."
+      },
+      "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+      "publication": {
+        "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "reviewedSourceTree": "7de020d02387bb7196fe56fdc4f930e23500d852",
+        "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+        "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+        "hostedExecution": "Fresh final-head workflows required; no future run ID or artifact is asserted.",
+        "sourceBinding": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added."
+      }
+    },
+    {
+      "path": "src/app/[locale]/account/referrals/page.tsx",
+      "decision": "accepted",
+      "reviewer": "Codex staff_business_review independent responsible tester",
+      "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+      "reviewedSourceNote": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added.",
+      "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+      "publicationState": "PR #332 is the authorized publication container; source-bound local capture is complete. No new hosted CI artifact is claimed by this receipt.",
+      "evidenceType": "actual-page composition and production CSS in local Chromium with explicit synthetic read/auth boundaries; forbidden mutations",
+      "sourceEvidence": "test-results/remaining-operations-review/results-composed-six-routes.json",
+      "sourceEvidenceSha256": "874f47221880aea296d466a85205878812462753b28876e3169c1969daa13c85",
+      "sourceHashesStableDuringCapture": true,
+      "pageSha256MatchesCurrent": true,
+      "pageSha256": "3b78291fe853fe796ed889d158b0e4fcad123185583ef8a93f198e461f9ca9bd",
+      "cases": 4,
+      "contexts": [
+        "en-light-360",
+        "es-dark-390",
+        "en-dark-1440",
+        "es-light-820"
+      ],
+      "inspectedImages": [
+        {
+          "artifactFile": "test-results/remaining-operations-review/referrals-en-light-360-populated.png",
+          "sha256": "98ea7e7a1c8a564f33a7e36de233a928dda2501805e073af8ba60f74a0ebbc0a"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/referrals-es-dark-390-populated.png",
+          "sha256": "57e27a1349911e273bad4909c7c08c4b729faf7f813d4283e80969cf7df991ef"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/referrals-en-dark-1440-populated.png",
+          "sha256": "707e0a87a2c93f9fc2b63c25d7c449b2e1d748ba3421d5575b8a083849faf85f"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/referrals-es-light-820-populated.png",
+          "sha256": "551b58c4845a47f2e454d1549e280c0230351ad869e9dcb5754e2dba1806dfd9"
+        }
+      ],
+      "observations": [
+        "Actual Referrals page, AccountLayout and AppShell retain a clear unavailable explanation while AKISUITE_REFERRALS_READY remains false.",
+        "All four contexts render zero referral forms and perform zero referral table/RPC reads. No discount, commission or payment capability is implied as live.",
+        "Mobile workspace menu keyboard behavior and focus restoration passed; phone/tablet/desktop text and page navigation were independently inspected."
+      ],
+      "limitations": [
+        "Synthetic identities and reads; actual page/component layouts and production CSS; no real Auth/RLS/tenant/provider acceptance inferred.",
+        "No customer data, decisions, submissions, rewards, consent changes, or other production mutations.",
+        "Physical Android and final full-release approval remain separate; route approval is bounded UI/function evidence.",
+        "Chromium 153.0.8010.0 on the local test host; local bundling and Next adapter boundaries are explicit. This is not a full real Next/server/provider session."
+      ],
+      "sourceBindingNote": "All source hashes were equal before and after capture. A later Operations-only wrapper change and an Operations-only QA geometry assertion do not change these six rendered routes. Unrendered Operations source remains explicitly recorded at its original captured hash; final Operations evidence is separate.",
+      "currentRuntimeDifferenceOutsideRenderedRoute": {
+        "path": "src/app/[locale]/account/subscription/operations/page.tsx",
+        "captured": "d8b42563c19c8f4f2d28235005f6008aebf4d20fa58bdb5af37641b3439ac1f9",
+        "current": "fb90cc7ad7154626a24802402ee55abe93be5666abd37b10d70f26e576219228",
+        "reason": "Only Operations changed after this six-route capture; it was not rendered in these cases and has separate final evidence."
+      },
+      "postCaptureUnmatchedCssDelta": {
+        "path": "src/components/PasaCinematic.css",
+        "capturedSha256": "f5b80b832b3626f5864473d8764f04bcea6d4993c9dc7d1ee6f583b5196e8368",
+        "currentSha256": "2070cf72788406246f87b964982397e581a6a73b3945e93c1038cf7ca0aa5906",
+        "reconciliation": "See document-level scoped Map-only selector review. Before/after hashes at capture remain equal; current global CSS equality is not claimed."
+      },
+      "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+      "publication": {
+        "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "reviewedSourceTree": "7de020d02387bb7196fe56fdc4f930e23500d852",
+        "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+        "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+        "hostedExecution": "Fresh final-head workflows required; no future run ID or artifact is asserted.",
+        "sourceBinding": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added."
+      }
+    },
+    {
+      "path": "src/app/[locale]/account/subscription/operations/page.tsx",
+      "decision": "accepted",
+      "reviewer": "Codex staff_business_review independent responsible tester",
+      "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+      "reviewedSourceNote": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added.",
+      "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+      "publicationState": "PR #332 is the authorized publication container; source-bound local capture is complete. No new hosted CI artifact is claimed by this receipt.",
+      "evidenceType": "actual-page composition and production CSS in local Chromium with explicit synthetic read/auth boundaries; forbidden mutations",
+      "sourceEvidence": "test-results/remaining-operations-review/results.json",
+      "sourceEvidenceSha256": "a532942a27c4fb618be8776753ffec81bc1ac0846a58b35ae22a22622d2c6851",
+      "sourceHashesStableDuringCapture": true,
+      "pageSha256MatchesCurrent": true,
+      "pageSha256": "fb90cc7ad7154626a24802402ee55abe93be5666abd37b10d70f26e576219228",
+      "cases": 16,
+      "contexts": [
+        "en-light-360",
+        "es-dark-390",
+        "en-dark-1440",
+        "es-light-820"
+      ],
+      "inspectedImages": [
+        {
+          "artifactFile": "test-results/remaining-operations-review/operations-en-light-360-populated.png",
+          "sha256": "ead4fdbf42d6024a79461721d14ee50f36f5d77b1984bb1e9937e67c906c9545"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/operations-es-dark-390-populated.png",
+          "sha256": "a375480440c67fc957130c6d19403645cc35ec8fe9714c614224fb735b05228c"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/operations-en-dark-1440-empty.png",
+          "sha256": "c798e4fc12afef3461300d1f53d26e74fb67bd9abb3c434dcfbd7dfed5d2db6a"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/operations-es-light-820-failed.png",
+          "sha256": "2766ba249bdcd8198694f8b2cefbb6c84868faf9a2978a6b59be35a1a4415b2a"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/operations-en-light-360-failed.png",
+          "sha256": "cb70d8f06a688f1362da61d05dd3760b0ec85e80500634e573c9384d076ea49d"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/operations-es-dark-390-failed.png",
+          "sha256": "4d5c1e1a0ca3e2a119f7adea49b75fb2d694210337416db98eee1ad7fa9e7b8f"
+        },
+        {
+          "artifactFile": "test-results/remaining-operations-review/operations-en-light-360-failed-recovered.png",
+          "sha256": "cb505107b0021c920079c2b2a75061f9452e37559c55b1f5484fdaeeefd27a39"
+        }
+      ],
+      "observations": [
+        "Actual Operations page, AccountLayout and AppShell were captured for populated workspaces, true empty workspaces, failed workspace reads and scheduled change state in four locale/theme/width contexts.",
+        "A failed workspace read initially looked like an empty account. The accepted runtime now shows an unavailable alert, skips dependent RPCs/forms, and withholds the create-location CTA. Genuine empty state remains separate.",
+        "Four native Retry links preserve only safe workspace and tier values, navigate with GET, and rerender into a deliberately healthy next-read fixture. Checkout remains disabled after recovery.",
+        "An initial notice wrapper squeezed the Retry label. The final existing-stack wrapper was visually inspected at EN360, ES390 and ES820; all four Range geometry checks confirm one-line labels.",
+        "Native checkboxes toggle using Space and restore their initial value; checkout is disabled or absent in every state. The existing checkbox-above-label arrangement is readable and recorded as nonblocking presentation polish."
+      ],
+      "limitations": [
+        "Synthetic identities and reads; actual page/component layouts and production CSS; no real Auth/RLS/tenant/provider acceptance inferred.",
+        "No customer data, decisions, submissions, rewards, consent changes, or other production mutations.",
+        "Physical Android and final full-release approval remain separate; route approval is bounded UI/function evidence.",
+        "Chromium 153.0.8010.0 on the local test host; local bundling and Next adapter boundaries are explicit. This is not a full real Next/server/provider session."
+      ],
+      "runtimeCorrection": {
+        "path": "src/app/[locale]/account/subscription/operations/page.tsx",
+        "finalSha256": "fb90cc7ad7154626a24802402ee55abe93be5666abd37b10d70f26e576219228",
+        "owner": "release_github",
+        "resolvedFindings": [
+          "Failed workspace read displayed the genuine-empty create-location CTA.",
+          "The first failure wrapper compressed the localized Retry label; existing stack wrapper now keeps it on one line."
+        ],
+        "nativeRetryRecoveries": 4,
+        "retryLabelOneLineCases": 4,
+        "providerRecoveryProven": false
+      },
+      "postCaptureUnmatchedCssDelta": {
+        "path": "src/components/PasaCinematic.css",
+        "capturedSha256": "f5b80b832b3626f5864473d8764f04bcea6d4993c9dc7d1ee6f583b5196e8368",
+        "currentSha256": "2070cf72788406246f87b964982397e581a6a73b3945e93c1038cf7ca0aa5906",
+        "reconciliation": "See document-level scoped Map-only selector review. Before/after hashes at capture remain equal; current global CSS equality is not claimed."
+      },
+      "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+      "publication": {
+        "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "reviewedSourceTree": "7de020d02387bb7196fe56fdc4f930e23500d852",
+        "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+        "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+        "hostedExecution": "Fresh final-head workflows required; no future run ID or artifact is asserted.",
+        "sourceBinding": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added."
+      }
+    },
+    {
+      "path": "src/app/[locale]/staff/audit/page.tsx",
+      "decision": "accepted",
+      "reviewer": "Codex root actual-Next verifier and staff_business_review receipt inspector",
+      "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+      "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+      "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+      "screenshotsApplicable": false,
+      "evidenceType": "redirect-only route; actual local Next HTTP with synthetic identity/profile fixture",
+      "sourceEvidence": "test-results/remaining-redirect-http/results.json",
+      "sourceEvidenceSha256": "5ae0c64f1cbb9393af7ff05e8695122e45a2f867233a2f4a1cc21e3588e8c2ee",
+      "cases": 13,
+      "observations": [
+        "EN/ES guests redirect 307 to sign-in preserving next.",
+        "EN/ES consumer, organiser, moderator and missing-profile fixtures return 404; administrator fixtures redirect 307 to localized /admin/audit.",
+        "Unsupported French locale returns 404. There is no distinct Staff Audit UI screenshot to accept."
+      ],
+      "limitations": [
+        "Synthetic identities and reads; actual page/component layouts and production CSS; no real Auth/RLS/tenant/provider acceptance inferred.",
+        "No customer data, decisions, submissions, rewards, consent changes, or other production mutations.",
+        "Physical Android and final full-release approval remain separate; route approval is bounded UI/function evidence.",
+        "Actual Next status/location behavior is proven for synthetic identities only. The destination page and production auth/RLS are separate acceptance gates."
+      ]
+    }
+  ],
+  "limits": [
+    "Synthetic identities and reads; actual page/component layouts and production CSS; no real Auth/RLS/tenant/provider acceptance inferred.",
+    "No customer data, decisions, submissions, rewards, consent changes, or other production mutations.",
+    "Physical Android and final full-release approval remain separate; route approval is bounded UI/function evidence."
+  ],
+  "applicationCodeChangedByReviewer": false,
+  "runtimeCorrectionOwner": "release_github",
+  "runtimeCorrectionPath": "src/app/[locale]/account/subscription/operations/page.tsx",
+  "publicationContainer": "https://github.com/elguiriashing/akipasa/pull/332",
+  "freshAcceptedBrowserCases": 72,
+  "freshBrowserBatches": [
+    {
+      "path": "test-results/remaining-operations-review/results-composed-six-routes.json",
+      "cases": 56,
+      "sourceHashesStableDuringCapture": true
+    },
+    {
+      "path": "test-results/remaining-operations-review/results.json",
+      "cases": 16,
+      "sourceHashesStableDuringCapture": true
+    }
+  ],
+  "postCaptureSharedCssReconciliation": {
+    "path": "src/components/PasaCinematic.css",
+    "currentSha256": "2070cf72788406246f87b964982397e581a6a73b3945e93c1038cf7ca0aa5906",
+    "selector": "html[data-theme=\"light\"] .app-shell:has(.map-page) .map-results-drawer .pasa-event-card .card-body h3",
+    "declaration": "color: var(--ink)",
+    "reviewedBy": "root and release_github source-diff review",
+    "effectOnTheseRoutes": "The selector requires a map-page descendant and a Map results drawer; it does not match the Staff, Business, Account or redirect-only route DOM reviewed here. No broader stylesheet change is claimed.",
+    "rerunRequiredForTheseRoutes": false
+  },
+  "publication": {
+    "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+    "reviewedSourceTree": "7de020d02387bb7196fe56fdc4f930e23500d852",
+    "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+    "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+    "hostedExecution": "Fresh final-head workflows required; no future run ID or artifact is asserted.",
+    "sourceBinding": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added."
+  }
+}

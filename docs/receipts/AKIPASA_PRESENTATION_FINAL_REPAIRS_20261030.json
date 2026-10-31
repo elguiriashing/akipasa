@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "baselineCommit": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+  "branch": "work/coordinated-release-20261029",
+  "implementationHashes": {
+    ".github/workflows/account-browser.yml": "e34ec4be3b8f19cca8e499cab7326566c5d345fc24a84743a13c2ae4dad9506a",
+    "src/app/[locale]/account/account-consumer.css": "d53614c35f2764f348cd672ebe2069b23cee99ebf62d10a775ca6ff51749b95f",
+    "src/components/PasaSharedSurfaces.css": "796bd4abfc8893b21e295b325b0fe0fe2e9d412088cac700e7652fdada189970",
+    "src/components/AkiSuiteMembershipGrid.module.css": "093485b26f3fe634c918f3f26cae426c4f195d38da6f0dc5ba35880265f32877",
+    "scripts/test-pasa-boundaries-browser.mjs": "a672fe848369e0fe423483b72ac9ca790e3c55aedc91a6ab2b36665c2518885f",
+    "scripts/test-account-browser.mjs": "aa60b3e1391499c4c78323d49456b5bfb9e44a4e73a03798787701604ce98615",
+    "scripts/test-spotlight-browser.mjs": "4addf7cb9a701131b320b70036899b32f0500f2b783a7296bc224ed53e33cc2b",
+    "tests/e2e/event-candidate-review.spec.ts": "87aec60a995f53b5e30878c663b51edb2a13cdfe72707672942fe4aa05cfcb55"
+  },
+  "fullCheck": {
+    "exitCode": 0,
+    "vitestTests": 2868,
+    "vitestGroups": 17,
+    "initialNodeTests": 140,
+    "builtRoutes": 193,
+    "log": "/tmp/akipasa-final-presentation-FROZEN-check-20261030.log",
+    "runtimeStayedFrozen": true,
+    "testOnlyFollowup": {
+      "file": "tests/e2e/event-candidate-review.spec.ts",
+      "reason": "Await actual mobile dock or desktop navigation before capture; desktop intentionally hides the dock.",
+      "testsPassed": 16,
+      "typecheck": "passed",
+      "lint": "passed",
+      "format": "passed",
+      "finalSha256": "87aec60a995f53b5e30878c663b51edb2a13cdfe72707672942fe4aa05cfcb55",
+      "unchangedExistingSpotlightTestsPassed": 60,
+      "dedicatedDistinctTestsPassed": 76
+    }
+  },
+  "account": {
+    "maintainedBrowserCasesPassed": 464,
+    "existing432Retained": true,
+    "newNoticeCases": 32,
+    "focusedCasesPassed": 82,
+    "minimumNoticeContrast": 6.3310486895,
+    "beforeContrastFailure": 1.510050444565892,
+    "noticePatchScope": "Light-theme consumer Account notices only; messages/actions/backgrounds/dark theme unchanged.",
+    "formalAcceptedRoutes": 8,
+    "reviewedSource": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+    "reviewWorkflow": "https://github.com/elguiriashing/akipasa/actions/runs/41107436549"
+  },
+  "conversion": {
+    "routes": ["membership", "referrals", "account/subscription"],
+    "actualPublicContextsPassed": 32,
+    "actualSubscriptionComponentStatesPassed": 16,
+    "measuredTextSamples": 208,
+    "minimumLightContrast": 4.991,
+    "minimumDarkContrast": 9.076,
+    "hqPixelIdenticalPairs": 32,
+    "maintainedBrowserCasesPassed": 44,
+    "initialPublicContextsPassed": 128,
+    "focusedVitestCasesPassed": 26,
+    "scope": "Consumer adapter only; sister-product surfaces, canonical studio, pricing and checkout logic retained.",
+    "previewBinding": "c3b baseline plus the two exact conversion CSS patches, not later Account notice CSS."
+  },
+  "fallback": {
+    "nativeStatesPassed": 136,
+    "original88Retained": true,
+    "addedNativeStates": 48,
+    "newStates": [
+      "root error",
+      "pending GET retry and recovery",
+      "Admin loading in copied real layout and shell with synthetic authorization adapter"
+    ],
+    "syntheticAdminIsNotRealIdentityOrRlsEvidence": true
+  },
+  "event": {
+    "dedicatedDistinctTestsPassed": 76,
+    "newTests": 16,
+    "finalReadinessFollowupPassed": 16,
+    "finalScreenshots": 32,
+    "populatedData": "Declared synthetic loopback fixture only; no production events created.",
+    "coverage": [
+      "EN",
+      "ES",
+      "dark",
+      "light",
+      "360",
+      "390",
+      "820",
+      "1440",
+      "date/time/price",
+      "keyboard booking entry",
+      "guest auth return",
+      "browser back",
+      "missing 404"
+    ],
+    "genericWorkflowCollection": 586,
+    "genericRunnable": 509,
+    "genericConditionalSkips": 77,
+    "dedicatedRunnable": 76,
+    "dedicatedConditionalSkips": 0
+  },
+  "artifactRepair": {
+    "problem": "Public archives exceed connector 512 MiB transfer cap; no blocked transport bypass.",
+    "added": ["public-http-contracts-{shard}", "public-static-review-{shard}"],
+    "allOriginalArchivesTestsAssertionsAndRequiredContextsRetained": true
+  },
+  "priorHeadCi": {
+    "source": "c3b583519b7fb16062d7dd6a763ec5ef05dc08c7",
+    "ordinaryWorkflowsPassed": 11,
+    "strictGate": "failure: genuine pending acceptance",
+    "publicCollected": 570,
+    "publicPassed": 509,
+    "publicConditionalSkips": 61,
+    "publicFailed": 0,
+    "mergeCheckout": "208775d737e7b1bd05b4c9297d9c3206cbaac8b8",
+    "mergeAndHeadTree": "325831912eea32b03d50fd6e276cb32ba498ee9b",
+    "cloudflareUploadVersion": "0a6ca475-6eb0-4e57-84da-0d027e87234a"
+  },
+  "acceptance": {
+    "routesAccepted": 13,
+    "inScopeRoutes": 90,
+    "routesPending": 77,
+    "fallbackStatesPending": 6,
+    "nextHeadHostedEvidence": "pending publication and actual results; no future pass inferred"
+  },
+  "production": {
+    "merged": false,
+    "deployed": false,
+    "sqlApplied": false,
+    "source": "3d87eb7c995fbd0947cb25a771a43376d9462645",
+    "worker": "26e51e72-bb1e-49e9-a307-243e0203ef8d"
+  },
+  "remainingGlobalGaps": [
+    "isolated real Auth/role/tenant and protected transactions",
+    "source-only Staff and QR-preview SQL staging/application approval",
+    "physical Android on candidate",
+    "remaining individual route and fallback evidence/signoffs",
+    "strict exact-head release audit"
+  ]
+}

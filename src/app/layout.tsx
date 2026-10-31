@@ -1,3 +1,4 @@
+import { RouteBoundaryProvider } from "@/components/RouteBoundaryContext";
 import { optionalUser } from "@/lib/auth";
 import { accountTrackingAllowed } from "@/lib/account-onboarding-server";
 import "./globals.css";
@@ -180,7 +181,9 @@ export default async function RootLayout({
         />
         <PwaRegistration />
         <ThemeManager />
-        {children}
+        <RouteBoundaryProvider locale={locale} product={product}>
+          {children}
+        </RouteBoundaryProvider>
         <ConsentAnalytics trackingAllowed={trackingAllowed} />
         <PersonalisationConsent locale={locale} />
       </body>

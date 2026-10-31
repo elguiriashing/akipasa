@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @next/next/no-img-element */
 import Link from "next/link";
-
+import "./creators.css";
 import { notFound } from "next/navigation";
 import { unstable_cache } from "next/cache";
 import { isLocale } from "@/lib/config";

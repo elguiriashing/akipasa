@@ -1,0 +1,60 @@
+{
+  "status": "published-private-test-studio",
+  "publishedAt": "2026-10-29T13:37:26.003369Z",
+  "url": "https://akipals-avatar-playground.cptguirimax.chatgpt.site",
+  "audience": "owner-private, preserved from creation",
+  "siteProjectId": "appgprj_6ae348412d3c8191a4cb26dd7fc8615b",
+  "siteSourceCommit": "60acce956a69e41b8e92cd1d9ae584cd8ea6c90c",
+  "savedVersionId": "appgprj_6ae348412d3c8191a4cb26dd7fc8615b~appgver_8e1997b38c008191a58b2bde85af4b33",
+  "deploymentId": "appgdep_6ae34bf23bcc8191b8bd826b5440d99c",
+  "deploymentStatus": "succeeded",
+  "verification": "native Sites private publication success; source-matched local Chromium QA; not a logged-in browser visit to the hosted URL",
+  "prototypeCommit": "05ffee95f6ebb3f2552bcf89956961ee67a77c52",
+  "prototypeBundle": "/workspace/akipasa-m3-checkpoints/playground-05ffee9.bundle",
+  "prototypeBundleSha256": "e3a1492310a8a81956ee30acb9cf487b7840a92c01ff65a39a59a8573118fb10",
+  "playgroundJsSha256": "b5f1089742dd26bf34f2cd5924c7edc29f6ca2409d254b2807c4cbb38be52345",
+  "download": {
+    "path": "/downloads/akipals-test-suite.zip",
+    "bytes": 21472540,
+    "sha256": "038ddc21f3b695f819a17acc9c39758b7355286644dc80a40f670518af683c9c",
+    "freshInstallCommand": "npm ci --ignore-scripts --offline",
+    "nodeTestsPassed": 17,
+    "buildCommand": "npm run build:playground",
+    "reproducedPlaygroundHash": true,
+    "archiveCrcValidation": "passed"
+  },
+  "browser": {
+    "scenariosPassed": 4,
+    "locales": ["en", "es"],
+    "widths": [360, 1440],
+    "screenshots": 12,
+    "tested": [
+      "human model switching",
+      "touch/mouse orbit",
+      "keyboard camera and theme",
+      "expressions and intensity",
+      "local JSON save/export/import restore",
+      "invalid external-model payload denial",
+      "reduced-motion idle",
+      "simulated persisted-page recovery",
+      "light/dark contrast",
+      "actual on-page model checks"
+    ],
+    "externalRequests": 0,
+    "mutationRequests": 0,
+    "pageErrors": 0,
+    "physicalDeviceTested": false,
+    "realBFCacheTested": false,
+    "receipt": "evidence/tests/playground/browser-evidence.json in prototype"
+  },
+  "productBoundaries": {
+    "AkiPasaProductionDeployment": false,
+    "mainApplicationIntegrated": false,
+    "alexArtAccepted": false,
+    "completeCustomization": false,
+    "realAccountOrWardrobeMutation": false,
+    "paidAssetOrWalletIntegration": false
+  },
+  "localRun": ["npm ci --ignore-scripts", "npm start"],
+  "localUrl": "http://127.0.0.1:4173"
+}

@@ -1,0 +1,26 @@
+{
+  "applicationSource": "6bd725e4d8455c0b9fb5360859484332d5da064d",
+  "reviewIntegrationHead": "db3f0be5c0db756c9c3cdb4cf51a5a5cbd8fca89",
+  "applicationFilesUnchangedDuringReview": true,
+  "reviewer": "Codex community_release_review",
+  "checkpoint": "/workspace/akipasa-main-checkpoints/account-profile-current-review-20261030.md",
+  "checkpointSha256": "d81ba92b3bc0f4cff27e01461f8c9314c480dbda35e48ffd651391d9bd11b793",
+  "componentOnlyCasesPassed": 32,
+  "actualAppShellFixtureCasesPassed": 48,
+  "supplementalLowerPanelCasesPassed": 16,
+  "blockingFinding": false,
+  "coverage": [
+    "EN/ES and dark/light phone/desktop",
+    "keyboard-opened disclosures",
+    "privacy default values retained",
+    "Save/business entry visible and unobscured",
+    "supplemental action count zero"
+  ],
+  "limits": [
+    "Component32 omits AppShell and is component-only evidence",
+    "AppShell fixtures use identity/provider/action adapters",
+    "No full Next LocaleLayout support/consent/liveAuth-RLS/physical-device/final owner approval"
+  ],
+  "accepted": false,
+  "productionDataUsed": false
+}

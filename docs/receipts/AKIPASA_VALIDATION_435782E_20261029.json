@@ -1,0 +1,137 @@
+{
+  "sourceCommit": "435782ed5765df8f7f4c0908c441b35e88deb452",
+  "sourceTree": "c7c15c0f54f8cafde24a68389ce53af35412a747",
+  "checkedOn": "2026-10-29",
+  "independentCheckout": "/workspace/akipasa-validation-435782e",
+  "freshLockedInstalls": [
+    "npm ci --offline --no-audit --no-fund",
+    "npm ci --offline --no-audit --no-fund --prefix automation"
+  ],
+  "fullCheck": {
+    "command": "npm run check",
+    "exitCode": 0,
+    "log": "/tmp/akipasa-435782e-check.log"
+  },
+  "cloudflarePackage": {
+    "command": "npm run build:cloudflare",
+    "exitCode": 0,
+    "releaseSource": "435782ed5765df8f7f4c0908c441b35e88deb452",
+    "sourceClean": true,
+    "deployed": false,
+    "log": "/tmp/akipasa-435782e-cloudflare.log"
+  },
+  "browser": {
+    "fullRun": {
+      "cases": 415,
+      "passed": 385,
+      "failed": 1,
+      "skipped": 29,
+      "log": "/tmp/akipasa-435782e-e2e.log",
+      "failure": "Virtual-host test route.fetch ECONNRESET on real /pwa/business-192.png"
+    },
+    "targetedRepair": {
+      "passedCases": 1,
+      "loginCombinations": 112,
+      "applicationChanged": false,
+      "originalAssertionsRetained": true,
+      "output": "test-results/435782e-tablet-pwa-retry"
+    },
+    "targetedProductCasesPassed": 73,
+    "staffAdminFixtureCombinationsPassed": 80,
+    "portalHomeFixtureCombinationsPassed": 64,
+    "mapLibreControlledCasesPassed": 16,
+    "mapCaptures": 48,
+    "palsFocusedCasesPassed": 126,
+    "palsLegacyScenariosPassed": 15,
+    "physicalAndroid": false,
+    "productionAuthenticatedAcceptance": false
+  },
+  "hostedWorkflows": [
+    {
+      "id": 40865581238,
+      "name": "Verify public AkiSuite app",
+      "conclusion": "success"
+    },
+    {
+      "id": 40865581353,
+      "name": "Account and public UI acceptance",
+      "conclusion": "success"
+    },
+    {
+      "id": 40865581186,
+      "name": "AkiSuite tablet acceptance",
+      "conclusion": "success"
+    },
+    {
+      "id": 40865581196,
+      "name": "AkiPasa contract gate",
+      "conclusion": "success"
+    },
+    {
+      "id": 40865581262,
+      "name": "SQL migration permission audit",
+      "conclusion": "success"
+    },
+    {
+      "id": 40865581207,
+      "name": "AkiTonight release slice",
+      "conclusion": "success"
+    },
+    {
+      "id": 40865581346,
+      "name": "Format master documentation PR",
+      "conclusion": "success"
+    },
+    {
+      "id": 40865581323,
+      "name": "Passport prestige acceptance",
+      "conclusion": "success"
+    },
+    {
+      "id": 40865581369,
+      "name": "Booking browser acceptance",
+      "conclusion": "success"
+    },
+    {
+      "id": 40865581339,
+      "name": "AkiPals browser acceptance",
+      "conclusion": "success"
+    },
+    {
+      "id": 40865581166,
+      "name": "AkiPasa full visual release gate",
+      "conclusion": "failure",
+      "reason": "All 90 in-scope routes remain unaccepted"
+    }
+  ],
+  "strictAudit": {
+    "command": "npm run release:pasa-audit",
+    "exitCode": 2,
+    "accepted": 0,
+    "inProgress": 90,
+    "excluded": 13,
+    "bypassed": false
+  },
+  "avatarVisualDecision": {
+    "reviewer": "Alex Ashing",
+    "decision": "rejected",
+    "appliesTo": [
+      "retained avatar artwork",
+      "isolated procedural portrait experiment"
+    ],
+    "experimentIntegrated": false
+  },
+  "liveBasemapProbe": {
+    "url": "https://tiles.openfreemap.org/styles/liberty",
+    "httpStatus": 403,
+    "body": "error code: 1010",
+    "tlsVerificationEnabled": true,
+    "accepted": false
+  },
+  "notes": [
+    "Hosted checks associate with this PR head; default PR checkout may execute its synthetic merge ref.",
+    "The original failed browser run is not counted green; corrected-worker evidence is separate.",
+    "The 29 skipped cases do not establish authenticated production coverage.",
+    "No route, avatar artwork, physical device, merge or deployment acceptance is granted by this receipt."
+  ]
+}

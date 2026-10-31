@@ -7,6 +7,7 @@ export default defineConfig({
     include: [
       "tests/account-onboarding*.test.ts",
       "tests/account-onboarding-ui.test.tsx",
+      "tests/terms-accept-action.test.ts",
     ],
     environment: "node",
   },

@@ -1,0 +1,104 @@
+{
+  "reviewer": "Codex release339_deployment_verification",
+  "verifiedAt": "2026-10-31T02:54:16.266Z",
+  "readOnly": true,
+  "pullRequest": 340,
+  "reviewedHead": "45a9d9037955fa8c04892a48ecb13d95d18ffaba",
+  "mergeCommit": "76cb96df21bf9404d50db373cf57bb0287fd9a80",
+  "reviewedTree": "4ceaaf7e680e8c36506dc4b496a94709fdea42e2",
+  "mergeTree": "4ceaaf7e680e8c36506dc4b496a94709fdea42e2",
+  "treesEqual": true,
+  "accountId": "501bc9434d8ae555a6ac984a26dd2725",
+  "scriptName": "akipasa",
+  "scriptTag": "ddd52cc0b72240fdb04068b82b3326f2",
+  "automaticBuild": {
+    "id": "5bc752a1-569b-4cdd-a765-f5e79033b7e2",
+    "status": "stopped",
+    "outcome": "success",
+    "sourceCommit": "76cb96df21bf9404d50db373cf57bb0287fd9a80",
+    "branch": "master",
+    "triggerSource": "push_event",
+    "triggerId": "88fe029a-45e9-4ab2-a3cb-9dbf6417316c",
+    "buildCommand": "npm run build:cloudflare",
+    "deployCommand": "npx wrangler deploy --keep-vars",
+    "stoppedOn": "2026-10-31T02:53:11.333Z",
+    "versionMappingConfirmed": true
+  },
+  "worker": {
+    "status": 200,
+    "success": true,
+    "id": "972fd06f-85c4-40a9-b47c-577a3dd6b244",
+    "number": 2909,
+    "createdOn": "2026-10-31T02:52:56.123141Z",
+    "etag": "25be3268716c494dc41db7fbf5c299ec9167e65a83ac146ed529bc80a77411f9",
+    "compatibilityDate": "2026-07-22",
+    "migrationTag": "map-snapshot-v1"
+  },
+  "deployment": {
+    "id": "549613b1-2d60-48f2-82ff-13c5e7895be4",
+    "source": "wrangler",
+    "strategy": "percentage",
+    "author_email": "[redacted provider contact]",
+    "annotations": {
+      "workers/triggered_by": "deployment"
+    },
+    "versions": [
+      {
+        "version_id": "972fd06f-85c4-40a9-b47c-577a3dd6b244",
+        "percentage": 100
+      }
+    ],
+    "created_on": "2026-10-31T02:52:59.629254Z"
+  },
+  "trafficPercent": 100,
+  "rollback": [
+    {
+      "id": "035e006c-1012-4819-8cad-0b30d11e70e4",
+      "status": 200,
+      "success": true,
+      "etag": "12fa04cd73d9657fb7692a5bc6dd64a615d8336e6584c519b3253be37626c544"
+    },
+    {
+      "id": "0c2e5166-d82d-49b5-befc-a57b15f92fd3",
+      "status": 200,
+      "success": true,
+      "etag": "ca2299b8574e01e734dcd208c4c0b19179b268879e22145fa18caefd08591753"
+    },
+    {
+      "id": "980f4d74-9dca-42be-b096-03979c749e63",
+      "status": 200,
+      "success": true,
+      "etag": "a47e79b1fdeb6550c61b342c84abe63ebed7123486ad07c324888b307164f2cc"
+    },
+    {
+      "id": "26e51e72-bb1e-49e9-a307-243e0203ef8d",
+      "status": 200,
+      "success": true,
+      "etag": "f7d0f0892a5c90de14fecf88c0de2e79c55a46bdacea45906b9c2f3570046961"
+    }
+  ],
+  "merged": true,
+  "deployed": true,
+  "manualDeploymentInvoked": false,
+  "productionConfigurationMutated": false,
+  "customerDataWritten": false,
+  "httpsSmoke": "Root performs separately; not inferred from deployment metadata",
+  "nativePrivacyOverlap": "Known339 issue is NOT marked closed by metadata; requires Root actual48 native checks",
+  "physicalAndroid": false,
+  "nativeHTTPS": {
+    "contexts": 12,
+    "routeChecks": 48,
+    "result": "PASS",
+    "allFivePointsBottomAndAfterTab": true,
+    "savedStateUnchanged": true,
+    "rootActualPngViews": 2,
+    "physicalAndroid": false,
+    "nonGetRequestsBlocked": true,
+    "attemptedPostCount": 52,
+    "qualification": "Existing Cloudflare RUM POSTs appear in earlier trace; do not claim zero network attempts or a new consent-provider audit. No non-GET request left the browser.",
+    "log": "/tmp/akipasa-production340-native-privacy-recovered-20261031.log",
+    "priorFailuresPreserved": "production340-privacy-native-20261031/output-before-panel-tab and output-envoy-transport503; operator native Tab sequence correction and transient Envoy transport documented"
+  },
+  "priorPrivacyObstruction": "Closed on actual deployed340 by all48 native route checks and two actual PNG reviews",
+  "publicReceiptRedaction": "Provider author contacts omitted; immutable raw evidence retained outside repository. Commit/tree/version identity unchanged."
+}

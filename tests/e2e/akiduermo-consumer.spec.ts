@@ -26,8 +26,13 @@ for (const locale of ["en", "es"] as const) {
         // Exercise the same Next server through the stay virtual host, without real credentials.
         await page.route(/http:\/\/127\.0\.0\.1:\d+\//, async (route) => {
           const path = new URL(route.request().url()).pathname;
-          // Compiled assets are host-independent; keep their native browser transport.
-          if (path.startsWith("/_next/static/")) return route.continue();
+          // Compiled assets and vendored fonts are host-independent. Keep their
+          // real local responses instead of sending them through host redirects.
+          if (
+            path.startsWith("/_next/static/") ||
+            path.startsWith("/assets/fonts/")
+          )
+            return route.continue();
           if (path === "/api/stays") {
             const hasDates = new URL(route.request().url()).searchParams.has(
               "checkIn",
@@ -75,6 +80,16 @@ for (const locale of ["en", "es"] as const) {
             { waitUntil: "domcontentloaded" },
           );
           await expect(page.locator("main")).toBeVisible();
+          if (path.includes("/auth?")) {
+            const fonts = await page.evaluate(async () => {
+              const faces = await document.fonts.load(
+                '600 16px "Aki Selector Poppins"',
+              );
+              return faces.map((face) => face.status);
+            });
+            expect(fonts.length).toBeGreaterThan(0);
+            expect(fonts.every((status) => status === "loaded")).toBe(true);
+          }
           // A first visitor must be able to dismiss the initially open panel
           // without making a consent decision before using the stay controls.
           const privacy = page.getByRole("complementary", {

@@ -71,6 +71,10 @@ test("root, invalid content and all guest gates resolve safely", async ({
     maxRedirects: 0,
   });
   expect(community.status()).toBe(200);
+  expect(community.headers().location).toBeUndefined();
+  const communityHtml = await community.text();
+  expect(communityHtml).toContain("Explore creators");
+  expect(communityHtml).toContain("/en/community/creators");
   expect((await page.request.get("/en/community/creators")).status()).toBe(200);
   const suggestion = await page.request.get("/en/community?view=suggest", {
     maxRedirects: 0,

@@ -1,0 +1,254 @@
+{
+  "integrationOwner": "root",
+  "branch": "work/coordinated-release-20261029",
+  "normalMergeParents": [
+    "0c4b10ff11a6d5ce9694f453c9ed1a4b84bad017",
+    "45a9d9037955fa8c04892a48ecb13d95d18ffaba"
+  ],
+  "actualReleasedMaster": "76cb96df21bf9404d50db373cf57bb0287fd9a80",
+  "frozenCodeAndQaFiles": 1556,
+  "frozenAggregateSHA256": "a082b38e7ea4510ae64e7ba9c8fe231c9f5416529e4689a57a0b03282ec4b039",
+  "fullLocalCheck": {
+    "passed": true,
+    "vitestTests": 2926,
+    "groups": 17,
+    "log": "/tmp/akipasa-main340-integrated-fullcheck-20261031.log",
+    "qualification": "Before final three guarded wordmark CSS rules and explicit QA probe; fresh exact-head full CI remains required"
+  },
+  "finalActualNext": {
+    "passed": 100,
+    "spotlight": 84,
+    "additionalEventCandidate": 16,
+    "log": "/tmp/akipasa-main340-spotlight100-final-ink-20261031.log",
+    "qualification": "Final runtime source; subsequent single Admin QA-only probe file is unrelated to these Next runtime inputs. Initial missing Chrome setup failure preserved; supported BOOKING_BROWSER_PATH used."
+  },
+  "adminFinal": {
+    "createdAt": "2026-10-31T03:13:34.487502+00:00",
+    "sourceCommitDuringProof": "0c4b10ff11a6d5ce9694f453c9ed1a4b84bad017",
+    "sourceDirty": true,
+    "actualNext": false,
+    "actualMainPageAndLayoutAndAppShell": true,
+    "fixtureAuth": true,
+    "productionAuthRLS": false,
+    "privateWrites": false,
+    "physicalDevice": false,
+    "rootReviewedQaOnlyChange": true,
+    "runnerSha256": "5ac6e859ca83d3fbd7c4aee07e9ecaa8f1f9b054cda807a199b43b7cc8fd2685",
+    "sourceSnapshot": "/workspace/akipasa-main-checkpoints/main340-integration-20261031/frozen-source-hashes.json",
+    "sourceSnapshotSha256": "fa88676448568e21986935de0a631894e307c1884a58c4c4e35efca95cacfd2c",
+    "frozenPaths": 1556,
+    "frozenPathsUnchangedBeforeAfter": true,
+    "runtimeCssUnchangedDuringQaRepair": true,
+    "assertionPreservationProof": "/workspace/akipasa-main-checkpoints/main340-integration-20261031/admin-original-assertion-preservation.json",
+    "priorEvidencePreserved": "/workspace/akipasa-main-checkpoints/main340-integration-20261031/main-browser-preservation-before-explicit-wordmark.json",
+    "results": "/tmp/akipasa-preserved-browser-evidence-20261030/test-results/admin-compact-workbenches-responsive/results.json",
+    "log": "/tmp/akipasa-main340-explicit-wordmark-admin832-20261031.log",
+    "adminContexts": 832,
+    "rendered": 800,
+    "expectedMissingRecordDenials": 32,
+    "failures": 0,
+    "nativeMenuChecks": 600,
+    "canvasChromeChecks": 800,
+    "originalTextContrastChecks": 240,
+    "originalTextContrastMin": 5.969252928741087,
+    "visibleAkiWordmarkContrastChecks": 600,
+    "visibleAkiWordmarkContrastMin": 15.989431827984154,
+    "whiteInkNegativeControls": [
+      {
+        "locale": "en",
+        "theme": "light",
+        "width": 390,
+        "route": "privacy",
+        "fixtureOnly": true,
+        "whiteInk": [
+          {
+            "target": "compact-header-Aki",
+            "text": "Aki",
+            "foreground": [255, 255, 255, 255],
+            "background": [255, 254, 252, 255],
+            "contrast": 1.0079493898232783
+          }
+        ],
+        "restored": [
+          {
+            "target": "compact-header-Aki",
+            "text": "Aki",
+            "foreground": [37, 32, 29, 255],
+            "background": [255, 254, 252, 255],
+            "contrast": 15.989431827984154
+          }
+        ]
+      },
+      {
+        "locale": "es",
+        "theme": "light",
+        "width": 390,
+        "route": "privacy",
+        "fixtureOnly": true,
+        "whiteInk": [
+          {
+            "target": "compact-header-Aki",
+            "text": "Aki",
+            "foreground": [255, 255, 255, 255],
+            "background": [255, 254, 252, 255],
+            "contrast": 1.0079493898232783
+          }
+        ],
+        "restored": [
+          {
+            "target": "compact-header-Aki",
+            "text": "Aki",
+            "foreground": [37, 32, 29, 255],
+            "background": [255, 254, 252, 255],
+            "contrast": 15.989431827984154
+          }
+        ]
+      }
+    ],
+    "compiledDependencyPins": 162,
+    "initialFinalCompiledPinsStable": true,
+    "actions": 0,
+    "pageErrors": 0,
+    "promotionsAndOwnerAuthority": "Bothfinalruntime24+16GETand69+16GET/53Menu passedbeforeQA-onlyAdminrunnerchange; theircompiledclosures/runtimeunchanged, no redundantlocalrerun. FreshCIrerunsall.",
+    "priorQualifiedRuntimeReceipt": "/workspace/akipasa-main-checkpoints/main340-integration-20261031/main-post-ink-admin-promotions-owner-browser-verification-before-probe.json",
+    "root100NextAuthority": "RootactualfinalMain100NextcasesPASS beforeQA-onlyAdminrunnerchange; no Next runtime/testsuitefile changed by child. Log /tmp/akipasa-main340-spotlight100-final-ink-20261031.log",
+    "acceptanceUnchanged": "49/90routes+6fallbacks;41pending. No actualprotectedAuth/RLS/provider/privatewrites/device acceptance inferred."
+  },
+  "promotionsOwnerFinalRuntime": {
+    "createdAt": "2026-10-31T03:06:04.268674+00:00",
+    "sourceCommitDuringProof": "0c4b10ff11a6d5ce9694f453c9ed1a4b84bad017",
+    "testedDirtyNormalMerge": true,
+    "frozenSourceManifest": "/workspace/akipasa-main-checkpoints/main340-integration-20261031/main-browser-input-snapshot-post-light-wordmark.json",
+    "frozenManifestSha256": "ada810e5b64966a8825461d55feb33ceab52b15f3071fa7dcdd2a96e305aaa21",
+    "frozenPathsBeforeAndAfter": 1556,
+    "allFrozenPathsUnchanged": true,
+    "historicalEvidencePreservation": "/workspace/akipasa-main-checkpoints/main340-integration-20261031/main-browser-preservation-before-light-ink.json",
+    "runSequence": ["Admin832", "Promotions24", "Owner69"],
+    "actualMainComponents": true,
+    "noNextBuildByChild": true,
+    "sourceWritesByChild": false,
+    "fixturesOnly": true,
+    "productionAuthRLS": false,
+    "productionWrites": false,
+    "physicalDevice": false,
+    "admin832": {
+      "contexts": 832,
+      "rendered": 800,
+      "expectedDenials": 32,
+      "failures": 0,
+      "nativeMenuChecks": 600,
+      "canvasChromeChecks": 800,
+      "textContrastChecks": 240,
+      "minTextContrast": 5.969252928741087,
+      "compiledDependencyPins": 162,
+      "initialFinalPinsStable": true,
+      "actions": 0,
+      "log": "/tmp/akipasa-main340-post-ink-admin832-20261031.log",
+      "results": "/tmp/akipasa-preserved-browser-evidence-20261030/test-results/admin-compact-workbenches-responsive/results.json",
+      "newWordmarkAutomatedChecks": 0,
+      "wordmarkCoverageLimitation": "Ineffective new selector was filtered by aria-hidden ancestor. No automated wordmark proof inferred from this832; existing240 genuine text checks passed. Separate explicit visual-wordmark probe is being added without changing old aria-hidden filter/assertions."
+    },
+    "promotions24": {
+      "contexts": 24,
+      "nativeGetRecoveries": 16,
+      "failures": 0,
+      "compiledDependencyPins": 59,
+      "initialFinalPinsStable": true,
+      "runnerSha256": "8f23f108c2ce3d79c59c1ecc6f5f6e7fd4333ea8c46d045bb2f79bae7898267b",
+      "validServices": ["social_campaign", "featured_listing"],
+      "staleDataErrorsAndHealthySiblingsProved": true,
+      "log": "/tmp/akipasa-main340-post-ink-promotions24-20261031.log",
+      "results": "/tmp/akipasa-preserved-browser-evidence-20261030/test-results/admin-promotion-read-recovery/results.json"
+    },
+    "owner69": {
+      "contexts": 69,
+      "core": 64,
+      "partialFailures": 5,
+      "nativeGetRecoveries": 16,
+      "nativeMenus": 53,
+      "compiledDependencyPins": 1906,
+      "initialFinalPinsStable": true,
+      "actions": 0,
+      "pageErrors": 0,
+      "externalRequests": 0,
+      "mutationRequests": 0,
+      "log": "/tmp/akipasa-main340-post-ink-owner69-20261031.log",
+      "results": "/tmp/akipasa-preserved-browser-evidence-20261030/test-results/owner-read-recovery/results.json"
+    },
+    "visualSpotCheck": {
+      "reviewer": "Codex next_finished_batch actualPNGview",
+      "screenshots": [
+        "test-results/admin-compact-workbenches-responsive/en-light-390-privacy-ready-upper.png"
+      ],
+      "finding": "DarkAki legible on light header after runtime repair; screenshot does not replace forthcoming automated wordmark proof."
+    },
+    "acceptanceState": "Unchanged49/90+6fallbacks;41pending protected/provider/private-write/device/finalreview gates genuine. Root owns fullcheck/exact-headCI/commit/push/integration/release.",
+    "phase": "Runtimewordmarkrepair tested; Adminnewbrandnodecoveragegap reported and about to be fixed in QA ONLY"
+  },
+  "originalAssertionsAndJobs": {
+    "previousAssertionCalls": 23,
+    "currentAssertionCalls": 31,
+    "missing": [],
+    "previousJobs": [
+      "consumer-workflow-fixtures",
+      "tablet-ui",
+      "tablet-portal-smoke",
+      "operations-responsive-evidence",
+      "tablet-layout-and-spotlight",
+      "passport-release-evidence"
+    ],
+    "currentJobs": [
+      "consumer-workflow-fixtures",
+      "tablet-ui",
+      "tablet-portal-smoke",
+      "operations-responsive-evidence",
+      "tablet-layout-and-spotlight",
+      "passport-release-evidence"
+    ],
+    "oldJobsPreserved": true,
+    "oldOpsStepsIncludingOwner69Preserved": true,
+    "newPromotion24Step": true
+  },
+  "newMainOnlyRepair": {
+    "observed": "Actual merged Main ES light820 native Event screenshot shows inherited white Aki wordmark on new white route header; Master production lacks this Main-only white-ink override.",
+    "beforeScreenshot": "/workspace/akipasa/test-results/spotlight-routes-before-light-wordmark-20261031T025549Z/privacy-event-es-light-820-closed.png",
+    "repair": "Only full-detail/Admin guarded compact wordmark inherits matching existing chrome ink; orange Pasa brand untouched, Home/Login/other routes untouched.",
+    "changedFiles": [
+      "scripts/test-admin-compact-workbenches-responsive-browser.mjs",
+      "src/app/[locale]/admin/admin-suite.css",
+      "src/app/[locale]/events/[slug]/event-spotlight.css",
+      "src/app/[locale]/venues/[slug]/venue-spotlight.css",
+      "tests/e2e/spotlight-public-layout.spec.ts"
+    ],
+    "strongerTests": "Add computed wordmark contrast to existing detail and Admin collectors, retain all existing assertions/thresholds.",
+    "newFrozenFiles": 1556,
+    "noAuthRoleQueryActionSchemaChange": true
+  },
+  "formalAcceptance": {
+    "acceptedRoutes": 49,
+    "inScopeRoutes": 90,
+    "pendingRoutes": 41,
+    "acceptedFallbacks": 6
+  },
+  "freshExactHeadCI": "Required after final normal master-graph reconciliation/publication; not claimed passed",
+  "mergedFull332": false,
+  "deployedFull332": false,
+  "adminAssertionsFinal": {
+    "original31AssertionsPreserved": true,
+    "before": 31,
+    "after": 37,
+    "newAssertions": [
+      "assert.equal(wordmarkContrast.length, headerVisible ? 1 : 0, \"Every visible compact header must have one measured Aki wordmark\")",
+      "assert.ok(wordmarkContrast.every((entry) => entry.contrast >= 4.5), \"Compact Aki wordmark contrast: \" + JSON.stringify(wordmarkContrast))",
+      "assert.equal(whiteInk.length, 1, \"Negative probe must measure visible Aki\")",
+      "assert.ok(whiteInk.every((entry) => entry.contrast < 4.5), \"Old white ink on light chrome must fail the unchanged threshold\")",
+      "assert.equal(restored.length, 1)",
+      "assert.ok(restored.every((entry) => entry.contrast >= 4.5), \"Actual wordmark ink must recover after fixture probe removal\")"
+    ]
+  },
+  "mainRuntimeChangedPaths": [
+    "src/app/[locale]/admin/admin-suite.css",
+    "src/app/[locale]/events/[slug]/event-spotlight.css",
+    "src/app/[locale]/venues/[slug]/venue-spotlight.css"
+  ]
+}

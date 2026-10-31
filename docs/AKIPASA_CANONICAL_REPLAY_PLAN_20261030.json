@@ -1,0 +1,3247 @@
+{
+  "version": 1,
+  "mode": "plan-only",
+  "status": "partial-not-executable",
+  "complete": false,
+  "schemaParityVerified": false,
+  "databaseExecutionSupported": false,
+  "inspectionSourceCommit": "9533e2c0e0e6ffe21082db1458f0a9ba5e3dc13e",
+  "scope": "Hash inventory and candidate prefix only; not an approved migration executor, production chronology or complete eligibility list.",
+  "inventoryRoots": ["database/migrations", "supabase/migrations"],
+  "inventoryFingerprints": {
+    "database/migrations": "537f6598d0bbe216a51d74139039a8ade46867321f41171e872ea03bc058dbab",
+    "supabase/migrations": "b62687afab194eb8988e37235a242a6281b9ac4073c38ef1e1731abae9ed4180"
+  },
+  "evidence": {
+    "checkpoint": "canonical-replay-next-20261030.md",
+    "checkpointSha256": "ef342e41a78a08675eeeecae4e6e309c18c42246ee7dcaf6fadfb4ccae1a7e63",
+    "scopedCreatorManifestSha256": "8eb9ef1b6363f0b9d371bb2a0bbb5bb98b9728c988ea47ae5effab133efb9484",
+    "scopedCreatorCounts": {
+      "applicationSql": 78,
+      "officialStorageSql": 17,
+      "selectedTotal": 95
+    },
+    "externalStorageSnapshots": [
+      {
+        "name": "storage-0002-pinned.sql",
+        "sha256": "c638dbaccf8829122fc2e05148bcb82596baf288cd497bed7a2cdaa5a4d99e09",
+        "admittedToRepository": false
+      },
+      {
+        "name": "0003-pathtoken-column.sql",
+        "sha256": "db57ad79bd7ecf1ea6a8099b38bf376886d6b2181ba65b9e9c0556ed245dea8b",
+        "admittedToRepository": false
+      },
+      {
+        "name": "0004-add-migrations-rls.sql",
+        "sha256": "05b32aad858e4644202e6ac43413cfee30e61d7e9ad51c42b082cfb21235c7bd",
+        "admittedToRepository": false
+      },
+      {
+        "name": "0005-add-size-functions.sql",
+        "sha256": "ce7f8b2e360f49df2a0f7d8ed0fd4bc63c6907f2890e84cfc377d9050118fb06",
+        "admittedToRepository": false
+      },
+      {
+        "name": "0006-change-column-name-in-get-size.sql",
+        "sha256": "d4acac148b3a952336a9f739cdbdee22a573bca5cda247a8272beacd0b6a1aa0",
+        "admittedToRepository": false
+      },
+      {
+        "name": "0007-add-rls-to-buckets.sql",
+        "sha256": "c87aa8ea3c6509171728880538cc26e7233896a8f927af3bc5b351a1706610e3",
+        "admittedToRepository": false
+      },
+      {
+        "name": "0008-add-public-to-buckets.sql",
+        "sha256": "1d881092aea62e83493f1a9c4cb4f101f3035a08d62be84a7e7970ee0c6f0f48",
+        "admittedToRepository": false
+      },
+      {
+        "name": "0009-fix-search-function.sql",
+        "sha256": "841c3ee6ed4885bc59f55db8d6eec293c6188a670d049737552c03a0ba714dc9",
+        "admittedToRepository": false
+      },
+      {
+        "name": "00010-search-files-search-function.sql",
+        "sha256": "41d2b264437766b360ad421c4b1b80e5bb34c1503779408eefe5827238b2a098",
+        "admittedToRepository": false
+      },
+      {
+        "name": "0011-add-trigger-to-auto-update-updated_at-column.sql",
+        "sha256": "922302d623209192a5a85c6bdd0bf21b64cc3bded6e1d048c66d98c7dfdd83eb",
+        "admittedToRepository": false
+      },
+      {
+        "name": "0012-add-automatic-avif-detection-flag.sql",
+        "sha256": "55ba2318864bfc0cc1f4db871d0874c70d445fa8f2b12e4543960403bd88ee9a",
+        "admittedToRepository": false
+      },
+      {
+        "name": "0013-add-bucket-custom-limits.sql",
+        "sha256": "07d0b1e8299b70eeeda0841969772aecdbd0788eda9dbada7806afdc8ed9d06e",
+        "admittedToRepository": false
+      },
+      {
+        "name": "0014-use-bytes-for-max-size.sql",
+        "sha256": "9e34ab4fc380e1cdd4748bcac368cd628c247962bdd58f8311a44f1b29e918ec",
+        "admittedToRepository": false
+      },
+      {
+        "name": "0015-add-can-insert-object-function.sql",
+        "sha256": "572c4c802fce193ed5d63eba166922b5469d863d1eae460dd06cdcb1594bab9a",
+        "admittedToRepository": false
+      },
+      {
+        "name": "0016-add-version.sql",
+        "sha256": "a4c7a068bb3212a015879859f3c7b8e1ed92998a671fbf3a9bdfd827cf5e0e67",
+        "admittedToRepository": false
+      },
+      {
+        "name": "0017-drop-owner-foreign-key.sql",
+        "sha256": "00edfd4aefba445959c977fd1a510bd7900dcf9679bbc24615d43ad9768dd0da",
+        "admittedToRepository": false
+      },
+      {
+        "name": "0018-add_owner_id_column_deprecate_owner.sql",
+        "sha256": "c895bce18e7900b793a61a8bac57e02d18a51ac3683ddcf6e169919164025c8f",
+        "admittedToRepository": false
+      }
+    ],
+    "historyReconciliationManifestSha256": "e854cdc7c2909e9a06cbfefd277238005d1106d483e473583e45668c1653f3e6",
+    "historyCounts": {
+      "total": 247,
+      "normalizedCommittedMatches": 174,
+      "unresolved": 73,
+      "classificationCounts": {
+        "needs-investigation": 35,
+        "missing-source": 29,
+        "historical-rollback": 1,
+        "history-only-transport": 6,
+        "committed-successor": 2
+      }
+    }
+  },
+  "safetyRequirements": [
+    "NO database execution capability in this tool.",
+    "Preserve both existing95-path and173-artifact fixtures; never append blindly.",
+    "Future pristine fixture only: exact labels/volume, pinned real services, no provider credentials, internal no-egress.",
+    "Global cron.launch_active_jobs=off from startup; configured active cron rows are not individually disabled.",
+    "No customer rows, payments, provider sends, campaign activation, feature-gate changes or production migrations for screenshots.",
+    "0074 requires normal Auth bootstrap before CRM entitlements; no invented workspace.",
+    "Run conditional coverage once in reviewed order and verify final required targets/wrappers; do not drop policies to replay it.",
+    "Preserve literal filenameVersion separately from reconciled historical version; never infer equivalence from names or normalization.",
+    "Terms security source is already deployed once through335; this plan does not authorize reapplication or history rewrites."
+  ],
+  "requiredVerifications": {
+    "platformBaseline": false,
+    "allSourceClassificationsReviewed": false,
+    "allHistoricalMappingsReviewed": false,
+    "missingOperatingSourcesAdmitted": false,
+    "finalGuardTargetCoverage": false,
+    "schemaFunctionAclFingerprint": false,
+    "actualRoleAndCustomerJourneys": false,
+    "independentReproduction": false
+  },
+  "stops": [
+    {
+      "id": "stop:platform-baseline",
+      "resolved": false,
+      "reason": "Pinned real platform/Auth, PostGIS and pg_cron require fresh pristine no-egress verification. Official Storage0002-0018 bytes are now archived outside migration roots with exact upstream/license pins; this is source integrity only. Fresh Auth/platform/order/account-guard and actual Storage HTTP image/migration/upload/download acceptance remain unresolved.",
+      "replayOnlyStorageSourceAdmission": {
+        "path": "database/replay-only/official-storage",
+        "upstreamCommit": "96aec65e7e22573befef05728327ad4d8e7207b2",
+        "sourceIntegrityChecker": "scripts/check-storage-replay-sources.mjs",
+        "sourceCount": 17,
+        "databaseExecutionSupported": false,
+        "storageHttpAcceptance": false,
+        "freshOrderedGuardAcceptance": false
+      }
+    },
+    {
+      "id": "stop:synthetic-admin-bootstrap",
+      "resolved": false,
+      "reason": "0074 requires a new synthetic local administrator created through normal Auth and documented local bootstrap; no existing account or invented workspace/entitlement."
+    },
+    {
+      "id": "stop:operating-private-location",
+      "resolved": false,
+      "historicalVersion": "20261016092914",
+      "historicalName": "private_operating_location",
+      "recoveredSha256": "0436f81e3f15ff88c2b68b6eedeeb15bba6f9188423b4be751d6af57db72a97a",
+      "reason": "Immutable recovered project DDL is now vendored outside migration roots with exact raw-history byte binding. This STOP remains unresolved: fresh ordered dependency/current account-wrapper/ACL acceptance is still required before any fixture execution or exposure. Source-byte integrity is not current security or full canonical parity.",
+      "replayOnlySourceAdmission": {
+        "path": "database/replay-only/recovered-operating/20261016092914_private_operating_location.sql",
+        "snapshotSha256": "0436f81e3f15ff88c2b68b6eedeeb15bba6f9188423b4be751d6af57db72a97a",
+        "rawHistorySha256": "c5c02a15d34f558d64228aff4902a2c3581c1bd26691dd4e4949c8f517d0a838",
+        "rawHistoryTransform": "snapshot-minus-exactly-one-final-LF-byte",
+        "sourceIntegrityChecker": "scripts/check-operating-replay-sources.mjs",
+        "freshOrderedGuardAcceptance": false
+      }
+    },
+    {
+      "id": "stop:operating-organisations",
+      "resolved": false,
+      "historicalVersion": "20261016093118",
+      "historicalName": "operating_organisations",
+      "recoveredSha256": "b9d06ab3b40ac3614d739bb8cc386680e9692f878a14c0163a22ecfbd9f79317",
+      "reason": "Immutable recovered project DDL is now vendored outside migration roots with exact raw-history byte binding. This STOP remains unresolved: fresh ordered dependency/current account-wrapper/ACL acceptance is still required before any fixture execution or exposure. Source-byte integrity is not current security or full canonical parity.",
+      "replayOnlySourceAdmission": {
+        "path": "database/replay-only/recovered-operating/20261016093118_operating_organisations.sql",
+        "snapshotSha256": "b9d06ab3b40ac3614d739bb8cc386680e9692f878a14c0163a22ecfbd9f79317",
+        "rawHistorySha256": "5093d6814cd8be936ce81112839b448325e8b2e076b1e86b0e174b593163124a",
+        "rawHistoryTransform": "snapshot-minus-exactly-one-final-LF-byte",
+        "sourceIntegrityChecker": "scripts/check-operating-replay-sources.mjs",
+        "freshOrderedGuardAcceptance": false
+      }
+    },
+    {
+      "id": "stop:rental-operating-location",
+      "resolved": false,
+      "historicalVersion": "20261016093336",
+      "historicalName": "rental_operating_location",
+      "recoveredSha256": "90e765599a4f276395c81a9b3e58b031918e4dfd157393c05394cbf7437d36c5",
+      "reason": "Immutable recovered project DDL is now vendored outside migration roots with exact raw-history byte binding. This STOP remains unresolved: fresh ordered dependency/current account-wrapper/ACL acceptance is still required before any fixture execution or exposure. Source-byte integrity is not current security or full canonical parity.",
+      "replayOnlySourceAdmission": {
+        "path": "database/replay-only/recovered-operating/20261016093336_rental_operating_location.sql",
+        "snapshotSha256": "90e765599a4f276395c81a9b3e58b031918e4dfd157393c05394cbf7437d36c5",
+        "rawHistorySha256": "3de7c127197c430ccc8954ab9b197d4bc670bd4dfe8934cfa8a6009f2c67d367",
+        "rawHistoryTransform": "snapshot-minus-exactly-one-final-LF-byte",
+        "sourceIntegrityChecker": "scripts/check-operating-replay-sources.mjs",
+        "freshOrderedGuardAcceptance": false
+      }
+    },
+    {
+      "id": "stop:complete-foundations-before-coverage",
+      "resolved": false,
+      "reason": "Conditional account coverage may skip missing targets; all intended tables/signatures and final wrappers must be verified. Never reapply unchanged coverage to a retained proof database."
+    },
+    {
+      "id": "stop:pristine-library-baseline",
+      "resolved": false,
+      "reason": "Standalone library refuses pre-existing historical template/media-folder tables; the old173-artifact fixture is polluted by two excluded bundles and cannot prove fresh parity."
+    },
+    {
+      "id": "stop:history-reconciliation",
+      "resolved": false,
+      "reason": "247 historical records include73 unresolved classifications:35 investigation,29 missing-source,1 historical rollback,6 transport variants,2 committed successors. Normalized matching is not semantic/security equivalence."
+    },
+    {
+      "id": "stop:external-hq-boundary",
+      "resolved": false,
+      "reason": "Nine AkiHQ artifacts atb8496ec095943f7b54c8d07f84567dbacea1421f are hash verified but not replayed/equivalent to live-history bytes. Preserve independent AkiBusiness/AkiHQ ownership."
+    },
+    {
+      "id": "stop:final-security-and-customer-journeys",
+      "resolved": false,
+      "reason": "Final schema/function/ACL fingerprint, account guard target completeness, private data/RLS/tenant/XP/check-in/booking/Auth/browser/device acceptance remain unverified for a full canonical fresh baseline."
+    }
+  ],
+  "candidateOrder": [
+    "database/migrations/0001_foundation.sql",
+    "database/migrations/0002_identity_and_business.sql",
+    "database/migrations/0003_community_and_moderation.sql",
+    "database/migrations/0004_accounts_and_roles.sql",
+    "database/migrations/0005_spain_and_account_controls.sql",
+    "database/migrations/0006_loyalty_passports.sql",
+    "database/migrations/0007_promotions_analytics.sql",
+    "database/migrations/0008_business_operations.sql",
+    "database/migrations/0009_public_catalogue.sql",
+    "database/migrations/0010_recent_event_refs.sql",
+    "database/migrations/0011_resolve_report_parameter_fix.sql",
+    "database/migrations/0012_event_expiry_cron.sql",
+    "database/migrations/0013_event_expiry_status_fix.sql",
+    "database/migrations/0014_owned_event_recurrence.sql",
+    "database/migrations/0015_rpc_execute_hardening.sql",
+    "database/migrations/0016_venue_contacts_and_public_media.sql",
+    "database/migrations/0017_event_safety_details.sql",
+    "database/migrations/0018_administrator_inherited_venue_access.sql",
+    "database/migrations/0019_venue_media_team_management.sql",
+    "database/migrations/0020_admin_catalogue_and_feature_flags.sql",
+    "database/migrations/0021_community_abuse_limits.sql",
+    "database/migrations/0022_terms_acceptance_versioning.sql",
+    "database/migrations/0023_deletion_request_operations.sql",
+    "database/migrations/0024_staff_operations_moderation.sql",
+    "database/migrations/0025_owned_catalogue_deletion.sql",
+    "database/migrations/0026_promote_launch_catalogue.sql",
+    "database/migrations/0027_admin_user_crm.sql",
+    "database/migrations/0028_profile_operations_and_business_onboarding.sql",
+    "database/migrations/0029_stripe_billing.sql",
+    "database/migrations/0030_atomic_stripe_webhook_claim.sql",
+    "database/migrations/0031_crm_staff_data.sql",
+    "database/migrations/0032_workspace_snapshots_sharing.sql",
+    "database/migrations/0033_premium_entitlements.sql",
+    "database/migrations/0034_ai_team.sql",
+    "database/migrations/0035_ai_team_autonomy.sql",
+    "database/migrations/0036_ai_team_manager_reporting.sql",
+    "database/migrations/0037_ai_team_rpc_permissions.sql",
+    "database/migrations/0038_ai_team_crm_workspace.sql",
+    "database/migrations/0039_ai_model_pricing_refresh.sql",
+    "database/migrations/0040_ai_budget_reservation_ambiguity.sql",
+    "database/migrations/0041_ai_failed_request_costs.sql",
+    "database/migrations/0042_spain_address_search.sql",
+    "database/migrations/0043_harden_spain_address_permissions.sql",
+    "database/migrations/0044_fix_featured_event_promotion_flow.sql",
+    "database/migrations/0045_harden_featured_promotion_rpc.sql",
+    "database/migrations/0046_personalisation_foundation.sql",
+    "database/migrations/0047_harden_personalisation_function_permissions.sql",
+    "database/migrations/0048_personalisation_foreign_key_indexes.sql",
+    "database/migrations/0049_crm_personalisation_analytics.sql",
+    "database/migrations/0050_crm_durable_workspace_records.sql",
+    "database/migrations/0051_harden_crm_updated_at_trigger.sql",
+    "database/migrations/0052_ai_coder_and_durable_outputs.sql",
+    "database/migrations/0053_raise_ai_provider_round_limit.sql",
+    "database/migrations/0054_publish_geocoded_community_events.sql",
+    "database/migrations/0055_ai_web_research.sql",
+    "database/migrations/0056_ai_workspace_management.sql",
+    "database/migrations/0057_ai_full_workspace_and_agent_configuration.sql",
+    "database/migrations/0058_consent_aware_advertising_profiles.sql",
+    "database/migrations/0059_admin_individual_analytics_search.sql",
+    "database/migrations/0060_crm_unclaimed_catalogue_and_cascade_deletion.sql",
+    "database/migrations/0061_revoke_anonymous_catalogue_deletion.sql",
+    "database/migrations/0062_venue_location_resolver_agent.sql",
+    "database/migrations/0063_repair_unclaimed_venue_spanish_text.sql",
+    "database/migrations/0064_increase_admin_ai_throughput.sql",
+    "database/migrations/0065_automatic_catalogue_moderation.sql",
+    "database/migrations/0066_owner_console.sql",
+    "database/migrations/0067_private_owner_backgrounds.sql",
+    "database/migrations/0068_creator_community.sql",
+    "database/migrations/0069_product_contract_loyalty_profiles.sql",
+    "database/migrations/0070_complete_questionnaire_contract.sql",
+    "database/migrations/0071_fix_booking_request_rpc.sql",
+    "database/migrations/0072_refine_venue_location_address_fallback.sql",
+    "database/migrations/0073_unclaim_owned_venue.sql",
+    "database/migrations/0074_crm_multi_tenant_workspaces.sql",
+    "database/migrations/0075_harden_crm_authenticated_grants.sql",
+    "database/migrations/0076_harden_crm_function_grants.sql",
+    "database/migrations/0077_optimize_crm_policies_and_foreign_keys.sql",
+    "database/migrations/0078_sync_platform_crm_membership.sql",
+    "database/migrations/0079_crm_inventory_commerce_fields.sql",
+    "database/migrations/0079_rate_limit_public_analytics.sql",
+    "database/migrations/0080_crm_role_templates_and_packages.sql",
+    "database/migrations/0081_revoke_legacy_business_application_rpc.sql",
+    "database/migrations/0082_free_venue_access_and_billing_repair.sql",
+    "database/migrations/0083_catalogue_venue_search.sql",
+    "database/migrations/0084_product_readiness_loyalty_reporting.sql",
+    "supabase/migrations/20260923000739_accommodation_vertical.sql",
+    "supabase/migrations/20260923002500_accommodation_review_queue.sql",
+    "database/migrations/0085_venue_relevance_audit.sql",
+    "database/migrations/0086_venue_relevance_discovery.sql",
+    "database/migrations/0087_venue_member_email_invites.sql",
+    "database/migrations/0088_catalogue_translation_metadata_fingerprint.sql",
+    "database/migrations/0089_repair_akipasa_selection_admin_publish.sql",
+    "database/migrations/0090_media_library_event_price_display.sql",
+    "database/migrations/0091_five_slot_media_studios.sql",
+    "database/migrations/0092_verified_venue_trust.sql",
+    "database/migrations/0093_event_media_slot_semantics.sql",
+    "database/migrations/0102_event_catalogue_sections.sql"
+  ],
+  "entries": [
+    {
+      "path": "database/migrations/0001_foundation.sql",
+      "sha256": "bd5ca62505a17b7bfd81acdeb70987bf01e75a7e8b1aa8102310f1e7df22d370",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["stop:platform-baseline"],
+      "scopedCreatorEvidence": {
+        "sha256": "bd5ca62505a17b7bfd81acdeb70987bf01e75a7e8b1aa8102310f1e7df22d370",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0002_identity_and_business.sql",
+      "sha256": "c1a7f504de3eaa8c7bc24ae195cfc9b85236d6310b7596b2b3860c11a37bf352",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0001_foundation.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "c1a7f504de3eaa8c7bc24ae195cfc9b85236d6310b7596b2b3860c11a37bf352",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0003_community_and_moderation.sql",
+      "sha256": "c2cd1a3be816cbc077fb6952b43d407438d796eb5728b8323fb72c9bfe3dbeb8",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0002_identity_and_business.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "c2cd1a3be816cbc077fb6952b43d407438d796eb5728b8323fb72c9bfe3dbeb8",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0004_accounts_and_roles.sql",
+      "sha256": "4455f50322386df232483666376073e671295519dbc3aadae757df20c61c631d",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0003_community_and_moderation.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "4455f50322386df232483666376073e671295519dbc3aadae757df20c61c631d",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0005_spain_and_account_controls.sql",
+      "sha256": "0b7374f56ee403ef5553ac4f376f906b61c08669e0771dcf949583bd7c99229d",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0004_accounts_and_roles.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "0b7374f56ee403ef5553ac4f376f906b61c08669e0771dcf949583bd7c99229d",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0006_loyalty_passports.sql",
+      "sha256": "5c8e152d6c0e983181e0a6fb7a8c6e9e76ee7f54bfe49bd9134c892020beb9f7",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0005_spain_and_account_controls.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "5c8e152d6c0e983181e0a6fb7a8c6e9e76ee7f54bfe49bd9134c892020beb9f7",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0007_promotions_analytics.sql",
+      "sha256": "2154333595fd27324a76d9c4b0dc18c0400ff2b291202710b7d1d1e633d96de0",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0006_loyalty_passports.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "2154333595fd27324a76d9c4b0dc18c0400ff2b291202710b7d1d1e633d96de0",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0008_business_operations.sql",
+      "sha256": "63d68fb47bf4a22510d9b14bb8c0077df64c2bd456e915cf3d114afe9da47a53",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0007_promotions_analytics.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "63d68fb47bf4a22510d9b14bb8c0077df64c2bd456e915cf3d114afe9da47a53",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0009_public_catalogue.sql",
+      "sha256": "4db0c7a0b27adbc72f2102bc5186877da8e98feaee130d828371d51ef8a32d7f",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0008_business_operations.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "4db0c7a0b27adbc72f2102bc5186877da8e98feaee130d828371d51ef8a32d7f",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0010_recent_event_refs.sql",
+      "sha256": "4e12f00a5e0c2325d40a02cdd309924672f4e0f92819a6ceb6ac16ed9681eb21",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0009_public_catalogue.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "4e12f00a5e0c2325d40a02cdd309924672f4e0f92819a6ceb6ac16ed9681eb21",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0011_resolve_report_parameter_fix.sql",
+      "sha256": "7b0b14f3a42eb826cc36bf903e85fe3ec4c9fad1e7fef255d552cf3b21f17d4b",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0010_recent_event_refs.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "7b0b14f3a42eb826cc36bf903e85fe3ec4c9fad1e7fef255d552cf3b21f17d4b",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0012_event_expiry_cron.sql",
+      "sha256": "0988cc9581309f0a850cd6ea3dad240aee742e46aa3a5859184ce12ba379cb04",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0011_resolve_report_parameter_fix.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "0988cc9581309f0a850cd6ea3dad240aee742e46aa3a5859184ce12ba379cb04",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0013_event_expiry_status_fix.sql",
+      "sha256": "ace0d87c494f4a0855d6abff32baf1f016dda28d629df953b8312b6170a2290c",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0012_event_expiry_cron.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "ace0d87c494f4a0855d6abff32baf1f016dda28d629df953b8312b6170a2290c",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0014_owned_event_recurrence.sql",
+      "sha256": "1400d231c446455a84a67f0d8903f0c009f875aff49810c4c2d8d600491e2f87",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0013_event_expiry_status_fix.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "1400d231c446455a84a67f0d8903f0c009f875aff49810c4c2d8d600491e2f87",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0015_rpc_execute_hardening.sql",
+      "sha256": "796ee41e5647d1bb70fa3ea0233c8d3433407dc334b6e306119216e897f9961a",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0014_owned_event_recurrence.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "796ee41e5647d1bb70fa3ea0233c8d3433407dc334b6e306119216e897f9961a",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0016_venue_contacts_and_public_media.sql",
+      "sha256": "5c59ebf47b5f29cfa63c9348476f9cc15c86250aa550a06fb7fdd2955702fbcf",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0015_rpc_execute_hardening.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "5c59ebf47b5f29cfa63c9348476f9cc15c86250aa550a06fb7fdd2955702fbcf",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0017_event_safety_details.sql",
+      "sha256": "099e7ed2d0ce16863fd672aacd44535e3647e2ddec0c8bb5ff1558b88c45aa50",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0016_venue_contacts_and_public_media.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "099e7ed2d0ce16863fd672aacd44535e3647e2ddec0c8bb5ff1558b88c45aa50",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0018_administrator_inherited_venue_access.sql",
+      "sha256": "cc7db32469b0a3d6a2ef892d52339ff4ab776e6590402a084abfe65280ad8a67",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0017_event_safety_details.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "cc7db32469b0a3d6a2ef892d52339ff4ab776e6590402a084abfe65280ad8a67",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0019_venue_media_team_management.sql",
+      "sha256": "4f1ca30fd8dc5d4a5967dbe788d102dd1c470ff4ee0b5e3e31e7bb4678fa2603",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0018_administrator_inherited_venue_access.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "4f1ca30fd8dc5d4a5967dbe788d102dd1c470ff4ee0b5e3e31e7bb4678fa2603",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0020_admin_catalogue_and_feature_flags.sql",
+      "sha256": "53781fe8c3bf70819eae1b78c5995a588d1b30f900471b805499315f6a7a6d12",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0019_venue_media_team_management.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "53781fe8c3bf70819eae1b78c5995a588d1b30f900471b805499315f6a7a6d12",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0021_community_abuse_limits.sql",
+      "sha256": "883bb1d68ed6517a9efc2a3182a27c9a948a5aa7c5e14015e93dd3eb679e18cd",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0020_admin_catalogue_and_feature_flags.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "883bb1d68ed6517a9efc2a3182a27c9a948a5aa7c5e14015e93dd3eb679e18cd",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0022_terms_acceptance_versioning.sql",
+      "sha256": "a39d318e71419df0d594f882cac04f8dda296854137fa302461fa0e095834789",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0021_community_abuse_limits.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "a39d318e71419df0d594f882cac04f8dda296854137fa302461fa0e095834789",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0023_deletion_request_operations.sql",
+      "sha256": "eaf4f428b750190bef0b6d886b19af652eb721ae250555798be698335484bde0",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0022_terms_acceptance_versioning.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "eaf4f428b750190bef0b6d886b19af652eb721ae250555798be698335484bde0",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0024_staff_operations_moderation.sql",
+      "sha256": "cbf7a353ada83b64242a53ef0c30003a4254a83c69db39f1b68aec23840c1af2",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0023_deletion_request_operations.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "cbf7a353ada83b64242a53ef0c30003a4254a83c69db39f1b68aec23840c1af2",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0025_owned_catalogue_deletion.sql",
+      "sha256": "e3b0f7beec79b3b5e420f399b5dfef58a153c25095a78351772761184d885c0e",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0024_staff_operations_moderation.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "e3b0f7beec79b3b5e420f399b5dfef58a153c25095a78351772761184d885c0e",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0026_promote_launch_catalogue.sql",
+      "sha256": "b1279a9f99939e5e5e6cc3253ac47699dfe912420d34ecac1b546232b7622b46",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0025_owned_catalogue_deletion.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "b1279a9f99939e5e5e6cc3253ac47699dfe912420d34ecac1b546232b7622b46",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0027_admin_user_crm.sql",
+      "sha256": "a861f8220e171a5fbc95c09c941685f3eedeac1a0a84982b231df485490a534f",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0026_promote_launch_catalogue.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "a861f8220e171a5fbc95c09c941685f3eedeac1a0a84982b231df485490a534f",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0028_profile_operations_and_business_onboarding.sql",
+      "sha256": "8e78cab338c7527e242a16846868fca595e0de653f50de36bdb300ca13c6482d",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0027_admin_user_crm.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "8e78cab338c7527e242a16846868fca595e0de653f50de36bdb300ca13c6482d",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0029_stripe_billing.sql",
+      "sha256": "f9e4dc3b7453a2b41b8f580d10ec0af33ae409cbc599454be6fbd9d9cd120e2e",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0028_profile_operations_and_business_onboarding.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "f9e4dc3b7453a2b41b8f580d10ec0af33ae409cbc599454be6fbd9d9cd120e2e",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0030_atomic_stripe_webhook_claim.sql",
+      "sha256": "c68832436b4a226ff60880a93f9ea3dc189285e63270f5b68b1200129a311ed5",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0029_stripe_billing.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "c68832436b4a226ff60880a93f9ea3dc189285e63270f5b68b1200129a311ed5",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0031_crm_staff_data.sql",
+      "sha256": "51acabac28cc91290e844d6ace20c1fda029cc5731106fa8af71647fd381aea7",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0030_atomic_stripe_webhook_claim.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "51acabac28cc91290e844d6ace20c1fda029cc5731106fa8af71647fd381aea7",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0032_workspace_snapshots_sharing.sql",
+      "sha256": "1f52db1e7bfa5ebd7b27b8e9bb874871511392db5bd1cde934d9f6ed8346fd0b",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0031_crm_staff_data.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "1f52db1e7bfa5ebd7b27b8e9bb874871511392db5bd1cde934d9f6ed8346fd0b",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0033_premium_entitlements.sql",
+      "sha256": "8bde7021c9a71805c091282637517e00346ecac6c0afb502ae6ccc4b23e505b0",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0032_workspace_snapshots_sharing.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "8bde7021c9a71805c091282637517e00346ecac6c0afb502ae6ccc4b23e505b0",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0034_ai_team.sql",
+      "sha256": "74f538009b0a7fc481e8bc736fab87bee8182b617d723ab7f9a1ef4c18cbd4f1",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0033_premium_entitlements.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "74f538009b0a7fc481e8bc736fab87bee8182b617d723ab7f9a1ef4c18cbd4f1",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0035_ai_team_autonomy.sql",
+      "sha256": "9e17cfa132edc8072356c0591fb2a20db845bea879f237045c958890dea331d7",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0034_ai_team.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "9e17cfa132edc8072356c0591fb2a20db845bea879f237045c958890dea331d7",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0036_ai_team_manager_reporting.sql",
+      "sha256": "97f1c11ff05386867d292b135fd308f2d22d24f236f2e30ae3875baee11e639f",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0035_ai_team_autonomy.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "97f1c11ff05386867d292b135fd308f2d22d24f236f2e30ae3875baee11e639f",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0037_ai_team_rpc_permissions.sql",
+      "sha256": "8687c8e5916484c84302218d9ffde76b18ef6111e8d3bf034d29d763664d803b",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0036_ai_team_manager_reporting.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "8687c8e5916484c84302218d9ffde76b18ef6111e8d3bf034d29d763664d803b",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0038_ai_team_crm_workspace.sql",
+      "sha256": "bd3e894fa62eaaaf6048c45fd7756f9b2ba8762721bebf49319db467369acaf3",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0037_ai_team_rpc_permissions.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "bd3e894fa62eaaaf6048c45fd7756f9b2ba8762721bebf49319db467369acaf3",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0039_ai_model_pricing_refresh.sql",
+      "sha256": "e402bfb860f2ccc926f098baff601ea928aad2fd549fd9b2cb096b47c7fb8907",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0038_ai_team_crm_workspace.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "e402bfb860f2ccc926f098baff601ea928aad2fd549fd9b2cb096b47c7fb8907",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0040_ai_budget_reservation_ambiguity.sql",
+      "sha256": "146e845b7a21da133a27e937dd285ce2d22dfadc54b73bdf8ee2aea8dc33c801",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0039_ai_model_pricing_refresh.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "146e845b7a21da133a27e937dd285ce2d22dfadc54b73bdf8ee2aea8dc33c801",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0041_ai_failed_request_costs.sql",
+      "sha256": "7e3f3154e46cb69bed84dad654267f67436bae1a98953006c2bb58216fdfac56",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0040_ai_budget_reservation_ambiguity.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "7e3f3154e46cb69bed84dad654267f67436bae1a98953006c2bb58216fdfac56",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0042_spain_address_search.sql",
+      "sha256": "135be4540e9909e6f1f417f3342c03dfd7753117328a488f592f2dd181aee78a",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0041_ai_failed_request_costs.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "135be4540e9909e6f1f417f3342c03dfd7753117328a488f592f2dd181aee78a",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0043_harden_spain_address_permissions.sql",
+      "sha256": "4bd26cdb17fe80e879be629b7073924423e84b426efba72af9bad514f6c7642a",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0042_spain_address_search.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "4bd26cdb17fe80e879be629b7073924423e84b426efba72af9bad514f6c7642a",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0044_fix_featured_event_promotion_flow.sql",
+      "sha256": "3030d1cef2560fd40048f4b7bd8d11f6e38bee6243fbfe656e2e7ba6c1ce26f2",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0043_harden_spain_address_permissions.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "3030d1cef2560fd40048f4b7bd8d11f6e38bee6243fbfe656e2e7ba6c1ce26f2",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0045_harden_featured_promotion_rpc.sql",
+      "sha256": "0485e471a0bfb547ee85ffcb2c636954300a29e2c2b617ee2a2440bcda8e39f5",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0044_fix_featured_event_promotion_flow.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "0485e471a0bfb547ee85ffcb2c636954300a29e2c2b617ee2a2440bcda8e39f5",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0046_personalisation_foundation.sql",
+      "sha256": "9dd9f35878563181064f9676639b19c1069138975f7dc1b3f7db7616d05e8209",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0045_harden_featured_promotion_rpc.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "9dd9f35878563181064f9676639b19c1069138975f7dc1b3f7db7616d05e8209",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0047_harden_personalisation_function_permissions.sql",
+      "sha256": "565d1758560b8443a47ba2949b54ee78145bf65f69771cc18b1856613febbc5f",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0046_personalisation_foundation.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "565d1758560b8443a47ba2949b54ee78145bf65f69771cc18b1856613febbc5f",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0048_personalisation_foreign_key_indexes.sql",
+      "sha256": "37a7d522669bda643f8270e4705d39e25409b2e32c15f96bc8b4dff0afd5905d",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0047_harden_personalisation_function_permissions.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "37a7d522669bda643f8270e4705d39e25409b2e32c15f96bc8b4dff0afd5905d",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0049_crm_personalisation_analytics.sql",
+      "sha256": "084a9c57afaf719b3b4160e814655fe1daf8443a75dd5360a33509dda8261102",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0048_personalisation_foreign_key_indexes.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "084a9c57afaf719b3b4160e814655fe1daf8443a75dd5360a33509dda8261102",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0050_crm_durable_workspace_records.sql",
+      "sha256": "e51c58158f029ade94821acb823d45923295d0ec8fc260ee9252e163077e9658",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0049_crm_personalisation_analytics.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "e51c58158f029ade94821acb823d45923295d0ec8fc260ee9252e163077e9658",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0051_harden_crm_updated_at_trigger.sql",
+      "sha256": "1617f76687935eb15da7de23ee79dbb5cb587e35386b5e36631fdaadcdde54a1",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0050_crm_durable_workspace_records.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "1617f76687935eb15da7de23ee79dbb5cb587e35386b5e36631fdaadcdde54a1",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0052_ai_coder_and_durable_outputs.sql",
+      "sha256": "1abaad84f895f9c0688ae0778b4a0e526bd269ff76078a385cd7c0d232ab72a4",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0051_harden_crm_updated_at_trigger.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "1abaad84f895f9c0688ae0778b4a0e526bd269ff76078a385cd7c0d232ab72a4",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0053_raise_ai_provider_round_limit.sql",
+      "sha256": "6d8790ff10c89ed434e4e354f3eca3da3512d04b59a73dd112867219a0c0c4bb",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0052_ai_coder_and_durable_outputs.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "6d8790ff10c89ed434e4e354f3eca3da3512d04b59a73dd112867219a0c0c4bb",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0054_publish_geocoded_community_events.sql",
+      "sha256": "e2e19a14a4ef8af4f385837562851950bda224cf2daee67a14099a817eacaff5",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0053_raise_ai_provider_round_limit.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "e2e19a14a4ef8af4f385837562851950bda224cf2daee67a14099a817eacaff5",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0055_ai_web_research.sql",
+      "sha256": "153162386455c06d1b43146c58b9c8029920f2e5984e038a50fd1d7360db94e9",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0054_publish_geocoded_community_events.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "153162386455c06d1b43146c58b9c8029920f2e5984e038a50fd1d7360db94e9",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0056_ai_workspace_management.sql",
+      "sha256": "9f14388c218e15f8018bfe0bba5a83557889fbdf6d81c1dba01a53bef8a91ede",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0055_ai_web_research.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "9f14388c218e15f8018bfe0bba5a83557889fbdf6d81c1dba01a53bef8a91ede",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0057_ai_full_workspace_and_agent_configuration.sql",
+      "sha256": "1124f304866cff390071d3caae8b6894ea4066c89b0ab4226e57c32095327c79",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0056_ai_workspace_management.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "1124f304866cff390071d3caae8b6894ea4066c89b0ab4226e57c32095327c79",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0058_consent_aware_advertising_profiles.sql",
+      "sha256": "c32d1d1e349b1d446e877da385134883f7c8abdc302f53de7b14b437eabf4b0d",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0057_ai_full_workspace_and_agent_configuration.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "c32d1d1e349b1d446e877da385134883f7c8abdc302f53de7b14b437eabf4b0d",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0059_admin_individual_analytics_search.sql",
+      "sha256": "83d7c0baa145528e034e279764e0fa2b03e60d9bd128720a256eddef6ed176a4",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0058_consent_aware_advertising_profiles.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "83d7c0baa145528e034e279764e0fa2b03e60d9bd128720a256eddef6ed176a4",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0060_crm_unclaimed_catalogue_and_cascade_deletion.sql",
+      "sha256": "455f696a94adb07a3c331964bbe72aa29da3bc2aac976ba81754f9a60a9a2f24",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0059_admin_individual_analytics_search.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "455f696a94adb07a3c331964bbe72aa29da3bc2aac976ba81754f9a60a9a2f24",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0061_revoke_anonymous_catalogue_deletion.sql",
+      "sha256": "7a57ad98a17b7db3a9b40ad8978901513a01932e7046b596e0970daff6f2db4c",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0060_crm_unclaimed_catalogue_and_cascade_deletion.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "7a57ad98a17b7db3a9b40ad8978901513a01932e7046b596e0970daff6f2db4c",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0062_venue_location_resolver_agent.sql",
+      "sha256": "54726bfae835b1be24a0d953cca8b5fff22090196948c9da401e1c73270999e2",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0061_revoke_anonymous_catalogue_deletion.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "54726bfae835b1be24a0d953cca8b5fff22090196948c9da401e1c73270999e2",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0063_repair_unclaimed_venue_spanish_text.sql",
+      "sha256": "ddc80ec9aa9ad0a86e0a25c2d37bd50667806d0ae4f05ae6014bfedeb042f44e",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0062_venue_location_resolver_agent.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "ddc80ec9aa9ad0a86e0a25c2d37bd50667806d0ae4f05ae6014bfedeb042f44e",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0064_increase_admin_ai_throughput.sql",
+      "sha256": "2e975b4765e747bd87fa212061a2b2a051a63b9d816bb93f3629b55543d80cec",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0063_repair_unclaimed_venue_spanish_text.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "2e975b4765e747bd87fa212061a2b2a051a63b9d816bb93f3629b55543d80cec",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0065_automatic_catalogue_moderation.sql",
+      "sha256": "da336e1b041ceecdfa4c2b3df919ffe8bb24443326eed3777c6fd566541f42ff",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0064_increase_admin_ai_throughput.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "da336e1b041ceecdfa4c2b3df919ffe8bb24443326eed3777c6fd566541f42ff",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0066_owner_console.sql",
+      "sha256": "d1d5560d467909fb50bc6b8b934d0126e83342af1f862cd071a12b38d99baf9a",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0065_automatic_catalogue_moderation.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "d1d5560d467909fb50bc6b8b934d0126e83342af1f862cd071a12b38d99baf9a",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0067_private_owner_backgrounds.sql",
+      "sha256": "ad7c642b35ef0a563722f933dc2309b8fd3aee0eb1ef5deafe23a3c7beac974d",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0066_owner_console.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "ad7c642b35ef0a563722f933dc2309b8fd3aee0eb1ef5deafe23a3c7beac974d",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0068_creator_community.sql",
+      "sha256": "683259d66550906ecfd02d2a7c99930e77e8f552be12c76a5cb74604b9024883",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0067_private_owner_backgrounds.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "683259d66550906ecfd02d2a7c99930e77e8f552be12c76a5cb74604b9024883",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0069_product_contract_loyalty_profiles.sql",
+      "sha256": "3eec646e7a630d3ffd0111e0d354d72ee45d0a6d55a32d67db391c6ec9e5a905",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0068_creator_community.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "3eec646e7a630d3ffd0111e0d354d72ee45d0a6d55a32d67db391c6ec9e5a905",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0070_complete_questionnaire_contract.sql",
+      "sha256": "cb588cb6a1076b9c6f23e8c95a4def29cfb508c389dc1c4cc43c03de0ad46501",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0069_product_contract_loyalty_profiles.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "cb588cb6a1076b9c6f23e8c95a4def29cfb508c389dc1c4cc43c03de0ad46501",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0071_fix_booking_request_rpc.sql",
+      "sha256": "2f2467c0561a292ac58904b6b35bfaf86b4dbaab79c076bb3b215f4dbec99d03",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0070_complete_questionnaire_contract.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "2f2467c0561a292ac58904b6b35bfaf86b4dbaab79c076bb3b215f4dbec99d03",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0072_refine_venue_location_address_fallback.sql",
+      "sha256": "b6d163987c3e90fb7e79167feef2867398352d887a1b8a3c08323087d8e1b34e",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0071_fix_booking_request_rpc.sql"],
+      "scopedCreatorEvidence": {
+        "sha256": "b6d163987c3e90fb7e79167feef2867398352d887a1b8a3c08323087d8e1b34e",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0073_unclaim_owned_venue.sql",
+      "sha256": "18a2c2ebcb3660fbd39290795b640dc8372710c3e912da033547f5869aae0806",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0072_refine_venue_location_address_fallback.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "18a2c2ebcb3660fbd39290795b640dc8372710c3e912da033547f5869aae0806",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      }
+    },
+    {
+      "path": "database/migrations/0074_crm_multi_tenant_workspaces.sql",
+      "sha256": "21993ebf6c040fbf1d586d1aa28d75c1fe67a700c66f3486a3fb6d6d95c4c3a6",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0073_unclaim_owned_venue.sql",
+        "stop:synthetic-admin-bootstrap"
+      ]
+    },
+    {
+      "path": "database/migrations/0075_harden_crm_authenticated_grants.sql",
+      "sha256": "7e0d41e9d86e8e7513ebfa05bc9682841e2cd72509c2ba01162145fef0d9b6ba",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0074_crm_multi_tenant_workspaces.sql"]
+    },
+    {
+      "path": "database/migrations/0076_harden_crm_function_grants.sql",
+      "sha256": "d5df6e2de86d961e38dc691319ca3119c78a9110ba4f343817deebc223d3b64b",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0075_harden_crm_authenticated_grants.sql"
+      ]
+    },
+    {
+      "path": "database/migrations/0077_optimize_crm_policies_and_foreign_keys.sql",
+      "sha256": "0260377c7f3c9afc4126f73a28b61c47143f9d94a4dfbdd6bbd74613d885dbdc",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0076_harden_crm_function_grants.sql"]
+    },
+    {
+      "path": "database/migrations/0078_sync_platform_crm_membership.sql",
+      "sha256": "6a91a524f5704f0f0221db87b29507aa98aabfdce3f677566bababa8507ae040",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0077_optimize_crm_policies_and_foreign_keys.sql"
+      ]
+    },
+    {
+      "path": "database/migrations/0079_crm_inventory_commerce_fields.sql",
+      "sha256": "00a1ed29a7f7127c5037b2ec728e733367adf2cafa17aa1ac59d3d9d1a22bdf8",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0078_sync_platform_crm_membership.sql"]
+    },
+    {
+      "path": "database/migrations/0079_rate_limit_public_analytics.sql",
+      "sha256": "9d9ba81ac92932140d0f259ac233874278f0e5e64f9f9ab6f24e7ba9deba62c5",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0079_crm_inventory_commerce_fields.sql"]
+    },
+    {
+      "path": "database/migrations/0080_crm_role_templates_and_packages.sql",
+      "sha256": "2b36c9956e71f091156857d30ee75699bf65cbce311ea17a5eff0e0eed31cf3b",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0079_rate_limit_public_analytics.sql"]
+    },
+    {
+      "path": "database/migrations/0081_revoke_legacy_business_application_rpc.sql",
+      "sha256": "cae65d85a51783ccd9044f44cca7e366d06f436d1eb5062b7f78191b50752ebd",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0080_crm_role_templates_and_packages.sql"
+      ]
+    },
+    {
+      "path": "database/migrations/0082_free_venue_access_and_billing_repair.sql",
+      "sha256": "96b0be09f9e165da82c8cf20e5ef20ab375333faaa04d2131e0aa0ffde06c821",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0081_revoke_legacy_business_application_rpc.sql"
+      ]
+    },
+    {
+      "path": "database/migrations/0083_catalogue_venue_search.sql",
+      "sha256": "85b41015c2ec1418c5fe1032732ce2bbc0ff5cbc3cabfd919bcfeb59faa77503",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0082_free_venue_access_and_billing_repair.sql"
+      ]
+    },
+    {
+      "path": "database/migrations/0084_product_readiness_loyalty_reporting.sql",
+      "sha256": "64df15848c97cd35c2956e5e8602e297371666b81475f0dbe2c9cdf117fe47af",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0083_catalogue_venue_search.sql"]
+    },
+    {
+      "path": "database/migrations/0085_venue_relevance_audit.sql",
+      "sha256": "9296636dd3bfb7bdd1827794d79805dade5bd420ab6335a6248b7c906f42cbf5",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "supabase/migrations/20260923002500_accommodation_review_queue.sql"
+      ]
+    },
+    {
+      "path": "database/migrations/0086_venue_relevance_discovery.sql",
+      "sha256": "cbe438e2e6b2b9a5a0b444a9a1da9461e6e30283cdd41e8d3595d9a43bac8cea",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0085_venue_relevance_audit.sql"]
+    },
+    {
+      "path": "database/migrations/0087_venue_member_email_invites.sql",
+      "sha256": "04bade631d580596816160e7af31c682d1ad22a1cbe6076262693f549f51adbd",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0086_venue_relevance_discovery.sql"]
+    },
+    {
+      "path": "database/migrations/0088_catalogue_translation_metadata_fingerprint.sql",
+      "sha256": "b250da1a2f90d4c9748b2a43da16386dd70372338c794f9c386ad2b0b319c9f9",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0087_venue_member_email_invites.sql"]
+    },
+    {
+      "path": "database/migrations/0089_repair_akipasa_selection_admin_publish.sql",
+      "sha256": "ce7bc7ea1aa2e002744d9f84fd972a783286d2dcc7a37262c10872ae5d5948e4",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0088_catalogue_translation_metadata_fingerprint.sql"
+      ]
+    },
+    {
+      "path": "database/migrations/0090_media_library_event_price_display.sql",
+      "sha256": "26db88bf78c2973fdba50fd50f88ecff85fbc4f4e14cd6193f34ef35b9db3c9c",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0089_repair_akipasa_selection_admin_publish.sql"
+      ]
+    },
+    {
+      "path": "database/migrations/0091_five_slot_media_studios.sql",
+      "sha256": "21731590d0a0c6b7306cfcbe100d9afeac0cdc515ae5954224f6afbdd4640dfc",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0090_media_library_event_price_display.sql"
+      ]
+    },
+    {
+      "path": "database/migrations/0092_verified_venue_trust.sql",
+      "sha256": "cd51329a0610bdba1376bf997e96342813512142c96f2f060cfcf41cdf81b4c4",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0091_five_slot_media_studios.sql"]
+    },
+    {
+      "path": "database/migrations/0093_event_media_slot_semantics.sql",
+      "sha256": "b2627f046d9059d3d92a715cb078da7d526e2c91e42b91a12e8d8db77b90dfd3",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0092_verified_venue_trust.sql"]
+    },
+    {
+      "path": "database/migrations/0102_event_catalogue_sections.sql",
+      "sha256": "774cc7e3ec54ddc10dc455fcbe5b7d4e9a301e7d71fd26d24ce632b1b008b28b",
+      "classification": "reviewed-candidate-prefix",
+      "requires": ["database/migrations/0093_event_media_slot_semantics.sql"]
+    },
+    {
+      "path": "database/migrations/20260916103318_managed_achievements.sql",
+      "sha256": "8b1687705c3f52481bd1f5b347bc2203cdecc1644221767cf447d7e32039613d",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260916103318"
+    },
+    {
+      "path": "database/migrations/20260916115126_activity_achievements.sql",
+      "sha256": "5469d4ec10db33e6a1e88d1fa5cad626b19fac7144d44acd4965f6590bbee464",
+      "classification": "unresolved",
+      "requires": [
+        "database/migrations/20260916103318_managed_achievements.sql"
+      ],
+      "filenameVersion": "20260916115126"
+    },
+    {
+      "path": "database/migrations/20261003213755_akipals_restricted_preview.sql",
+      "sha256": "405d5d5fad184b521a0e71f3ab70c5c7bebef8d1a44d8c735bbf0e60a55ec4d3",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261003213755"
+    },
+    {
+      "path": "database/migrations/20261003220529_akipals_command_rate_index.sql",
+      "sha256": "7192c73042e968d4ce47c5ccad1e3c6de593c9914e2aebe9203f0260d2e8d74f",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261003220529"
+    },
+    {
+      "path": "database/migrations/20261005123000_akipals_product_foundations.sql",
+      "sha256": "453a9e8d725010b03ea1b7f29b70893baac7c2edfb327fa7bc0235aa34301588",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261005123000"
+    },
+    {
+      "path": "database/migrations/20261005131500_akipals_unlock_rule_constraints.sql",
+      "sha256": "eeedae00e26fdfdbd922a5496d9b9d7ae6bab3ee1e763e46a1df46eaf24762c0",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261005131500"
+    },
+    {
+      "path": "database/migrations/20261010105857_staff_claim_review_details.sql",
+      "sha256": "8c9c6c79b1de345e6d50d6432a3546578165c8b123859f3a6cb9656249328175",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261010105857"
+    },
+    {
+      "path": "database/migrations/20261010114606_claim_decision_emails.sql",
+      "sha256": "d09bfe7cdc1eba5eb31736e9417087fb2ca44bce8d9588df8a3c1dc43c907ef0",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261010114606"
+    },
+    {
+      "path": "database/migrations/20261010231500_venue_claim_details.sql",
+      "sha256": "91d1b5f641263108df2659fb7599d362f90824b6b3f29d5f7f74453577c8bbdb",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261010231500"
+    },
+    {
+      "path": "database/migrations/20261010231800_staff_pending_claim_count.sql",
+      "sha256": "c78fe105954edf1116775f52e6a191f6cb8650a4c62cc61b29ad0c7f334e58c0",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261010231800"
+    },
+    {
+      "path": "database/migrations/20261011010000_claim_submission_alerts.sql",
+      "sha256": "d6265c8de7377103cd8d7e52131a730b8268210c4ec98e88add42681ab6574e4",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261011010000"
+    },
+    {
+      "path": "database/migrations/20261011013000_suite_emails.sql",
+      "sha256": "24f52a91eee5de31ca205d24de77d6c3cb9ab40c0adf2d0a7fd45430b1023d3c",
+      "classification": "unresolved",
+      "requires": [
+        "supabase/migrations/20261009220000_accommodation_inventory_foundation.sql"
+      ],
+      "filenameVersion": "20261011013000"
+    },
+    {
+      "path": "database/migrations/20261011204631_staff_audit_admin_only_20261011.sql",
+      "sha256": "6f1412913612a7e7b6a692a3f82a11bd0bfd26f84efdb91fd2afe18aae34b0de",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261011204631"
+    },
+    {
+      "path": "database/migrations/20261012180000_akisuite_subscription_entitlements.sql",
+      "sha256": "293c8ce593dcd51ca5c5a620b9366da1e4d179c7e6a8c9da195163116d11c8cf",
+      "classification": "excluded-historical-bundle",
+      "requires": [],
+      "reason": "Explicit reviewed pending/unapplied historical bundle; never included in this candidate order.",
+      "filenameVersion": "20261012180000"
+    },
+    {
+      "path": "database/migrations/20261012201529_akisuite_premium_workspaces.sql",
+      "sha256": "30139b6f894ab030f12435ff26d5dbea6c393c967739de4b49804ba1a4b2e569",
+      "classification": "excluded-historical-bundle",
+      "requires": [],
+      "reason": "Explicit reviewed pending/unapplied historical bundle; never included in this candidate order.",
+      "filenameVersion": "20261012201529"
+    },
+    {
+      "path": "database/migrations/20261014153000_public_venue_claim_ownership.sql",
+      "sha256": "d290c28bfe463d043617f128a3cb52f527579708c582bdb17478281f67c64587",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261014153000"
+    },
+    {
+      "path": "database/migrations/20261014183842_restrict_stripe_webhook_claim_execution.sql",
+      "sha256": "2bbad967d61cb766e700d5069871d3835d30e4d6e3fdd7867d8c5d17be79b782",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261014183842"
+    },
+    {
+      "path": "database/migrations/20261014223000_akiconduzco_rentals.sql",
+      "sha256": "12a0c8f32c20ae1d81f3a58b7de4c3bb0515a667d3ae3a0f0d84bc3ef7737710",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261014223000"
+    },
+    {
+      "path": "database/migrations/20261014230000_akiconduzco_rls_indexes.sql",
+      "sha256": "b9b7d70dc556fe98006edd16c894b23727b45d1a1224ea036563ef71706e3556",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261014230000"
+    },
+    {
+      "path": "database/migrations/20261015135805_akicoches_venue_workspace.sql",
+      "sha256": "782f1ce13203117d3b5ec0bdecda6703ecfb80b301905a47c3fefde08c256911",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261015135805"
+    },
+    {
+      "path": "database/migrations/20261015163602_link_owned_rental_company_venue.sql",
+      "sha256": "cdadd517c0ec8c46d2504a1d6a820c2ebe08082de8f03d96f5bbc6c99e999530",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261015163602"
+    },
+    {
+      "path": "database/migrations/20261015220302_independent_rental_branches.sql",
+      "sha256": "1ceef5edae1e85d1ac84d8a4580f48439398ed9d669576fea1798a5d4bcf246c",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261015220302"
+    },
+    {
+      "path": "database/migrations/20261015232311_fix_rental_storage_object_policies.sql",
+      "sha256": "72ec46faff56a2f546712c3c1b24a1516d98ffe31b3abae8fb6fd3da8abf0397",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261015232311"
+    },
+    {
+      "path": "database/migrations/20261019223704_least_privilege_security_definer_execution.sql",
+      "sha256": "16ce2096f9c8cf024d16fad7955d7e4901ac790e5f6d3cc8f4013a31c8b8ebba",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261019223704"
+    },
+    {
+      "path": "database/migrations/20261019230000_explicit_rental_review_grant.sql",
+      "sha256": "1704a3a2ce2ef295d27310cb3a2b941435aac0d45c736fb2fa262f322de3b96e",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261019230000"
+    },
+    {
+      "path": "database/migrations/20261019231000_account_export_owner_reads.sql",
+      "sha256": "d2fca1f00e9a731314909b4193b53a2e958188279510f967b30774d122767eaa",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261019231000"
+    },
+    {
+      "path": "database/migrations/20261020170415_listing_entitlement_limits.sql",
+      "sha256": "58d30dca4756d5efd0f32a9b50f7cdc182f4f19b4f671973af6ddd0d90a27e43",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261020170415"
+    },
+    {
+      "path": "database/migrations/20261020170421_shared_referral_foundation.sql",
+      "sha256": "11409963b18155234f0518aa9b2e1b1e41f9908bd7f5a6e0a9458ea6ba8a7f1d",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261020170421"
+    },
+    {
+      "path": "database/migrations/20261020170436_passport_prestige.sql",
+      "sha256": "f8cbb75183b8997f89faa6f77c7ecd7f36de692292bd5ea5777126c56dd432b7",
+      "classification": "unresolved",
+      "requires": [
+        "supabase/migrations/20261003203205_passport_award_replacement_history.sql"
+      ],
+      "filenameVersion": "20261020170436"
+    },
+    {
+      "path": "database/migrations/20261020170448_account_completion_age_declaration.sql",
+      "sha256": "d7ee43da23b267306e68f6c95623139132ccb2afb0046eeda60841ea1c605b36",
+      "classification": "unresolved",
+      "requires": [],
+      "scopedCreatorEvidence": {
+        "sha256": "d7ee43da23b267306e68f6c95623139132ccb2afb0046eeda60841ea1c605b36",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      },
+      "filenameVersion": "20261020170448"
+    },
+    {
+      "path": "database/migrations/20261020170509_subscription_toolbox.sql",
+      "sha256": "51ddae16c3f3d3b56c67356f6dd8c89fe48b27d927c300d867e3dc6bd69d4755",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261020170509"
+    },
+    {
+      "path": "database/migrations/20261020172801_operations_checkout_lifecycle.sql",
+      "sha256": "17a5d565ee0beb87b366d67a998295a98a2ed1bd39c6c1aa026616857432227d",
+      "classification": "unresolved",
+      "requires": [
+        "stop:operating-private-location",
+        "stop:operating-organisations",
+        "stop:rental-operating-location",
+        "database/migrations/20261020170509_subscription_toolbox.sql"
+      ],
+      "filenameVersion": "20261020172801"
+    },
+    {
+      "path": "database/migrations/20261020173552_enforced_listing_uploads.sql",
+      "sha256": "8b3675c479b65959d881da46b7783a578bde623f1142fbbb58ebead1a60558fe",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261020173552"
+    },
+    {
+      "path": "database/migrations/20261020180654_referral_payout_review.sql",
+      "sha256": "1b766a9b73503a6ab6188db8389a965f57cbc66060b205a695ab032f877caeac",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261020180654"
+    },
+    {
+      "path": "database/migrations/20261020180734_operations_first_invoice_recovery.sql",
+      "sha256": "934308ce6e8de7ad288fbb2ddcca6fbbc6578bf458256d4512c9b94fc04d9d4d",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261020180734"
+    },
+    {
+      "path": "database/migrations/20261020180946_account_completion_database_coverage.sql",
+      "sha256": "a92d44084d329ffc1d8d3261c3c37629b07a22b8ae91b24fcabdf601c69ed831",
+      "classification": "unresolved",
+      "requires": ["stop:complete-foundations-before-coverage"],
+      "scopedCreatorEvidence": {
+        "sha256": "a92d44084d329ffc1d8d3261c3c37629b07a22b8ae91b24fcabdf601c69ed831",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      },
+      "filenameVersion": "20261020180946"
+    },
+    {
+      "path": "database/migrations/20261020181614_operations_renewal_command_queue.sql",
+      "sha256": "7031b176508746a4aa2948bc9e3d92019ddc0b6e748177f85be5a9799cd7bd07",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261020181614"
+    },
+    {
+      "path": "database/migrations/20261020181726_toolbox_entitlement_source_compatibility.sql",
+      "sha256": "d3127457ef5bb01e0aa6d28d47ba85a6b4a727c4cb0b6190f68b161ca33e7d46",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261020181726"
+    },
+    {
+      "path": "database/migrations/20261020185200_operations_identity_deletion_compatibility.sql",
+      "sha256": "5b22bb1dd31ef4dd7c3c3bac38b80fd63a3d87b08024cbdf9ca68ba93d7de53f",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261020185200"
+    },
+    {
+      "path": "database/migrations/20261020185822_referral_audit_sequence_acl.sql",
+      "sha256": "d87135a5ac655c48764274f59100307b10ec870a5a125fa0790693d393cd754f",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261020185822"
+    },
+    {
+      "path": "database/migrations/20261020190818_account_identity_existence_guard.sql",
+      "sha256": "f2fe42b66be9bfcdb454195817503c1b02ade0e9179a3c7ec0f96817bf3bda4c",
+      "classification": "unresolved",
+      "requires": [],
+      "scopedCreatorEvidence": {
+        "sha256": "f2fe42b66be9bfcdb454195817503c1b02ade0e9179a3c7ec0f96817bf3bda4c",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      },
+      "filenameVersion": "20261020190818"
+    },
+    {
+      "path": "database/migrations/20261020233027_standalone_listing_premium_library.sql",
+      "sha256": "9eb4ba29d08d4cb6ca7a3cc9490c94b69be84d18d24196dd7fc8f5c9d2e5e130",
+      "classification": "unresolved",
+      "requires": [
+        "database/migrations/20261020170415_listing_entitlement_limits.sql",
+        "database/migrations/20261020173552_enforced_listing_uploads.sql",
+        "stop:pristine-library-baseline"
+      ],
+      "filenameVersion": "20261020233027"
+    },
+    {
+      "path": "database/migrations/20261020233905_prevent_listing_event_identity_reuse.sql",
+      "sha256": "dfa51fabcd87d088133a03430c33292c62bd965c96dd87ff07fb6214effb66ac",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261020233905"
+    },
+    {
+      "path": "database/migrations/20261020234107_referral_representative_evidence.sql",
+      "sha256": "bbcf81e34dfac1df0e2ae5374470ee5efebeb9a2ecd3dc99c32a3e5c1c09a59b",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261020234107"
+    },
+    {
+      "path": "database/migrations/20261020234414_trusted_business_funnel.sql",
+      "sha256": "e6b6f1c00999a63a21b5aa9587b7c6d3f63f463824f92aadf78085a1ffa55a5e",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261020234414"
+    },
+    {
+      "path": "database/migrations/20261020235342_operations_owner_migration_status.sql",
+      "sha256": "b6e25157268023111408bc943b44bb0ac3e9a6c06fea37cbb26e3220070c08c3",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261020235342"
+    },
+    {
+      "path": "database/migrations/20261021000745_trusted_funnel_privacy_export.sql",
+      "sha256": "170007836256272cfb08b06285e73fe74e3175c4e527aa0470cf5d2340e7343f",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261021000745"
+    },
+    {
+      "path": "database/migrations/20261021001000_native_accommodation_listing_foundation.sql",
+      "sha256": "58618402b44d6f7feb183275514422a91741772eb77737d0423e862348a7c43a",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261021001000"
+    },
+    {
+      "path": "database/migrations/20261021001138_own_referral_prestige_export.sql",
+      "sha256": "9f9a26ad536c5573e16787f56ecab359db7d12831e3576f9afaf329a20f47905",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261021001138"
+    },
+    {
+      "path": "database/migrations/20261021001252_operations_runtime_health.sql",
+      "sha256": "58e3cb97317a6fb817453d576d4ec542e4026c436825915f6a8ed31441bf25ed",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261021001252"
+    },
+    {
+      "path": "database/migrations/20261021002500_native_accommodation_inventory.sql",
+      "sha256": "f4646aa11d0136e194beffb1f8b387f998fbb39c85696b25347304045391556f",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261021002500"
+    },
+    {
+      "path": "database/migrations/20261021003500_prevent_retained_media_identity_reuse.sql",
+      "sha256": "95de2adee55de25377d91edb33c6285638024039c5993c4bbc223c6f8cfbbdeb",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261021003500"
+    },
+    {
+      "path": "database/migrations/20261021004500_library_requires_verified_uploads.sql",
+      "sha256": "d39cde9b5eaf35a90b76d1b1886d163da39f01d19a8bdd4d75f60c31bbe5482a",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261021004500"
+    },
+    {
+      "path": "database/migrations/20261021005500_native_accommodation_review_queue.sql",
+      "sha256": "e97bfa130e5ade157c308fe48ffe4516341f509a9e7bcb0ac2bd8131ddeb7170",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261021005500"
+    },
+    {
+      "path": "database/migrations/20261021014000_listing_library_deletion_compatibility.sql",
+      "sha256": "43220143e6db54f099ce653601b0b19d983347836be78876c79760694a5f4aa3",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261021014000"
+    },
+    {
+      "path": "database/migrations/20261021133839_operations_merchant_health.sql",
+      "sha256": "41b6b3119878d8caba8359799cfab9028cef6257e990cbcc76117d845da19e1d",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261021133839"
+    },
+    {
+      "path": "database/migrations/20261021175000_listing_library_reference_boundaries.sql",
+      "sha256": "933c90b3aa1ac0567d80343e2cdb5de120ccfa411078bb75c22c3957b8bf7c6d",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261021175000"
+    },
+    {
+      "path": "database/migrations/20261021181500_listing_quota_scope_serialization.sql",
+      "sha256": "8fccd4f2e792074a532ed9547af97836f2c152c2b46b657e83c5d9afa39f3eab",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261021181500"
+    },
+    {
+      "path": "database/migrations/20261021184000_event_media_target_scope.sql",
+      "sha256": "9772242035714b8a9cdc18451acae0ae3bd5aaa5f326cf65e172dff974be952f",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261021184000"
+    },
+    {
+      "path": "database/migrations/20261021190000_baseline_media_quota_integrity.sql",
+      "sha256": "9f942ee20f61a59665b1bd815b71610851dc24dcb0e23ad4daeb5074680a4687",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261021190000"
+    },
+    {
+      "path": "database/migrations/20261021193000_library_reservation_capacity.sql",
+      "sha256": "9d5e651a9caf004053e5f2648ed6cdc43f865819f6fe0df038a56aab2ddffc4d",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261021193000"
+    },
+    {
+      "path": "database/migrations/20261021200000_listing_storage_canonical_prefix.sql",
+      "sha256": "bbe9b603457b0c635f36b9bf94c66a13587faab0d8db6d50e190bb6c710da9e3",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261021200000"
+    },
+    {
+      "path": "database/migrations/20261024005500_approved_monthly_pricing.sql",
+      "sha256": "6f11b563f50b1a0b4dcff942e89a434cc3e29d67460a94402ab1a03531503c46",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261024005500"
+    },
+    {
+      "path": "database/migrations/20261024013730_admin_read_policy_initplans.sql",
+      "sha256": "1d0d9dbfe9544f8cad5263cebc758759e29ae33213d4053318ef2b8308d4db38",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261024013730"
+    },
+    {
+      "path": "database/migrations/20261027001500_founder_push_claims.sql",
+      "sha256": "0d7f7a4a17b29f0915aade9abf521308e2608dada890eb4a5019cb6a5bafe775",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261027001500"
+    },
+    {
+      "path": "database/migrations/20261027031500_claim_early_partner_feedback.sql",
+      "sha256": "aba6a85b3223c912237310f5e4a9629c6e149f86a55403bfc89dd1d607aafcca",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261027031500"
+    },
+    {
+      "path": "database/migrations/20261027081500_claim_partner_auto_trial.sql",
+      "sha256": "2caad286f8920d630a0697264b1b1a8152927078f5b1e21d68f448853479d14b",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261027081500"
+    },
+    {
+      "path": "database/migrations/20261027093500_limit_partner_gifts_to_akipasa_venues.sql",
+      "sha256": "41951846b785c5f0e69c143c8329b64e8def125f3423390a47aaea66e95094c3",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261027093500"
+    },
+    {
+      "path": "database/migrations/20261028235830_pals_human_avatar_profiles.sql",
+      "sha256": "f44623a55aed84259b87a3cad95e8d10e6b364e2199784c7b417809661a118d7",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261028235830"
+    },
+    {
+      "path": "database/migrations/20261029231041_restore_existing_profile_edit_columns.sql",
+      "sha256": "040cddb415d1a4f3e6458581475c1a122edf6efbd8b3d3696549b90c504d2ee7",
+      "classification": "unresolved",
+      "requires": [
+        "database/migrations/20261020180946_account_completion_database_coverage.sql",
+        "database/migrations/20261020190818_account_identity_existence_guard.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "040cddb415d1a4f3e6458581475c1a122edf6efbd8b3d3696549b90c504d2ee7",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      },
+      "filenameVersion": "20261029231041"
+    },
+    {
+      "path": "database/migrations/20261029232451_protect_profile_terms_acceptance_columns.sql",
+      "sha256": "7fe0fa1aa1346cc3877e9693b60a6f1a382f09bf37ebbe33e0bea951b8eeeb75",
+      "classification": "unresolved",
+      "requires": [
+        "database/migrations/20261029231041_restore_existing_profile_edit_columns.sql"
+      ],
+      "scopedCreatorEvidence": {
+        "sha256": "7fe0fa1aa1346cc3877e9693b60a6f1a382f09bf37ebbe33e0bea951b8eeeb75",
+        "scope": "Selected in 78-application/17-Storage Creator fixture; not full canonical parity or final replay order."
+      },
+      "filenameVersion": "20261029232451"
+    },
+    {
+      "path": "database/migrations/20261030114106_protect_staff_claim_account_eligibility.sql",
+      "sha256": "154fe91bf7a8a80d433a0a6c5827f22a90bac1ac3e2de99e95063afea24fa160",
+      "classification": "unresolved",
+      "requires": [
+        "database/migrations/20261027001500_founder_push_claims.sql",
+        "database/migrations/20261020170448_account_completion_age_declaration.sql"
+      ],
+      "filenameVersion": "20261030114106",
+      "reason": "New validated staff account-gate repair source, not applied to production. Requires the existing exact lookup and canonical account helper; remains outside any approved fresh execution prefix."
+    },
+    {
+      "path": "supabase/migrations/20260811120431_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260811120431"
+    },
+    {
+      "path": "supabase/migrations/20260811120453_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260811120453"
+    },
+    {
+      "path": "supabase/migrations/20260811120502_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260811120502"
+    },
+    {
+      "path": "supabase/migrations/20260811120642_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260811120642"
+    },
+    {
+      "path": "supabase/migrations/20260811135620_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260811135620"
+    },
+    {
+      "path": "supabase/migrations/20260811141122_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260811141122"
+    },
+    {
+      "path": "supabase/migrations/20260811150803_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260811150803"
+    },
+    {
+      "path": "supabase/migrations/20260811160708_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260811160708"
+    },
+    {
+      "path": "supabase/migrations/20260813054657_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260813054657"
+    },
+    {
+      "path": "supabase/migrations/20260813054738_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260813054738"
+    },
+    {
+      "path": "supabase/migrations/20260813092243_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260813092243"
+    },
+    {
+      "path": "supabase/migrations/20260813092349_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260813092349"
+    },
+    {
+      "path": "supabase/migrations/20260813121844_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260813121844"
+    },
+    {
+      "path": "supabase/migrations/20260813122223_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260813122223"
+    },
+    {
+      "path": "supabase/migrations/20260813133545_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260813133545"
+    },
+    {
+      "path": "supabase/migrations/20260813163259_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260813163259"
+    },
+    {
+      "path": "supabase/migrations/20260813172413_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260813172413"
+    },
+    {
+      "path": "supabase/migrations/20260813172523_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260813172523"
+    },
+    {
+      "path": "supabase/migrations/20260816154040_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260816154040"
+    },
+    {
+      "path": "supabase/migrations/20260817030826_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260817030826"
+    },
+    {
+      "path": "supabase/migrations/20260817031025_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260817031025"
+    },
+    {
+      "path": "supabase/migrations/20260818012131_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260818012131"
+    },
+    {
+      "path": "supabase/migrations/20260820224102_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260820224102"
+    },
+    {
+      "path": "supabase/migrations/20260820231436_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260820231436"
+    },
+    {
+      "path": "supabase/migrations/20260821150333_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260821150333"
+    },
+    {
+      "path": "supabase/migrations/20260821150403_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260821150403"
+    },
+    {
+      "path": "supabase/migrations/20260821162620_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260821162620"
+    },
+    {
+      "path": "supabase/migrations/20260821162717_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260821162717"
+    },
+    {
+      "path": "supabase/migrations/20260821223521_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260821223521"
+    },
+    {
+      "path": "supabase/migrations/20260822001527_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260822001527"
+    },
+    {
+      "path": "supabase/migrations/20260822150420_remote_history.sql",
+      "sha256": "fb3ccf3c724e112c097e25d5bd9a27dc020d61b8bd55280f9c4b6ab7ad28c934",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260822150420"
+    },
+    {
+      "path": "supabase/migrations/20260824003819_automatic_catalogue_moderation.sql",
+      "sha256": "da336e1b041ceecdfa4c2b3df919ffe8bb24443326eed3777c6fd566541f42ff",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0065_automatic_catalogue_moderation.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20260824003819"
+    },
+    {
+      "path": "supabase/migrations/20260824011102_owner_console.sql",
+      "sha256": "d1d5560d467909fb50bc6b8b934d0126e83342af1f862cd071a12b38d99baf9a",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0066_owner_console.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20260824011102"
+    },
+    {
+      "path": "supabase/migrations/20260824015307_private_owner_backgrounds.sql",
+      "sha256": "ad7c642b35ef0a563722f933dc2309b8fd3aee0eb1ef5deafe23a3c7beac974d",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0067_private_owner_backgrounds.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20260824015307"
+    },
+    {
+      "path": "supabase/migrations/20260825230623_creator_community.sql",
+      "sha256": "683259d66550906ecfd02d2a7c99930e77e8f552be12c76a5cb74604b9024883",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0068_creator_community.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20260825230623"
+    },
+    {
+      "path": "supabase/migrations/20260826173137_product_contract_loyalty_profiles.sql",
+      "sha256": "3eec646e7a630d3ffd0111e0d354d72ee45d0a6d55a32d67db391c6ec9e5a905",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0069_product_contract_loyalty_profiles.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20260826173137"
+    },
+    {
+      "path": "supabase/migrations/20260827103523_complete_questionnaire_contract.sql",
+      "sha256": "a8d66080de4407148216ba52ba5b80ab25e541a1f7d4df77f2e93fe76063af47",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260827103523"
+    },
+    {
+      "path": "supabase/migrations/20260827145000_fix_booking_request_rpc.sql",
+      "sha256": "2f2467c0561a292ac58904b6b35bfaf86b4dbaab79c076bb3b215f4dbec99d03",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0071_fix_booking_request_rpc.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20260827145000"
+    },
+    {
+      "path": "supabase/migrations/20260902023342_unclaim_owned_venue.sql",
+      "sha256": "18a2c2ebcb3660fbd39290795b640dc8372710c3e912da033547f5869aae0806",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0073_unclaim_owned_venue.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20260902023342"
+    },
+    {
+      "path": "supabase/migrations/20260902095000_harden_crm_authenticated_grants.sql",
+      "sha256": "7e0d41e9d86e8e7513ebfa05bc9682841e2cd72509c2ba01162145fef0d9b6ba",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0075_harden_crm_authenticated_grants.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20260902095000"
+    },
+    {
+      "path": "supabase/migrations/20260902100500_harden_crm_function_grants.sql",
+      "sha256": "d5df6e2de86d961e38dc691319ca3119c78a9110ba4f343817deebc223d3b64b",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0076_harden_crm_function_grants.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20260902100500"
+    },
+    {
+      "path": "supabase/migrations/20260902102000_optimize_crm_policies_and_foreign_keys.sql",
+      "sha256": "0260377c7f3c9afc4126f73a28b61c47143f9d94a4dfbdd6bbd74613d885dbdc",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0077_optimize_crm_policies_and_foreign_keys.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20260902102000"
+    },
+    {
+      "path": "supabase/migrations/20260902120000_crm_multi_tenant_workspaces.sql",
+      "sha256": "e81fabb1793b1e92cc1aee8cdda39bc3f3dca2a9b06959a658bde705e0b0d921",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260902120000"
+    },
+    {
+      "path": "supabase/migrations/20260902143000_sync_platform_crm_membership.sql",
+      "sha256": "6a91a524f5704f0f0221db87b29507aa98aabfdce3f677566bababa8507ae040",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0078_sync_platform_crm_membership.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20260902143000"
+    },
+    {
+      "path": "supabase/migrations/20260902143557_restore_business_plan_profile_flag.sql",
+      "sha256": "cc6dbfcc974073e0703a182e125589bd3233efe59e3ba2119ef75b51d87077e1",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260902143557"
+    },
+    {
+      "path": "supabase/migrations/20260902222000_crm_inventory_commerce_fields.sql",
+      "sha256": "b63dfc3d70c755466d8ac1f213d56dbad0099f3717586f2a22ab4951d9738594",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260902222000"
+    },
+    {
+      "path": "supabase/migrations/20260903003000_crm_pos_tips.sql",
+      "sha256": "9d9e65038028b11c674fd2b52662a7ce431c66cc8100d9d6c47b937aa4d45fcd",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260903003000"
+    },
+    {
+      "path": "supabase/migrations/20260903004000_harden_crm_tip_grants.sql",
+      "sha256": "b0a103700a2c9153101a6b44a96c9e7c0de03f3cc09e6848643de74174cf9127",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260903004000"
+    },
+    {
+      "path": "supabase/migrations/20260903120000_sync_venue_crm_membership.sql",
+      "sha256": "18a7faf0e50fe0ffaab2c45f4dbcbfc0cb1ee0c58f3997a5a87db732506f5b50",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260903120000"
+    },
+    {
+      "path": "supabase/migrations/20260903123000_close_detached_crm_workspaces.sql",
+      "sha256": "946fb49cfa19dd78b3dabcea10dfbb2c4ddca3ca7172fbc50125f4db708fc167",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260903123000"
+    },
+    {
+      "path": "supabase/migrations/20260903130000_hide_detached_crm_workspaces.sql",
+      "sha256": "2bef4f38f7021258679f31e91685ea0f416a1adc7d1d0d05414b5f1eaa7ecbac",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260903130000"
+    },
+    {
+      "path": "supabase/migrations/20260903133000_harden_crm_shared_state.sql",
+      "sha256": "d0faecc19c5a716521471805fae0633ec2a0c2cf41e26450bb6e57744a83890d",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260903133000"
+    },
+    {
+      "path": "supabase/migrations/20260904142000_scope_team_chat_by_workspace.sql",
+      "sha256": "a4f0d011490dc2faf44579b19c6fa170a1876e11ff9b11c12413575cee1e3e85",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260904142000"
+    },
+    {
+      "path": "supabase/migrations/20260904143500_seed_new_workspace_chat_channel.sql",
+      "sha256": "4f565c6f00f5a0c7a892a79ffd3ea0fc40884f2579e1473703295a5ce3f7b856",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260904143500"
+    },
+    {
+      "path": "supabase/migrations/20260906120000_rate_limit_public_analytics.sql",
+      "sha256": "d42aeff1d1f781e8eaeb2210678503cf6f27ba490022a73d89ebd0b2922c23c6",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260906120000"
+    },
+    {
+      "path": "supabase/migrations/20260917212056_public_venue_pagination.sql",
+      "sha256": "07ebf4512ef3348a0958b433e3f8d8abe892bc064e2b8c1e0d99c0ad79389a34",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260917212056"
+    },
+    {
+      "path": "supabase/migrations/20260918031030_complete_map_venue_pages.sql",
+      "sha256": "b0d2bb0f822d11a7019ae679ee493a502f48df316d4f4ce8801631dd30b09b13",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260918031030"
+    },
+    {
+      "path": "supabase/migrations/20260918094627_compact_public_map_snapshot.sql",
+      "sha256": "ae1771514191ffffb30023dbb86f5b213af87e358200a91f6aa2555d1d3c7bae",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260918094627"
+    },
+    {
+      "path": "supabase/migrations/20260919145942_repair_spain_country_label.sql",
+      "sha256": "59668def076593841041bdac72356c447f6ddff7447bd1c4fba288a6c49cfb7a",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20260919145942"
+    },
+    {
+      "path": "supabase/migrations/20260923000739_accommodation_vertical.sql",
+      "sha256": "9090f9e47438a064bab07ba503af35947f3a6f34cc17ca6cb9c8d63edede70ce",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "database/migrations/0084_product_readiness_loyalty_reporting.sql"
+      ],
+      "filenameVersion": "20260923000739"
+    },
+    {
+      "path": "supabase/migrations/20260923002500_accommodation_review_queue.sql",
+      "sha256": "b4540fa99dac0cd7aaaa45ed7afb0ecf1c11014c1db0af18de85f5ea37c650fa",
+      "classification": "reviewed-candidate-prefix",
+      "requires": [
+        "supabase/migrations/20260923000739_accommodation_vertical.sql"
+      ],
+      "filenameVersion": "20260923002500"
+    },
+    {
+      "path": "supabase/migrations/20260926190000_free_venue_access_and_billing_repair.sql",
+      "sha256": "96b0be09f9e165da82c8cf20e5ef20ab375333faaa04d2131e0aa0ffde06c821",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0082_free_venue_access_and_billing_repair.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20260926190000"
+    },
+    {
+      "path": "supabase/migrations/20260926190100_catalogue_venue_search.sql",
+      "sha256": "85b41015c2ec1418c5fe1032732ce2bbc0ff5cbc3cabfd919bcfeb59faa77503",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0083_catalogue_venue_search.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20260926190100"
+    },
+    {
+      "path": "supabase/migrations/20260926213100_product_readiness_loyalty_reporting.sql",
+      "sha256": "64df15848c97cd35c2956e5e8602e297371666b81475f0dbe2c9cdf117fe47af",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0084_product_readiness_loyalty_reporting.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20260926213100"
+    },
+    {
+      "path": "supabase/migrations/20261002220746_venue_relevance_audit.sql",
+      "sha256": "9296636dd3bfb7bdd1827794d79805dade5bd420ab6335a6248b7c906f42cbf5",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0085_venue_relevance_audit.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261002220746"
+    },
+    {
+      "path": "supabase/migrations/20261002221040_venue_relevance_discovery.sql",
+      "sha256": "cbe438e2e6b2b9a5a0b444a9a1da9461e6e30283cdd41e8d3595d9a43bac8cea",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0086_venue_relevance_discovery.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261002221040"
+    },
+    {
+      "path": "supabase/migrations/20261003193908_passport_city_collection.sql",
+      "sha256": "5a8ffd980428ac2f430bf7ef1044de3137d3ed444894424cb014b6c529c48b5e",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261003193908"
+    },
+    {
+      "path": "supabase/migrations/20261003203205_passport_award_replacement_history.sql",
+      "sha256": "b6b3bc90913a652018c5c49ea52664ad6a1d40740d8ed72421bb5c22eed3147c",
+      "classification": "unresolved",
+      "requires": [
+        "supabase/migrations/20261003193908_passport_city_collection.sql"
+      ],
+      "filenameVersion": "20261003203205"
+    },
+    {
+      "path": "supabase/migrations/20261005195000_dedupe_public_discovery_venues.sql",
+      "sha256": "edd2df9d63ff8ec5e759f8f5943171365f74749b9ff565bae55b1eb1d740f70c",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261005195000"
+    },
+    {
+      "path": "supabase/migrations/20261005210500_quarantine_ambiguous_map_locations.sql",
+      "sha256": "c03f6301c2373131fe7d71b98e1d8417bf8f4abb17c555c06772b64d58002196",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261005210500"
+    },
+    {
+      "path": "supabase/migrations/20261005211800_materialize_map_location_quality.sql",
+      "sha256": "2732299a32014262c41d397131ec40af231464b0e62581e3df322dcd5f26972a",
+      "classification": "unresolved",
+      "requires": [
+        "supabase/migrations/20260923000739_accommodation_vertical.sql",
+        "supabase/migrations/20260923002500_accommodation_review_queue.sql",
+        "database/migrations/0083_catalogue_venue_search.sql",
+        "database/migrations/0086_venue_relevance_discovery.sql"
+      ],
+      "filenameVersion": "20261005211800"
+    },
+    {
+      "path": "supabase/migrations/20261005212500_cleanup_exact_venue_duplicates.sql",
+      "sha256": "e1875c36fc99ffba3db1bf2ea6d67bacb2e35d7229c00660f6427a52ad915fc0",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261005212500"
+    },
+    {
+      "path": "supabase/migrations/20261005213500_venue_location_repair_queue.sql",
+      "sha256": "32f65aaf47e4d025f39e56f63db1b1604044db5488a56a478e42da0b9d7d4afb",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261005213500"
+    },
+    {
+      "path": "supabase/migrations/20261005214500_claim_location_repair_batches.sql",
+      "sha256": "0bd6fa49967c7cdbe0ee062ef44adc22a76cd73dc3921bcce5c2d7b886c2c7db",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261005214500"
+    },
+    {
+      "path": "supabase/migrations/20261005221000_fix_location_repair_provider_metadata.sql",
+      "sha256": "a1a4aaf8e10a36ff2292db1675b9e23a7f0747f4d4fc5ceda542b4e0d45358ce",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261005221000"
+    },
+    {
+      "path": "supabase/migrations/20261005222000_fast_sanitized_map_snapshot.sql",
+      "sha256": "c045d3b60f34593c4d42c519e01ef2a4d90f2097296a00effad58cf58d78f0ea",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261005222000"
+    },
+    {
+      "path": "supabase/migrations/20261005232500_search_claimable_venues.sql",
+      "sha256": "f98529db62885b513d5c9d90b3ecfbfba1d067cf99627c15ad8b3d3459a3b5a8",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261005232500"
+    },
+    {
+      "path": "supabase/migrations/20261005235500_claimable_venue_cards_in_bounds.sql",
+      "sha256": "8113079f0530da0365ba4da1c80b85364e3f6c7ee7e69085a24cc996f5986d2f",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261005235500"
+    },
+    {
+      "path": "supabase/migrations/20261006123706_venue_catalogues.sql",
+      "sha256": "a598d4cb66fde0bc33e941ce4446673f34ea9511afc94a8e2ba80c0441c6a94b",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261006123706"
+    },
+    {
+      "path": "supabase/migrations/20261006180000_akipasa_selection_events.sql",
+      "sha256": "4e30cdba535072b95ef7c8890b73949eea5766ade2359764b86ca96c1cd72d2f",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261006180000"
+    },
+    {
+      "path": "supabase/migrations/20261006180500_allergen_filter_groundwork.sql",
+      "sha256": "7a53f562fbe8415855eec1e6f6648f79c85609d3635427a3448a3de60945ba6c",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261006180500"
+    },
+    {
+      "path": "supabase/migrations/20261006221000_official_event_pin_and_directions.sql",
+      "sha256": "a97b493694aa82a7139deb23541bcebeecba6caf140f6a9fec8c119e3237b09d",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261006221000"
+    },
+    {
+      "path": "supabase/migrations/20261006223000_persist_catalogue_allergen_review.sql",
+      "sha256": "789e2d037cce02a1fe016afb44797928715d160d6855649fc4a0fbb251910a61",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261006223000"
+    },
+    {
+      "path": "supabase/migrations/20261006225500_restore_akipasa_selection_source.sql",
+      "sha256": "e8c0b7aca8d103e1c1c653dd71e18d5a90dd7409c75435f3439ce8c245ce57fd",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261006225500"
+    },
+    {
+      "path": "supabase/migrations/20261006231000_repair_official_event_publish_path.sql",
+      "sha256": "3e3a4e7b41b8e8141f19884308553efb27c8a010ceb856fe343b8928c47dcd39",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261006231000"
+    },
+    {
+      "path": "supabase/migrations/20261007000500_venue_member_email_invites.sql",
+      "sha256": "04bade631d580596816160e7af31c682d1ad22a1cbe6076262693f549f51adbd",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0087_venue_member_email_invites.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261007000500"
+    },
+    {
+      "path": "supabase/migrations/20261007004000_catalogue_translation_metadata_fingerprint.sql",
+      "sha256": "b250da1a2f90d4c9748b2a43da16386dd70372338c794f9c386ad2b0b319c9f9",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0088_catalogue_translation_metadata_fingerprint.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261007004000"
+    },
+    {
+      "path": "supabase/migrations/20261007133000_repair_akipasa_selection_admin_publish.sql",
+      "sha256": "ce7bc7ea1aa2e002744d9f84fd972a783286d2dcc7a37262c10872ae5d5948e4",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0089_repair_akipasa_selection_admin_publish.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261007133000"
+    },
+    {
+      "path": "supabase/migrations/20261007191500_media_library_event_price_display.sql",
+      "sha256": "26db88bf78c2973fdba50fd50f88ecff85fbc4f4e14cd6193f34ef35b9db3c9c",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0090_media_library_event_price_display.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261007191500"
+    },
+    {
+      "path": "supabase/migrations/20261007195500_five_slot_media_studios.sql",
+      "sha256": "21731590d0a0c6b7306cfcbe100d9afeac0cdc515ae5954224f6afbdd4640dfc",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0091_five_slot_media_studios.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261007195500"
+    },
+    {
+      "path": "supabase/migrations/20261007214000_verified_venue_trust.sql",
+      "sha256": "cd51329a0610bdba1376bf997e96342813512142c96f2f060cfcf41cdf81b4c4",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0092_verified_venue_trust.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261007214000"
+    },
+    {
+      "path": "supabase/migrations/20261007221500_event_media_slot_semantics.sql",
+      "sha256": "b2627f046d9059d3d92a715cb078da7d526e2c91e42b91a12e8d8db77b90dfd3",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/0093_event_media_slot_semantics.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261007221500"
+    },
+    {
+      "path": "supabase/migrations/20261008150000_optimize_nearby_venue_discovery.sql",
+      "sha256": "e36c2dddfa1677ed0f1b84953c988bf26117537fce5c19c103d91490cf1bac3a",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261008150000"
+    },
+    {
+      "path": "supabase/migrations/20261009033000_booking_manager_settings.sql",
+      "sha256": "2d85e5d307fe0a274ba33b3edc3bbd5c25b61360fc21d06be04d811ae6f23836",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261009033000"
+    },
+    {
+      "path": "supabase/migrations/20261009113000_booking_offerings.sql",
+      "sha256": "18fbc30d292de42d1d6023af49acfcf3b5ad90b42aa5848c5aa3a6cc86660bd3",
+      "classification": "unresolved",
+      "requires": [
+        "supabase/migrations/20261009033000_booking_manager_settings.sql"
+      ],
+      "filenameVersion": "20261009113000"
+    },
+    {
+      "path": "supabase/migrations/20261009115000_booking_resources.sql",
+      "sha256": "0349c8f43cf664faccdf7b3a31c3ca69bfcbd4128bcf0c912e615647c98e7025",
+      "classification": "unresolved",
+      "requires": ["supabase/migrations/20261009113000_booking_offerings.sql"],
+      "filenameVersion": "20261009115000"
+    },
+    {
+      "path": "supabase/migrations/20261009120000_recurring_booking_slots.sql",
+      "sha256": "f7ba660fdca9ec5226eaff6bc24c35fc7fcb471525a1c700e93962d9066ba22a",
+      "classification": "unresolved",
+      "requires": ["supabase/migrations/20261009115000_booking_resources.sql"],
+      "filenameVersion": "20261009120000"
+    },
+    {
+      "path": "supabase/migrations/20261009130000_accommodation_claim_discovery.sql",
+      "sha256": "84117a373e2db01ade5db3fc22dd77cc122c2f249d38130d16399c973c8027f2",
+      "classification": "unresolved",
+      "requires": [
+        "supabase/migrations/20261005211800_materialize_map_location_quality.sql"
+      ],
+      "filenameVersion": "20261009130000"
+    },
+    {
+      "path": "supabase/migrations/20261009160000_booking_notification_email.sql",
+      "sha256": "0637cc2de573960e20de0fd7947f64cd54338c9c38c8914c6f3b79ee39fc58df",
+      "classification": "unresolved",
+      "requires": [
+        "supabase/migrations/20261009120000_recurring_booking_slots.sql"
+      ],
+      "filenameVersion": "20261009160000"
+    },
+    {
+      "path": "supabase/migrations/20261009170000_booking_release_integrity.sql",
+      "sha256": "7f53b5f9b8e6f0fc873675e11ad198673563a9b84198d81c366c704ad0acc95a",
+      "classification": "unresolved",
+      "requires": [
+        "supabase/migrations/20261009160000_booking_notification_email.sql"
+      ],
+      "filenameVersion": "20261009170000"
+    },
+    {
+      "path": "supabase/migrations/20261009220000_accommodation_inventory_foundation.sql",
+      "sha256": "358a3c574460f56990dec86e60c3e1ec11f1fa210ceab1bccc7270cc42971c09",
+      "classification": "unresolved",
+      "requires": [
+        "supabase/migrations/20261009170000_booking_release_integrity.sql"
+      ],
+      "filenameVersion": "20261009220000"
+    },
+    {
+      "path": "supabase/migrations/20261010021926_stop_application_conflict_retries.sql",
+      "sha256": "e8df332ca2d5a324578eca118e888bdb7cabee8a0cde0f52e3222c59e69b2640",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261010021926"
+    },
+    {
+      "path": "supabase/migrations/20261010021927_restore_offer_audience.sql",
+      "sha256": "bc9e2702601478379873f1dfc7146dd39ea64a383332e870ca432df522a5cd5e",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261010021927"
+    },
+    {
+      "path": "supabase/migrations/20261010022234_split_offer_visibility_roles.sql",
+      "sha256": "48792a9888c9ff89938ed2ee88fa906fdd089a1acf39d2428a4b8db45055d87e",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261010022234"
+    },
+    {
+      "path": "supabase/migrations/20261010105857_staff_claim_review_details.sql",
+      "sha256": "8c9c6c79b1de345e6d50d6432a3546578165c8b123859f3a6cb9656249328175",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261010105857_staff_claim_review_details.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261010105857"
+    },
+    {
+      "path": "supabase/migrations/20261010114606_claim_decision_emails.sql",
+      "sha256": "d09bfe7cdc1eba5eb31736e9417087fb2ca44bce8d9588df8a3c1dc43c907ef0",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261010114606_claim_decision_emails.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261010114606"
+    },
+    {
+      "path": "supabase/migrations/20261010231500_venue_claim_details.sql",
+      "sha256": "91d1b5f641263108df2659fb7599d362f90824b6b3f29d5f7f74453577c8bbdb",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261010231500_venue_claim_details.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261010231500"
+    },
+    {
+      "path": "supabase/migrations/20261010231800_staff_pending_claim_count.sql",
+      "sha256": "c78fe105954edf1116775f52e6a191f6cb8650a4c62cc61b29ad0c7f334e58c0",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261010231800_staff_pending_claim_count.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261010231800"
+    },
+    {
+      "path": "supabase/migrations/20261011010000_claim_submission_alerts.sql",
+      "sha256": "d6265c8de7377103cd8d7e52131a730b8268210c4ec98e88add42681ab6574e4",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261011010000_claim_submission_alerts.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261011010000"
+    },
+    {
+      "path": "supabase/migrations/20261011013000_suite_emails.sql",
+      "sha256": "24f52a91eee5de31ca205d24de77d6c3cb9ab40c0adf2d0a7fd45430b1023d3c",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261011013000_suite_emails.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261011013000"
+    },
+    {
+      "path": "supabase/migrations/20261011204631_staff_audit_admin_only_20261011.sql",
+      "sha256": "6f1412913612a7e7b6a692a3f82a11bd0bfd26f84efdb91fd2afe18aae34b0de",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261011204631_staff_audit_admin_only_20261011.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261011204631"
+    },
+    {
+      "path": "supabase/migrations/20261012180000_akisuite_subscription_entitlements.sql",
+      "sha256": "293c8ce593dcd51ca5c5a620b9366da1e4d179c7e6a8c9da195163116d11c8cf",
+      "classification": "excluded-historical-bundle",
+      "requires": [],
+      "reason": "Explicit reviewed pending/unapplied historical bundle; never included in this candidate order.",
+      "filenameVersion": "20261012180000"
+    },
+    {
+      "path": "supabase/migrations/20261012201529_akisuite_premium_workspaces.sql",
+      "sha256": "30139b6f894ab030f12435ff26d5dbea6c393c967739de4b49804ba1a4b2e569",
+      "classification": "excluded-historical-bundle",
+      "requires": [],
+      "reason": "Explicit reviewed pending/unapplied historical bundle; never included in this candidate order.",
+      "filenameVersion": "20261012201529"
+    },
+    {
+      "path": "supabase/migrations/20261014153000_public_venue_claim_ownership.sql",
+      "sha256": "d290c28bfe463d043617f128a3cb52f527579708c582bdb17478281f67c64587",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261014153000_public_venue_claim_ownership.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261014153000"
+    },
+    {
+      "path": "supabase/migrations/20261014183842_restrict_stripe_webhook_claim_execution.sql",
+      "sha256": "2bbad967d61cb766e700d5069871d3835d30e4d6e3fdd7867d8c5d17be79b782",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261014183842_restrict_stripe_webhook_claim_execution.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261014183842"
+    },
+    {
+      "path": "supabase/migrations/20261014223000_akiconduzco_rentals.sql",
+      "sha256": "12a0c8f32c20ae1d81f3a58b7de4c3bb0515a667d3ae3a0f0d84bc3ef7737710",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261014223000_akiconduzco_rentals.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261014223000"
+    },
+    {
+      "path": "supabase/migrations/20261014230000_akiconduzco_rls_indexes.sql",
+      "sha256": "b9b7d70dc556fe98006edd16c894b23727b45d1a1224ea036563ef71706e3556",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261014230000_akiconduzco_rls_indexes.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261014230000"
+    },
+    {
+      "path": "supabase/migrations/20261015135805_akicoches_venue_workspace.sql",
+      "sha256": "782f1ce13203117d3b5ec0bdecda6703ecfb80b301905a47c3fefde08c256911",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261015135805_akicoches_venue_workspace.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261015135805"
+    },
+    {
+      "path": "supabase/migrations/20261015163602_link_owned_rental_company_venue.sql",
+      "sha256": "cdadd517c0ec8c46d2504a1d6a820c2ebe08082de8f03d96f5bbc6c99e999530",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261015163602_link_owned_rental_company_venue.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261015163602"
+    },
+    {
+      "path": "supabase/migrations/20261015220302_independent_rental_branches.sql",
+      "sha256": "1ceef5edae1e85d1ac84d8a4580f48439398ed9d669576fea1798a5d4bcf246c",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261015220302_independent_rental_branches.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261015220302"
+    },
+    {
+      "path": "supabase/migrations/20261015232311_fix_rental_storage_object_policies.sql",
+      "sha256": "72ec46faff56a2f546712c3c1b24a1516d98ffe31b3abae8fb6fd3da8abf0397",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261015232311_fix_rental_storage_object_policies.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261015232311"
+    },
+    {
+      "path": "supabase/migrations/20261019223704_least_privilege_security_definer_execution.sql",
+      "sha256": "16ce2096f9c8cf024d16fad7955d7e4901ac790e5f6d3cc8f4013a31c8b8ebba",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261019223704_least_privilege_security_definer_execution.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261019223704"
+    },
+    {
+      "path": "supabase/migrations/20261019230000_explicit_rental_review_grant.sql",
+      "sha256": "1704a3a2ce2ef295d27310cb3a2b941435aac0d45c736fb2fa262f322de3b96e",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261019230000_explicit_rental_review_grant.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261019230000"
+    },
+    {
+      "path": "supabase/migrations/20261019231000_account_export_owner_reads.sql",
+      "sha256": "d2fca1f00e9a731314909b4193b53a2e958188279510f967b30774d122767eaa",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261019231000_account_export_owner_reads.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261019231000"
+    },
+    {
+      "path": "supabase/migrations/20261020170415_listing_entitlement_limits.sql",
+      "sha256": "58d30dca4756d5efd0f32a9b50f7cdc182f4f19b4f671973af6ddd0d90a27e43",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020170415_listing_entitlement_limits.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020170415"
+    },
+    {
+      "path": "supabase/migrations/20261020170421_shared_referral_foundation.sql",
+      "sha256": "11409963b18155234f0518aa9b2e1b1e41f9908bd7f5a6e0a9458ea6ba8a7f1d",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020170421_shared_referral_foundation.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020170421"
+    },
+    {
+      "path": "supabase/migrations/20261020170436_passport_prestige.sql",
+      "sha256": "f8cbb75183b8997f89faa6f77c7ecd7f36de692292bd5ea5777126c56dd432b7",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020170436_passport_prestige.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020170436"
+    },
+    {
+      "path": "supabase/migrations/20261020170448_account_completion_age_declaration.sql",
+      "sha256": "d7ee43da23b267306e68f6c95623139132ccb2afb0046eeda60841ea1c605b36",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020170448_account_completion_age_declaration.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020170448"
+    },
+    {
+      "path": "supabase/migrations/20261020170509_subscription_toolbox.sql",
+      "sha256": "51ddae16c3f3d3b56c67356f6dd8c89fe48b27d927c300d867e3dc6bd69d4755",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020170509_subscription_toolbox.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020170509"
+    },
+    {
+      "path": "supabase/migrations/20261020172801_operations_checkout_lifecycle.sql",
+      "sha256": "17a5d565ee0beb87b366d67a998295a98a2ed1bd39c6c1aa026616857432227d",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020172801_operations_checkout_lifecycle.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020172801"
+    },
+    {
+      "path": "supabase/migrations/20261020173552_enforced_listing_uploads.sql",
+      "sha256": "8b3675c479b65959d881da46b7783a578bde623f1142fbbb58ebead1a60558fe",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020173552_enforced_listing_uploads.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020173552"
+    },
+    {
+      "path": "supabase/migrations/20261020180654_referral_payout_review.sql",
+      "sha256": "1b766a9b73503a6ab6188db8389a965f57cbc66060b205a695ab032f877caeac",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020180654_referral_payout_review.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020180654"
+    },
+    {
+      "path": "supabase/migrations/20261020180734_operations_first_invoice_recovery.sql",
+      "sha256": "934308ce6e8de7ad288fbb2ddcca6fbbc6578bf458256d4512c9b94fc04d9d4d",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020180734_operations_first_invoice_recovery.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020180734"
+    },
+    {
+      "path": "supabase/migrations/20261020180946_account_completion_database_coverage.sql",
+      "sha256": "a92d44084d329ffc1d8d3261c3c37629b07a22b8ae91b24fcabdf601c69ed831",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020180946_account_completion_database_coverage.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020180946"
+    },
+    {
+      "path": "supabase/migrations/20261020181614_operations_renewal_command_queue.sql",
+      "sha256": "7031b176508746a4aa2948bc9e3d92019ddc0b6e748177f85be5a9799cd7bd07",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020181614_operations_renewal_command_queue.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020181614"
+    },
+    {
+      "path": "supabase/migrations/20261020181726_toolbox_entitlement_source_compatibility.sql",
+      "sha256": "d3127457ef5bb01e0aa6d28d47ba85a6b4a727c4cb0b6190f68b161ca33e7d46",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020181726_toolbox_entitlement_source_compatibility.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020181726"
+    },
+    {
+      "path": "supabase/migrations/20261020185200_operations_identity_deletion_compatibility.sql",
+      "sha256": "5b22bb1dd31ef4dd7c3c3bac38b80fd63a3d87b08024cbdf9ca68ba93d7de53f",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020185200_operations_identity_deletion_compatibility.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020185200"
+    },
+    {
+      "path": "supabase/migrations/20261020185822_referral_audit_sequence_acl.sql",
+      "sha256": "d87135a5ac655c48764274f59100307b10ec870a5a125fa0790693d393cd754f",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020185822_referral_audit_sequence_acl.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020185822"
+    },
+    {
+      "path": "supabase/migrations/20261020190818_account_identity_existence_guard.sql",
+      "sha256": "f2fe42b66be9bfcdb454195817503c1b02ade0e9179a3c7ec0f96817bf3bda4c",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020190818_account_identity_existence_guard.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020190818"
+    },
+    {
+      "path": "supabase/migrations/20261020233027_standalone_listing_premium_library.sql",
+      "sha256": "9eb4ba29d08d4cb6ca7a3cc9490c94b69be84d18d24196dd7fc8f5c9d2e5e130",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020233027_standalone_listing_premium_library.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020233027"
+    },
+    {
+      "path": "supabase/migrations/20261020233905_prevent_listing_event_identity_reuse.sql",
+      "sha256": "dfa51fabcd87d088133a03430c33292c62bd965c96dd87ff07fb6214effb66ac",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020233905_prevent_listing_event_identity_reuse.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020233905"
+    },
+    {
+      "path": "supabase/migrations/20261020234107_referral_representative_evidence.sql",
+      "sha256": "bbcf81e34dfac1df0e2ae5374470ee5efebeb9a2ecd3dc99c32a3e5c1c09a59b",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020234107_referral_representative_evidence.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020234107"
+    },
+    {
+      "path": "supabase/migrations/20261020234414_trusted_business_funnel.sql",
+      "sha256": "e6b6f1c00999a63a21b5aa9587b7c6d3f63f463824f92aadf78085a1ffa55a5e",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020234414_trusted_business_funnel.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020234414"
+    },
+    {
+      "path": "supabase/migrations/20261020235342_operations_owner_migration_status.sql",
+      "sha256": "b6e25157268023111408bc943b44bb0ac3e9a6c06fea37cbb26e3220070c08c3",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261020235342_operations_owner_migration_status.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261020235342"
+    },
+    {
+      "path": "supabase/migrations/20261021000745_trusted_funnel_privacy_export.sql",
+      "sha256": "170007836256272cfb08b06285e73fe74e3175c4e527aa0470cf5d2340e7343f",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261021000745_trusted_funnel_privacy_export.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261021000745"
+    },
+    {
+      "path": "supabase/migrations/20261021001000_native_accommodation_listing_foundation.sql",
+      "sha256": "58618402b44d6f7feb183275514422a91741772eb77737d0423e862348a7c43a",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261021001000_native_accommodation_listing_foundation.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261021001000"
+    },
+    {
+      "path": "supabase/migrations/20261021001138_own_referral_prestige_export.sql",
+      "sha256": "9f9a26ad536c5573e16787f56ecab359db7d12831e3576f9afaf329a20f47905",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261021001138_own_referral_prestige_export.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261021001138"
+    },
+    {
+      "path": "supabase/migrations/20261021001252_operations_runtime_health.sql",
+      "sha256": "58e3cb97317a6fb817453d576d4ec542e4026c436825915f6a8ed31441bf25ed",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261021001252_operations_runtime_health.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261021001252"
+    },
+    {
+      "path": "supabase/migrations/20261021002500_native_accommodation_inventory.sql",
+      "sha256": "f4646aa11d0136e194beffb1f8b387f998fbb39c85696b25347304045391556f",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261021002500_native_accommodation_inventory.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261021002500"
+    },
+    {
+      "path": "supabase/migrations/20261021003500_prevent_retained_media_identity_reuse.sql",
+      "sha256": "95de2adee55de25377d91edb33c6285638024039c5993c4bbc223c6f8cfbbdeb",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261021003500_prevent_retained_media_identity_reuse.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261021003500"
+    },
+    {
+      "path": "supabase/migrations/20261021004500_library_requires_verified_uploads.sql",
+      "sha256": "d39cde9b5eaf35a90b76d1b1886d163da39f01d19a8bdd4d75f60c31bbe5482a",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261021004500_library_requires_verified_uploads.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261021004500"
+    },
+    {
+      "path": "supabase/migrations/20261021005500_native_accommodation_review_queue.sql",
+      "sha256": "e97bfa130e5ade157c308fe48ffe4516341f509a9e7bcb0ac2bd8131ddeb7170",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261021005500_native_accommodation_review_queue.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261021005500"
+    },
+    {
+      "path": "supabase/migrations/20261021014000_listing_library_deletion_compatibility.sql",
+      "sha256": "43220143e6db54f099ce653601b0b19d983347836be78876c79760694a5f4aa3",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261021014000_listing_library_deletion_compatibility.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261021014000"
+    },
+    {
+      "path": "supabase/migrations/20261021133839_operations_merchant_health.sql",
+      "sha256": "41b6b3119878d8caba8359799cfab9028cef6257e990cbcc76117d845da19e1d",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261021133839_operations_merchant_health.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261021133839"
+    },
+    {
+      "path": "supabase/migrations/20261021175000_listing_library_reference_boundaries.sql",
+      "sha256": "933c90b3aa1ac0567d80343e2cdb5de120ccfa411078bb75c22c3957b8bf7c6d",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261021175000_listing_library_reference_boundaries.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261021175000"
+    },
+    {
+      "path": "supabase/migrations/20261021181500_listing_quota_scope_serialization.sql",
+      "sha256": "8fccd4f2e792074a532ed9547af97836f2c152c2b46b657e83c5d9afa39f3eab",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261021181500_listing_quota_scope_serialization.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261021181500"
+    },
+    {
+      "path": "supabase/migrations/20261021184000_event_media_target_scope.sql",
+      "sha256": "9772242035714b8a9cdc18451acae0ae3bd5aaa5f326cf65e172dff974be952f",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261021184000_event_media_target_scope.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261021184000"
+    },
+    {
+      "path": "supabase/migrations/20261021190000_baseline_media_quota_integrity.sql",
+      "sha256": "9f942ee20f61a59665b1bd815b71610851dc24dcb0e23ad4daeb5074680a4687",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261021190000_baseline_media_quota_integrity.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261021190000"
+    },
+    {
+      "path": "supabase/migrations/20261021193000_library_reservation_capacity.sql",
+      "sha256": "9d5e651a9caf004053e5f2648ed6cdc43f865819f6fe0df038a56aab2ddffc4d",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261021193000_library_reservation_capacity.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261021193000"
+    },
+    {
+      "path": "supabase/migrations/20261021200000_listing_storage_canonical_prefix.sql",
+      "sha256": "bbe9b603457b0c635f36b9bf94c66a13587faab0d8db6d50e190bb6c710da9e3",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261021200000_listing_storage_canonical_prefix.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261021200000"
+    },
+    {
+      "path": "supabase/migrations/20261024005500_approved_monthly_pricing.sql",
+      "sha256": "6f11b563f50b1a0b4dcff942e89a434cc3e29d67460a94402ab1a03531503c46",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261024005500_approved_monthly_pricing.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261024005500"
+    },
+    {
+      "path": "supabase/migrations/20261024013730_admin_read_policy_initplans.sql",
+      "sha256": "1d0d9dbfe9544f8cad5263cebc758759e29ae33213d4053318ef2b8308d4db38",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261024013730_admin_read_policy_initplans.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261024013730"
+    },
+    {
+      "path": "supabase/migrations/20261027001500_founder_push_claims.sql",
+      "sha256": "0d7f7a4a17b29f0915aade9abf521308e2608dada890eb4a5019cb6a5bafe775",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261027001500_founder_push_claims.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261027001500"
+    },
+    {
+      "path": "supabase/migrations/20261027031500_claim_early_partner_feedback.sql",
+      "sha256": "aba6a85b3223c912237310f5e4a9629c6e149f86a55403bfc89dd1d607aafcca",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261027031500_claim_early_partner_feedback.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261027031500"
+    },
+    {
+      "path": "supabase/migrations/20261027081500_claim_partner_auto_trial.sql",
+      "sha256": "2caad286f8920d630a0697264b1b1a8152927078f5b1e21d68f448853479d14b",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261027081500_claim_partner_auto_trial.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261027081500"
+    },
+    {
+      "path": "supabase/migrations/20261027093500_limit_partner_gifts_to_akipasa_venues.sql",
+      "sha256": "41951846b785c5f0e69c143c8329b64e8def125f3423390a47aaea66e95094c3",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261027093500_limit_partner_gifts_to_akipasa_venues.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261027093500"
+    },
+    {
+      "path": "supabase/migrations/20261028022000_launch_waitlist.sql",
+      "sha256": "db84df3ca94f00e858a20d43c4c786a89c200127569a735e1276fb91e0a717c3",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261028022000"
+    },
+    {
+      "path": "supabase/migrations/20261028110300_launch_waitlist_retention_cron.sql",
+      "sha256": "715eb4a02bd99d1d87d4f60b9a54065fd9a6c08686a63b5d72b062efbbc32471",
+      "classification": "unresolved",
+      "requires": [],
+      "filenameVersion": "20261028110300"
+    },
+    {
+      "path": "supabase/migrations/20261028235830_pals_human_avatar_profiles.sql",
+      "sha256": "f44623a55aed84259b87a3cad95e8d10e6b364e2199784c7b417809661a118d7",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261028235830_pals_human_avatar_profiles.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261028235830"
+    },
+    {
+      "path": "supabase/migrations/20261029231041_restore_existing_profile_edit_columns.sql",
+      "sha256": "040cddb415d1a4f3e6458581475c1a122edf6efbd8b3d3696549b90c504d2ee7",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261029231041_restore_existing_profile_edit_columns.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261029231041"
+    },
+    {
+      "path": "supabase/migrations/20261029232451_protect_profile_terms_acceptance_columns.sql",
+      "sha256": "7fe0fa1aa1346cc3877e9693b60a6f1a382f09bf37ebbe33e0bea951b8eeeb75",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261029232451_protect_profile_terms_acceptance_columns.sql",
+      "reason": "Exact byte match only. Choose the database source once if eventually admitted; not evidence of historical semantic equivalence.",
+      "filenameVersion": "20261029232451"
+    },
+    {
+      "path": "supabase/migrations/20261030114106_protect_staff_claim_account_eligibility.sql",
+      "sha256": "154fe91bf7a8a80d433a0a6c5827f22a90bac1ac3e2de99e95063afea24fa160",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261030114106_protect_staff_claim_account_eligibility.sql",
+      "filenameVersion": "20261030114106",
+      "reason": "Exact byte mirror only; never apply twice or infer live application/fresh canonical eligibility."
+    },
+    {
+      "path": "database/migrations/20261030163000_add_checkin_venue_preview.sql",
+      "sha256": "8f863eb676dabfed65955f7febadd1fc4f75b921a040a26e0697c7de4e9cbaeb",
+      "classification": "unresolved",
+      "requires": [
+        "database/migrations/0069_product_contract_loyalty_profiles.sql",
+        "database/migrations/20261020190818_account_identity_existence_guard.sql"
+      ],
+      "filenameVersion": "20261030163000",
+      "reason": "New source-only authenticated public venue preview; requires the original credential schema and exact current canonical account eligibility helper. Not applied to production and outside the approved candidate prefix."
+    },
+    {
+      "path": "supabase/migrations/20261030163000_add_checkin_venue_preview.sql",
+      "sha256": "8f863eb676dabfed65955f7febadd1fc4f75b921a040a26e0697c7de4e9cbaeb",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261030163000_add_checkin_venue_preview.sql",
+      "filenameVersion": "20261030163000",
+      "reason": "Exact byte mirror only; never apply twice or infer live application/fresh canonical eligibility."
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "baselineCommit": "2b3cc9bbe225f927f3097c7e0aefc805c1ccae6d",
+  "sourceHashes": {
+    ".github/workflows/account-browser.yml": "c369a1dfafc38644db319c13e13cec6faf67348e4f4b026902afe8f44288f6dd",
+    ".github/workflows/tablet-browser.yml": "ff26b14a89341c2fbd8a6faebdf90c5a5ae09c054649e4e6e6fe77af819b3bbe",
+    "scripts/test-business-mobility-browser.mjs": "3dd7d2b93d16fc9873bd9dc5c345bb6fbb77feb4a5db0ea73b65969397f189ec",
+    "scripts/test-staff-ui-upgrades-browser.mjs": "0fbaa82aa785034d80d279d903304ecf3ce65083d8546fe00061e0857718d6f3",
+    "scripts/test-passport-places-browser.mjs": "e5341f1e45fe329f0657fe12ac553654a4ca00251054e574bd76fcd09df85c63",
+    "scripts/test-terms-accept-browser.mjs": "e8561d98cfcceee3d21febb4fd7863bbb9c69967f26af186fd3ec3096a716d40",
+    "src/app/[locale]/privacy/prestige/page.tsx": "961046121b7cdc32c054b24fa8176cf6e3db6d27c85b2e93ede35f54e8beaaca",
+    "src/components/PasaSharedSurfaces.css": "e6335b16f87d65d3ba6d64212343678d4a5db25662b7e75cecc3122ef4e26fa6",
+    "src/app/[locale]/staff/staff-ui.css": "c10ce9d1404c591b6856817b7a6beff43848204c39aaf2529bfcd8313d9ce89e"
+  },
+  "fullCheck": {
+    "exitCode": 0,
+    "vitestTests": 2887,
+    "vitestGroups": 17,
+    "initialNodeTests": 140,
+    "builtRoutes": 193,
+    "allNineFilesUnchanged": true,
+    "log": "/tmp/akipasa-family-batch-check-20261030/npm-check.log",
+    "logSha256": "98aa350350d9768e2705078a96a7e326fb693cd009f7b3939c8ea8d068e466d7"
+  },
+  "terms": {
+    "maintainedActualPageAppShellStates": 32,
+    "safeDestinationCases": 6,
+    "actualServerActionTestsAlreadyRegistered": 11,
+    "computedDarkTextContrastMinimum": 9.2375,
+    "computedLightTextContrastMinimum": 6.5706,
+    "beforeDefects": [
+      "Broad shared hero selector overrode intended scoped Terms hero: navy in both modes",
+      "Light version ink contrast1.3243:1"
+    ],
+    "repair": "Only strengthen five Terms-specific selectors under existing AppShell app-content; restore intended brown/cream, eyebrow and version ink. No generic hero or action/consent/version value change.",
+    "assertions": [
+      "actual background",
+      "all four hero text contrasts>=4.5",
+      "required unchecked consent",
+      "native Space toggle/reset",
+      "nativeTab/three-pointer submit target",
+      "zerooverflow/reducedmotion",
+      "zeroactions or external requests"
+    ],
+    "scope": "Actual page/AppShell with synthetic Auth/request/router and throw-only actions. Not actual Next/provider/consent/device proof.",
+    "requiredExistingAccountJobAndSmallArtifactAdded": true
+  },
+  "places": {
+    "maintainedStates": 48,
+    "inputBoundaryProbes": 9,
+    "nativeTabFocusChecks": 388,
+    "unobscuredLinkChecks": 64,
+    "actualWheelMoves": 48,
+    "sourceBindings": 41,
+    "oldCaptureCorrection": "Historical prior fixture had36 cases, not48; retained immutable",
+    "scope": "Actual async page/AppShell+productionCSS with disposable reads/actions forbidden, not actual Next/provider/RLS/XP/device.",
+    "requiredExistingPassportJobAndSmallArtifactAdded": true
+  },
+  "staff": {
+    "browserCasesPassed": 184,
+    "originalCasesRetained": 120,
+    "newHealthySupportCreatorCases": 64,
+    "realDefectsFixed": [
+      "Mobile creator decisions approximately190px high due column flexbasis",
+      "Unreadable locality badge in light mode"
+    ],
+    "repair": "Staff creator-queue-only auto flexbasis/minheight48 and local badge semantic palette",
+    "actualDecisionHeightRange": [48, 56.8],
+    "badgeContrastMinimum": 16.395,
+    "sourceBindings": 13,
+    "zeroActionsPostsExternalRequests": true,
+    "preservedBeforeFailure": "Initial fullbrowser assertions passed but sourcefreeze failed after concurrent sharedCSS change; not counted as final pass"
+  },
+  "mobility": {
+    "browserCasesPassed": 48,
+    "originalCasesRetained": 32,
+    "newNoCompanyContexts": 16,
+    "scope": "Synthetic consumer no-company lookup by submitted_by; no venue-link requirement, exact standalone AkiCoches hrefs, native setup focus without submission",
+    "realCompanyFleetBookingOrPrivateDataUsed": false
+  },
+  "privacyCopy": {
+    "scope": "Own-award singular/plural EN/ES label only; no identity/queries/flags/actions/shipping fields changed",
+    "targetedMaintainedPrestigeStatesPassed": 122
+  },
+  "acceptance": {
+    "routesAccepted": 46,
+    "routesRemaining": 44,
+    "fallbacksAccepted": 6,
+    "newReceipt": "AKIPASA_SUBSCRIPTION_STAFF_ACCEPTANCE_20261030.json",
+    "newTermsPlacesMobilityStaffHealthyHostedAcceptance": "pending actual next-head CI and genuine review"
+  },
+  "priorHeadCI": {
+    "source": "2b3cc9bbe225f927f3097c7e0aefc805c1ccae6d",
+    "ordinaryWorkflowsPassed": 11,
+    "strictGate": "genuine route-acceptance failure",
+    "publicPassed": 525,
+    "conditionalSkips": 77,
+    "accountPassed": 504,
+    "personalPassed": 32,
+    "nativeFallbackPassed": 136,
+    "staffPassed": 120,
+    "prestigeStatesPassed": 122,
+    "prestigeLowerControlChecks": 176,
+    "cloudflareStoredVersion": "1571a078-5584-41b1-b51a-316c618b1201"
+  },
+  "releasePolicyUpdate": {
+    "userAuthorizedFinishedIndependentPublicBatchesBeforeFullOverhaul": true,
+    "isolatedWorktree": "/workspace/akipasa-public-release-20261030",
+    "branch": "work/pasa-finished-public-release-20261030",
+    "base": "3d87eb7c995fbd0947cb25a771a43376d9462645",
+    "rootOnlyIntegrationMergeDeploy": true,
+    "full332StrictGateUnchanged": true,
+    "partialCandidateMustHaveOwnTestsCIReviewAndExpectedHeadMerge": true,
+    "closed336NotReopened": true
+  },
+  "production": {
+    "merged": false,
+    "deployed": false,
+    "sqlApplied": false,
+    "paidResourcesCreated": false,
+    "source": "3d87eb7c995fbd0947cb25a771a43376d9462645",
+    "worker": "26e51e72-bb1e-49e9-a307-243e0203ef8d"
+  }
+}

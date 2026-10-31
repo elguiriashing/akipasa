@@ -1,0 +1,106 @@
+/* Keep recovery in the consumer entrance; other product hosts retain their skin. */
+.recovery {
+  --recovery-ink: #fff7f0;
+  --recovery-muted: #d1c6bd;
+  isolation: isolate;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 100svh;
+  padding: clamp(1.25rem, 5vw, 3.5rem) 1rem 6rem;
+  background: #090b0c;
+  color: var(--recovery-ink);
+}
+
+.recovery::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgb(9 11 12 / 25%), #090b0c 75%),
+    url("/images/akipasa/nightlife-editorial.webp") center top / cover no-repeat;
+  opacity: 0.52;
+  content: "";
+  pointer-events: none;
+}
+
+.recovery .intro {
+  width: min(100%, 30rem);
+  margin: 1.5rem 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+
+.recovery h1 {
+  margin: 0.5rem 0 0.8rem;
+  font-size: clamp(2rem, 7vw, 3.1rem);
+  line-height: 1.06;
+  letter-spacing: -0.045em;
+  color: var(--recovery-ink);
+}
+
+.recovery :global(.eyebrow) {
+  color: #ffb37c;
+}
+
+.recovery :global(.lede) {
+  margin: 0;
+  color: var(--recovery-muted);
+  font-size: 1rem;
+}
+
+.recovery :global(.auth-panel) {
+  width: min(100%, 30rem);
+  margin: 0;
+  padding: clamp(1rem, 4vw, 1.75rem);
+  border: 1px solid #655143;
+  border-radius: 1.5rem;
+  background: rgb(15 15 15 / 94%);
+  color: var(--recovery-ink);
+  box-shadow: 0 20px 64px rgb(0 0 0 / 24%);
+}
+
+.recovery label {
+  color: var(--recovery-ink);
+}
+
+.recovery small {
+  color: var(--recovery-muted);
+  line-height: 1.5;
+}
+
+.recovery input:not([type="hidden"]) {
+  width: 100%;
+  min-width: 0;
+  min-height: 3rem;
+  border: 1px solid #8e8177;
+  border-radius: 0.8rem;
+  background: #191a1b;
+  color: #fff7f0;
+  font-size: 1rem;
+}
+
+.recovery button {
+  min-height: 3rem;
+  border: 1px solid #ff8a42;
+  border-radius: 999px;
+  background: #ff8a42;
+  color: #211004;
+  font-weight: 750;
+}
+
+.recovery :global(.notice) {
+  padding: 0.9rem;
+  border: 1px solid #bd8365;
+  background: #3d2118;
+  color: #ffe4d1;
+}
+
+.recovery :is(input, button):focus-visible {
+  outline: 3px solid #ffd0ab;
+  outline-offset: 3px;
+}

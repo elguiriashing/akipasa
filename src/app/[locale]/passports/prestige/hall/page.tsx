@@ -45,6 +45,13 @@ export default async function HallPage({
             {awards.map((a) => (
               <Link
                 href={`/${locale}/passports/prestige/certificate/${a.public_id}`}
+                aria-label={
+                  a.public_alias
+                    ? `${es ? a.title_es : a.title_en} · ${a.public_alias}`
+                    : es
+                      ? a.title_es
+                      : a.title_en
+                }
                 key={a.public_id}
               >
                 <PassportPrestigeCard locale={locale} award={a} />

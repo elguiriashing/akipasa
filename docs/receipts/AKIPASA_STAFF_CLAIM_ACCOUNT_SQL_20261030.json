@@ -1,0 +1,85 @@
+{
+  "recordedAt": "2026-10-30T12:01:58.470256+00:00",
+  "baselineCommit": "db3f0be5c0db756c9c3cdb4cf51a5a5cbd8fca89",
+  "testedWorkingTree": true,
+  "test": "tests/staff-claim-account-eligibility.test.ts",
+  "sqlSha256": "154fe91bf7a8a80d433a0a6c5827f22a90bac1ac3e2de99e95063afea24fa160",
+  "oldLookupBodyMd5": "154545dcdaf45d679cc35adeaf1677b7",
+  "newLookupBodyMd5": "085d3d37194bf241cb0fd23f92ca2478",
+  "originalLookupDefinitionMd5": "c49199892edff53e68364f05507f953d",
+  "sourceHashes": {
+    "tests/staff-claim-account-eligibility.test.ts": "cd13035c7c550248eba0c0bc3eb9d9aaae152a83045159989583ff44d458348c",
+    "database/migrations/20261030114106_protect_staff_claim_account_eligibility.sql": "154fe91bf7a8a80d433a0a6c5827f22a90bac1ac3e2de99e95063afea24fa160",
+    "supabase/migrations/20261030114106_protect_staff_claim_account_eligibility.sql": "154fe91bf7a8a80d433a0a6c5827f22a90bac1ac3e2de99e95063afea24fa160",
+    "database/migrations/20261020170448_account_completion_age_declaration.sql": "d7ee43da23b267306e68f6c95623139132ccb2afb0046eeda60841ea1c605b36",
+    "database/migrations/20261020190818_account_identity_existence_guard.sql": "f2fe42b66be9bfcdb454195817503c1b02ade0e9179a3c7ec0f96817bf3bda4c",
+    "database/migrations/20261020180946_account_completion_database_coverage.sql": "a92d44084d329ffc1d8d3261c3c37629b07a22b8ae91b24fcabdf601c69ed831",
+    "database/migrations/20261010231500_venue_claim_details.sql": "91d1b5f641263108df2659fb7599d362f90824b6b3f29d5f7f74453577c8bbdb",
+    "database/migrations/20261027001500_founder_push_claims.sql": "0d7f7a4a17b29f0915aade9abf521308e2608dada890eb4a5019cb6a5bafe775",
+    "database/migrations/0027_admin_user_crm.sql": "a861f8220e171a5fbc95c09c941685f3eedeac1a0a84982b231df485490a534f"
+  },
+  "validation": {
+    "focusedVitestPassed": 37,
+    "focusedVitestExitCode": 0,
+    "scopedESLintExitCode": 0,
+    "scopedPrettier": "check passed",
+    "fullCheckRunByThisAgent": false,
+    "migrationAppliedLocallyOnly": true,
+    "databaseEngine": "PGlite 0.3.14 in memory",
+    "fullProductionSchemaParity": false,
+    "strictTypeScriptRepair": "Concrete pg_proc result row type and complete parameterized-test tuple callbacks; no any or suppression and no assertion removed",
+    "npmRunTypecheckExitCode": 0
+  },
+  "coverage": [
+    "Actual original by-ID gap, then actual forward SQL denial for pending/underage moderator and administrator",
+    "Actual onboarding cohort/terminal declaration/completion and canonical set_platform_role, not manually assigned restricted-actor roles",
+    "Eligible legacy moderator/administrator and completed moderator/administrator preserve complete original rows",
+    "Anonymous/missing identity/eligible consumer/pending consumer/stale Profile identity denied; approved/rejected/nonexistent claim UUIDs empty",
+    "Target OID/owner/ACL/STABLE/SECURITY DEFINER/empty search path/return shape retained; canonical helper/list definitions and all synthetic records unchanged",
+    "Second application has identical definitions/grants/policies/records",
+    "17 preflight drift cases rollback atomically without overwrite, data or grant changes",
+    "Explicit trusted-helper NULL fault injection denies before claimant read; all ordinary eligibility tests execute real policy source"
+  ],
+  "limits": [
+    "Synthetic auth.uid JWT-sub transport; no real authentication/provider/PostgREST acceptance",
+    "Minimal synthetic schema foundations, actual full onboarding/final identity/list/coverage migrations and exact source function excerpts",
+    "No FCM/email/vault installation or network services",
+    "No repository SQL, package, git, .next or full-build changes by test owner",
+    "This receipt is implementation evidence, not independent release acceptance or production application"
+  ],
+  "logs": {
+    "focusedVitest": {
+      "path": "/tmp/akipasa-staff-claim-account-eligibility-vitest-20261030.log",
+      "sha256": "64c36342efb0dd8623678c5f4b687c6a163c7e24f4cdc691bd4b318f64d2e9d4"
+    },
+    "initialRunDuringRootSQLStrengthening": {
+      "path": "/tmp/akipasa-staff-claim-account-eligibility-vitest-20261030-prior-sql-hash.log",
+      "note": "30 passed; two failures were immutable old SQL/body pins after root strengthened fail-closed guard. Fresh final source pins and all37cases pass."
+    },
+    "fullCheckStrictTypingFailureRetained": {
+      "path": "/tmp/akipasa-main-staff-account-final-check-20261030.log",
+      "note": "Initial integration fullcheck found only new-test strict row/tuple typing errors at its TypeScript stage; standalone typecheck/focusedSQL were rerun after fixing types. Fullcheck completion remains integration-owner responsibility."
+    },
+    "strictTypecheck": {
+      "path": "/tmp/akipasa-staff-claim-account-eligibility-typecheck-20261030.log",
+      "sha256": "06d36fc536debf36ebfbae80681047d5c5e9d50d6b1d84a0f91a620219178339"
+    }
+  },
+  "productionApplied": false,
+  "productionCalls": false,
+  "realCustomerRows": false,
+  "accepted": false,
+  "merged": false,
+  "deployed": false,
+  "rootIntegrationValidation": {
+    "fullCheckPassed": true,
+    "vitestCases": 2676,
+    "fullCheckLog": "/tmp/akipasa-main-staff-shards-final-check-20261030.log",
+    "priorFullCheckTypingFailure": "/tmp/akipasa-main-staff-account-final-check-20261030.log",
+    "sqlPermissionAuditFindings": 0,
+    "canonicalInventoryActualPaths": 339,
+    "canonicalPlanExitCode": 2,
+    "canonicalParity": false,
+    "productionApplied": false
+  }
+}

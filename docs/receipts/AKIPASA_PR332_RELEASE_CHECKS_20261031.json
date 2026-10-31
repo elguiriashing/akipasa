@@ -1,0 +1,705 @@
+{
+  "version": 1,
+  "date": "2026-10-31",
+  "recordedAt": "2026-10-31T16:07:03.097886+00:00",
+  "status": "integrated-validation-real-backend-protected-browser-and-production-forwards-passed-application-ci-and-rollout-pending",
+  "candidate": {
+    "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+    "previousReviewedHead": "a48e2c32c6eb1072f0608dae331b35ea5c9e4879",
+    "preservedIndependentLiveHead": "6047abc2186e2bab0eacae5ffcb800d73b66d64a",
+    "integratedSourcePublication": "Integrated head 970064e was published and its exact tree verified. A one-line static inventory expectation correction is prepared locally; fresh hosted checks must bind its corrected publication.",
+    "freshHostedChecksRequiredForPublishedHead": true,
+    "sourceSha256": {
+      "src/components/ProductionMap.tsx": "ea9857d07ad9feeb6fc0d79dac0e74ed81950384b0019a18309a7da5db6d24b5",
+      "scripts/test-map-availability-browser.mjs": "cfbee73c3c19b77c413250bb13efa0118c56c7f67e29ca02b99c63df2108c139",
+      "src/app/pals/route.ts": "1245e812053f666af3e4af4f81dd12297d3b5ef45f2bf511e3fe82f4f515a842",
+      "src/components/pals/identity-preview.ts": "5b81aab2e6375a8c87e54c94d09c911e8d6af6163be73d66afb07f4d68ef6cab",
+      "src/components/pals/studio-3d.js": "4437d65880a7a2e83017532b8511b9e3fe953ab596af56060c7d3ac3b19cb132",
+      "scripts/test-pals-identity-browser.mjs": "17c30f694a206b9d2f769eb8248f9759fd1db364aec870803f92c5942184ba1e",
+      "scripts/test-pals-world-browser.mjs": "50e07ded44587a01b015c7f50b1fa9975b5eab090dc934548c73e9c6c2996194",
+      "tests/pals-entry.test.ts": "98a98439dd857d9fcc6bca6eddd3695e8c06dc18ee1cd30353a0cd394a64c285",
+      "tests/e2e/authenticated-production.spec.ts": "85bdbaddfe5fcb0b1762ab6f90f4c348c5847a93fd86a30b4ddda4d66d750d8d",
+      "docs/AKIPASA_UI_ROUTE_MATRIX_20261028.json": "e382bfb50a039a1f9a909ac1d6e347639ddf57b4358f597cc17ba9fa30ac06fb",
+      "database/migrations/20261030114106_protect_staff_claim_account_eligibility.sql": "154fe91bf7a8a80d433a0a6c5827f22a90bac1ac3e2de99e95063afea24fa160",
+      "database/migrations/20261030163000_add_checkin_venue_preview.sql": "8f863eb676dabfed65955f7febadd1fc4f75b921a040a26e0697c7de4e9cbaeb",
+      "tests/e2e/pasa-all-route-smoke.spec.ts": "fdb0a58c88196572660bc86e078bedf0a79be913c8f6a2b9258e26893aa841a2"
+    },
+    "backendSourceSha256": {
+      "database/migrations/0027_admin_user_crm.sql": "a861f8220e171a5fbc95c09c941685f3eedeac1a0a84982b231df485490a534f",
+      "database/migrations/0084_product_readiness_loyalty_reporting.sql": "64df15848c97cd35c2956e5e8602e297371666b81475f0dbe2c9cdf117fe47af",
+      "database/migrations/20261012180000_akisuite_subscription_entitlements.sql": "293c8ce593dcd51ca5c5a620b9366da1e4d179c7e6a8c9da195163116d11c8cf",
+      "database/migrations/20261020170448_account_completion_age_declaration.sql": "d7ee43da23b267306e68f6c95623139132ccb2afb0046eeda60841ea1c605b36",
+      "database/migrations/20261020180946_account_completion_database_coverage.sql": "a92d44084d329ffc1d8d3261c3c37629b07a22b8ae91b24fcabdf601c69ed831",
+      "database/migrations/20261020190818_account_identity_existence_guard.sql": "f2fe42b66be9bfcdb454195817503c1b02ade0e9179a3c7ec0f96817bf3bda4c",
+      "database/migrations/20261030114106_protect_staff_claim_account_eligibility.sql": "154fe91bf7a8a80d433a0a6c5827f22a90bac1ac3e2de99e95063afea24fa160",
+      "database/migrations/20261030163000_add_checkin_venue_preview.sql": "8f863eb676dabfed65955f7febadd1fc4f75b921a040a26e0697c7de4e9cbaeb",
+      "supabase/migrations/20261009160000_booking_notification_email.sql": "0637cc2de573960e20de0fd7947f64cd54338c9c38c8914c6f3b79ee39fc58df",
+      "supabase/migrations/20261009170000_booking_release_integrity.sql": "7f53b5f9b8e6f0fc873675e11ad198673563a9b84198d81c366c704ad0acc95a",
+      "src/app/[locale]/check-in/[token]/actions.ts": "21d15b0e1e7e53ca598421ecbcb41ac4cf0fbe9e4b0478e90a34bbef5809aee8"
+    },
+    "backendSourceFilesUnchangedFromAcceptance": true,
+    "sourceParents": ["970064ece3aa7ea3a76f8b8c35efa26569e065f4"],
+    "publishedIntegratedHead": "970064ece3aa7ea3a76f8b8c35efa26569e065f4",
+    "publishedIntegratedTree": "df24f5698fac8c391ef7be75203d7c6c261bfa30",
+    "integratedSourceParents": [
+      "a48e2c32c6eb1072f0608dae331b35ea5c9e4879",
+      "6047abc2186e2bab0eacae5ffcb800d73b66d64a"
+    ]
+  },
+  "pageReview": {
+    "inventoriedRoutes": 104,
+    "acceptedInScopeRoutes": 90,
+    "acceptedFallbacks": 6,
+    "excludedSeparateProductRoutes": 14,
+    "outstandingInScopeRoutes": 0,
+    "priorExclusionsRetained": 13,
+    "additionalSeparateProductRoute": "src/app/pals/world/page.tsx",
+    "additionalRouteProvenance": "Independently released restricted PR341 World; no original in-scope review was removed or weakened.",
+    "routeMatrix": "docs/AKIPASA_UI_ROUTE_MATRIX_20261028.json",
+    "completionReceipt": "docs/receipts/AKIPASA_ROUTE_REVIEW_COMPLETION_20261031.json",
+    "completionReceiptSha256": "7196b3104d7c608df8287619a3f218450db3cbb2920bf9e1b0b58300bda4105a"
+  },
+  "integratedLocalChecks": {
+    "status": "all-sequence-stages-passed",
+    "prefix": {
+      "contractIntegrity": "passed",
+      "initialNodeTestExecutions": 140,
+      "routeAudit": {
+        "inventoried": 104,
+        "awaitingAcceptance": 0
+      },
+      "format": "passed",
+      "lint": "passed with zero warnings"
+    },
+    "typecheck": {
+      "status": "passed",
+      "evidence": "Successful typecheck execution record verified by the release owner; exit0. The generated artifact was moved outside the repository without product/tsconfig/exclusion changes."
+    },
+    "remainingStages": [
+      {
+        "command": "npm test",
+        "status": "passed",
+        "exitCode": 0,
+        "vitestGroups": 14,
+        "testExecutions": 2876
+      },
+      {
+        "command": "npm run test:security",
+        "status": "passed",
+        "exitCode": 0,
+        "vitestGroups": 1,
+        "testExecutions": 33
+      },
+      {
+        "command": "npm run test:db-safety",
+        "status": "passed",
+        "exitCode": 0
+      },
+      {
+        "command": "npm run test:db-conflicts",
+        "status": "passed",
+        "exitCode": 0,
+        "testExecutions": 2
+      },
+      {
+        "command": "npm run automation:check",
+        "status": "passed-after-pinned-dependency-install",
+        "exitCode": 0,
+        "completionUtc": "2026-10-31T14:29:24.101105+00:00",
+        "coverage": "automation typecheck, unit tests, Wrangler deployment dry-run; no deployment"
+      },
+      {
+        "command": "npm run build",
+        "status": "passed",
+        "exitCode": 0,
+        "completionUtc": "2026-10-31T14:31:48.058478+00:00",
+        "environment": "normal default fixture build, no QA environment override"
+      }
+    ],
+    "countsAreExecutionsNotUniqueTests": true,
+    "scopedPalsCountsOverlapMainSuite": true,
+    "corrections": [
+      {
+        "stage": "original typecheck",
+        "cause": "Generated test-results/remaining-redirect-http/framework TypeScript implicit-any errors",
+        "correction": "Root moved only generated framework to reviews/pr332-generated-redirect-framework; no product code, tsconfig or exclusion change"
+      },
+      {
+        "stage": "first automation check",
+        "cause": "Separate automation dependencies absent: hono and hono/* could not resolve; resulting implicit-any errors",
+        "correction": "npm --prefix automation ci using existing pinned lockfile; 87 packages installed; only automation and build resumed"
+      }
+    ],
+    "validationSourceChanges": [],
+    "captureQualification": "Raw resumed tail ends mid successful automation retry. Exact final success records were retained from exec session80960 and appended with explicit provenance; missing raw stdout not fabricated.",
+    "originalFailureLogSha256": "06e35f5862af458bba6fd8134e426c98ac5c0e4891ead7870da206d5cec2d348",
+    "originalFailureLogPreserved": true,
+    "resumedLogSha256": "1395ab3bfa0ed4146dcac9a5c6f102c14fbcc366f5b05e918983e18f4a91a335",
+    "completionArtifacts": {
+      "automation/.wrangler/dry-run/worker.js": {
+        "bytes": 269648,
+        "modifiedUtc": "2026-10-31T14:29:23.922810+00:00",
+        "sha256": "7996290a155acd4f845a27fcb51769e8959a75e6e03c0d342e6d33eaadb9c816"
+      },
+      ".next/BUILD_ID": {
+        "bytes": 21,
+        "modifiedUtc": "2026-10-31T14:31:26.689150+00:00",
+        "sha256": "c2e0a310600b279438e3e60e20760ca7645083303a6f627657ccade6188757cd"
+      },
+      ".next/build-manifest.json": {
+        "bytes": 511,
+        "modifiedUtc": "2026-10-31T14:30:41.535233+00:00",
+        "sha256": "c72ef6e238d70a4b44aff4a3fec514e609b306b9f30be8bcb375f716ccf9d416"
+      },
+      ".next/prerender-manifest.json": {
+        "bytes": 2011,
+        "modifiedUtc": "2026-10-31T14:31:32.572878+00:00",
+        "sha256": "81a9164856185175a2ae075140fdf0294390c53580f64c34f087ce14b2b90c93"
+      },
+      ".next/server/app-paths-manifest.json": {
+        "bytes": 11556,
+        "modifiedUtc": "2026-10-31T14:30:24.064039+00:00",
+        "sha256": "e013967b98074d9e5ac3717ffb45d5fd12549929ee6329665b81625739bffb45"
+      }
+    }
+  },
+  "map": {
+    "repair": "Only discovery-clusters layout text-font explicitly selects Noto Sans Regular, available from the actual configured OpenFreeMap provider.",
+    "fixtureOutageRetryCases": 16,
+    "fixtureScope": "Actual MapLibre, tileless synthetic basemap, EN/ES, dark/light, 360/390/820/1440; actual native layer font and recovery asserted.",
+    "genuineProviderCases": 2,
+    "providerCases": ["en-dark-360", "en-light-1440"],
+    "providerResponses": 25,
+    "providerHttpFailures": 0,
+    "openSansGlyphRequests": 0,
+    "gpsCalls": 0,
+    "nonGetAttempts": 0,
+    "tlsValidated": true,
+    "providerQualification": "Only local component HTML/CSS/bundle and empty venue tile responses are supplied in memory. Three nearby venue points are explicitly synthetic. OpenFreeMap style/fonts/vector tiles are genuine HTTPS responses. This is not an actual Next page or physical-device acceptance.",
+    "beforeEvidenceQualification": "Initial before/after assertion attempts read layout before the native load event added the layer and returned undefined. Preserved logs are not accepted as font-regression red evidence. Final assertions explicitly wait for the actual layer. The genuine HTTPS glyph404 and passive native layer metadata are the before evidence.",
+    "checkerSha256": "c7853d8a0f77d52e7bfeda601fba2d2c3bb8d40a5c0ebbd9e7505bb25f69eb68"
+  },
+  "pals": {
+    "status": "passed-local-integration",
+    "inputHeads": {
+      "pr332": "a48e2c32c6eb1072f0608dae331b35ea5c9e4879",
+      "live341": "6047abc2186e2bab0eacae5ffcb800d73b66d64a"
+    },
+    "focusedTests": {
+      "passed": 144,
+      "files": 17
+    },
+    "worldBrowserContexts": 7,
+    "finalWardrobeBrowser": "passed",
+    "wardrobeScreenshots": 32,
+    "worldScreenshots": 5,
+    "worldLinkTouchTargetMinPx": 44,
+    "languages": ["en", "es"],
+    "preservedLive341Files": {
+      "src/app/pals/world/page.tsx": {
+        "byteIdentical": true,
+        "sha256": "2f463dd300d6a2d453fbe25ed0d4cf9191d1cd03e1ad37b2c13fec5b6106c7f0"
+      },
+      "src/app/pals/world/venues/route.ts": {
+        "byteIdentical": true,
+        "sha256": "9fb26e21cd34ac4ef6791fec1a1f64765bf51e15420aae5b51c114188da903fc"
+      },
+      "src/components/pals/WorldExplorer.tsx": {
+        "byteIdentical": true,
+        "sha256": "cc45fe6e07aa3c9a4f4f77587e3d1abb9d55fa7c46209f8336b5aa41cdb9642f"
+      },
+      "src/components/pals/WorldExplorer.module.css": {
+        "byteIdentical": true,
+        "sha256": "6bca463a34ab8afdbd5f5d06293eb6a63af76c9b5d05b426e44742e1f7ce7a81"
+      },
+      "src/lib/pals/world.ts": {
+        "byteIdentical": true,
+        "sha256": "bf6c79acc673c33333b2ef7008d04a28981b7f131ffedd3b68bba93581a60e8a"
+      },
+      "tests/pals-world-auth.test.ts": {
+        "byteIdentical": true,
+        "sha256": "6ef9cfdaa2bb1886427e62a1c331efc8654a8ce33c598834f7849c798d81fc73"
+      },
+      "tests/pals-world-route.test.ts": {
+        "byteIdentical": true,
+        "sha256": "44af45b9c51dff7c7fc94f815b63267146a6f448034a6f4ae3bcbc4edf73b777"
+      },
+      "tests/pals-world.test.ts": {
+        "byteIdentical": true,
+        "sha256": "e6f356771c11d3601d1b0691ea0f85e83bf2a2c4e4ae0cb83fb73f595419957b"
+      },
+      "tests/pals-identity-route.test.ts": {
+        "byteIdentical": true,
+        "sha256": "e653e4d66c805de34143036a84ff47cf8b9f50d4354b8aca666605603e10c3ad"
+      }
+    },
+    "resolution": {
+      "palsRoute": "Retained the PR332 bilingual private entry, auth return and error response byte-for-byte.",
+      "identityDocument": "Retained PR332 locale, focus, recovery, contrast and touch controls. Added PR341 Wardrobe copy and World link with EN/ES translations. The World link has a 44px minimum height.",
+      "renderer": "Retained PR332 geometry, demand rendering, context/visibility handling, cache/race protection, disposal and export behavior. Integrated PR341 world mode, low-power pixel ratio, World camera/lighting, no stage floor/ring and GPS walking/heading. World motion stops when idle or hidden and honors reduced motion.",
+      "assertions": "Retained all PR332 identity/browser and PR341 World assertions. Added bilingual World-link href/touch size, actual World mount interface, and GPS-driven change to the actual portrait."
+    },
+    "imageSha256": {
+      "test-results/pals-world-browser/world-1440.png": "1e085cfdd03b61d493f2ff753e248806e615d9c12365e57a1644d23c606ac2c4",
+      "test-results/pals-world-browser/world-360.png": "8424e2df262465ae773387972a13833c31085fc3c68a97c33d4f3451030168c7",
+      "test-results/pals-world-browser/world-390.png": "9bb6d79cc60f9dd435547ff2bf298d3d557175bc758f14a2bf792a5b038d4821",
+      "test-results/pals-world-browser/world-430.png": "4ead3a5694259c6e504653fcfd938b30ad97f815312bc2ba4fdb92a64f282ee7",
+      "test-results/pals-world-browser/world-820.png": "0b145c8c6a173ee070350b175bb504d2135699ab3a7c19c0c0757c2bece5f93c",
+      "test-results/pals-identity-browser/art-feminine-deep-bun.png": "ebc5e02955d16d3de4db0539515257e11c758532dfe8a6b7a7f2e649eccf9d8a",
+      "test-results/pals-identity-browser/art-feminine-deep-buzz.png": "1449978a996a4200cef45b0766291084152bc5615aab35da248280bbfd615576",
+      "test-results/pals-identity-browser/art-feminine-deep-crop.png": "238b14d098864a36d223b8ee9b890a1dcc1a57a63a70fa27410de78add1bd240",
+      "test-results/pals-identity-browser/art-feminine-deep-quiff.png": "df5e2e10b25050c0b5ad9c4a7e414587de2f7d1bc32980d1f14362a28382ea23",
+      "test-results/pals-identity-browser/art-feminine-porcelain-bun.png": "1cf2435a7b16adfd44f0a98aecf3e86ab318891189f14a8c8549f089728a939b",
+      "test-results/pals-identity-browser/art-feminine-porcelain-buzz.png": "8bc2234c4fe944fc5ffce6f45d0fb422e241f06f4c407cd26468b2baac9e1692",
+      "test-results/pals-identity-browser/art-feminine-porcelain-crop.png": "b7d3570044da9b37127b2e8c85bd18b7ae06ed2e4cab453315fcbad0372aba29",
+      "test-results/pals-identity-browser/art-feminine-porcelain-quiff.png": "41fcf3eb1bbd21d8511c02541eded8211baba5776bfe0b4345e9bcbec6aa00c8",
+      "test-results/pals-identity-browser/art-masculine-deep-bun.png": "20e98dad81f22660f016a6bcf9082b74886aac14115c8453687d63f0830086f7",
+      "test-results/pals-identity-browser/art-masculine-deep-buzz.png": "44f46fbb36c236e94bf1b09e79e84ffcd005b365967806bebda0784018c5debd",
+      "test-results/pals-identity-browser/art-masculine-deep-crop.png": "d9669b195ba3ccc53161ebeeee92874c4d50ecc528ea44783b84f8d193110144",
+      "test-results/pals-identity-browser/art-masculine-deep-quiff.png": "b2868db195f312f7416368dee8d45c971f2c96e62be21fec16cda335aee7d64b",
+      "test-results/pals-identity-browser/art-masculine-porcelain-bun.png": "9012f7bb84955a675919debb414cabd41b75203765d9a2e36ab23ee7f2289802",
+      "test-results/pals-identity-browser/art-masculine-porcelain-buzz.png": "9539546014be78da148b2f1f8c4d6f573b98540e10e9f07b303eec8851880e5f",
+      "test-results/pals-identity-browser/art-masculine-porcelain-crop.png": "7f68c940a8f1c061961cb494981fc9665900c1fdac3ada4f76ca6b7c49445c4a",
+      "test-results/pals-identity-browser/art-masculine-porcelain-quiff.png": "b165b8a2f943002a0e6f8e086bcdc5279bb8265e6af9ccd7566dcafe14773b94",
+      "test-results/pals-identity-browser/identity-1440.png": "47134b7d75e096c6044830deb6b283cd48be95b4b2584c9704f06fb5bcb3d7e0",
+      "test-results/pals-identity-browser/identity-320.png": "8b312ab0251d9217fa828cdb1f195e3a21cd294e54a94ef831ba7afbb6e19127",
+      "test-results/pals-identity-browser/identity-360.png": "efa437ffb3f0d4f3ea1748dc47f856d36ea95e72e53b4cac198cc2ef9b5f6ce6",
+      "test-results/pals-identity-browser/identity-390.png": "efd41d8c0ee8cb9043db2cad93ba94e0136bd1c4aada0855b5a6b5bb8475c200",
+      "test-results/pals-identity-browser/identity-820.png": "6be31f6a507a1e887504e5ee14084c68beeca5bfe3daa1707742e5ba5e78aac5",
+      "test-results/pals-identity-browser/identity-default-390.png": "e65cc0051e728b7667085af0dd7bbdaf95ba1c6f01d6989ecc2b51f52a942ff2",
+      "test-results/pals-identity-browser/identity-es-1440.png": "12cf5416d412ae0bce3823e6a18766077da7b96ceba88627fa5cc243e8bb2bfe",
+      "test-results/pals-identity-browser/identity-es-320.png": "6c2b14712d47467289c061bb4f198252b8c73cf6b7b6141886421d77d4e120f1",
+      "test-results/pals-identity-browser/identity-es-360.png": "ccc475afcb8bf18d111a398852bce1b9b18cb232a1b04a82ce26f88a88d7e9ea",
+      "test-results/pals-identity-browser/identity-es-390.png": "5cf8e6a4e8832b60c988dcd113e9a201abcc5edf97a3752778c5bf3222d43d2e",
+      "test-results/pals-identity-browser/identity-es-820.png": "1fb14e9cef16eb4adbf9879628ca752a7a772e16611441bab532135c90895001",
+      "test-results/pals-identity-browser/identity-es-android-emulated-390.png": "7529b68f8678eeeb2c23dac5b8d98609cccc5602fe67c1f76dc90940dbf3e0d0",
+      "test-results/pals-identity-browser/identity-male-390.png": "a93011b6215c0b4bc2b62082eca34fc8bb68637a68ac9fc52d2c1c46e4e5da21",
+      "test-results/pals-identity-browser/identity-male-stage-390.png": "cab3ce4ffed06c11200a15e0c94a48542e38de8089be6bed6fe69094e343f6a6",
+      "test-results/pals-identity-browser/identity-short-reduced-motion.png": "ef099b5b8f629af8f4420ff70e4217837d2165bbe3af2aa42e6c5f137911511a",
+      "test-results/pals-identity-browser/identity-tall-reduced-motion.png": "6d270cd72ab0c2c53ae3841bd2c12ee6976b8074339e1c674a6b2c9cc646d910"
+    },
+    "bundleSha256": "4c950cf8a13404a58051f1633de3dd1b309d0fe4c2c2fa9baf464f684f2120f4",
+    "limitations": [
+      "Disposable identity and venue data with simulated GPS; these browser checks do not prove real provider Auth or physical attendance.",
+      "Synthetic persisted PageTransitionEvent tests do not prove actual BFCache eligibility.",
+      "The consolidated local check sequence is recorded separately in this receipt; fresh hosted checks remain required for the published head."
+    ]
+  },
+  "authenticatedBrowserExpectationRepair": {
+    "path": "tests/e2e/authenticated-production.spec.ts",
+    "change": "Preserve the maintained read-only suite: assert the actual authorized Staff audit redirect, select the exact Account Passport link and visible main landmark, and close the privacy panel with its native Close control while verifying persisted privacy/motion values stay unchanged.",
+    "sourceRepairCompleted": true,
+    "fullProtectedQaBrowserAcceptance": "passed",
+    "additionalSelectorScope": "Exact Account Passport link and the visible main landmark; intended native control/landmark selected while preserving route, visibility and content assertions.",
+    "optionalConsentSaveProbe": {
+      "status": "failed-outside-maintained-read-only-scope",
+      "httpStatus": 403,
+      "responseCode": "invalid_origin",
+      "originScope": "Anonymous local Next proxy/direct loopback test origins.",
+      "classification": "QA origin-topology limitation; not counted as consent-save acceptance.",
+      "productionPrivacyComponentApiAndRequestSecurity": "Release-owner diff confirmed byte-identical to live341; no application/API/security changes.",
+      "finalReadOnlyApproach": "Use the existing native Close privacy choices button and assert persisted privacy-cookie and motion values remain unchanged."
+    }
+  },
+  "qaBackend": {
+    "projectRef": "ngzexyddtnswonjnckco",
+    "status": "passed-bounded-real-backend-acceptance",
+    "receipt": "docs/receipts/AKIPASA_PR332_REAL_BACKEND_20261031.json",
+    "executionReportSha256": "768246260730907f8f7131206ce5612475d25344d4f5ef48dec72d4bb4867712",
+    "publishedReceiptSha256": "768246260730907f8f7131206ce5612475d25344d4f5ef48dec72d4bb4867712",
+    "startedAt": "2026-10-31T15:28:23.582Z",
+    "finishedAt": "2026-10-31T15:28:56.880Z",
+    "schemaReceiptId": "PR332_CLEAN_HOSTED_SCHEMA_20261031",
+    "schemaProvenance": {
+      "type": "explicitly reconstructed disposable QA; not invented production history",
+      "officialInitialDefaults": {
+        "pinnedSupabasePostgresVersion": "17.6.1.147",
+        "appliedBeforeApplicationTables": true
+      },
+      "actualProductionMigrationsApplied": 248,
+      "explicitQaFoundations": 3,
+      "candidateQaForwardsApplied": 3,
+      "finalMigrationHistoryEntries": 254,
+      "baselineSource0001Through0033": "applied atomically after official pristine initial defaults",
+      "retroactiveBroadGrantWorkaround": false,
+      "governingReplayContract": "docs/AKIPASA_PROFILE_EDIT_REPLAY_20261029.md"
+    },
+    "preconditions": {
+      "cleanNextQaBuild": "passed",
+      "strictHarnessGuardTestsPassed": 7,
+      "nonProductionRefGuardRetained": true,
+      "bookingMutationOptIn": true,
+      "checkinMutationOptIn": true
+    },
+    "auth": {
+      "realGoTruePasswordLogins": 9,
+      "providerUserEndpointVerifiedForEveryActor": true,
+      "identityProvisioning": "Explicit administrative QA-only auth.users/auth.identities seeds, followed by genuine GoTrue password login, provider user verification and JWT-authenticated REST/RPC requests; no mocked JWTs.",
+      "signupAndEmailProvisioning": "not exercised",
+      "fixtureSetupCorrection": "Canonical venue_members promote_business_owner trigger made the initial administrator fixture actor organiser. The scratch setup helper corrected its expected partial state and resumed; no application or ACL change."
+    },
+    "acceptance": {
+      "passed": 93,
+      "failed": 0,
+      "actualNetworkRequests": 167,
+      "complete": true,
+      "omitted": [],
+      "scope": [
+        "Nine genuine Auth sessions and account identity/eligibility checks.",
+        "Exact Admin and Staff eligibility/role denials, including pending and underage identities.",
+        "Exact pending claim lookup; approved, rejected and absent claims stay empty.",
+        "Minimal Check-in preview payload; credential privacy and no attendance, XP, loyalty or passport ledger writes.",
+        "Consumer A/B booking, attendance and XP isolation in the exercised RLS paths.",
+        "Real capacity-one booking concurrency with one winner, idempotent replay and changed-argument rejection.",
+        "Invalid coordinates/accuracy cause no ledger writes; outside geofence awards zero XP; simulated valid location awards exactly 10 XP once; repeat does not add XP."
+      ]
+    },
+    "sourceBinding": {
+      "head": "a48e2c32c6eb1072f0608dae331b35ea5c9e4879",
+      "sha256": {
+        "database/migrations/0027_admin_user_crm.sql": "a861f8220e171a5fbc95c09c941685f3eedeac1a0a84982b231df485490a534f",
+        "database/migrations/0084_product_readiness_loyalty_reporting.sql": "64df15848c97cd35c2956e5e8602e297371666b81475f0dbe2c9cdf117fe47af",
+        "database/migrations/20261012180000_akisuite_subscription_entitlements.sql": "293c8ce593dcd51ca5c5a620b9366da1e4d179c7e6a8c9da195163116d11c8cf",
+        "database/migrations/20261020170448_account_completion_age_declaration.sql": "d7ee43da23b267306e68f6c95623139132ccb2afb0046eeda60841ea1c605b36",
+        "database/migrations/20261020180946_account_completion_database_coverage.sql": "a92d44084d329ffc1d8d3261c3c37629b07a22b8ae91b24fcabdf601c69ed831",
+        "database/migrations/20261020190818_account_identity_existence_guard.sql": "f2fe42b66be9bfcdb454195817503c1b02ade0e9179a3c7ec0f96817bf3bda4c",
+        "database/migrations/20261030114106_protect_staff_claim_account_eligibility.sql": "154fe91bf7a8a80d433a0a6c5827f22a90bac1ac3e2de99e95063afea24fa160",
+        "database/migrations/20261030163000_add_checkin_venue_preview.sql": "8f863eb676dabfed65955f7febadd1fc4f75b921a040a26e0697c7de4e9cbaeb",
+        "supabase/migrations/20261009160000_booking_notification_email.sql": "0637cc2de573960e20de0fd7947f64cd54338c9c38c8914c6f3b79ee39fc58df",
+        "supabase/migrations/20261009170000_booking_release_integrity.sql": "7f53b5f9b8e6f0fc873675e11ad198673563a9b84198d81c366c704ad0acc95a",
+        "src/app/[locale]/check-in/[token]/actions.ts": "21d15b0e1e7e53ca598421ecbcb41ac4cf0fbe9e4b0478e90a34bbef5809aee8"
+      }
+    },
+    "fixtureDeclaration": {
+      "disposableQa": true,
+      "providersDisabled": true,
+      "verification": "release-owner declaration; not inferred from a successful RPC"
+    },
+    "finalQaPostflight": {
+      "provenance": "Release-owner final hosted QA readback on 2026-10-31.",
+      "activeCronJobs": 0,
+      "adminPushDevices": 0,
+      "claimPushDeliveries": 0,
+      "migrationHistoryEntries": 254
+    },
+    "limitations": [
+      "This bounds real Auth/JWT/PostgREST/RLS and the listed RPCs; it does not certify full production schema parity.",
+      "No physical Android/browser session, Next.js middleware/server-action transport, provider fulfilment, payment, email delivery or reward redemption is exercised.",
+      "The direct check-in RPC does not test the server action's best-effort trusted behaviour logging.",
+      "QA identities and fixtures are administratively provisioned separately by the release owner; signup/email provisioning is not exercised. The harness requires real GoTrue login and never supplies a synthetic JWT."
+    ],
+    "resourceStatus": "deleted after successful backend and protected-browser acceptance; evidence retained",
+    "cleanup": {
+      "completedAt": "2026-10-31T15:48:19Z",
+      "method": "official branch deletion tool",
+      "freshBranchListVerifiedAbsent": true,
+      "defaultBranchPreserved": true,
+      "provenance": "Release-owner official-tool success and fresh list_branches readback."
+    }
+  },
+  "production": {
+    "ddlExecutedForThisRelease": true,
+    "ddlStatus": "applied-and-postconditions-verified",
+    "projectRef": "vhpbvcfkcteswlsdjrfl",
+    "receipt": "docs/receipts/AKIPASA_PR332_PRODUCTION_FORWARDS_20261031.json",
+    "executionReceiptSha256": "5281a8a68c6134b8c99e3b340ef9cc5fb351ab5d60a255251f18d543d6a92028",
+    "publishedReceiptSha256": "a87a79fa1a31fed27ba005ba1da53bac727742b63032aa513edf702755adeacb",
+    "appliedForwards": [
+      {
+        "source": "database/migrations/20261030114106_protect_staff_claim_account_eligibility.sql",
+        "sha256": "154fe91bf7a8a80d433a0a6c5827f22a90bac1ac3e2de99e95063afea24fa160",
+        "managedVersion": "20261031153153",
+        "applySuccess": true
+      },
+      {
+        "source": "database/migrations/20261030163000_add_checkin_venue_preview.sql",
+        "sha256": "8f863eb676dabfed65955f7febadd1fc4f75b921a040a26e0697c7de4e9cbaeb",
+        "managedVersion": "20261031153156",
+        "applySuccess": true
+      }
+    ],
+    "officialAtomicApplyMigrationFlow": true,
+    "definitionAclPreflight": "passed",
+    "atomicForwardPostconditions": "passed",
+    "accountEligibilityHelper": "unchanged; exact reviewed precondition and postflight verified",
+    "credentialOwnerRlsAcl": "unchanged",
+    "credentialPoliciesAndProfileUpdateColumnsExactlyMatchQa": true,
+    "existingProfileUpdateColumnCount": 18,
+    "replayRepairSubsetColumnCount": 15,
+    "profileColumnReplayRepair": "The 15-column replay repair is a subset of 18 existing production UPDATE columns; no new production profile grant was applied.",
+    "productionCustomerDml": false,
+    "otherProductionDdl": false,
+    "historicalReplayArchivesAreDeploymentInstructions": false,
+    "existingAvatarSchema": "Existing saves/table preserved; no reinstall.",
+    "pr332Merged": false,
+    "pr332Deployed": false,
+    "tonightEnabledByThisRelease": false,
+    "palsPrivateAccessGate": "preserved"
+  },
+  "remainingRequirements": [
+    "Publish the bounded inventory expectation correction and bind fresh required hosted checks to its corrected head.",
+    "Merge PR332 and verify the automatic production deployment source identity, health and authorized journeys."
+  ],
+  "evidence": {
+    "publishedCompletionReceipt": "https://github.com/elguiriashing/akipasa/blob/a48e2c32c6eb1072f0608dae331b35ea5c9e4879/docs/receipts/AKIPASA_ROUTE_REVIEW_COMPLETION_20261031.json",
+    "localVerifiedReceipts": [
+      {
+        "name": "pr332-integrated-check-resumed.json",
+        "sha256": "749a250e47fe46b2e3f63df6c7fb6670b713f7699a8cf6345d6b2b2f06d05087"
+      },
+      {
+        "name": "pals-341-integration.json",
+        "sha256": "24508c1f33fc67018bc135ef739856dd188cbe8c39a78e676fb29d44a7d018e7"
+      },
+      {
+        "name": "map-glyph-font-20261031/receipt.json",
+        "sha256": "c34784f37890e681ca2dbe034d246410575b5063ea33c550fd975f526f975a33"
+      },
+      {
+        "name": "qa-fixture-map-provider-review.json",
+        "sha256": "377f82b2c423f003aedd544ad6870be848007a8666852c40636d1359593a6665"
+      },
+      {
+        "name": "qa-fixture-map-provider-evidence/receipt.json",
+        "sha256": "4a005895fbcc8a7caf449b735b69263b17b735dbdce8481ddbde01a93e80fc34"
+      },
+      {
+        "name": "pr332-clean/qa-fixture-next-auth-receipt.json",
+        "sha256": "bad08f6b40afcaa41eac96ae6a27463a67e745bb835f05769e471c4ad3a623bb",
+        "sanitizedReceiptEmbeddedIn": "authenticatedBrowserAcceptance.executionReceipt"
+      }
+    ],
+    "durableAcceptanceReceipts": [
+      {
+        "path": "docs/receipts/AKIPASA_PR332_REAL_BACKEND_20261031.json",
+        "executionSha256": "768246260730907f8f7131206ce5612475d25344d4f5ef48dec72d4bb4867712",
+        "publishedSha256": "768246260730907f8f7131206ce5612475d25344d4f5ef48dec72d4bb4867712"
+      },
+      {
+        "path": "docs/receipts/AKIPASA_PR332_PRODUCTION_FORWARDS_20261031.json",
+        "executionSha256": "5281a8a68c6134b8c99e3b340ef9cc5fb351ab5d60a255251f18d543d6a92028",
+        "publishedSha256": "a87a79fa1a31fed27ba005ba1da53bac727742b63032aa513edf702755adeacb"
+      }
+    ]
+  },
+  "limitations": [
+    "The Map-provider checks use actual provider responses with an explicitly synthetic local component/data fixture; they do not prove an authenticated Next page or physical device.",
+    "Pals browser identity/venue data and GPS are fixtures. Synthetic persisted events do not prove actual BFCache eligibility.",
+    "The 93-check backend run exercises real GoTrue Auth/JWT/PostgREST/RLS and listed RPCs, with explicitly seeded disposable QA identities. It is bounded acceptance, not a blanket claim of all production-schema or tenant behavior.",
+    "The verified check-in uses explicitly simulated coordinates. No physical attendance, physical Android/iOS acceptance, live customer transaction, payment, reward redemption, signup/email provisioning or provider email delivery is claimed.",
+    "Direct Check-in RPC acceptance does not prove Next server-action transport or its best-effort trusted behavior logging.",
+    "Durable receipts include synthetic fixture row identifiers but no passwords, API keys, access/refresh tokens, cookies, QR credentials, private credential filenames or test-user email addresses."
+  ],
+  "qaHistory": [
+    {
+      "projectRef": "kxrrupayxkaslmfycbpn",
+      "progressProvenance": "Release-owner connector/Auth/ACL checkpoint on 2026-10-31; not a completed role/RLS acceptance receipt.",
+      "reconstructedQaBaseline": true,
+      "productionHistoryClaim": false,
+      "fullyReconstructedBaselineSourceFiles": 27,
+      "source0028": "partially applied",
+      "applicationTables": 35,
+      "administrativelyProvisionedQaAdministrators": 1,
+      "activeCronJobs": 0,
+      "additionalAppliedFunctions": {
+        "operatorFunctions": 2,
+        "ownedVenueFunction": true
+      },
+      "expiredConfirmationOperations": [
+        "full source0028 batch",
+        "atomic operator_delete_catalogue_item CREATE FUNCTION"
+      ],
+      "expiredOperationsAcceptedAsApplied": false,
+      "auth": {
+        "realGoTruePasswordLogin": "passed",
+        "providerUserEndpoint": "HTTP200",
+        "identityProvisioning": "Explicitly authorized administrative QA-only auth.users/auth.identities seed; real provider session/JWT verification retained.",
+        "signupAndEmailProvisioning": "not exercised"
+      },
+      "firstAuthenticatedProfileRestRead": {
+        "status": "failed",
+        "httpStatus": 403,
+        "cause": "Fresh QA initial table/default ACL baseline lacks CRUD grants.",
+        "roles": ["anon", "authenticated", "service_role"],
+        "freshQaPrivileges": "Dxtm",
+        "mainBaselinePrivileges": "arwdDxtm"
+      },
+      "requiredRecovery": "Superseded by a separate pristine branch with the correct initial platform defaults; this failed branch was not repaired with broad grants.",
+      "governingReplayContract": "docs/AKIPASA_PROFILE_EDIT_REPLAY_20261029.md",
+      "strictGuardRetained": true,
+      "completedRoleRlsTenantBookingCheckinXpAcceptance": false,
+      "bootstrapPlanIsNotExecutionEvidence": true,
+      "status": "historical-incomplete-bootstrap-preserved-not-used-for-final-acceptance",
+      "resourceStatus": "deleted through official branch tool after fresh nonproduction identity verification",
+      "failureEvidencePreserved": true,
+      "cleanupProvenance": "Release-owner confirmation on 2026-10-31; the clean acceptance branch is separate."
+    }
+  ],
+  "authenticatedBrowserAcceptance": {
+    "status": "passed-bounded-genuine-next-authenticated-read-only-flow",
+    "executionReceiptName": "qa-fixture-next-auth-receipt.json",
+    "executionReceiptSha256": "bad08f6b40afcaa41eac96ae6a27463a67e745bb835f05769e471c4ad3a623bb",
+    "executionReceipt": {
+      "mode": "auth",
+      "started": "2026-10-31T15:45:23.342828+00:00",
+      "completed": "2026-10-31T15:46:31.424237+00:00",
+      "exitCode": 0,
+      "sourceUnchanged": true,
+      "source": {
+        "sha256": "843a396f73e3df6f43ea5ce79ac2fbd26b664e5c1eb9ca0c472a47cadff9a34b",
+        "files": 650
+      },
+      "head": "a48e2c32c6eb1072f0608dae331b35ea5c9e4879",
+      "projectRef": "ngzexyddtnswonjnckco",
+      "dataProvider": "supabase",
+      "localSiteOrigin": "http://127.0.0.1:3100",
+      "nodeProxy": "inherited session proxy; explicit loopback NO_PROXY entries",
+      "tls": "system trust plus configured session CA; no TLS verification bypass",
+      "browserTrust": "isolated existing NSS XDG store"
+    },
+    "sanitization": "Only the private raw-log path is omitted; no authentication secrets are present in the receipt. The original raw log is not published.",
+    "testSource": {
+      "path": "tests/e2e/authenticated-production.spec.ts",
+      "sha256": "85bdbaddfe5fcb0b1762ab6f90f4c348c5847a93fd86a30b4ddda4d66d750d8d"
+    },
+    "passedPlaywrightTests": 1,
+    "protectedRouteAudits": 24,
+    "coverage": [
+      "Genuine hosted QA sign-in through the actual Next application.",
+      "24 protected route audits with actual status, content, visibility, accessible-control and overflow checks.",
+      "Community/Growth, Admin controls and the native mobile Account menu.",
+      "Event detail and media picker controls through the normal native flow.",
+      "Actual Staff audit 307 redirect to the authorized Admin audit route.",
+      "Native Close privacy choices control; stored privacy-cookie and motion values unchanged."
+    ],
+    "runtimeSourceUnchanged": true,
+    "runtimeSourceFileCount": 650,
+    "runtimeSourceManifestSha256": "843a396f73e3df6f43ea5ce79ac2fbd26b664e5c1eb9ca0c472a47cadff9a34b",
+    "newPassScreenshots": 0,
+    "screenshotQualification": "The maintained suite emits no screenshots on pass. This is runtime assertion evidence; existing reviewed visual captures remain separately attributed.",
+    "optionalConsentSaveProbe": {
+      "status": "failed-outside-maintained-read-only-scope",
+      "httpStatus": 403,
+      "responseCode": "invalid_origin",
+      "originScope": "Anonymous local Next proxy/direct loopback test origins.",
+      "classification": "QA origin-topology limitation; not counted as consent-save acceptance.",
+      "productionPrivacyComponentApiAndRequestSecurity": "Release-owner diff confirmed byte-identical to live341; no application/API/security changes.",
+      "finalReadOnlyApproach": "Use the existing native Close privacy choices button and assert persisted privacy-cookie and motion values remain unchanged."
+    },
+    "limitations": [
+      "One maintained read-only Playwright flow; not a full physical-device or all-browser acceptance claim.",
+      "No signup/email delivery, payment, provider fulfillment or consent-save success is claimed.",
+      "Separate direct-RPC Check-in evidence uses simulated coordinates; physical GPS attendance and Next Check-in server-action transport are not proven by these receipts."
+    ],
+    "reviewReceiptSha256": "4b043a5c3160a0c03064dd92747fa759eb9beacd3bb746dc3fe6912841172bb7",
+    "reviewReceipt": {
+      "status": "passed",
+      "scope": "Actual built Next application with real isolated Supabase password Auth and real role/RLS fixtures; no synthetic HTTP auth responses",
+      "started": "2026-10-31T15:45:23.342828+00:00",
+      "completed": "2026-10-31T15:46:31.424237+00:00",
+      "exitCode": 0,
+      "playwrightTestsPassed": 1,
+      "protectedRouteAuditsPassed": 24,
+      "additionalControls": [
+        "Admin navigation/search/settings",
+        "360px Account native menu open/close",
+        "Owner event native accordion with visible occurrence Save and booking link",
+        "Owner venue Media profile: five choose-image controls; picker open/search/close; upload fields visible, no submit"
+      ],
+      "sourceUnchanged": true,
+      "runtimeSource": {
+        "sha256": "843a396f73e3df6f43ea5ce79ac2fbd26b664e5c1eb9ca0c472a47cadff9a34b",
+        "files": 650
+      },
+      "spec": {
+        "path": "tests/e2e/authenticated-production.spec.ts",
+        "sha256": "85bdbaddfe5fcb0b1762ab6f90f4c348c5847a93fd86a30b4ddda4d66d750d8d"
+      },
+      "backendProjectRef": "ngzexyddtnswonjnckco",
+      "backendDisposition": "Root deleted QA after acceptance; no further requests permitted",
+      "privacy": "Native Close privacy choices button; asserts panel hidden, normal disclosure state, and unchanged persisted allowlisted privacy/motion choices. No consent decision posted.",
+      "privacyDiagnosticLimit": "Earlier anonymous local transport consent probe returned 403 invalid_origin. It is preserved separately and is not an authenticated production consent-save acceptance. Component/API/security bytes match previously released PR341.",
+      "browser": "Headless Chromium 153.0.8010.0 with mobile/desktop emulated viewports; no physical-device claim",
+      "passScreenshots": [],
+      "screenshotNote": "Maintained suite emits no pass screenshots; preceding page-review screenshots are separate evidence.",
+      "evidence": [
+        {
+          "path": "qa-fixture-next-auth-receipt.json",
+          "sha256": "bad08f6b40afcaa41eac96ae6a27463a67e745bb835f05769e471c4ad3a623bb"
+        },
+        {
+          "path": "private qa-authenticated-production.log",
+          "sha256": "d9f52354688b550380d2a0eaf31e154aa9d34066f83a0e23f07ea9e737c01908"
+        },
+        {
+          "path": "qa-fixture-next-build-receipt.json",
+          "sha256": "414dc5f53a828455ddf26fcf9540ac9f9ab8f9f10bcb46cef061d1d23dd8f5fd"
+        },
+        {
+          "path": "consent-origin-diagnostic.json",
+          "sha256": "5ef355ef4bddf05382c4fd9aea91274798838658017f539367960083ba6a1014"
+        }
+      ]
+    }
+  },
+  "qaCleanup": {
+    "status": "complete",
+    "projectsDeleted": ["kxrrupayxkaslmfycbpn", "ngzexyddtnswonjnckco"],
+    "completedAt": "2026-10-31T15:48:19Z",
+    "freshBranchListVerifiedBothAbsent": true,
+    "defaultBranchPresent": true,
+    "failureAndSuccessReceiptsPreserved": true
+  },
+  "hostedInventoryCountCorrection": {
+    "status": "bounded-test-correction-validated-corrected-head-ci-pending",
+    "failedHead": "970064ece3aa7ea3a76f8b8c35efa26569e065f4",
+    "runId": 41216901369,
+    "jobId": 124583210533,
+    "jobUrl": "https://github.com/elguiriashing/akipasa/actions/runs/41216901369/job/124583210533",
+    "test": "AkiPasa entire route inventory smoke \u203a matrix still inventories the complete AkiPasa surface",
+    "file": "tests/e2e/pasa-all-route-smoke.spec.ts",
+    "line": 69,
+    "failure": {
+      "expectedTotalRoutes": 103,
+      "actualTotalRoutes": 104,
+      "expectedInScopeRoutes": 90,
+      "actualInScopeRoutes": 90,
+      "cause": "Stale expected total after preserving the independently released private World route from PR341.",
+      "shard1Passed": 321,
+      "shard1Skipped": 17,
+      "shard1Failed": 1
+    },
+    "preservedFailureLog": {
+      "path": "../reviews/pr332-ci-970064e-public-shard1.log",
+      "sha256": "c52abc18681693ceb68136a361642f029f2b550a1707aab98782144c99ec4acc",
+      "format": "Decoded GitHub job log preserved locally; hosted job remains the canonical remote evidence."
+    },
+    "correction": {
+      "change": "Only total-route assertion 103\u2192104; existing 90 in-scope assertion and all route checks retained.",
+      "testSourceSha256": "fdb0a58c88196572660bc86e078bedf0a79be913c8f6a2b9258e26893aa841a2",
+      "targetedExistingPlaywrightCase": {
+        "status": "passed",
+        "tests": 1,
+        "durationSeconds": 3.0,
+        "externalServerOption": true,
+        "applicationServerBrowserOrBackendNeeded": false,
+        "executionProvenance": "Release-owner targeted existing Playwright execution on the corrected source."
+      },
+      "scopedEslint": "passed with zero warnings",
+      "scopedPrettier": "passed"
+    },
+    "priorHeadFullCheckAndCloudflarePackaging": {
+      "status": "success",
+      "runId": 41216901387,
+      "url": "https://github.com/elguiriashing/akipasa/actions/runs/41216901387"
+    },
+    "applicationRuntimeChanges": false,
+    "sqlChanges": false,
+    "runtimeSourceFiles": 650,
+    "runtimeSourceManifestSha256": "843a396f73e3df6f43ea5ce79ac2fbd26b664e5c1eb9ca0c472a47cadff9a34b",
+    "runtimeHashRecomputedUnchangedByReleaseOwner": true,
+    "realBackend93AndAuthenticatedRoutes24EvidenceSourceBinding": "unchanged; no repeat backend or application test run required for this static expectation correction",
+    "freshHostedChecksRequiredForCorrectedHead": true,
+    "mergeOrDeploymentClaim": false
+  }
+}

@@ -1,3 +1,4 @@
+import { accountReturnPath } from "@/lib/account-return-path";
 import { notFound } from "next/navigation";
 import { operationToolLabel } from "@/lib/operations-billing/tool-labels";
 import { isLocale } from "@/lib/config";
@@ -26,18 +27,20 @@ export default async function OperationsSubscriptionPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const es = locale === "es";
-  const { supabase, user } = await requireUser(
+  const query = await searchParams;
+  const returnPath = accountReturnPath(
     locale,
-    `/${locale}/account/subscription/operations`,
+    `/${locale}/account/subscription/operations?${new URLSearchParams(Object.entries(query).filter((entry): entry is [string, string] => typeof entry[1] === "string"))}`,
   );
-  const { data: workspaces, error } = await supabase
+  const { supabase, user } = await requireUser(locale, returnPath);
+  const { data: workspaceRows, error } = await supabase
     .from("crm_workspaces")
     .select("id,name")
     .eq("owner_profile_id", user.id)
     .in("status", ["active", "trial"])
     .order("name")
     .limit(100);
-  const query = await searchParams;
+  const workspaces = error ? null : workspaceRows;
   const initialWorkspace = workspaces?.some((w) => w.id === query.workspace)
     ? query.workspace
     : !query.workspace && workspaces?.length === 1
@@ -139,7 +142,7 @@ export default async function OperationsSubscriptionPage({
               : "Your current subscription remains until that date. Operating tools activate only after confirmed renewal payment."}
           </p>
         )}
-        {query.saved === "initial" && (
+        {!error && query.saved === "initial" && (
           <p role="status">
             {es
               ? "Configuración inicial guardada. Se activará tras confirmar la migración en la renovación."
@@ -178,14 +181,25 @@ export default async function OperationsSubscriptionPage({
             </button>
           </form>
         )}
-        {(!ready || error) && (
+        {!ready && !error && (
           <p role="status">
             {es
               ? "La contratación está pendiente de la verificación de facturación. Tus herramientas actuales no cambian."
               : "Checkout is awaiting billing verification. Your current tools remain unchanged."}
           </p>
         )}
-        {workspaces?.length ? (
+        {error ? (
+          <div role="alert" className="stack">
+            <p>
+              {es
+                ? "No se pudieron cargar tus ubicaciones. Vuelve a intentarlo antes de elegir un paquete."
+                : "We couldn’t load your locations. Retry before choosing a package."}
+            </p>
+            <a className="button secondary" href={returnPath}>
+              {es ? "Reintentar" : "Retry"}
+            </a>
+          </div>
+        ) : workspaces?.length ? (
           <form action={startOperationsCheckout} className="stack">
             <input type="hidden" name="locale" value={locale} />
             <label>

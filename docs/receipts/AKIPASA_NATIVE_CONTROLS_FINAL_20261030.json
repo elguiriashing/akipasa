@@ -1,0 +1,126 @@
+{
+  "version": 1,
+  "baselineCommit": "a7be14b96f142679f3b153f26bd71b8df80ca8cf",
+  "sourceHashes": {
+    "scripts/test-account-browser.mjs": "aa1a00fdd40273503ff23cd7c6ad17ef1ca8cd5a3d6b43db7cd90f49716274d7",
+    "scripts/test-pasa-boundaries-browser.mjs": "0056fc5019b9f882485236eb2063da534c635bf1ad08b1849eb1d75c35d56420",
+    "scripts/test-prestige-routes-browser.mjs": "1963b76b9410294e0c2c7a35ddc4c5e27b23173dc835b73f2b869c6ade45571a",
+    "scripts/test-staff-ui-upgrades-browser.mjs": "383a322a0e6466a9edb9aaa31cb96a4194d8a272c1418bcd29cdb733a7ff1350",
+    "src/app/[locale]/account/account-consumer.css": "2c51e64d112df8b33fc9dc708ed2478eb1df7af3058bb9a8cb6cefbcd45ca253",
+    "src/components/passport-prestige.module.css": "4e72cdc8618879845e99a0a4d7f96a473172b321cc1e1ca69d0e69c4a15f6a2e"
+  },
+  "fullCheck": {
+    "exitCode": 0,
+    "vitestTests": 2887,
+    "vitestGroups": 17,
+    "initialNodeTests": 140,
+    "builtRoutes": 193,
+    "allSixFilesUnchanged": true,
+    "log": "/tmp/akipasa-controls-final-check-20261030/npm-check.log",
+    "logSha256": "77d261a8283873b5590f9f1b18e47b1b5c97c2f36abc8a46370e62278e7f721e"
+  },
+  "account": {
+    "defect": "Native Search clicks opened the overlapping Account menu on desktop; four original EN/ES/theme1440 probes reproduced it",
+    "beforeIntersectionSquarePixels": 1604.8828,
+    "repair": "Account-only desktop margin-inline-end4rem at851px; no shared WorkspaceShell/product guards/logic changed",
+    "maintainedCasesPassed": 504,
+    "originalCasesRetained": 464,
+    "new851Cases": 40,
+    "nativeSearchAndMenuContexts": 160,
+    "desktopWidths": [851, 1024, 1440, 1536],
+    "routes": 10,
+    "personalProfileCasesPassed": 32,
+    "nativeAssertions": [
+      "zero rectangle overlap",
+      "three clear hitpoints",
+      "pointer Search opens only Search",
+      "native Enter Search/popover/Escape",
+      "native Menu/Escape and focus restored"
+    ],
+    "independentPostfixNativeProbesPassed": 16,
+    "realPaymentOrProviderMutation": false
+  },
+  "boundaryCIRepair": {
+    "failingHead": "a7be14b96f142679f3b153f26bd71b8df80ca8cf",
+    "failedJob": "https://github.com/elguiriashing/akipasa/actions/runs/41125453628/job/124302692106",
+    "cause": "Real isolated Next diagnostic held12JS chunks: visible streamed Admin HTML/providerMounts0 lost native Enter; unchanged Shell opened after actual provider hydration",
+    "repair": "Wait existing fixture provider mount, assert loading still visible and trigger focused, then same single native Enter",
+    "allOriginalBrowserCasesPassed": 136,
+    "nativeAdminHydrationChecksPassed": 12,
+    "assertionsRemoved": 0,
+    "retriesAdded": 0,
+    "productionRuntimeChanged": false
+  },
+  "staffEvidenceRepair": {
+    "defect": "Second venue navigation dropped selected theme and query, mislabeling dark screenshots as light",
+    "repair": "Copy original URLSearchParams; change only missing event ID; reapply and assert actual html theme after navigation",
+    "maintainedBrowserCasesPassed": 120,
+    "oldMislabeledImagesAccepted": false,
+    "productionRuntimeChanged": false
+  },
+  "prestigePrivacy": {
+    "scope": "Dark privacyWorkspace descendant variables/hero only; preserve layout, actions, guards, light Privacy and Member/Hall/Certificate selectors",
+    "maintainedBrowserCasesPassed": 122,
+    "nativeGetRetries": 16,
+    "lowerPageScreenshots": 32,
+    "nativeKeyboardThreePointControlChecks": 176,
+    "all176ControlRectanglesUnchanged": true,
+    "minimumConservativeDarkTextContrast": 7.564869659962299,
+    "pixelComparison": {
+      "pairs": 154,
+      "byteAndPixelIdentical": 94,
+      "intendedDarkPrivacyChanges": 32,
+      "otherPairs": 28,
+      "otherPixelDifferencesEach": 54,
+      "otherDifferenceBounds": "global Search circular border only; whole-image identity NOT claimed"
+    }
+  },
+  "priorHeadCI": {
+    "head": "a7be14b96f142679f3b153f26bd71b8df80ca8cf",
+    "ordinaryPassed": 10,
+    "ordinaryFailed": 1,
+    "failed": "Tablet native Admin Menu readiness; repaired locally in this batch, needs new exact-head CI",
+    "publicCollected": 602,
+    "publicPassed": 525,
+    "publicConditionalSkips": 77,
+    "accountPassed": 464,
+    "personalProfilePassed": 32,
+    "recoveryPassed": 32,
+    "recoverySiblingGuards": 3,
+    "communityPassed": 272,
+    "creatorPassed": 192,
+    "prestigePassed": 122,
+    "dedicatedSpotlightPassed": 76,
+    "native136NotCountedPassedAtFailedHead": true
+  },
+  "stagingDependency": {
+    "getCostType": "branch",
+    "recurrence": "hourly",
+    "quotedAmount": 0.01344,
+    "approximate24HourCompute": 0.32256,
+    "usageAdditional": true,
+    "costApproved": false,
+    "resourceCreated": false,
+    "dataCopy": "Official branches data/storage-less by default; disposable fixtures only",
+    "officialPricing": "https://supabase.com/docs/guides/platform/manage-your-usage/branching",
+    "GitHubActionsConfigurationMetadata": "Names-only secret/variable read returned403; configuration presence remains UNKNOWN, not claimed absent"
+  },
+  "production": {
+    "merged": false,
+    "deployed": false,
+    "sqlApplied": false,
+    "customerDataMutated": false,
+    "source": "3d87eb7c995fbd0947cb25a771a43376d9462645",
+    "worker": "26e51e72-bb1e-49e9-a307-243e0203ef8d"
+  },
+  "preservedEvidenceStorage": {
+    "testResults": "/tmp/akipasa-preserved-browser-evidence-20261030/test-results",
+    "originalPath": "/workspace/akipasa/test-results remains symlink; no tracked files or evidence deleted",
+    "nextCache": "/tmp/akipasa-root-next-cache-20261030"
+  },
+  "externalReceiptHashes": {
+    "prestige-privacy-charcoal-final-20261030.json": "d0b6b3d4bd4a0bcfae750a7336ee9d75d14512e0f7093cd527b569451adf8ca6",
+    "boundary-native-hydration-repair-20261030.json": "292f76b693fbe460f5c38cac7fd7abf4e253a8fb91a0534ccd5238c7c98a98de",
+    "a7be14b-ci-verification-20261030.json": "6a4ec0a52cbff9dfe55cafc667b8fccaf1d7d60c909c66c7646555910e5721b6"
+  }
+}

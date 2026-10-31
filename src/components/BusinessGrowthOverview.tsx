@@ -9,7 +9,7 @@ import styles from "./BusinessGrowthOverview.module.css";
 type GrowthVenue = {
   id: string;
   name: string;
-  events: number;
+  events: number | null;
   media?: number;
   interactions: number | null;
 };
@@ -19,12 +19,14 @@ export function BusinessGrowthOverview({
   events,
   premiumEnabled = false,
   premiumActive = false,
+  venuesUnavailable = false,
 }: {
   locale: "en" | "es";
   venues: GrowthVenue[];
-  events: number;
+  events: number | null;
   premiumEnabled?: boolean;
   premiumActive?: boolean;
+  venuesUnavailable?: boolean;
 }) {
   const es = locale === "es";
   const base = `/${locale}/business`;
@@ -33,7 +35,9 @@ export function BusinessGrowthOverview({
     0,
   );
   const measured =
-    venues.length > 0 && venues.every((venue) => venue.interactions !== null);
+    !venuesUnavailable &&
+    venues.length > 0 &&
+    venues.every((venue) => venue.interactions !== null);
   return (
     <section className={styles.root} aria-labelledby="business-growth-heading">
       <header className={styles.header}>
@@ -57,11 +61,11 @@ export function BusinessGrowthOverview({
       <div className={styles.stats}>
         <article>
           <span>{es ? "Locales gestionados" : "Managed venues"}</span>
-          <strong>{venues.length}</strong>
+          <strong>{venuesUnavailable ? "—" : venues.length}</strong>
         </article>
         <article>
           <span>{es ? "Eventos registrados" : "Registered events"}</span>
-          <strong>{events}</strong>
+          <strong>{events === null ? "—" : events}</strong>
         </article>
         <article>
           <span>
@@ -98,8 +102,12 @@ export function BusinessGrowthOverview({
           ) : (
             <p>
               {es
-                ? "Cuando gestiones un local aparecerá aquí."
-                : "Your venues will appear here once you manage one."}
+                ? venuesUnavailable
+                  ? "No se pudo confirmar la lista completa de locales."
+                  : "Cuando gestiones un local aparecerá aquí."
+                : venuesUnavailable
+                  ? "The complete venue list could not be confirmed."
+                  : "Your venues will appear here once you manage one."}
             </p>
           )}
           <Link className="button secondary" href={`${base}?view=analytics`}>

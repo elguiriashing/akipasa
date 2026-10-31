@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { publicPagePaths } from "../../src/lib/seo";
 
 test("current discovery layout is retained and achievement management requires sign-in", async ({
   request,
@@ -31,7 +32,7 @@ test("sitemap index and root-level child files are crawlable XML without session
   expect(child.status()).toBe(200);
   expect(child.headers()["set-cookie"]).toBeUndefined();
   const xml = await child.text();
-  expect(xml.match(/<url>/g)).toHaveLength(16);
+  expect(xml.match(/<url>/g)).toHaveLength(publicPagePaths.length * 2);
   for (const locale of ["en", "es"])
     for (const path of ["roadmap", "photo-credits"])
       expect(xml).toContain(`https://akipasa.com/${locale}/${path}`);
@@ -53,6 +54,7 @@ test("all public landing pages render canonical, language and social metadata on
       "/map",
       "/membership",
       "/passports",
+      "/roadmap",
       "/privacy",
       "/terms",
     ]) {

@@ -1,3 +1,5 @@
+import { AuthBrand } from "@/components/AuthBrand";
+import styles from "./recovery.module.css";
 import { notFound, redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { config, isLocale } from "@/lib/config";
@@ -31,10 +33,15 @@ export default async function RecoverPasswordPage({
       `/${locale}/auth?${new URLSearchParams({ error: "recovery", next })}`,
     );
   const es = locale === "es";
+  const product = requestHeaders.get("x-akipasa-product");
+  const consumer = !["akibusiness", "akiduermo", "akiconduzco"].includes(
+    product ?? "",
+  );
 
   return (
-    <main className="shell">
-      <section className="hero">
+    <main className={consumer ? styles.recovery : "shell"}>
+      {consumer && <AuthBrand locale={locale} />}
+      <section className={consumer ? styles.intro : "hero"}>
         <div className="eyebrow">{es ? "Seguridad" : "Security"}</div>
         <h1>{es ? "Crea una nueva contraseña" : "Create a new password"}</h1>
         <p className="lede">
@@ -45,7 +52,7 @@ export default async function RecoverPasswordPage({
       </section>
       <section className="panel auth-panel">
         {query.error && (
-          <p className="notice">
+          <p className="notice" role="alert">
             {es
               ? "No se pudo guardar la contraseña. Revisa los requisitos."
               : "The password could not be saved. Check the requirements."}
@@ -57,6 +64,7 @@ export default async function RecoverPasswordPage({
           <label>
             {es ? "Nueva contraseña" : "New password"}
             <input
+              aria-describedby="recovery-password-requirements"
               name="password"
               type="password"
               required
@@ -65,7 +73,7 @@ export default async function RecoverPasswordPage({
               autoComplete="new-password"
             />
           </label>
-          <small>
+          <small id="recovery-password-requirements">
             {es
               ? "12+ caracteres, con mayúscula, minúscula y número."
               : "12+ characters with uppercase, lowercase, and a number."}

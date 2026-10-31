@@ -1,0 +1,58 @@
+{
+  "baselineCommit": "9533e2c0e0e6ffe21082db1458f0a9ba5e3dc13e",
+  "testedWorkingTree": true,
+  "sourceHashes": {
+    "src/app/[locale]/photo-credits/page.tsx": "bedc3da3f4ddbe9d9b5cab7089f71264cc87e1538f5343844ed832f855e7166e",
+    "src/lib/page-metadata.ts": "acb5b226374c3155be9cbb13f19e1fcc248454075d4d8aa54fc4bb6217dfc3dc",
+    "src/lib/seo.ts": "398aee95bae42b424038ab821171ca9c313f1bd12aca46aad80ab21ecf3e1ceb",
+    "tests/e2e/pasa-legal-surfaces.spec.ts": "0caefb85ee20a01aae56063016979ceefebe3d2e661679bcab1fbc3048d0a3b0",
+    "tests/seo.test.ts": "580e2c8dec9036f167c82d851fda97ef549a00655459963831883c0c0eb4b982",
+    "package.json": "0295e3f0b7a5bb8b4c8e2e79537e30fe311f7f63414dfee186e38da731e67809",
+    "scripts/check-canonical-replay-plan.mjs": "11aec219200b93ae864014d8ce0d9b0ef6c903a0bbdd15135ad745258c817f47",
+    "scripts/check-canonical-replay-plan.test.mjs": "66ff75422191edf55999077eb51fb46346e00764ee2cab2be848783ae561e266",
+    "docs/AKIPASA_CANONICAL_REPLAY_PLAN_20261030.json": "ae2eae1d1189417cc4b212bde22bb074c4bba661ed1e0ab83c8b5015bc80051d"
+  },
+  "fullCheck": {
+    "passed": true,
+    "vitestCases": 2639,
+    "log": "/tmp/akipasa-main-legal-canonical-final-check-20261030.log"
+  },
+  "legalBrowser": {
+    "passed": true,
+    "cases": 20,
+    "pageStates": 60,
+    "locales": ["en", "es"],
+    "themes": ["dark", "light"],
+    "widths": [360, 390, 820, 1440],
+    "androidWebViewEmulation": true,
+    "physicalAndroid": false,
+    "log": "/tmp/akipasa-photo-credits-seo-final-browser-20261030.log",
+    "newAssertions": [
+      "correct canonical on all three legal routes",
+      "reciprocal en/es/x-default alternates",
+      "own OpenGraph URL",
+      "localized Photo Credits title"
+    ],
+    "beforeFailure": "/tmp/akipasa-photo-credits-seo-before-20261030.log"
+  },
+  "focusedSeoTestsPassed": 8,
+  "canonicalPlan": {
+    "unitTestsPassed": 16,
+    "unitLog": "/tmp/akipasa-canonical-root-focused-20261030.log",
+    "rootPlanLog": "/tmp/akipasa-canonical-root-review-20261030.json",
+    "planExitCode": 2,
+    "structurallyValid": true,
+    "executable": false,
+    "fullCanonicalParity": false,
+    "rawInventory": 337,
+    "candidatePrefix": 97,
+    "unresolved": 150,
+    "databaseWrites": false,
+    "fixtureChanges": false,
+    "note": "Unit suite added to check command; separately run16 pass alongside the full check invocation."
+  },
+  "accepted": false,
+  "merged": false,
+  "deployed": false,
+  "productionChanges": false
+}

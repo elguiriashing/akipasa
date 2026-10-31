@@ -24,6 +24,7 @@ import {
 import { MapTileLoader } from "@/lib/map-tiles";
 import type { Locale } from "@/lib/config";
 import { trackBehaviour } from "@/lib/personalisation/client";
+import styles from "./ProductionMap.module.css";
 
 export type MapPoint = {
   id: string;
@@ -217,6 +218,7 @@ export function ProductionMap({
   points,
   styleUrl,
   center,
+  autoLocate = true,
   initialVertical = "activities",
   showVerticalTabs = true,
   fullScreen = false,
@@ -225,6 +227,7 @@ export function ProductionMap({
   stayFilters,
 }: {
   locale: Locale;
+  autoLocate?: boolean;
   venueDestination?: "akipasa" | "akiduermo";
   venueIds?: ReadonlySet<string> | null;
   stayFilters?: { type: string; q: string };
@@ -238,12 +241,20 @@ export function ProductionMap({
   const router = useRouter();
   const [mapTruncated, setMapTruncated] = useState(false);
   const [mapUnavailable, setMapUnavailable] = useState(false);
+  const [mapAttempt, setMapAttempt] = useState(0);
+  const retryMapRef = useRef<(() => void) | null>(null);
+  const initialZoomRef = useRef(10.5);
   const stayType = stayFilters?.type;
   const stayQuery = stayFilters?.q;
   const stayFiltersRef = useRef({ type: stayType, q: stayQuery });
   stayFiltersRef.current = { type: stayType, q: stayQuery };
   const refreshStaysRef = useRef<(() => void) | null>(null);
   const container = useRef<HTMLDivElement>(null);
+  const verticalTabs = useRef<HTMLDivElement>(null);
+  const legend = useRef<HTMLDetailsElement>(null);
+  // Initial GPS is optional search behavior, not part of map lifetime/camera.
+  const autoLocateRef = useRef(autoLocate);
+  autoLocateRef.current = autoLocate;
   const initialCenterRef = useRef(center);
   const initialPointsRef = useRef(points);
   const [venueStatus, setVenueStatus] = useState<"loading" | "ready" | "error">(
@@ -264,15 +275,48 @@ export function ProductionMap({
   }, [stayType, stayQuery]);
 
   useEffect(() => {
-    trackBehaviour({
-      eventType: "map_opened",
-      surface: "map",
-      entityType: "feed",
-      entityId: crypto.randomUUID(),
-      metadata: { result_count: initialPointsRef.current.length },
-    });
+    if (!fullScreen) return;
+    const tabs = verticalTabs.current;
+    const mapLegend = legend.current;
+    const panel = mapLegend?.closest<HTMLElement>(".map-panel");
+    if (!panel || !mapLegend) return;
+    const measure = () => {
+      const tabsBottom = tabs ? tabs.offsetTop + tabs.offsetHeight + 12 : 76;
+      panel.style.setProperty(
+        "--map-legend-top",
+        `${Math.max(76, tabsBottom)}px`,
+      );
+      panel.style.setProperty(
+        "--map-notice-top",
+        `${mapLegend.offsetTop + mapLegend.offsetHeight + 12}px`,
+      );
+    };
+    measure();
+    const observer =
+      typeof ResizeObserver === "undefined"
+        ? null
+        : new ResizeObserver(measure);
+    if (tabs) observer?.observe(tabs);
+    observer?.observe(mapLegend);
+    window.addEventListener("resize", measure);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [fullScreen, locale, showVerticalTabs]);
+
+  useEffect(() => {
+    if (mapAttempt === 0)
+      trackBehaviour({
+        eventType: "map_opened",
+        surface: "map",
+        entityType: "feed",
+        entityId: crypto.randomUUID(),
+        metadata: { result_count: initialPointsRef.current.length },
+      });
     if (!container.current || !styleUrl) return;
     setMapUnavailable(false);
+    setVenueStatus("loading");
     let disposed = false;
     const initialPoints = initialPointsRef.current;
     const initialCenter = initialCenterRef.current;
@@ -308,7 +352,7 @@ export function ProductionMap({
           container: container.current,
           style: styleUrl,
           center: [initialCenter.longitude, initialCenter.latitude],
-          zoom: 10.5,
+          zoom: initialZoomRef.current,
           attributionControl: false,
           maxPitch: 48,
           cooperativeGestures: !fullScreen,
@@ -318,6 +362,22 @@ export function ProductionMap({
           },
           renderWorldCopies: false,
         });
+        const onMapError = () => {
+          // MapLibre reports asynchronous style/tile failures through events,
+          // outside the import/construction promise. Do not leave a blank map
+          // silently loading forever; keep the independent results list usable.
+          if (!disposed) setMapUnavailable(true);
+        };
+        map.on("error", onMapError);
+        retryMapRef.current = () => {
+          const camera = map.getCenter();
+          initialCenterRef.current = {
+            latitude: camera.lat,
+            longitude: camera.lng,
+          };
+          initialZoomRef.current = map.getZoom();
+          setMapAttempt((attempt) => attempt + 1);
+        };
         const resizeMap = () => {
           requestAnimationFrame(() => {
             if (!disposed) map.resize();
@@ -344,10 +404,14 @@ export function ProductionMap({
           new maplibregl.NavigationControl({ showCompass: false }),
           "top-right",
         );
-        if (stayFiltersRef.current.type === undefined)
+        if (
+          autoLocateRef.current &&
+          mapAttempt === 0 &&
+          stayFiltersRef.current.type === undefined
+        )
           navigator.geolocation?.getCurrentPosition(
             ({ coords }) => {
-              if (disposed) return;
+              if (disposed || !autoLocateRef.current) return;
               map.jumpTo({
                 center: [coords.longitude, coords.latitude],
                 zoom: 10.5,
@@ -462,6 +526,7 @@ export function ProductionMap({
               "icon-allow-overlap": true,
               "icon-ignore-placement": true,
               "text-field": ["get", "point_count_abbreviated"],
+              "text-font": ["Noto Sans Regular"],
               "text-size": 13,
               "text-allow-overlap": true,
               "text-ignore-placement": true,
@@ -472,6 +537,35 @@ export function ProductionMap({
               "text-halo-width": 1,
             },
           });
+          // Radar glow is a separate MapLibre layer: real venue/event pins remain unchanged.
+          if (
+            venueDestination === "akipasa" &&
+            initialVertical === "activities"
+          ) {
+            map.addLayer({
+              id: "pasa-radar-glow",
+              type: "circle",
+              source: "discovery-points",
+              filter: ["!", ["has", "point_count"]],
+              paint: {
+                "circle-radius": 24,
+                "circle-blur": 0.95,
+                "circle-opacity": 0.44,
+                "circle-color": [
+                  "match",
+                  ["get", "source"],
+                  "claimed",
+                  "#277cf0",
+                  "unclaimed",
+                  "#62768b",
+                  "community",
+                  "#aa3ff0",
+                  "#ff6c1d",
+                ],
+              },
+            });
+          }
+
           map.addLayer({
             id: "discovery-unclustered",
             type: "symbol",
@@ -858,6 +952,7 @@ export function ProductionMap({
           themeObserver.disconnect();
           window.removeEventListener("akipasa:map-resize", resizeMap);
           map.off("style.load", onMapStyleLoad);
+          map.off("error", onMapError);
           map.remove();
         };
       })
@@ -867,6 +962,7 @@ export function ProductionMap({
 
     return () => {
       disposed = true;
+      retryMapRef.current = null;
       renderVenuesRef.current = null;
       refreshStaysRef.current = null;
       clearTimeout(timer);
@@ -874,10 +970,21 @@ export function ProductionMap({
       popupRequest?.abort();
       cleanup();
     };
-  }, [locale, styleUrl, fullScreen, venueDestination, router]);
+  }, [
+    locale,
+    styleUrl,
+    fullScreen,
+    venueDestination,
+    initialVertical,
+    router,
+    mapAttempt,
+  ]);
 
   return (
-    <section className="map-panel" aria-labelledby="production-map-title">
+    <section
+      className={`map-panel ${fullScreen ? styles.fullscreen : styles.panel}`}
+      aria-labelledby="production-map-title"
+    >
       <div className="map-heading">
         <div>
           <h2 id="production-map-title">
@@ -906,6 +1013,7 @@ export function ProductionMap({
       )}
       {showVerticalTabs && (
         <div
+          ref={verticalTabs}
           className="map-vertical-tabs"
           role="group"
           aria-label={locale === "es" ? "Tipo de lugares" : "Place type"}
@@ -926,11 +1034,29 @@ export function ProductionMap({
           </button>
         </div>
       )}
+      {mapUnavailable && (
+        <div className={styles.unavailable} role="alert">
+          <p>
+            {locale === "es"
+              ? "No se pudo cargar el mapa por completo. La lista y los filtros siguen disponibles."
+              : "The map could not finish loading. The list and filters are still available."}
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              if (retryMapRef.current) retryMapRef.current();
+              else setMapAttempt((attempt) => attempt + 1);
+            }}
+          >
+            {locale === "es" ? "Reintentar mapa" : "Retry map"}
+          </button>
+        </div>
+      )}
       <p className="result-caption" role="status">
         {mapUnavailable
           ? locale === "es"
-            ? "Este navegador no puede mostrar el mapa. Usa la vista de lista para seguir explorando."
-            : "This browser cannot display the map. Use list view to keep exploring."
+            ? "Mapa no disponible. Usa la vista de lista para seguir explorando."
+            : "Map unavailable. Use list view to keep exploring."
           : venueStatus === "loading"
             ? locale === "es"
               ? "Cargando locales de esta zona…"
@@ -951,6 +1077,7 @@ export function ProductionMap({
           aria-label={locale === "es" ? "Mapa interactivo" : "Interactive map"}
         />
         <details
+          ref={legend}
           className="map-legend"
           aria-label={locale === "es" ? "Leyenda del mapa" : "Map legend"}
         >

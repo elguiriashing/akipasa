@@ -4,6 +4,7 @@ import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
 import { WorkspacePageHeader } from "@/components/WorkspaceShell";
 import { NativeAccommodationReviewForm } from "@/components/NativeAccommodationReviewForm";
+import styles from "@/components/NativeReviewSurfaces.module.css";
 type Row = {
   id: string;
   name: string;
@@ -40,8 +41,9 @@ export default async function NativeAccommodationReviewPage({
       : { data: null, error: { message: "unavailable" } };
   const rows = (result.data ?? []) as Row[];
   return (
-    <>
+    <section className={styles.queue}>
       <WorkspacePageHeader
+        level={1}
         eyebrow={es ? "Moderación" : "Moderation"}
         title={
           es
@@ -55,14 +57,24 @@ export default async function NativeAccommodationReviewPage({
         }
       />
       {result.error ? (
-        <p role="alert">
-          {es
-            ? "La cola no está disponible. No se considera una cola vacía."
-            : "The queue is unavailable. This is not treated as an empty queue."}
-        </p>
+        <div className={styles.unavailable} role="alert">
+          <h2>{es ? "Cola no disponible" : "Review queue unavailable"}</h2>
+          <p>
+            {es
+              ? "La cola no está disponible. No se considera una cola vacía."
+              : "The queue is unavailable. This is not treated as an empty queue."}
+          </p>
+          <Link className={styles.link} href={`${base}?page=${page}`}>
+            {es ? "Reintentar" : "Retry"}
+          </Link>
+        </div>
       ) : (
         <>
-          <nav aria-label={es ? "Páginas de revisión" : "Review pages"}>
+          <nav
+            className={styles.pagination}
+            aria-label={es ? "Páginas de revisión" : "Review pages"}
+          >
+            <span>{es ? `Página ${page + 1}` : `Page ${page + 1}`}</span>
             {page > 0 && (
               <Link href={`${base}?page=${page - 1}`}>
                 {es ? "Anterior" : "Previous"}
@@ -75,23 +87,46 @@ export default async function NativeAccommodationReviewPage({
             )}
           </nav>
           {!rows.length ? (
-            <p>
-              {es
-                ? "No hay solicitudes pendientes en esta página."
-                : "No pending submissions on this page."}
-            </p>
+            <div className={styles.empty}>
+              <h2>
+                {es
+                  ? "No hay solicitudes pendientes en esta página."
+                  : "No pending submissions on this page."}
+              </h2>
+            </div>
           ) : (
-            <div className="admin-card-grid">
+            <div className={styles.grid}>
               {rows.slice(0, 100).map((row) => (
-                <article className="card" key={row.id}>
-                  <h2>{row.name}</h2>
-                  <p>
+                <article className={styles.card} key={row.id}>
+                  <header className={styles.cardHeading}>
+                    <span className={styles.badge}>
+                      {row.orphaned
+                        ? es
+                          ? "Revisión de titularidad"
+                          : "Ownership review"
+                        : es
+                          ? "Versión enviada"
+                          : "Submitted revision"}
+                    </span>
+                    <h2>{row.name}</h2>
+                  </header>
+                  <p className={styles.metadata}>
                     {row.city} · {row.address}
                   </p>
-                  <p style={{ whiteSpace: "pre-wrap" }}>{row.description_es}</p>
-                  <p style={{ whiteSpace: "pre-wrap" }}>{row.description_en}</p>
+                  <div className={styles.description} lang="es">
+                    <h3>
+                      {es ? "Descripción en español" : "Spanish description"}
+                    </h3>
+                    <p>{row.description_es}</p>
+                  </div>
+                  <div className={styles.description} lang="en">
+                    <h3>
+                      {es ? "Descripción en inglés" : "English description"}
+                    </h3>
+                    <p>{row.description_en}</p>
+                  </div>
                   {row.orphaned ? (
-                    <p role="status">
+                    <p className={styles.notice} role="status">
                       {es
                         ? "Sin titular: requiere revisión de propiedad. La ficha y sus datos permanecen privados."
                         : "No owner: ownership review is required. The listing and its data remain private."}
@@ -109,6 +144,6 @@ export default async function NativeAccommodationReviewPage({
           )}
         </>
       )}
-    </>
+    </section>
   );
 }

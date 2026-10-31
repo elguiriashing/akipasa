@@ -1,0 +1,215 @@
+{
+  "pr": 338,
+  "reviewedHead": "454bcd7a145052b089a073d7daf35ddfcd6b49ba",
+  "mergeSource": "9e7da60fae3c24037a076e2998761a25eb8d436c",
+  "worker": "0c2e5166-d82d-49b5-befc-a57b15f92fd3",
+  "deployment": "d3ffba44-b363-48c1-89e7-9a5910895993",
+  "trafficPercent": 100,
+  "merged": true,
+  "deployed": true,
+  "cloudflareIndependentVerification": {
+    "reviewer": "public_release_source_review",
+    "readOnly": true,
+    "verifiedAt": "2026-10-31T00:48:19.362Z",
+    "repository": "elguiriashing/akipasa",
+    "pullRequest": 338,
+    "reviewedHead": "454bcd7a145052b089a073d7daf35ddfcd6b49ba",
+    "mergeCommit": "9e7da60fae3c24037a076e2998761a25eb8d436c",
+    "reviewedTree": "708724bc2dc25ea5b9cf3ba413e265b13c669f80",
+    "mergeTree": "708724bc2dc25ea5b9cf3ba413e265b13c669f80",
+    "treesEqual": true,
+    "accountId": "501bc9434d8ae555a6ac984a26dd2725",
+    "scriptName": "akipasa",
+    "scriptTag": "ddd52cc0b72240fdb04068b82b3326f2",
+    "automaticBuild": {
+      "id": "61dc9689-48ee-4eb3-8162-50143ba4925c",
+      "status": "stopped",
+      "outcome": "success",
+      "branch": "master",
+      "commit": "9e7da60fae3c24037a076e2998761a25eb8d436c",
+      "source": "push_event",
+      "buildCommand": "npm run build:cloudflare",
+      "deployCommand": "npx wrangler deploy --keep-vars",
+      "started": "2026-10-31T00:45:05.542Z",
+      "finished": "2026-10-31T00:47:39.330Z"
+    },
+    "newVersion": {
+      "id": "0c2e5166-d82d-49b5-befc-a57b15f92fd3",
+      "number": 2902,
+      "metadata": {
+        "created_on": "2026-10-31T00:47:23.986244Z",
+        "source": "wrangler",
+        "has_preview": false
+      },
+      "annotations": {
+        "workers/triggered_by": "version_upload"
+      }
+    },
+    "versionToBuildMapping": {
+      "version": "0c2e5166-d82d-49b5-befc-a57b15f92fd3",
+      "build": "61dc9689-48ee-4eb3-8162-50143ba4925c",
+      "commit": "9e7da60fae3c24037a076e2998761a25eb8d436c",
+      "outcome": "success"
+    },
+    "deployment": {
+      "id": "d3ffba44-b363-48c1-89e7-9a5910895993",
+      "created": "2026-10-31T00:47:27.427761Z",
+      "versions": [
+        {
+          "version_id": "0c2e5166-d82d-49b5-befc-a57b15f92fd3",
+          "percentage": 100
+        }
+      ]
+    },
+    "rollbackReferences": [
+      {
+        "version": "980f4d74-9dca-42be-b096-03979c749e63",
+        "source": "c51cba991292eb8759e0bcea73f03b2d0408cb64",
+        "retainedGetStatus": 200,
+        "executed": false
+      },
+      {
+        "version": "26e51e72-bb1e-49e9-a307-243e0203ef8d",
+        "source": "3d87eb7c995fbd0947cb25a771a43376d9462645",
+        "retainedGetStatus": 200,
+        "executed": false
+      }
+    ],
+    "manualDeploymentInvoked": false,
+    "configurationMutated": false,
+    "publicHttpsSmoke": "Integration owner separately verifies actual public HTTPS and legacy privacy native focus/hit behavior. This receipt proves exact source/Worker deployment identity, not real authenticated customer/provider acceptance."
+  },
+  "exactHeadCI": {
+    "pr": 338,
+    "reviewedHead": "454bcd7a145052b089a073d7daf35ddfcd6b49ba",
+    "observedMasterBeforeMerge": "c51cba991292eb8759e0bcea73f03b2d0408cb64",
+    "workflowsPassed": 6,
+    "runs": [
+      {
+        "conclusion": "success",
+        "databaseId": 41150682506,
+        "headSha": "454bcd7a145052b089a073d7daf35ddfcd6b49ba",
+        "status": "completed",
+        "url": "https://github.com/elguiriashing/akipasa/actions/runs/41150682506",
+        "workflowName": "AkiPasa contract gate"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 41150682552,
+        "headSha": "454bcd7a145052b089a073d7daf35ddfcd6b49ba",
+        "status": "completed",
+        "url": "https://github.com/elguiriashing/akipasa/actions/runs/41150682552",
+        "workflowName": "Format master documentation PR"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 41150682542,
+        "headSha": "454bcd7a145052b089a073d7daf35ddfcd6b49ba",
+        "status": "completed",
+        "url": "https://github.com/elguiriashing/akipasa/actions/runs/41150682542",
+        "workflowName": "Booking browser acceptance"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 41150682553,
+        "headSha": "454bcd7a145052b089a073d7daf35ddfcd6b49ba",
+        "status": "completed",
+        "url": "https://github.com/elguiriashing/akipasa/actions/runs/41150682553",
+        "workflowName": "Verify public AkiSuite app"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 41150682532,
+        "headSha": "454bcd7a145052b089a073d7daf35ddfcd6b49ba",
+        "status": "completed",
+        "url": "https://github.com/elguiriashing/akipasa/actions/runs/41150682532",
+        "workflowName": "AkiSuite tablet acceptance"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 41150682538,
+        "headSha": "454bcd7a145052b089a073d7daf35ddfcd6b49ba",
+        "status": "completed",
+        "url": "https://github.com/elguiriashing/akipasa/actions/runs/41150682538",
+        "workflowName": "Account and public UI acceptance"
+      }
+    ],
+    "publicBrowser": {
+      "passed": 282,
+      "conditionalSkipped": 29,
+      "failed": 0,
+      "job": 124386200945,
+      "includes": "8 mandatoryprivacyclearance and2guestgatecases; not realauthenticatedpositiveacceptance"
+    },
+    "account": {
+      "existingMasterCases": 310,
+      "additiveUiStates": 90,
+      "nativeSearchMenuProbes": 160,
+      "job": 124386200847,
+      "artifact": 13023600407,
+      "sourceStable": true,
+      "sourceDirty": false,
+      "compiledLocalHashes": 93,
+      "readReceipt": "/workspace/akipasa-main-checkpoints/ci-account338-454bcd7-metadata/selected-account-receipt.json"
+    },
+    "fullNpmCheckCloudflareBuild": {
+      "job": 124386200738,
+      "conclusion": "success",
+      "preservedParityUnit": 4,
+      "pureWebsiteTests": 18,
+      "log": "/workspace/akipasa-main-checkpoints/account338-454bcd7-job-124386200738.log"
+    },
+    "reviewThreads": 0,
+    "reviews": 0,
+    "approvalClaim": "None; root holds explicit owner release authorization and independentreviewreceipts",
+    "siteRegression": "existing conditional job skipped, not counted passed",
+    "sourceCheckout": "6c6782b6d2769022b80240800ed1848ed87ca46f",
+    "sourceTree": "708724bc2dc25ea5b9cf3ba413e265b13c669f80",
+    "sourceEquivalenceReceipt": "/workspace/akipasa-main-checkpoints/account338-454bcd7-merge-checkout-source-comparison.json",
+    "cloudflarePackagingReceipt": "/workspace/akipasa-main-checkpoints/cloudflare-readonly-account338-454bcd7-20261031.json",
+    "predecessorFailedCheckPreserved": "/workspace/akipasa-main-checkpoints/account338-30c21fc-job-124380834135-FAILED.log",
+    "releaseActions": "No child merge/deployment/provider/SQL/resourcechanges. Root owns release and automaticproductionverification."
+  },
+  "actualProductionBrowser": {
+    "anonymousHttpsCases": 34,
+    "accountGuestPaths": 20,
+    "findings": 0,
+    "http200All": true,
+    "pageErrors": 0,
+    "privacyStorageUnchanged": true,
+    "nativePrivacyCasesPassed": 8,
+    "nativePrivacyMeaning": "Real productionENES/darklight360390 keyboardTab/Enter/Escape, wholebutton+pointerhitabovelegacydock, storageunchanged, allnonGETblocked.",
+    "actualImagesReviewed": [
+      "production338-privacy-native-20261031/cases/en-dark-360-community.png",
+      "production338-privacy-native-20261031/cases/es-light-390-roadmap.png"
+    ],
+    "physicalAndroid": false,
+    "realAuthenticatedCustomerEdits": false,
+    "smokeJsonSha256": "09bff57d5b9d8a42fe456c02f42b960464f5dcf484c1af0e119510a8efd29488",
+    "nativeLogSha256": "705fa642d673ffec0df0017177a2bead571c349cd4486e2bf05c4283f4bf9dd3"
+  },
+  "schemaReadOnlyPreflight": {
+    "project": "vhpbvcfkcteswlsdjrfl",
+    "customerRowsRead": false,
+    "schemaOrDataModified": false,
+    "method": "information_schema.columns/pg_constraint metadata only",
+    "allExistingOverviewProfileFieldsConfirmed": [
+      "id",
+      "display_name",
+      "app_role",
+      "preferred_locale",
+      "membership_tier",
+      "username",
+      "bio",
+      "avatar_url"
+    ],
+    "bioSpecificTableCheckConstraints": [],
+    "serverBioMaximumUnchanged": 2000
+  },
+  "rollbackRetained": [
+    "980f4d74-9dca-42be-b096-03979c749e63",
+    "26e51e72-bb1e-49e9-a307-243e0203ef8d"
+  ],
+  "duplicateManualDeployment": false,
+  "full332Approval": false
+}

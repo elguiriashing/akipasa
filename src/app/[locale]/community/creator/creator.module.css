@@ -1,0 +1,454 @@
+.studio {
+  --studio-ink: #fff7ed;
+  --studio-muted: #c6bcb2;
+  --studio-line: #3e3229;
+  --studio-surface: #12100e;
+  --studio-orange: #ff812e;
+  color: var(--studio-ink);
+  background: #080909;
+  border-radius: 24px;
+  padding-bottom: 24px;
+}
+.studio :global(.workspace-shell) {
+  background: transparent;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.workspace-content),
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.workspace-grid-body) {
+  min-width: 0;
+}
+
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.workspace-mobile-trigger),
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.workspace-sidebar),
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.workspace-drawer) {
+  color: var(--studio-ink);
+  background: #11100e;
+  border-color: var(--studio-line);
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.workspace-navigation a) {
+  color: var(--studio-muted);
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.workspace-navigation a.active) {
+  color: var(--studio-orange);
+  background: #2b1a0e;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.creator-studio-page) {
+  gap: 28px;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.creator-studio-hero) {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 24px;
+  min-height: 420px;
+  padding: clamp(24px, 4vw, 48px);
+  border: 1px solid #60402b;
+  border-radius: 28px;
+  overflow: hidden;
+  background: #100d0b;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.creator-studio-hero)::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background:
+    linear-gradient(180deg, #08090938, #080909cc 52%, #080909 100%),
+    linear-gradient(90deg, #080909ba, transparent);
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.creator-studio-hero h1) {
+  max-width: 700px;
+  margin: 16px 0;
+  color: #fff7ed;
+  font-size: clamp(36px, 4.7vw, 66px);
+  line-height: 1.02;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.creator-studio-hero p) {
+  max-width: 520px;
+  margin: 0;
+  color: #f1dfcf;
+  font-size: 17px;
+  line-height: 1.55;
+}
+.studio :global(.workspace-shell.community-workspace) :global(.eyebrow) {
+  color: #ffab70;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 12px;
+}
+.portrait {
+  display: grid;
+  place-items: center;
+  flex: 0 0 64px;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border: 2px solid #ff812e;
+  border-radius: 50%;
+  background: #26170d;
+  color: #ffad75;
+  font-size: 28px;
+  font-weight: 800;
+}
+.portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.identityLabel {
+  display: block;
+  margin-bottom: 4px;
+  color: #d0bbaa;
+  font-size: 12px;
+}
+.identity strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: #fff7ed;
+  font-size: 20px;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.creator-studio-hero-actions) {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.creator-studio-status) {
+  color: #ede3d8;
+  background: #181714;
+  border: 1px solid #574637;
+}
+.editorIntro h2 {
+  margin: 8px 0;
+  font-size: clamp(26px, 3vw, 36px);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  color: var(--studio-ink);
+}
+.editorIntro p {
+  margin: 0;
+  color: var(--studio-muted);
+  line-height: 1.6;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.studio-tab-list) {
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid var(--studio-line);
+  border-radius: 999px;
+  background: #100e0c;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.studio-tab-list button) {
+  flex: 1;
+  min-height: 46px;
+  padding: 10px 14px;
+  color: #d7c6b8;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.studio-tab-list button[aria-selected="true"]) {
+  color: #1a0e05;
+  background: var(--studio-orange);
+  box-shadow: none;
+  font-weight: 800;
+}
+.studio :global(.workspace-shell.community-workspace) :global(.panel) {
+  color: var(--studio-ink);
+  border: 1px solid var(--studio-line);
+  border-radius: 24px;
+  background: var(--studio-surface);
+  box-shadow: none;
+  padding: clamp(20px, 3vw, 32px);
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.creator-studio-section-heading) {
+  padding-bottom: 20px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--studio-line);
+}
+.studio :global(.workspace-shell.community-workspace) :global(.panel h2) {
+  margin: 10px 0;
+  color: var(--studio-ink);
+  font-size: clamp(24px, 2.5vw, 32px);
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+}
+.studio :global(.workspace-shell.community-workspace) :global(.panel p),
+.studio :global(.workspace-shell.community-workspace) :global(.panel small) {
+  color: var(--studio-muted);
+  line-height: 1.65;
+}
+.studio :global(.workspace-shell.community-workspace) :global(.panel label) {
+  color: #eee2d6;
+  font-size: 14px;
+  font-weight: 600;
+  gap: 9px;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.panel input:not([type="checkbox"])),
+.studio :global(.workspace-shell.community-workspace) :global(.panel textarea),
+.studio :global(.workspace-shell.community-workspace) :global(.panel select) {
+  min-width: 0;
+  max-width: 100%;
+  color: #fff4e8;
+  background: #090a09;
+  border: 1px solid #58483b;
+  border-radius: 12px;
+  box-shadow: none;
+  min-height: 48px;
+  font-size: 16px;
+}
+.studio :global(.workspace-shell.community-workspace) :global(.panel textarea) {
+  min-height: 160px;
+  line-height: 1.6;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.studio-optional) {
+  padding: 18px 0;
+  border: 0;
+  border-top: 1px solid var(--studio-line);
+  border-bottom: 1px solid var(--studio-line);
+  border-radius: 0;
+  background: transparent;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.studio-optional summary) {
+  min-height: 32px;
+  color: #ffb27b;
+  font-weight: 600;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.studio-optional[open] summary) {
+  margin-bottom: 20px;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.creator-category-picker),
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.creator-category-picker label) {
+  background: #17130f;
+  border-color: var(--studio-line);
+  color: var(--studio-ink);
+}
+.studio :global(.workspace-shell.community-workspace) :global(.button) {
+  min-height: 48px;
+  border-radius: 999px;
+  text-transform: none;
+  letter-spacing: 0;
+  background: var(--studio-orange);
+  color: #211105;
+  border-color: transparent;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.button.secondary) {
+  color: #f9d6bd;
+  border: 1px solid #765034;
+  background: #24180f;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.button:disabled) {
+  color: #b9a897;
+  background: #33271e;
+  opacity: 1;
+}
+.studio :global(.workspace-shell.community-workspace) :global(.studio-save) {
+  margin-top: 16px;
+  font-size: 16px;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.creator-media-upload),
+.studio :global(.workspace-shell.community-workspace) :global(.managed-row),
+.studio :global(.workspace-shell.community-workspace) :global(.empty-state),
+.studio :global(.workspace-shell.community-workspace) :global(.notice) {
+  color: var(--studio-ink);
+  border-color: var(--studio-line);
+  background: #1c1611;
+  border-radius: 18px;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.creator-media-preview) {
+  background: radial-gradient(ellipse at 50% 100%, #7a3614, #1c1510 75%);
+  border: 1px solid #68452e;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.creator-media-preview span) {
+  color: #ffb37d;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.managed-row strong),
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.creator-verification-callout strong) {
+  color: #fff1e3;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.managed-row span),
+.studio :global(.workspace-shell.community-workspace) :global(.status-pill) {
+  color: #d8c2ad;
+}
+.studio
+  :global(:is(input, textarea, select, button, a, summary):focus-visible) {
+  outline: 3px solid #ffad6f;
+  outline-offset: 4px;
+}
+@media (max-width: 600px) {
+  .studio {
+    border-radius: 0;
+  }
+  .studio
+    :global(.workspace-shell.community-workspace)
+    :global(.creator-studio-hero) {
+    min-height: 460px;
+    border-radius: 24px;
+    padding: 24px 20px;
+  }
+  .studio
+    :global(.workspace-shell.community-workspace)
+    :global(.creator-studio-hero h1) {
+    font-size: 40px;
+  }
+  .studio
+    :global(.workspace-shell.community-workspace)
+    :global(.creator-studio-hero-actions .button) {
+    width: auto;
+  }
+  .studio
+    :global(.workspace-shell.community-workspace)
+    :global(.creator-studio-section-heading) {
+    display: block;
+  }
+  .studio
+    :global(.workspace-shell.community-workspace)
+    :global(.creator-verification-callout) {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.scene {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 44%;
+  opacity: 0.65;
+}
+
+:global(body):has(.studio),
+:global(.app-content):has(.studio) {
+  background: #080909;
+}
+
+/* Existing workspace controls consume these tokens, including their focus states. */
+.studio :global(.workspace-shell.community-workspace) {
+  --pasa-ui-panel: #12100e;
+  --pasa-ui-elevated: #1c1611;
+  --pasa-ui-border: #3e3229;
+  --pasa-ui-highlight: #ff812e;
+  --surface: #12100e;
+  --surface-alt: #1c1611;
+  --consumer-soft: #090a09;
+  --ink: #fff7ed;
+  --muted: #c6bcb2;
+  --line: #3e3229;
+  --primary: #ff812e;
+}
+
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.creator-studio-form) {
+  width: 100%;
+  max-width: none;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.creator-media-upload) {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.creator-media-preview.is-banner) {
+  width: 100%;
+  height: 140px;
+  border-radius: 16px;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(.creator-media-preview.is-avatar) {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+}
+.studio
+  :global(.workspace-shell.community-workspace)
+  :global(input[type="file"]) {
+  width: 100%;
+  font-size: 14px;
+}
+
+:global(html) :global(body) :global(.app-shell):has(.studio) {
+  background: #080909;
+}

@@ -1,0 +1,895 @@
+{
+  "baseline": "61b08c159e42192613f9eba8a4431c3a2b312082",
+  "sourceHashes": {
+    "src/app/hq-login/page.tsx": "51949d32ef7b5b789ac37d84c2104d23946b94ca67834cb624bf74037338d077",
+    "src/app/hq-login/gateway.module.css": "af4174437acaa3ce7f442f5082c2ec50ed664811aef5a6de328249e1447db9a0",
+    "tests/e2e/pasa-conversion-entry.spec.ts": "4b8ce3caa8d90dc69d2bc8a4849adc901b08a1f43f5bc3727e8c919d7937dbe9"
+  },
+  "results": [
+    {
+      "locale": "en",
+      "theme": "dark",
+      "width": 360,
+      "height": 900,
+      "initialLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "src": "http://127.0.0.1:3123/brand/v3/pasa.svg"
+      },
+      "decodedLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "orangePixels": 361
+      },
+      "links": [
+        {
+          "href": "https://akihq.app/login?lang=en",
+          "text": "Sign in to AkiHQ",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 38.59375,
+              "y": 419.8125,
+              "width": 267.8125,
+              "height": 50
+            }
+          ]
+        },
+        {
+          "href": "http://127.0.0.1:3123/en",
+          "text": "Back to discovery",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 38.59375,
+              "y": 483.8125,
+              "width": 267.8125,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "https://akibusiness.com/",
+          "text": "About AkiBusiness",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 248.25,
+              "y": 612.90625,
+              "width": 37.609375,
+              "height": 16
+            },
+            {
+              "usable": true,
+              "x": 38.59375,
+              "y": 635.953125,
+              "width": 78.390625,
+              "height": 16
+            }
+          ]
+        }
+      ],
+      "bounds": {
+        "width": 360,
+        "scrollWidth": 345
+      },
+      "screenshots": [
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/en-dark-360-upper.png",
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/en-dark-360-lower.png"
+      ],
+      "externalLoginFollowed": false,
+      "physicalAndroid": false
+    },
+    {
+      "locale": "en",
+      "theme": "dark",
+      "width": 820,
+      "height": 1180,
+      "initialLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "src": "http://127.0.0.1:3123/brand/v3/pasa.svg"
+      },
+      "decodedLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "orangePixels": 361
+      },
+      "links": [
+        {
+          "href": "https://akihq.app/login?lang=en",
+          "text": "Sign in to AkiHQ",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 51.4375,
+              "y": 701.125,
+              "width": 165.625,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "http://127.0.0.1:3123/en",
+          "text": "Back to discovery",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 231.0625,
+              "y": 701.125,
+              "width": 178.953125,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "https://akibusiness.com/",
+          "text": "About AkiBusiness",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 351.484375,
+              "y": 807.171875,
+              "width": 37.609375,
+              "height": 16
+            },
+            {
+              "usable": true,
+              "x": 51.4375,
+              "y": 830.21875,
+              "width": 78.390625,
+              "height": 16
+            }
+          ]
+        }
+      ],
+      "bounds": {
+        "width": 820,
+        "scrollWidth": 805
+      },
+      "screenshots": [
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/en-dark-820-upper.png",
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/en-dark-820-lower.png"
+      ],
+      "externalLoginFollowed": false,
+      "physicalAndroid": false
+    },
+    {
+      "locale": "en",
+      "theme": "dark",
+      "width": 1440,
+      "height": 900,
+      "initialLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "src": "http://127.0.0.1:3123/brand/v3/pasa.svg"
+      },
+      "decodedLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "orangePixels": 361
+      },
+      "links": [
+        {
+          "href": "https://akihq.app/login?lang=en",
+          "text": "Sign in to AkiHQ",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 229.5,
+              "y": 570.390625,
+              "width": 165.625,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "http://127.0.0.1:3123/en",
+          "text": "Back to discovery",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 409.125,
+              "y": 570.390625,
+              "width": 178.953125,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "https://akibusiness.com/",
+          "text": "About AkiBusiness",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 439.15625,
+              "y": 676.4375,
+              "width": 119.203125,
+              "height": 16
+            }
+          ]
+        }
+      ],
+      "bounds": {
+        "width": 1440,
+        "scrollWidth": 1425
+      },
+      "screenshots": [
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/en-dark-1440-upper.png",
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/en-dark-1440-lower.png"
+      ],
+      "externalLoginFollowed": false,
+      "physicalAndroid": false
+    },
+    {
+      "locale": "en",
+      "theme": "light",
+      "width": 360,
+      "height": 900,
+      "initialLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "src": "http://127.0.0.1:3123/brand/v3/pasa.svg"
+      },
+      "decodedLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "orangePixels": 361
+      },
+      "links": [
+        {
+          "href": "https://akihq.app/login?lang=en",
+          "text": "Sign in to AkiHQ",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 38.59375,
+              "y": 419.8125,
+              "width": 267.8125,
+              "height": 50
+            }
+          ]
+        },
+        {
+          "href": "http://127.0.0.1:3123/en",
+          "text": "Back to discovery",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 38.59375,
+              "y": 483.8125,
+              "width": 267.8125,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "https://akibusiness.com/",
+          "text": "About AkiBusiness",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 248.25,
+              "y": 612.90625,
+              "width": 37.609375,
+              "height": 16
+            },
+            {
+              "usable": true,
+              "x": 38.59375,
+              "y": 635.953125,
+              "width": 78.390625,
+              "height": 16
+            }
+          ]
+        }
+      ],
+      "bounds": {
+        "width": 360,
+        "scrollWidth": 345
+      },
+      "screenshots": [
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/en-light-360-upper.png",
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/en-light-360-lower.png"
+      ],
+      "externalLoginFollowed": false,
+      "physicalAndroid": false
+    },
+    {
+      "locale": "en",
+      "theme": "light",
+      "width": 820,
+      "height": 1180,
+      "initialLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "src": "http://127.0.0.1:3123/brand/v3/pasa.svg"
+      },
+      "decodedLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "orangePixels": 361
+      },
+      "links": [
+        {
+          "href": "https://akihq.app/login?lang=en",
+          "text": "Sign in to AkiHQ",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 51.4375,
+              "y": 701.125,
+              "width": 165.625,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "http://127.0.0.1:3123/en",
+          "text": "Back to discovery",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 231.0625,
+              "y": 701.125,
+              "width": 178.953125,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "https://akibusiness.com/",
+          "text": "About AkiBusiness",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 351.484375,
+              "y": 807.171875,
+              "width": 37.609375,
+              "height": 16
+            },
+            {
+              "usable": true,
+              "x": 51.4375,
+              "y": 830.21875,
+              "width": 78.390625,
+              "height": 16
+            }
+          ]
+        }
+      ],
+      "bounds": {
+        "width": 820,
+        "scrollWidth": 805
+      },
+      "screenshots": [
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/en-light-820-upper.png",
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/en-light-820-lower.png"
+      ],
+      "externalLoginFollowed": false,
+      "physicalAndroid": false
+    },
+    {
+      "locale": "en",
+      "theme": "light",
+      "width": 1440,
+      "height": 900,
+      "initialLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "src": "http://127.0.0.1:3123/brand/v3/pasa.svg"
+      },
+      "decodedLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "orangePixels": 361
+      },
+      "links": [
+        {
+          "href": "https://akihq.app/login?lang=en",
+          "text": "Sign in to AkiHQ",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 229.5,
+              "y": 570.390625,
+              "width": 165.625,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "http://127.0.0.1:3123/en",
+          "text": "Back to discovery",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 409.125,
+              "y": 570.390625,
+              "width": 178.953125,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "https://akibusiness.com/",
+          "text": "About AkiBusiness",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 439.15625,
+              "y": 676.4375,
+              "width": 119.203125,
+              "height": 16
+            }
+          ]
+        }
+      ],
+      "bounds": {
+        "width": 1440,
+        "scrollWidth": 1425
+      },
+      "screenshots": [
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/en-light-1440-upper.png",
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/en-light-1440-lower.png"
+      ],
+      "externalLoginFollowed": false,
+      "physicalAndroid": false
+    },
+    {
+      "locale": "es",
+      "theme": "dark",
+      "width": 360,
+      "height": 900,
+      "initialLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "src": "http://127.0.0.1:3123/brand/v3/pasa.svg"
+      },
+      "decodedLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "orangePixels": 361
+      },
+      "links": [
+        {
+          "href": "https://akihq.app/login?lang=es",
+          "text": "Entrar a AkiHQ",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 38.59375,
+              "y": 401.34375,
+              "width": 267.8125,
+              "height": 50
+            }
+          ]
+        },
+        {
+          "href": "http://127.0.0.1:3123/es",
+          "text": "Volver a explorar",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 38.59375,
+              "y": 465.34375,
+              "width": 267.8125,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "https://akibusiness.com/",
+          "text": "Conocer AkiBusiness",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 136.984375,
+              "y": 617.484375,
+              "width": 135.984375,
+              "height": 16
+            }
+          ]
+        }
+      ],
+      "bounds": {
+        "width": 360,
+        "scrollWidth": 345
+      },
+      "screenshots": [
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/es-dark-360-upper.png",
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/es-dark-360-lower.png"
+      ],
+      "externalLoginFollowed": false,
+      "physicalAndroid": false
+    },
+    {
+      "locale": "es",
+      "theme": "dark",
+      "width": 820,
+      "height": 1180,
+      "initialLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "src": "http://127.0.0.1:3123/brand/v3/pasa.svg"
+      },
+      "decodedLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "orangePixels": 361
+      },
+      "links": [
+        {
+          "href": "https://akihq.app/login?lang=es",
+          "text": "Entrar a AkiHQ",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 51.4375,
+              "y": 727.6875,
+              "width": 153.21875,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "http://127.0.0.1:3123/es",
+          "text": "Volver a explorar",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 218.65625,
+              "y": 727.6875,
+              "width": 170.65625,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "https://akibusiness.com/",
+          "text": "Conocer AkiBusiness",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 149.828125,
+              "y": 856.78125,
+              "width": 135.984375,
+              "height": 16
+            }
+          ]
+        }
+      ],
+      "bounds": {
+        "width": 820,
+        "scrollWidth": 805
+      },
+      "screenshots": [
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/es-dark-820-upper.png",
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/es-dark-820-lower.png"
+      ],
+      "externalLoginFollowed": false,
+      "physicalAndroid": false
+    },
+    {
+      "locale": "es",
+      "theme": "dark",
+      "width": 1440,
+      "height": 900,
+      "initialLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "src": "http://127.0.0.1:3123/brand/v3/pasa.svg"
+      },
+      "decodedLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "orangePixels": 361
+      },
+      "links": [
+        {
+          "href": "https://akihq.app/login?lang=es",
+          "text": "Entrar a AkiHQ",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 229.5,
+              "y": 570.40625,
+              "width": 153.21875,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "http://127.0.0.1:3123/es",
+          "text": "Volver a explorar",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 396.71875,
+              "y": 570.40625,
+              "width": 170.65625,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "https://akibusiness.com/",
+          "text": "Conocer AkiBusiness",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 541.515625,
+              "y": 676.453125,
+              "width": 135.984375,
+              "height": 16
+            }
+          ]
+        }
+      ],
+      "bounds": {
+        "width": 1440,
+        "scrollWidth": 1425
+      },
+      "screenshots": [
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/es-dark-1440-upper.png",
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/es-dark-1440-lower.png"
+      ],
+      "externalLoginFollowed": false,
+      "physicalAndroid": false
+    },
+    {
+      "locale": "es",
+      "theme": "light",
+      "width": 360,
+      "height": 900,
+      "initialLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "src": "http://127.0.0.1:3123/brand/v3/pasa.svg"
+      },
+      "decodedLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "orangePixels": 361
+      },
+      "links": [
+        {
+          "href": "https://akihq.app/login?lang=es",
+          "text": "Entrar a AkiHQ",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 38.59375,
+              "y": 401.34375,
+              "width": 267.8125,
+              "height": 50
+            }
+          ]
+        },
+        {
+          "href": "http://127.0.0.1:3123/es",
+          "text": "Volver a explorar",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 38.59375,
+              "y": 465.34375,
+              "width": 267.8125,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "https://akibusiness.com/",
+          "text": "Conocer AkiBusiness",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 136.984375,
+              "y": 617.484375,
+              "width": 135.984375,
+              "height": 16
+            }
+          ]
+        }
+      ],
+      "bounds": {
+        "width": 360,
+        "scrollWidth": 345
+      },
+      "screenshots": [
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/es-light-360-upper.png",
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/es-light-360-lower.png"
+      ],
+      "externalLoginFollowed": false,
+      "physicalAndroid": false
+    },
+    {
+      "locale": "es",
+      "theme": "light",
+      "width": 820,
+      "height": 1180,
+      "initialLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "src": "http://127.0.0.1:3123/brand/v3/pasa.svg"
+      },
+      "decodedLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "orangePixels": 361
+      },
+      "links": [
+        {
+          "href": "https://akihq.app/login?lang=es",
+          "text": "Entrar a AkiHQ",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 51.4375,
+              "y": 727.6875,
+              "width": 153.21875,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "http://127.0.0.1:3123/es",
+          "text": "Volver a explorar",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 218.65625,
+              "y": 727.6875,
+              "width": 170.65625,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "https://akibusiness.com/",
+          "text": "Conocer AkiBusiness",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 149.828125,
+              "y": 856.78125,
+              "width": 135.984375,
+              "height": 16
+            }
+          ]
+        }
+      ],
+      "bounds": {
+        "width": 820,
+        "scrollWidth": 805
+      },
+      "screenshots": [
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/es-light-820-upper.png",
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/es-light-820-lower.png"
+      ],
+      "externalLoginFollowed": false,
+      "physicalAndroid": false
+    },
+    {
+      "locale": "es",
+      "theme": "light",
+      "width": 1440,
+      "height": 900,
+      "initialLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "src": "http://127.0.0.1:3123/brand/v3/pasa.svg"
+      },
+      "decodedLogo": {
+        "complete": true,
+        "naturalWidth": 150,
+        "orangePixels": 361
+      },
+      "links": [
+        {
+          "href": "https://akihq.app/login?lang=es",
+          "text": "Entrar a AkiHQ",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 229.5,
+              "y": 570.40625,
+              "width": 153.21875,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "http://127.0.0.1:3123/es",
+          "text": "Volver a explorar",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 396.71875,
+              "y": 570.40625,
+              "width": 170.65625,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "href": "https://akibusiness.com/",
+          "text": "Conocer AkiBusiness",
+          "rectangles": [
+            {
+              "usable": true,
+              "x": 541.515625,
+              "y": 676.453125,
+              "width": 135.984375,
+              "height": 16
+            }
+          ]
+        }
+      ],
+      "bounds": {
+        "width": 1440,
+        "scrollWidth": 1425
+      },
+      "screenshots": [
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/es-light-1440-upper.png",
+        "/workspace/akipasa-main-checkpoints/hq-gateway-review-20261030/es-light-1440-lower.png"
+      ],
+      "externalLoginFollowed": false,
+      "physicalAndroid": false
+    }
+  ],
+  "applicationSourceCommit": "61b08c159e42192613f9eba8a4431c3a2b312082",
+  "testedWorkingTree": true,
+  "newMaintainedCases": 4,
+  "maintainedCasesPassed": 4,
+  "finalMaintainedLog": "/tmp/akipasa-conversion-tablet-820-final-20261030.log",
+  "testSha256": "0ce8614e991b777f5b7f7baa6d6a61d0db6a080d9b45fe253727ea60563b0550",
+  "screenshotSha256": {
+    "es-dark-820-upper.png": "b0e101d8fb85dcdb4136cf87761b8405d1f57fbdefb3750ab14cffc71d3a567b",
+    "es-dark-1440-upper.png": "df752ea16779e701f5c3cf85c8cfb15f10ace99c0f48fe848d5cbd7c8b3ba13f",
+    "en-light-820-upper.png": "b682be0c02794bcb1bf5eecc05fddc36404e9d7575f379b0f974fa9d16a1b03d",
+    "en-dark-360-lower.png": "91ff76097d12ad6572bdc71e0b373d705b36629401a99ac6d927ed142c7f0b83",
+    "en-light-1440-upper.png": "03a10496cd6210fa2a203d480e821319334823fb3bccc85b3cb519126c24e0df",
+    "es-dark-1440-lower.png": "df752ea16779e701f5c3cf85c8cfb15f10ace99c0f48fe848d5cbd7c8b3ba13f",
+    "en-dark-820-lower.png": "97cb44dcc70b3077db18194797d5d57d20ce7a588e4d2e16228597811de1c9a1",
+    "en-dark-1440-lower.png": "fd334b5504bdfb1626e110cdae54ccbfe5dcd54386a8fcbeee45b572e81a187f",
+    "en-dark-1440-upper.png": "fd334b5504bdfb1626e110cdae54ccbfe5dcd54386a8fcbeee45b572e81a187f",
+    "es-light-360-lower.png": "f0494dc011a462260f13cb28b1c43a720a42f9123ef82a63abb391322f86b09f",
+    "es-dark-820-lower.png": "b0e101d8fb85dcdb4136cf87761b8405d1f57fbdefb3750ab14cffc71d3a567b",
+    "es-light-360-upper.png": "6746b089b3b0eef19715eafde6845c5beeb9e9786d25613ad2ecff32b1c4cb9b",
+    "es-light-1440-lower.png": "acd57ef40554c319311cbe2d2a92cdc3e8b4f31bb5e012f79586fa7b6e12b472",
+    "es-dark-360-upper.png": "e782a5ba6a835d363e4abf28fb42f1119891a00c716eb40a0e2e2fcd807537b6",
+    "en-light-360-upper.png": "5555dfe9ce1836279645a874e314b1cb47cfe28b42b1f640752706b69c2ab151",
+    "en-dark-360-upper.png": "9dc9bd6ad0c79018ad0f4fe6065982cfa75a4e5ed541aba848c96481ab765be3",
+    "en-light-820-lower.png": "b682be0c02794bcb1bf5eecc05fddc36404e9d7575f379b0f974fa9d16a1b03d",
+    "en-light-360-lower.png": "b266af1f2304ee49a9f195b2d5b8863fb6cbbf3b841ec79e85305cb94aef70ef",
+    "en-light-1440-lower.png": "03a10496cd6210fa2a203d480e821319334823fb3bccc85b3cb519126c24e0df",
+    "es-dark-360-lower.png": "d320fd33621d1be3eb616b74677bfd2c0760e806381e89497ca642946980f868",
+    "en-dark-820-upper.png": "97cb44dcc70b3077db18194797d5d57d20ce7a588e4d2e16228597811de1c9a1",
+    "es-light-820-lower.png": "02594a86e04ebfa9c578901d9a2816faf59d55bb46ee5bbdd31bb7f4a0a20f7f",
+    "es-light-820-upper.png": "02594a86e04ebfa9c578901d9a2816faf59d55bb46ee5bbdd31bb7f4a0a20f7f",
+    "es-light-1440-upper.png": "acd57ef40554c319311cbe2d2a92cdc3e8b4f31bb5e012f79586fa7b6e12b472"
+  },
+  "rootInspectedScreenshots": [
+    "en-dark-360-upper.png",
+    "es-light-820-lower.png"
+  ],
+  "browserCollection": {
+    "before": 546,
+    "after": 550,
+    "removed": 0,
+    "added": 4,
+    "newCollection": "/tmp/akipasa-public-ui-550-collection-20261030.json",
+    "collectionProofOnly": true
+  },
+  "limits": [
+    "Disposable fixture substitutes identity/provider; actualNext guest page and links only.",
+    "No externalAuth/account permissions/provider/customer mutation tested.",
+    "Android-like emulation is not physicalAndroid.",
+    "No owner aesthetic or route acceptance inferred."
+  ],
+  "initialSupplementalFailureRetained": "/tmp/akipasa-hq-gateway-tablet-review-20261030-inline-rect-first-failure.log",
+  "initialFailureReason": "Multiline inline-anchor union center was empty; actual clientRect fragments were then correctly hit-tested. No app/test assertion weakened.",
+  "releaseAcceptanceGranted": false
+}

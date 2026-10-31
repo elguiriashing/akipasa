@@ -32,6 +32,7 @@ vi.mock("@/lib/auth", () => ({
           in: () => query,
           order: () => query,
           limit: () => query,
+          range: () => query,
           ilike: () => query,
           or: () => query,
           maybeSingle: async () => result(),

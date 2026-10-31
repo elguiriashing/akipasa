@@ -58,6 +58,18 @@ export async function prestigeAdminAction(
 }> {
   if (!isLocale(locale) || !prestigeEnabled())
     return { error: locale === "es" ? "No disponible." : "Unavailable." };
+  if (
+    input !== null &&
+    typeof input === "object" &&
+    "action" in input &&
+    input.action === "configure" &&
+    "achievement_keys" in input &&
+    Array.isArray(input.achievement_keys) &&
+    input.achievement_keys.length > 1000
+  )
+    return {
+      error: locale === "es" ? "Revisa los datos." : "Check the details.",
+    };
   const parsed = schema.safeParse(input);
   if (!parsed.success)
     return {

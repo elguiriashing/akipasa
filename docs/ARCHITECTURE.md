@@ -1,5 +1,9 @@
 # Architecture
 
+## AkiTonight real-data discovery slice (2026-10-29, candidate)
+
+The localized `/[locale]/tonight` server component is a **read-only adapter** over the existing `repository.discover` / `recommendDiscovery` event pipeline and `public_nearby_venue_page`. It sanitizes selected launch-area, intent, budget, start-time and travel-radius inputs in `src/lib/aki-tonight.ts`; it does not introduce a second event catalogue or write customer-state records. `EventCard` retains sponsorship disclosure and consent-aware tracking. Nearby published business listings are explicitly **not** evidence of opening hours, activity fit or group availability. Future-coverage/Android/UX acceptance is blocked by the zero-upcoming-event audit and active cinematic redesign PR #326. Source rollback removes new routes/CTA only.
+
 ## Passport weekly challenge read-only projection (2026-10-29 candidate)
 
 `src/lib/aki-weekly-quests.ts` computes Europe/Madrid civil-week windows and distinct accepted, venue-credential-backed check-in milestones; `src/app/[locale]/passports/page.tsx` reads only the authenticated profile's existing `check_ins` under RLS. The visual `WeeklyQuestPanel` has no permission to change authoritative XP, stamps, rewards, benefits or check-in state. It explicitly does not equate a static venue credential with fraud-proof physical attendance. No schema or payment changes. Full browser/RLS and PR #326 styling acceptance are held for release.

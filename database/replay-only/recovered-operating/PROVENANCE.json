@@ -1,0 +1,111 @@
+{
+  "version": 1,
+  "mode": "immutable-replay-only-source-bundle",
+  "admissionStatus": "reviewable-local-source-bundle",
+  "noStandaloneExecution": true,
+  "requiresCurrentAccountCoverage": true,
+  "pristineFixtureOnly": true,
+  "productionMigration": false,
+  "databaseExecutionSupported": false,
+  "freshOrderedGuardAcceptance": false,
+  "fullCanonicalParity": false,
+  "origin": {
+    "kind": "recovered-project-migration-history",
+    "projectRef": "vhpbvcfkcteswlsdjrfl",
+    "metadataSource": "supabase_migrations.schema_migrations",
+    "access": "authorized-read-only-metadata",
+    "observedDate": "2026-10-30",
+    "observedApproximateUtc": "11:10",
+    "observationPrecision": "approximate-minute-window",
+    "attestation": "Integration owner obtained raw-history byte lengths/SHA256 and independently checked exact final-LF relation; child repeated the byte/hash check locally. No customer rows or credentials were retrieved.",
+    "rawHistoryIsSnapshot": false,
+    "originalSourceCommit": "unknown; no independent committed upstream origin is asserted",
+    "licenseClaim": "Recovered project DDL; no invented third-party license or upstream authorship claim."
+  },
+  "protectedSnapshotEvidence": {
+    "directory": "/workspace/akipasa-local-qa/recovered-source",
+    "originalDirectoryMode": "0700",
+    "originalFileMode": "0600",
+    "provenanceSha256": "273551d9b9e9623a29d4586bdd8b176b6b8b3d0288e3a83cf1d2272f8b29d6ea",
+    "savedHistoricalMetadataSha256": "b705de6accc806820a9b9199b307a23e92fe01166590d54249ab455f0852473a",
+    "note": "Protected originals remain unchanged; this bundle contains only the three independently reviewed SQL snapshots and non-sensitive provenance."
+  },
+  "sourceOrder": [
+    "20261016092914_private_operating_location.sql",
+    "20261016093118_operating_organisations.sql",
+    "20261016093336_rental_operating_location.sql"
+  ],
+  "sources": [
+    {
+      "file": "20261016092914_private_operating_location.sql",
+      "snapshotSha256": "0436f81e3f15ff88c2b68b6eedeeb15bba6f9188423b4be751d6af57db72a97a",
+      "snapshotBytes": 4701,
+      "rawHistory": {
+        "version": "20261016092914",
+        "name": "private_operating_location",
+        "statementCount": 1,
+        "sha256": "c5c02a15d34f558d64228aff4902a2c3581c1bd26691dd4e4949c8f517d0a838",
+        "bytes": 4700
+      },
+      "historyByteTransform": "remove-exactly-one-final-LF-byte"
+    },
+    {
+      "file": "20261016093118_operating_organisations.sql",
+      "snapshotSha256": "b9d06ab3b40ac3614d739bb8cc386680e9692f878a14c0163a22ecfbd9f79317",
+      "snapshotBytes": 13608,
+      "rawHistory": {
+        "version": "20261016093118",
+        "name": "operating_organisations",
+        "statementCount": 1,
+        "sha256": "5093d6814cd8be936ce81112839b448325e8b2e076b1e86b0e174b593163124a",
+        "bytes": 13607
+      },
+      "historyByteTransform": "remove-exactly-one-final-LF-byte"
+    },
+    {
+      "file": "20261016093336_rental_operating_location.sql",
+      "snapshotSha256": "90e765599a4f276395c81a9b3e58b031918e4dfd157393c05394cbf7437d36c5",
+      "snapshotBytes": 4047,
+      "rawHistory": {
+        "version": "20261016093336",
+        "name": "rental_operating_location",
+        "statementCount": 1,
+        "sha256": "3de7c127197c430ccc8954ab9b197d4bc670bd4dfe8934cfa8a6009f2c67d367",
+        "bytes": 4046
+      },
+      "historyByteTransform": "remove-exactly-one-final-LF-byte"
+    }
+  ],
+  "requiredFoundationBoundaries": [
+    "real-pinned-auth-users-and-auth-uid",
+    "public-profiles-0002",
+    "crm-workspaces-and-members-0074-with-reviewed-forwards",
+    "normal-auth-synthetic-administrator-before-0074",
+    "rental-companies-20261014223000",
+    "rental-members-20261015220302"
+  ],
+  "requiredLaterAccountSources": [
+    "database/migrations/20261020170448_account_completion_age_declaration.sql",
+    "database/migrations/20261020180946_account_completion_database_coverage.sql",
+    "database/migrations/20261020190818_account_identity_existence_guard.sql"
+  ],
+  "requiredBeforeCheckoutSource": "database/migrations/20261020172801_operations_checkout_lifecycle.sql",
+  "retainedStops": [
+    "pristine-authorized-target-and-exact-resource-identity",
+    "real-services-no-substitute-auth-or-extension-definitions",
+    "global-cron-launch-off-and-no-egress-no-provider-credentials",
+    "no-existing-operating-tables-functions-or-production-history-reapplication",
+    "all-ten-public-api-current-account-guards-and-trusted-owner-acls",
+    "all-seven-table-rls-client-denials-and-private-helper-denials",
+    "reviewed-order-and-final-schema-function-acl-fingerprint",
+    "disposable-actual-role-auth-and-customer-journey-acceptance",
+    "independent-reproduction-and-separate-release-acceptance"
+  ],
+  "historicalSourceLimits": [
+    "Original definitions check verified identity and ownership but predate current account eligibility wrappers.",
+    "Top-level local pgrst schema reload notifications are retained; no network provider or customer message is sent by this checker.",
+    "Function bodies contain intended later writes; source admission does not authorize invoking them.",
+    "Production versions already exist; never copy this directory into migration apply globs or production workflows.",
+    "No full canonical plan STOP is resolved by existence of this bundle."
+  ]
+}

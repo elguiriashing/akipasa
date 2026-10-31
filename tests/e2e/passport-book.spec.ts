@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { expect, test, type Page } from "@playwright/test";
+import { devices, expect, test, type Page } from "@playwright/test";
 
 async function waitForVisiblePassportImages(page: Page) {
   await expect
@@ -49,6 +49,24 @@ async function waitForVisiblePassportImages(page: Page) {
       },
     )
     .toEqual([]);
+  // Loaded dimensions alone can precede image decoding and the final paint.
+  // Decode only loaded assets: offscreen lazy images must remain lazy.
+  await page
+    .locator("main.passport-experience img")
+    .evaluateAll(async (images) => {
+      await Promise.all(
+        images
+          .map((image) => image as HTMLImageElement)
+          .filter((image) => image.complete && image.naturalWidth > 0)
+          .map((image) => image.decode()),
+      );
+    });
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+      ),
+  );
 }
 
 async function openPassportMenu(page: Page, locale: "en" | "es" = "en") {
@@ -719,5 +737,92 @@ for (const locale of ["en", "es"] as const) {
         );
       });
     }
+  }
+}
+
+for (const locale of ["en", "es"] as const) {
+  for (const theme of ["dark", "light"] as const) {
+    test.describe(`short tablet cover ${locale}/${theme}`, () => {
+      test.use({
+        viewport: { width: 820, height: 900 },
+        isMobile: false,
+        hasTouch: true,
+        userAgent: devices["Desktop Chrome"].userAgent,
+        deviceScaleFactor: 1,
+      });
+      test("Passport cover remains reachable without forcing navigation", async ({
+        page,
+      }, testInfo) => {
+        await page.emulateMedia({
+          colorScheme: theme,
+          reducedMotion: "reduce",
+        });
+        await page.addInitScript(
+          (value) => localStorage.setItem("akipasa.theme", value),
+          theme,
+        );
+        await page.goto(`/${locale}/passports`);
+        await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
+        const book = page.getByRole("main", {
+          name:
+            locale === "es" ? "Pasaporte interactivo" : "Interactive passport",
+          exact: true,
+        });
+        const open = book.getByRole("button", {
+          name: locale === "es" ? "Abrir pasaporte" : "Open passport",
+          exact: true,
+        });
+        await expect(open).toBeVisible();
+        await testInfo.attach("tablet-cover-geometry", {
+          contentType: "application/json",
+          body: JSON.stringify(
+            await open.evaluate((button) => {
+              const parents = [];
+              for (
+                let element: Element | null = button;
+                element;
+                element = element.parentElement
+              ) {
+                const box = element.getBoundingClientRect();
+                const style = getComputedStyle(element);
+                parents.push({
+                  tag: element.tagName,
+                  className: element.className,
+                  top: box.top,
+                  bottom: box.bottom,
+                  clientHeight: element.clientHeight,
+                  scrollHeight: element.scrollHeight,
+                  overflowY: style.overflowY,
+                });
+              }
+              return { width: innerWidth, height: innerHeight, parents };
+            }),
+          ),
+        });
+        await page.screenshot({
+          path: testInfo.outputPath("cover-before-navigation.png"),
+        });
+        // Native scrolling/focus must expose the action inside the locked shell.
+        // No forced click or larger viewport may hide the short-tablet defect.
+        await open.scrollIntoViewIfNeeded({ timeout: 8000 });
+        await expect(open).toBeInViewport({ ratio: 1, timeout: 8000 });
+        if (locale === "es" && theme === "light") {
+          await open.tap({ timeout: 8000 });
+        } else if (locale === "es") {
+          await open.focus();
+          await expect(open).toBeFocused();
+          await page.keyboard.press("Enter");
+        } else {
+          await open.click({ timeout: 8000 });
+        }
+        await expect(page).toHaveURL(/view=index/);
+        await expect(
+          book.getByRole("heading", {
+            name: locale === "es" ? "Ciudades" : "Cities",
+            exact: true,
+          }),
+        ).toBeVisible();
+      });
+    });
   }
 }

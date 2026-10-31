@@ -1,0 +1,166 @@
+{
+  "sourceCommit": "c10d7adcb45c0add6c82accfe398bdedec2dd0f6",
+  "result": "passed4sourceDDL+boundedrealAuth/ACL/RLSprobes",
+  "manifestSha256": "4227b90b9901567942fb1063909e8a4f28da8e382a7d8757f6d97b1726d61004",
+  "receiptSha256": "c835bdf33e0457679a63e4070bd9547780ec04e67e629c38de380502ce631780",
+  "prefixReceiptUnchanged": true,
+  "acceptedCheckins": 0,
+  "xpRows": 0,
+  "permanentAwardRows": 0,
+  "normalAuthSyntheticUsers": 3,
+  "fullCanonicalParity": false,
+  "coverageApplied": false,
+  "prestigeApplied": false,
+  "productionChanged": false,
+  "receipts": [
+    {
+      "timestamp": 1793366247.8158855,
+      "kind": "batch1-start",
+      "manifestSha256": "4227b90b9901567942fb1063909e8a4f28da8e382a7d8757f6d97b1726d61004",
+      "pristinePrefix": true,
+      "acceptedCheckins": 0,
+      "xpRows": 0
+    },
+    {
+      "timestamp": 1793366248.0044365,
+      "kind": "batch1-source-pass",
+      "path": "database/migrations/20260916103318_managed_achievements.sql",
+      "sha256": "8b1687705c3f52481bd1f5b347bc2203cdecc1644221767cf447d7e32039613d"
+    },
+    {
+      "timestamp": 1793366248.2459772,
+      "kind": "batch1-source-pass",
+      "path": "database/migrations/20260916115126_activity_achievements.sql",
+      "sha256": "5469d4ec10db33e6a1e88d1fa5cad626b19fac7144d44acd4965f6590bbee464"
+    },
+    {
+      "timestamp": 1793366248.6678817,
+      "kind": "batch1-source-pass",
+      "path": "supabase/migrations/20261003193908_passport_city_collection.sql",
+      "sha256": "5a8ffd980428ac2f430bf7ef1044de3137d3ed444894424cb014b6c529c48b5e"
+    },
+    {
+      "timestamp": 1793366248.8503506,
+      "kind": "batch1-source-pass",
+      "path": "supabase/migrations/20261003203205_passport_award_replacement_history.sql",
+      "sha256": "b6b3bc90913a652018c5c49ea52664ad6a1d40740d8ed72421bb5c22eed3147c"
+    },
+    {
+      "timestamp": 1793366249.0245798,
+      "kind": "fixture-schema-cache-invalidation",
+      "sourceSqlModified": false
+    },
+    {
+      "timestamp": 1793366249.1440578,
+      "kind": "schema-cache-not-ready",
+      "status": 404,
+      "code": "PGRST202",
+      "attempt": 1
+    },
+    {
+      "timestamp": 1793366249.429778,
+      "kind": "schema-cache-ready-real-anon-denial",
+      "status": 401,
+      "sqlstate": "42501",
+      "attempts": 2
+    },
+    {
+      "timestamp": 1793366249.8498628,
+      "kind": "new-normal-auth-consumers",
+      "count": 2,
+      "syntheticOnly": true
+    },
+    {
+      "timestamp": 1793366250.2422836,
+      "kind": "real-auth-rpc-check",
+      "rpc": "passport_collection",
+      "status": 200,
+      "expectedDenial": false
+    },
+    {
+      "timestamp": 1793366250.3436239,
+      "kind": "real-auth-rpc-check",
+      "rpc": "my_achievement_progress",
+      "status": 200,
+      "expectedDenial": false
+    },
+    {
+      "timestamp": 1793366250.4235215,
+      "kind": "real-auth-rpc-check",
+      "rpc": "admin_passport_awards",
+      "status": 403,
+      "expectedDenial": true
+    },
+    {
+      "timestamp": 1793366250.5890725,
+      "kind": "real-auth-rpc-check",
+      "rpc": "passport_collection",
+      "status": 200,
+      "expectedDenial": false
+    },
+    {
+      "timestamp": 1793366250.6764805,
+      "kind": "real-auth-rpc-check",
+      "rpc": "my_achievement_progress",
+      "status": 200,
+      "expectedDenial": false
+    },
+    {
+      "timestamp": 1793366250.747132,
+      "kind": "real-auth-rpc-check",
+      "rpc": "admin_passport_awards",
+      "status": 403,
+      "expectedDenial": true
+    },
+    {
+      "timestamp": 1793366250.8180723,
+      "kind": "real-auth-rpc-check",
+      "rpc": "passport_collection",
+      "status": 403,
+      "expectedDenial": true
+    },
+    {
+      "timestamp": 1793366250.8874726,
+      "kind": "real-auth-rpc-check",
+      "rpc": "passport_collection",
+      "status": 401,
+      "expectedDenial": true
+    },
+    {
+      "timestamp": 1793366251.0507774,
+      "kind": "expected-private-helper-denial",
+      "sqlstate": "42501"
+    },
+    {
+      "timestamp": 1793366251.2529573,
+      "kind": "expected-private-helper-denial",
+      "sqlstate": "42501"
+    },
+    {
+      "timestamp": 1793366251.442026,
+      "kind": "rollback-only-synthetic-unlock-rls",
+      "visibleOwnRows": 1,
+      "otherRowsVisible": false,
+      "committed": false,
+      "earnedActivity": false
+    },
+    {
+      "timestamp": 1793366253.3982072,
+      "kind": "private-passport-rls-acl-metadata",
+      "rlsTables": 2,
+      "clientMutationPrivileges": false,
+      "authUserCount": 3
+    },
+    {
+      "timestamp": 1793366253.593562,
+      "kind": "batch1-bounded-stop",
+      "sourceCount": 4,
+      "preCoverageOnly": true,
+      "coverageApplied": false,
+      "prestigeApplied": false,
+      "operatingApplied": false,
+      "checkoutApplied": false,
+      "fullCanonicalParity": false
+    }
+  ]
+}
