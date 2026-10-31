@@ -1,0 +1,134 @@
+name: Finalize restricted AkiPals World source
+on:
+  push:
+    branches: [release/akipals-world-private-20261031]
+    paths: [".github/workflows/pals-world-source-finalization.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: pals-world-source-finalization
+  cancel-in-progress: false
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+      WRANGLER_SEND_METRICS: "false"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Apply narrowly scoped source corrections
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import os
+          assert os.environ['GITHUB_REF'] == 'refs/heads/release/akipals-world-private-20261031'
+          p = Path('src/components/pals/WorldExplorer.tsx')
+          s = p.read_text()
+          anchor = '        map.current = nextMap;'
+          replacement = anchor + '\n        // Keep the player and nearby pins above the information card.\n        nextMap.setPadding({ top: 72, bottom: 256, left: 16, right: 16 });'
+          if 'nextMap.setPadding(' not in s:
+            assert s.count(anchor) == 1
+            p.write_text(s.replace(anchor, replacement))
+          p = Path('src/components/pals/WorldExplorer.module.css')
+          s = p.read_text()
+          if 'World playtest viewport clearance' not in s:
+            s += '''
+          /* World playtest viewport clearance: the map must not shrink behind its list. */
+          .root, .root *, .root *::before, .root *::after { box-sizing: border-box; }
+          .avatarPin { pointer-events: none; }
+          @media (max-width: 880px) {
+            .layout { display: block; min-height: 0; }
+            .world { height: calc(100dvh - 132px); min-height: 480px; flex: none; }
+            .tourCard .ctas { flex-wrap: nowrap; }
+            .tourCard .primary, .tourCard .secondary {
+              flex: 1; min-width: 0; min-height: 44px;
+              padding: 10px 9px; font-size: 12px !important;
+            }
+          }
+          '''
+            p.write_text(s)
+          p = Path('eslint.config.mjs')
+          s = p.read_text()
+          if 'public/pals/runtime/**' not in s:
+            assert '    "test-results/**",' in s
+            p.write_text(s.replace('    "test-results/**",', '    "test-results/**",\n    "public/pals/runtime/**",'))
+          p = Path('.prettierignore')
+          s = p.read_text()
+          if 'public/pals/runtime' not in s:
+            p.write_text(s.rstrip() + '\npublic/pals/runtime\n')
+          p = Path('docs/AKIPALS_PRIVATE_RELEASE_20261031.md')
+          s = p.read_text()
+          if 'Mobile map clearance correction' not in s:
+            p.write_text(s + '''
+          ## Mobile map clearance correction
+
+          Real Chromium testing exposed the mobile information card intercepting
+          nearby venue-pin clicks. The map now keeps its own viewport height,
+          reserves camera padding above the card and prevents its decorative
+          avatar from intercepting map input. Touch actions retain 44px targets.
+          These are real source fixes; the click assertions are not bypassed.
+
+          The standalone browser harness now uses the same compile-time browser
+          environment definitions as the existing Next component harnesses.
+          Generated, ignored Three.js bundle output is excluded from source lint
+          and source formatting; the authored renderer and build script remain
+          checked. No authentication, database, data-retention or reward changes.
+          Exact-source checks and deployment verification remain mandatory.
+          ''')
+          PY
+      - name: Install locked dependencies and normalize source formatting
+        run: |
+          mkdir -p test-results/pals-final
+          npm ci --no-audit --no-fund >/tmp/install.log 2>&1 || { tail -60 /tmp/install.log; exit 1; }
+          npm ci --prefix automation --no-audit --no-fund >/tmp/automation.log 2>&1 || { tail -60 /tmp/automation.log; exit 1; }
+          npx prettier --write src/components/pals/WorldExplorer.tsx src/components/pals/WorldExplorer.module.css scripts/test-pals-world-browser.mjs eslint.config.mjs docs/AKIPALS_PRIVATE_RELEASE_20261031.md .github/workflows/pals-world-source-finalization.yml
+      - name: Commit only the corrected scoped source
+        run: |
+          git add src/components/pals/WorldExplorer.tsx src/components/pals/WorldExplorer.module.css scripts/test-pals-world-browser.mjs eslint.config.mjs .prettierignore docs/AKIPALS_PRIVATE_RELEASE_20261031.md .github/workflows/pals-world-source-finalization.yml
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "fix(pals): keep nearby venue pins reachable above the mobile game card"
+            git push origin HEAD:release/akipals-world-private-20261031
+          fi
+          git rev-parse HEAD >test-results/pals-final/source-sha.txt
+      - name: Install browser and build the genuine 3D runtime
+        run: |
+          npx playwright install --with-deps chromium >/tmp/chromium.log 2>&1 || { tail -60 /tmp/chromium.log; exit 1; }
+          npm run pals:3d:bundle
+      - name: World, Wardrobe and legacy-save browser acceptance
+        run: |
+          node scripts/test-pals-world-browser.mjs >test-results/pals-final/world.log 2>&1 || { tail -100 test-results/pals-final/world.log; exit 1; }
+          node scripts/test-pals-identity-browser.mjs >test-results/pals-final/wardrobe.log 2>&1 || { tail -100 test-results/pals-final/wardrobe.log; exit 1; }
+          node scripts/test-pals-browser.mjs >test-results/pals-final/legacy.log 2>&1 || { tail -100 test-results/pals-final/legacy.log; exit 1; }
+      - name: Full source and production build gate
+        run: |
+          npm run check >test-results/pals-final/check.log 2>&1 || { tail -120 test-results/pals-final/check.log; exit 1; }
+      - name: Cloudflare exact-source packaging gate
+        run: |
+          npm run build:cloudflare >test-results/pals-final/cloudflare.log 2>&1 || { tail -120 test-results/pals-final/cloudflare.log; exit 1; }
+      - name: Export source and inspectable evidence
+        if: always()
+        run: |
+          mkdir -p test-results/pals-final
+          git rev-parse HEAD >test-results/pals-final/source-sha.txt
+          git diff --stat 76cb96df21bf9404d50db373cf57bb0287fd9a80 >test-results/pals-final/scope.txt
+          git archive --format=tar.gz --output=test-results/pals-final/source.tar.gz HEAD
+          if test -d node_modules/prettier; then tar -czf test-results/pals-final/formatter.tgz -C node_modules prettier; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pals-world-final-evidence
+          path: |
+            test-results/pals-final
+            test-results/pals-world-browser
+            test-results/pals-identity-browser
+            test-results/pals-browser
+          retention-days: 3
