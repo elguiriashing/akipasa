@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useState, type ReactNode } from "react";
 import Image from "next/image";
+import { Icon } from "@/components/Icons";
 import styles from "./AkiSuiteAudienceStudio.module.css";
 
 /** One identical audience-first presentation component in all three discovery apps.
@@ -213,7 +214,16 @@ export function AkiSuiteAudienceStudio({
             </div>
             <a href={businessSoftwareHref}>
               {es ? "Explorar AkiBusiness" : "Explore AkiBusiness"}{" "}
-              <span aria-hidden="true">↗</span>
+              <Icon
+                name="arrow-right"
+                size={16}
+                style={{
+                  transform: "rotate(-45deg)",
+                  display: "inline-block",
+                  verticalAlign: "middle",
+                  flexShrink: 0,
+                }}
+              />
             </a>
           </aside>
         )}

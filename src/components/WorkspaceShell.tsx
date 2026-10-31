@@ -78,6 +78,8 @@ export function WorkspaceShell({
   const searchParams = useSearchParams();
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const routeIdentity = `${pathname}?${searchParams.toString()}`;
+  const previousRouteIdentity = useRef(routeIdentity);
   const desktopNavigationRef = useRef<HTMLElement>(null);
   const mobileNavigationRef = useRef<HTMLDivElement>(null);
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
@@ -159,6 +161,14 @@ export function WorkspaceShell({
     navigation.scrollLeft += event.deltaY;
     event.preventDefault();
   }
+
+  useEffect(() => {
+    // Shared layouts survive browser history and programmatic navigation.
+    // Keep initial/same-route renders from dismissing an early menu tap.
+    if (previousRouteIdentity.current === routeIdentity) return;
+    previousRouteIdentity.current = routeIdentity;
+    setDrawerOpen(false);
+  }, [routeIdentity]);
 
   useEffect(() => {
     if (!drawerOpen) return;

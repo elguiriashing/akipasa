@@ -349,3 +349,33 @@ html[data-theme="light"] .owner-swatch-midnight i {
 html[data-theme="light"] .owner-swatch-synthwave i {
   background: linear-gradient(135deg, #fac8e7, #b8eff4);
 }
+
+/* Legacy consumer shells also render this last control outside AppShell's
+   content inset. Keep it above their 60px dock; the canonical Pasa dock, Map
+   and Passport retain their own placements. Closing privacy never saves it. */
+@media (max-width: 850px) {
+  html:not([data-owner-focus="true"])
+    body:has(.app-shell .app-bottom-nav:not(.pasa-dock)):not(
+      :has(.pasa-dock)
+    ):not(:has(.auth-theme-akipasa, .map-page))
+    > .privacy-preferences:not(.privacy-preferences--passport) {
+    padding-bottom: calc(1rem + 60px + env(safe-area-inset-bottom, 0px));
+  }
+
+  html:not([data-owner-focus="true"])
+    body:has(.app-shell .app-bottom-nav:not(.pasa-dock)):not(
+      :has(.pasa-dock)
+    ):not(:has(.auth-theme-akipasa, .map-page))
+    > .privacy-preferences:not(.privacy-preferences--passport)
+    > button {
+    scroll-margin-block-end: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+
+  html:not([data-owner-focus="true"])
+    body[data-android-app="true"]:has(
+      .app-shell .app-bottom-nav:not(.pasa-dock)
+    ):not(:has(.pasa-dock)):not(:has(.auth-theme-akipasa, .map-page))
+    > .privacy-preferences:not(.privacy-preferences--passport) {
+    padding-bottom: calc(1rem + 60px);
+  }
+}

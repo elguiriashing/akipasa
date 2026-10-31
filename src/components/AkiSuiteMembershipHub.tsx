@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Icon } from "@/components/Icons";
 import { changeAkiSuiteSubscription } from "@/app/[locale]/account/subscription/akisuite-actions";
 import { openBillingPortal } from "@/app/[locale]/account/subscription/actions";
 import { akisuitePlans, type AkiSuitePlan } from "@/lib/akisuite-catalogue";
@@ -254,7 +255,12 @@ export function AkiSuiteMembershipHub({
                         </span>
                       )}
                       <Link className={styles.appLink} href={copy.href}>
-                        {copy.action} <span aria-hidden="true">↗</span>
+                        {copy.action}
+                        <Icon
+                          name="arrow-right"
+                          size={16}
+                          style={{ transform: "rotate(-45deg)" }}
+                        />
                       </Link>
                     </article>
                   );

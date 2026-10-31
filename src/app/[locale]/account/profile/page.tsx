@@ -1,8 +1,10 @@
 import Image from "next/image";
+import styles from "../account-personal.module.css";
 import { notFound } from "next/navigation";
 import { Icon } from "@/components/Icons";
 import { requireUser } from "@/lib/auth";
 import { isLocale } from "@/lib/config";
+import { accountProfileWebsiteHref } from "@/lib/account-profile-website";
 import { updateAccountProfile, uploadProfileMedia } from "../actions";
 import { AccountPageHeader } from "../AccountPageHeader";
 import { AccountCollectionState } from "../AccountCollectionState";
@@ -35,6 +37,19 @@ export default async function ProfilePage({
     .maybeSingle();
   const es = locale === "es";
   const instagramHandle = instagramHandleFromUrl(profile?.instagram_url);
+  const websiteHref = accountProfileWebsiteHref(profile?.website_url);
+  const profileVisibility =
+    profile?.profile_visibility === "public"
+      ? es
+        ? "Visible para todos"
+        : "Visible to everyone"
+      : profile?.profile_visibility === "members"
+        ? es
+          ? "Visible para usuarios de AkiPasa"
+          : "Visible to AkiPasa members"
+        : es
+          ? "Solo tú puedes ver este perfil"
+          : "Only you can see this profile";
   const header = (
     <AccountPageHeader
       eyebrow={es ? "Identidad" : "Identity"}
@@ -49,7 +64,9 @@ export default async function ProfilePage({
 
   if (profileError) {
     return (
-      <div className="account-controls-page account-profile-screen">
+      <div
+        className={`account-controls-page account-profile-screen ${styles.editor}`}
+      >
         {header}
         <AccountCollectionState
           locale={locale}
@@ -69,7 +86,9 @@ export default async function ProfilePage({
   }
 
   return (
-    <div className="account-controls-page account-profile-screen">
+    <div
+      className={`account-controls-page account-profile-screen ${styles.editor}`}
+    >
       {header}
 
       {query.updated && (
@@ -121,7 +140,11 @@ export default async function ProfilePage({
                     unoptimized
                   />
                 ) : (
-                  <Icon name="person" />
+                  <span aria-hidden="true">
+                    {(profile?.display_name || user.email || "AkiPasa")
+                      .slice(0, 1)
+                      .toUpperCase()}
+                  </span>
                 )}
               </span>
               <div>
@@ -129,6 +152,14 @@ export default async function ProfilePage({
                   {profile?.display_name || (es ? "Tu perfil" : "Your profile")}
                 </strong>
                 {profile?.username && <small>@{profile.username}</small>}
+                <span
+                  className="account-profile-visibility"
+                  aria-label={
+                    es ? "Visibilidad del perfil" : "Profile visibility"
+                  }
+                >
+                  {profileVisibility}
+                </span>
               </div>
             </div>
           </div>
@@ -258,7 +289,7 @@ export default async function ProfilePage({
               <textarea
                 name="bio"
                 defaultValue={profile?.bio || ""}
-                maxLength={300}
+                maxLength={2000}
                 placeholder={
                   es
                     ? "Cuéntale a la gente un poco sobre ti..."
@@ -266,7 +297,7 @@ export default async function ProfilePage({
                 }
               />
               <small>
-                {es ? "Máximo 300 caracteres." : "Up to 300 characters."}
+                {es ? "Máximo 2000 caracteres." : "Up to 2000 characters."}
               </small>
             </label>
           </section>
@@ -306,9 +337,9 @@ export default async function ProfilePage({
                     placeholder={es ? "tusitio.com" : "yourwebsite.com"}
                     inputMode="url"
                   />
-                  {profile?.website_url && (
+                  {websiteHref && (
                     <a
-                      href={profile.website_url}
+                      href={websiteHref}
                       target="_blank"
                       rel="noreferrer"
                       className="account-profile-link-button"
