@@ -2547,3 +2547,40 @@ before claiming source/evidence access, preserve all local changes, coordinate
 one integration owner and keep every release gate. The task service confirms
 the update and enabled hourly schedule, but returned no next-run timestamp;
 no currently running background engineering session is claimed.
+
+## 31 October 23:15 UTC — Current production reconciled; inline search follow-up
+
+Remote reconstruction confirms #332 merged as62140bfc7080b162b7c619f8b8dac19ac5223270,
+with90/90 route reviews and six fallbacks recorded. Current production branch is
+80ec55b135c0170a3796fcfa7b72a9823286a27d after #343. Earlier49/90/draft/source76cb
+entries are historical, not the current backlog. Worker identity must be freshly
+read for this follow-up; no old Worker is represented as current.
+
+Alex now requests real city stories linked to verified check-ins and a Home
+search that types in place. Six agents work on nonoverlapping implementation and
+QA. The finished inline-search presentation is isolated in
+work/home-inline-search-20261031 on current production so it need not wait for the
+separate new Stories schema, private uploads and moderation integration.
+Six focused unit tests,16 hero browser contexts and eight actual-AppShell
+contexts pass on the scoped runtime, including five matches, native clear,44px
+Retry and closed advanced filters. Existing Home entrance tests retain their
+advanced-header behavior and add actual inline interaction coverage. Full check,
+exact published-head CI, expected-head merge and automatic production readback
+remain the next release steps, never implied by these local fixtures.
+
+The paused environment lost /tmp browser artifacts: old manifests/CI links remain
+valid records but local symlink galleries are not falsely advertised as available.
+New evidence is written durably under /workspace/akipasa-main-checkpoints. No
+Stories migration, paid AI/database resource or production customer operation has
+been performed by this follow-up.
+
+Final bounded verification:32 actual Next EN/ES/dark/light/360/390/820/1440
+Home cases passed, with32 captures and retained advanced-header/image/roadmap/
+Escape/focus/overflow assertions. Eight independent final actual-AppShell
+contexts verify44px native Retry and visible/clickable native clear. Strict route
+audit passes against the completed332 inventory. The initial fullcheck passed
+all prerequisites but hit a local whole-.next/tmp symlink module-resolution
+failure during page collection; restoring a real.next with only cache linked
+fixed the unchanged-source production build. The original failure is preserved;
+fresh complete published-head CI remains mandatory. See
+receipts/AKIPASA_HOME_INLINE_SEARCH_20261031.json.

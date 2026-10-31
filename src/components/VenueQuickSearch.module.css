@@ -179,3 +179,53 @@
   color: var(--ink);
   cursor: pointer;
 }
+
+/* The photographic Home hero owns its inline search; header filters stay separate. */
+.hero {
+  --ink: #fff7f0;
+  --muted: #d7c5b8;
+  --line: #715745;
+  --surface: #12100f;
+  --surface-alt: #1c1714;
+  --primary: #ff7628;
+  --primary-text: #ffad70;
+  width: min(100%, 36rem);
+  margin: 0 0 auto;
+  padding-bottom: 1.5rem;
+}
+.hero .heading[hidden] {
+  display: none;
+}
+.hero .inputWrap {
+  border-radius: 999px;
+  background: #151313;
+}
+.hero .results {
+  background: #171310;
+  max-height: 24rem;
+}
+.hero .result:focus-visible {
+  outline: 2px solid #ffad70;
+  outline-offset: -2px;
+}
+
+.hero {
+  color-scheme: dark;
+}
+.hero .inputWrap input::-webkit-search-cancel-button {
+  filter: none;
+  opacity: 1;
+}
+.hero .status button {
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  border: 1px solid #a77956;
+  border-radius: 999px;
+  background: #292019;
+  color: #fff7f0;
+  cursor: pointer;
+}
+.hero .status button:focus-visible {
+  outline: 2px solid #ffad70;
+  outline-offset: 2px;
+}
