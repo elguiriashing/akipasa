@@ -10,7 +10,7 @@
       "blendSha256": "831ab6d837c679040285862b15dc9ee5180b018442a88aeaf92aaa7509b80258",
       "license": "CC-BY-4.0",
       "credit": "Rain Rig (CC) Blender Foundation | studio.blender.org",
-      "blenderVersion": "4.3.0",
+      "blenderVersion": "4.4.0",
       "objects": [
         {
           "name": "GEO-rain-body",
@@ -10601,7 +10601,7 @@
       "blendSha256": "80fd0a81bca90f0efdcdcb98422df0e198ae57f4a1c239e13fb795922779b1fc",
       "license": "CC-BY-4.0",
       "credit": "Snow Rig (CC) Blender Foundation | studio.blender.org",
-      "blenderVersion": "4.3.0",
+      "blenderVersion": "4.4.0",
       "objects": [
         {
           "name": "GEO-snow-body",
