@@ -1,0 +1,33 @@
+{
+  "base": "80ec55b135c0170a3796fcfa7b72a9823286a27d",
+  "scope": "Only3 Home/public-search presentation files; no API/RPC/schema/permission/provider/model change",
+  "runtimeHashes": {
+    "src/components/PlansFirstHero.tsx": "e06cfb657bbab45c676640ddb3239519d7ce2d8c9897d648e333c368c7016e86",
+    "src/components/VenueQuickSearch.module.css": "6ce6c0eb9ab7792619f8e088365f6179964ccc295beb5499912f53ad951c60a7",
+    "src/components/VenueQuickSearch.tsx": "a6208fc5989578867991c6d97493937537604c6202d2e727ca66a470f25be58d"
+  },
+  "localUnit": {
+    "passed": 2970,
+    "groups": 17,
+    "fullcheckExit": "FAILED only at Next page-data collection because whole.next was a tmp symlink; all earlier fullcheck phases passed. Corrected local artifact layout, unchanged source build nowPASS. Fresh complete exact-head CI stillrequired."
+  },
+  "buildRepair": "real worktree.next; onlygeneratedcache linkedtmp; preservedoriginalmodulefailure, no productlogicchange",
+  "actualNext": {
+    "passed": 32,
+    "viewports": [360, 390, 820, 1440],
+    "languages": ["en", "es"],
+    "themes": ["dark", "light"],
+    "screenshots": 32,
+    "receipt": "/workspace/akipasa-main-checkpoints/home-inline-actual-next32-receipt-20261031.json",
+    "qualification": "Actual Next AppShell/hero/header and synthetic public API matches, no productionAuth/providerwrites or physical Android proof"
+  },
+  "independentFinalShell": {
+    "passed": 8,
+    "retryTargetPx": 44,
+    "nativeClearVisibleAndClickable": true,
+    "advancedRemainsClosedOnHeroTyping": true,
+    "receipt": "/workspace/akipasa-main-checkpoints/home-inline-independent-shell-review-20261031/independent-current-master-final-review.json"
+  },
+  "strictAudit": "PASS104inventoried,90acceptedfrompreviouscompleted332,0outstanding; not new blanketfeatureacceptance",
+  "release": "UNMERGEDUNDEPLOYED pendingnewheadCI/review; source-onlyStoriesexcluded; preserveautomaticmasterdeploy/rollback"
+}

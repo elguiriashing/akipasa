@@ -5173,3 +5173,39 @@ is inferred from the local fixtures.
 game rows. Old source does not understand new explicit model IDs; preserve those
 rows for restoration instead of rewriting or deleting them. No schema, role,
 customer-row, billing or provider rollback is required.
+
+## 2026-10-31 | Home search types in place, maximum five matches
+
+- **Trigger/result:** The photographed Home search previously opened extended
+  filters. Typing now searches existing public venues inline, showing up to five
+  localized destinations; the header still opens advanced filters. No fictional
+  events or attendance activity is introduced.
+- **Boundary:** PlansFirstHero uses a hero variant of VenueQuickSearch. Existing
+  full-search pagination remains, each instance has unique accessibility IDs,
+  old requests abort, and empty/error/retry remain truthful. Hero-only native
+  color-scheme and 44px Retry correct independently reproduced shell defects.
+- **Preserved:** Public search API/RPC, product-specific destinations, location
+  permissions, privacy/consent, Auth, booking, XP, models/assets and all schema.
+  No analytics, customer, paid resource or production SQL operation.
+- **Verification:** Six focused search tests,16 actual hero browser contexts and
+  eight independently inspected actual-AppShell contexts pass on the scoped
+  runtime bytes. The browser/API fixtures are synthetic, not physical-device or
+  real production-provider acceptance. Full check and fresh exact-head CI must
+  additionally pass before expected-head merge. Existing native advanced-filter
+  tests are updated for the intentionally changed entrance, retaining readiness,
+  image, navigation, focus, Escape and overflow assertions.
+- **Release/rollback:** Independent finished batch authorized by Alex; assembled
+  from production80ec55b after discovering #332 already merged during the usage
+  pause. Preserve all newer source/history. City Stories and its unapproved
+  migration are excluded. Revert this source delta; no data rollback is needed.
+
+Final bounded verification:32 actual Next EN/ES/dark/light/360/390/820/1440
+Home cases passed, with32 captures and retained advanced-header/image/roadmap/
+Escape/focus/overflow assertions. Eight independent final actual-AppShell
+contexts verify44px native Retry and visible/clickable native clear. Strict route
+audit passes against the completed332 inventory. The initial fullcheck passed
+all prerequisites but hit a local whole-.next/tmp symlink module-resolution
+failure during page collection; restoring a real.next with only cache linked
+fixed the unchanged-source production build. The original failure is preserved;
+fresh complete published-head CI remains mandatory. See
+receipts/AKIPASA_HOME_INLINE_SEARCH_20261031.json.

@@ -1,12 +1,23 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import type { Locale } from "@/lib/config";
 import type { VenueSearchResult } from "@/lib/venue-search";
 import { Icon } from "./Icons";
 import styles from "./VenueQuickSearch.module.css";
 
-export function VenueQuickSearch({ locale }: { locale: Locale }) {
+export function VenueQuickSearch({
+  locale,
+  variant = "full",
+}: {
+  locale: Locale;
+  variant?: "full" | "hero";
+}) {
+  const hero = variant === "hero";
+  const id = useId();
+  const labelId = `venue-search-label-${id}`;
+  const resultsId = `venue-search-results-${id}`;
+  const [open, setOpen] = useState(true);
   const es = locale === "es";
   const [query, setQuery] = useState("");
   const [rows, setRows] = useState<VenueSearchResult[]>([]);
@@ -39,7 +50,9 @@ export function VenueQuickSearch({ locale }: { locale: Locale }) {
           if (controller.signal.aborted) return;
           setRows((previous) =>
             offset === 0
-              ? result.rows
+              ? hero
+                ? result.rows.slice(0, 5)
+                : result.rows
               : [
                   ...previous,
                   ...result.rows.filter(
@@ -48,7 +61,7 @@ export function VenueQuickSearch({ locale }: { locale: Locale }) {
                 ],
           );
           setTotal(result.total);
-          setNextOffset(result.nextOffset);
+          setNextOffset(hero ? null : result.nextOffset);
         } catch {
           if (!controller.signal.aborted) setFailed(true);
         } finally {
@@ -61,7 +74,7 @@ export function VenueQuickSearch({ locale }: { locale: Locale }) {
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [query, offset, retry]);
+  }, [query, offset, retry, hero]);
   function loadMore() {
     if (!loading && !failed && nextOffset !== null) {
       setLoading(true);
@@ -69,9 +82,20 @@ export function VenueQuickSearch({ locale }: { locale: Locale }) {
     }
   }
   return (
-    <section className={styles.search} aria-labelledby="venue-search-label">
-      <div className={styles.heading}>
-        <span id="venue-search-label">
+    <section
+      className={`${styles.search} ${hero ? styles.hero : ""}`}
+      aria-label={hero ? (es ? "Buscar lugares" : "Find places") : undefined}
+      aria-labelledby={hero ? undefined : labelId}
+      onBlur={(event) => {
+        if (hero && !event.currentTarget.contains(event.relatedTarget))
+          setOpen(false);
+      }}
+      onKeyDown={(event) => {
+        if (hero && event.key === "Escape") setOpen(false);
+      }}
+    >
+      <div className={styles.heading} hidden={hero}>
+        <span id={labelId}>
           {es ? "Ir directamente a un local" : "Jump straight to a venue"}
         </span>
         <small>
@@ -85,6 +109,7 @@ export function VenueQuickSearch({ locale }: { locale: Locale }) {
           value={query}
           onChange={(event) => {
             setQuery(event.target.value);
+            setOpen(true);
             setRows([]);
             setOffset(0);
             setNextOffset(null);
@@ -94,12 +119,20 @@ export function VenueQuickSearch({ locale }: { locale: Locale }) {
             if (resultsRef.current) resultsRef.current.scrollTop = 0;
           }}
           placeholder={
-            es ? "Local, ciudad o dirección…" : "Venue, city or address…"
+            hero
+              ? es
+                ? "¿Qué te apetece hacer?"
+                : "What are you in the mood for?"
+              : es
+                ? "Local, ciudad o dirección…"
+                : "Venue, city or address…"
           }
+          maxLength={160}
+          onFocus={() => setOpen(true)}
           autoComplete="off"
           spellCheck={false}
           aria-label={es ? "Buscar locales" : "Search venues"}
-          aria-controls="venue-search-results"
+          aria-controls={resultsId}
         />
         {loading && (
           <span
@@ -110,9 +143,9 @@ export function VenueQuickSearch({ locale }: { locale: Locale }) {
           </span>
         )}
       </div>
-      {query.trim().length >= 2 && (
+      {query.trim().length >= 2 && (!hero || open) && (
         <div
-          id="venue-search-results"
+          id={resultsId}
           className={styles.results}
           ref={resultsRef}
           role="region"
