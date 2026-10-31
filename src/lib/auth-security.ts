@@ -19,7 +19,9 @@ export const safeExternalUrlSchema = z.union([
 ]);
 
 export function safeAuthDestination(locale: "es" | "en", requested?: string) {
-  return requested === "/pals" || requested?.startsWith(`/${locale}/`)
+  return requested === "/pals" ||
+    requested === "/pals/world" ||
+    requested?.startsWith(`/${locale}/`)
     ? requested
     : `/${locale}/account`;
 }

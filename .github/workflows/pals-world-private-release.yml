@@ -1,0 +1,73 @@
+name: AkiPals private World release acceptance
+on:
+  push:
+    branches: [release/akipals-world-private-20261031]
+  pull_request:
+    branches: [master]
+    paths:
+      - "src/app/pals/**"
+      - "src/components/pals/**"
+      - "src/lib/pals/**"
+      - "public/pals/models/**"
+      - "scripts/*pals*"
+      - "tests/pals*"
+      - ".github/workflows/pals-world-private-release.yml"
+permissions:
+  contents: read
+concurrency:
+  group: pals-private-world-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+      WRANGLER_SEND_METRICS: "false"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Locked dependencies
+        run: |
+          mkdir -p test-results/pals-release
+          npm ci --no-audit --no-fund >/tmp/install.log 2>&1 || { tail -80 /tmp/install.log; exit 1; }
+          npm ci --prefix automation --no-audit --no-fund >/tmp/automation.log 2>&1 || { tail -80 /tmp/automation.log; exit 1; }
+          npx playwright install --with-deps chromium >/tmp/chromium.log 2>&1 || { tail -80 /tmp/chromium.log; exit 1; }
+      - name: Bundle the actual character runtime
+        run: npm run pals:3d:bundle
+      - name: World browser gate before broad tests
+        run: |
+          node scripts/test-pals-world-browser.mjs >test-results/pals-release/world-browser.log 2>&1 || { tail -100 test-results/pals-release/world-browser.log; exit 1; }
+      - name: Wardrobe and legacy save compatibility browser gates
+        run: |
+          node scripts/test-pals-identity-browser.mjs >test-results/pals-release/wardrobe-browser.log 2>&1 || { tail -100 test-results/pals-release/wardrobe-browser.log; exit 1; }
+          node scripts/test-pals-browser.mjs >test-results/pals-release/legacy-browser.log 2>&1 || { tail -100 test-results/pals-release/legacy-browser.log; exit 1; }
+      - name: Complete source checks and production build
+        run: |
+          npm run check >test-results/pals-release/source-check.log 2>&1 || { tail -120 test-results/pals-release/source-check.log; exit 1; }
+      - name: Cloudflare exact-source packaging
+        run: |
+          npm run build:cloudflare >test-results/pals-release/cloudflare.log 2>&1 || { tail -120 test-results/pals-release/cloudflare.log; exit 1; }
+      - name: Export source-bound review evidence
+        if: always()
+        run: |
+          mkdir -p test-results/pals-release
+          git rev-parse HEAD > test-results/pals-release/source-sha.txt
+          git diff --stat 76cb96df21bf9404d50db373cf57bb0287fd9a80 > test-results/pals-release/scope.txt
+          git archive --format=tar.gz --output=test-results/pals-release/source.tar.gz HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pals-private-world-acceptance
+          path: |
+            test-results/pals-release
+            test-results/pals-identity-browser
+            test-results/pals-world-browser
+            test-results/pals-browser
+          retention-days: 3

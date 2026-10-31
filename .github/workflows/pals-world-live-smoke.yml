@@ -1,0 +1,67 @@
+name: Verify deployed private AkiPals World
+on:
+  push:
+    branches: [master]
+    paths:
+      - "src/app/pals/**"
+      - "src/components/pals/**"
+      - "src/lib/pals/**"
+      - ".github/workflows/pals-world-live-smoke.yml"
+permissions:
+  contents: read
+jobs:
+  private-world-https:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verify exact live source and anonymous access boundaries
+        env:
+          EXPECTED_SOURCE: ${{ github.sha }}
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          const origin = 'https://akipasa.com';
+          const request = path => fetch(origin + path, {redirect:'manual',cache:'no-store',signal:AbortSignal.timeout(20000)});
+          let ready = false;
+          for (let attempt=0; attempt<36; attempt++) {
+            try {
+              const response = await request('/release-source.json?verify=' + process.env.EXPECTED_SOURCE);
+              const data = await response.json();
+              if (response.ok && data.sourceCommit === process.env.EXPECTED_SOURCE) { ready=true; break; }
+            } catch {}
+            await new Promise(resolve => setTimeout(resolve,15000));
+          }
+          assert.ok(ready, 'Exact candidate has not reached production');
+          for (const path of ['/pals','/pals/identity','/pals/world/venues?lat=36.54&lng=-4.62']) {
+            const r=await request(path);
+            assert.equal(r.status,401,path+' must reject anonymous reads');
+            assert.match(r.headers.get('cache-control')||'',/no-store/i);
+            assert.match(r.headers.get('x-robots-tag')||'',/noindex/i);
+          }
+          const world=await request('/pals/world');
+          assert.ok([302,303,307].includes(world.status),'World must redirect anonymous users to sign-in');
+          const target=new URL(world.headers.get('location'),origin);
+          assert.equal(target.origin,origin);
+          assert.equal(target.pathname,'/en/auth');
+          assert.equal(target.searchParams.get('next'),'/pals/world');
+          assert.match(world.headers.get('x-robots-tag')||'',/noindex/i);
+          const runtime=await request('/pals/runtime/creator.min.js');
+          assert.equal(runtime.status,200);
+          assert.ok((await runtime.text()).length>100000,'Real 3D runtime required');
+          for (const frame of ['female','male']) {
+            const response=await request('/pals/models/akipals-base-'+frame+'.glb');
+            assert.equal(response.status,200);
+            const bytes=new Uint8Array(await response.arrayBuffer());
+            assert.equal(new TextDecoder().decode(bytes.slice(0,4)),'glTF');
+          }
+          for (const path of ['/en','/es']) {
+            const response=await request(path);
+            assert.equal(response.status,200);
+            const text=await response.text();
+            assert.ok(!/href=["'](?:https:\/\/akipasa\.com)?\/pals(?:["'/?#])/i.test(text),'Preview must stay out of public navigation');
+          }
+          console.log(JSON.stringify({source:process.env.EXPECTED_SOURCE,privateWorld:true,privateAvatar:true,realModels:true,publicHomepages:true,authenticatedOrPhysicalDeviceAcceptance:false}));
+          NODE
