@@ -1,4 +1,4 @@
-/* AkiPals 3D: real, first-party, commercially licensed rigged GLBs + authored wardrobe geometry. */
+/* Shared World/Wardrobe renderer: licensed authored GLBs, plus saved classic looks. */
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -46,6 +46,66 @@ const BOTTOMS = {
 const shoes = { sneakers: "#f0eee7", boots: "#514139", trainers: "#bec8c8" };
 const loader = new GLTFLoader();
 const models = new Map();
+const PROFESSIONAL_MODELS = {
+  "rain-v3": "/pals/models/professional/rain-v3-20261031.glb",
+  "snow-v4": "/pals/models/professional/snow-v4-20261031.glb",
+};
+
+/** GLTFLoader deliberately tolerates image decode failures. Our preview must
+ * fail visibly instead of offering to save a grey, incomplete character. */
+export function assertProfessionalTextures(gltf) {
+  const expected = new Set(
+    (gltf.parser.json.materials ?? [])
+      .filter((entry) => entry.pbrMetallicRoughness?.baseColorTexture)
+      .map((entry) => entry.name),
+  );
+  const loaded = new Set();
+  gltf.scene.traverse((node) => {
+    if (!node.isMesh) return;
+    const materials = Array.isArray(node.material)
+      ? node.material
+      : [node.material];
+    for (const mat of materials) {
+      if (expected.has(mat.name) && mat.map?.image) loaded.add(mat.name);
+    }
+  });
+  if (expected.size < 4 || loaded.size !== expected.size)
+    throw new Error("Authored character textures did not finish loading");
+}
+
+/** Give each mounted stage its own GPU resources. The bounded source cache can
+ * then serve World and Wardrobe without one stage disposing another's mesh. */
+export function cloneProfessionalModel(source) {
+  const instance = cloneSkeleton(source);
+  const materials = new Map();
+  const textures = new Map();
+  instance.traverse((node) => {
+    if (!node.isMesh) return;
+    node.geometry = node.geometry.clone();
+    const copyMaterial = (original) => {
+      if (materials.has(original)) return materials.get(original);
+      const copy = original.clone();
+      copy.userData.akipalsOwnedTextures = true;
+      for (const [key, value] of Object.entries(copy)) {
+        if (!value?.isTexture) continue;
+        if (!textures.has(value)) {
+          const texture = value.clone();
+          texture.needsUpdate = true;
+          textures.set(value, texture);
+        }
+        copy[key] = textures.get(value);
+      }
+      materials.set(original, copy);
+      return copy;
+    };
+    node.material = Array.isArray(node.material)
+      ? node.material.map(copyMaterial)
+      : copyMaterial(node.material);
+    node.castShadow = true;
+    node.receiveShadow = true;
+  });
+  return instance;
+}
 
 function material(color, roughness = 0.72, metalness = 0) {
   return new THREE.MeshStandardMaterial({ color, roughness, metalness });
@@ -983,6 +1043,7 @@ function clearGroup(group) {
   if (!group) return;
   group.parent?.remove(group);
   const skeletons = new Set();
+  const textures = new Set();
   group.traverse((node) => {
     if (node.skeleton) skeletons.add(node.skeleton);
     if (node.geometry) node.geometry.dispose();
@@ -990,10 +1051,17 @@ function clearGroup(group) {
       const materials = Array.isArray(node.material)
         ? node.material
         : [node.material];
-      for (const mat of materials) mat.dispose?.();
+      for (const mat of materials) {
+        if (mat.userData.akipalsOwnedTextures) {
+          for (const value of Object.values(mat))
+            if (value?.isTexture) textures.add(value);
+        }
+        mat.dispose?.();
+      }
     }
   });
   for (const skeleton of skeletons) skeleton.dispose();
+  for (const texture of textures) texture.dispose();
 }
 function create(container, { mode = "studio" } = {}) {
   const isWorld = mode === "world";
@@ -1104,6 +1172,7 @@ function create(container, { mode = "studio" } = {}) {
   head.scale.set(1.38, 1.4, 1.35);
   root.add(head);
   let base = null,
+    professional = null,
     cloth = null,
     hair = null,
     faceDetails = null,
@@ -1200,63 +1269,122 @@ function create(container, { mode = "studio" } = {}) {
   resize();
   async function setAppearance(a) {
     requestedStyle = JSON.stringify(a);
-    const model = a.bodyStyle === "masculine" ? "male" : "female";
+    // Missing model identifies a real pre-upgrade save. Never reinterpret that
+    // person's selected hair/clothing as a different authored character.
+    const modelId = a.model ?? "classic-v2";
+    const professionalUrl = Object.hasOwn(PROFESSIONAL_MODELS, modelId)
+      ? PROFESSIONAL_MODELS[modelId]
+      : undefined;
+    const model = professionalUrl
+      ? modelId
+      : a.bodyStyle === "masculine"
+        ? "male"
+        : "female";
     const number = ++loadNumber;
     container.dataset.rendered = "loading";
     container.dispatchEvent(new CustomEvent("akipals:loading"));
     try {
-      if (!base || faceType !== model) {
-        let pending = models.get(model);
-        if (!pending) {
-          pending = loader
-            .loadAsync("/pals/models/akipals-base-" + model + ".glb")
-            .catch((error) => {
-              models.delete(model);
-              throw error;
-            });
-          models.set(model, pending);
+      if (modelId !== "classic-v2" && !professionalUrl)
+        throw new Error("Unknown character model");
+      if (professionalUrl) {
+        if (!professional || faceType !== model) {
+          let pending = models.get(model);
+          if (!pending) {
+            pending = loader
+              .loadAsync(professionalUrl)
+              .then((gltf) => {
+                assertProfessionalTextures(gltf);
+                return gltf;
+              })
+              .catch((error) => {
+                models.delete(model);
+                throw error;
+              });
+            models.set(model, pending);
+          }
+          const cached = await pending;
+          if (!active || contextLost || number !== loadNumber) return;
+          const next = cloneProfessionalModel(cached.scene);
+          clearGroup(professional);
+          professional = next;
+          root.add(professional);
+          faceType = model;
         }
-        const cached = await pending;
-        if (!active || number !== loadNumber) return;
         clearGroup(base);
-        base = cloneSkeleton(cached.scene);
-        prepareBase(base);
-        head.add(base);
-        faceType = model;
+        clearGroup(cloth);
+        clearGroup(hair);
+        clearGroup(faceDetails);
+        base = cloth = hair = faceDetails = null;
+        head.visible = false;
+        // Rain and Snow retain their authored face, hair and outfit. Uniform
+        // height is the sole supported geometry adjustment for these assets.
+        const scale =
+          a.height === "tall" ? 1.055 : a.height === "short" ? 0.94 : 1;
+        root.scale.setScalar(scale);
+        worldBaseY = 0;
+      } else {
+        if (!base || faceType !== model) {
+          let pending = models.get(model);
+          if (!pending) {
+            pending = loader
+              .loadAsync("/pals/models/akipals-base-" + model + ".glb")
+              .catch((error) => {
+                models.delete(model);
+                throw error;
+              });
+            models.set(model, pending);
+          }
+          const cached = await pending;
+          if (!active || contextLost || number !== loadNumber) return;
+          clearGroup(base);
+          base = cloneSkeleton(cached.scene);
+          prepareBase(base);
+          head.add(base);
+          faceType = model;
+        }
+        if (!active || contextLost || number !== loadNumber) return;
+        clearGroup(professional);
+        professional = null;
+        head.visible = true;
+        applyBaseColors(base, a);
+        clearGroup(cloth);
+        clearGroup(hair);
+        clearGroup(faceDetails);
+        cloth = makeWardrobe(a);
+        hair = makeHair(a);
+        faceDetails = makeFaceDetails(a);
+        // The masculine donor's jaw sits higher than the feminine donor. Bring
+        // it toward the common garment collar instead of stretching the neck.
+        head.position.y = 1.5 * (1 - 1.4) - (model === "male" ? 0.048 : 0);
+        root.add(cloth);
+        head.add(hair, faceDetails);
+        const headWear = cloth.getObjectByName("AkiPals fitted headwear");
+        headWear.position.copy(head.position);
+        headWear.scale.copy(head.scale);
+        const frameWidth =
+          a.build === "broad" ? 1.1 : a.build === "slim" ? 0.91 : 1;
+        root.scale.set(
+          frameWidth *
+            (a.shoulders === "wide"
+              ? 1.04
+              : a.shoulders === "narrow"
+                ? 0.95
+                : 1),
+          a.height === "tall" ? 1.055 : a.height === "short" ? 0.94 : 1,
+          frameWidth * 0.96,
+        );
+        worldBaseY = a.height === "short" ? 0.01 : 0;
       }
       if (!active || contextLost || number !== loadNumber) return;
-      applyBaseColors(base, a);
-      clearGroup(cloth);
-      clearGroup(hair);
-      clearGroup(faceDetails);
-      cloth = makeWardrobe(a);
-      hair = makeHair(a);
-      faceDetails = makeFaceDetails(a);
-      // The masculine donor's jaw sits higher than the feminine donor. Bring
-      // it toward the common garment collar instead of stretching the neck.
-      head.position.y = 1.5 * (1 - 1.4) - (model === "male" ? 0.048 : 0);
-      root.add(cloth);
-      head.add(hair, faceDetails);
-      const headWear = cloth.getObjectByName("AkiPals fitted headwear");
-      headWear.position.copy(head.position);
-      headWear.scale.copy(head.scale);
-      const frameWidth =
-        a.build === "broad" ? 1.1 : a.build === "slim" ? 0.91 : 1;
-      root.scale.set(
-        frameWidth *
-          (a.shoulders === "wide" ? 1.04 : a.shoulders === "narrow" ? 0.95 : 1),
-        a.height === "tall" ? 1.055 : a.height === "short" ? 0.94 : 1,
-        frameWidth * 0.96,
-      );
-      worldBaseY = a.height === "short" ? 0.01 : 0;
       root.position.y = worldBaseY;
       previousStyle = JSON.stringify(a);
       renderer.render(scene, camera);
       requestRender();
       container.dataset.rendered = "true";
       container.dataset.model = model;
+      container.dataset.modelId = modelId;
       container.dispatchEvent(
-        new CustomEvent("akipals:rendered", { detail: { model } }),
+        new CustomEvent("akipals:rendered", { detail: { model, modelId } }),
       );
     } catch (error) {
       if (active && number === loadNumber) {
@@ -1306,6 +1434,7 @@ function create(container, { mode = "studio" } = {}) {
       controls.removeEventListener("change", requestRender);
       controls.dispose();
       clearGroup(base);
+      clearGroup(professional);
       clearGroup(cloth);
       clearGroup(hair);
       clearGroup(faceDetails);

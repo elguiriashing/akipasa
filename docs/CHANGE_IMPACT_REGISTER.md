@@ -5125,3 +5125,51 @@ initial missing-local-environment500 was corrected by using the existing CI
 configuration; no application guard or assertion was weakened.
 Full hosted CI and live public-link readback gate release. Revert these source
 changes to roll back; no data rollback is needed.
+
+## 2026-10-31 | Authored characters, compact World and geographic pin repair
+
+**Need.** Alex rejected the older displayed avatar and oversized always-open
+World panel, then reported pins displaced into a column/offshore. The requested
+scope is character integration, usable mobile map space and coordinate fidelity
+for displayed venues. Existing catalogue pagination is not expanded.
+
+**Model dependencies.** Official CC-BY-4.0 Blender Foundation Rain v3/Snow v4
+sources are converted to hashed, self-hosted, textured static GLBs with credits
+linked from World/Wardrobe. The existing shared Three.js renderer loads the
+complete authored characters and validates texture completion. This is not the
+full M3 engine or an animated/custom-fit clothing system. Supported new-model
+controls are character and uniform height; existing classic controls and fields
+remain. Local model IDs are closed: classic-v2, rain-v3, snow-v4. Missing saved
+model means classic; absent saved profile means Rain. Explicit owner Save is
+unchanged. Existing JSONB/object/size checks need no DDL; auth, owner RLS, export
+and deletion contracts stay in place. No stored appearance is backfilled.
+
+**World dependencies.** Component-local layout reserves the viewport for the
+map, retains compact GPS/Stop actions, and makes Help/details/places dismissible.
+Only World and Wardrobe remain in the mobile dock. Marker roots are absolute
+at top/left zero so MapLibre's projected transform anchors each pin correctly;
+decorative depth and the stem do not alter geographic placement. Published
+venue IDs and raw longitude/latitude pass through unchanged. Explore and World
+already derive them from the same canonical venue location. Provider data,
+coarse discovery requests, truncation, location consent and private responses
+are preserved. Wardrobe and World receive only the local blob CSP permissions
+needed by embedded textures; the public/global policy remains unchanged.
+
+**Verified and pending.** 32 focused identity/schema/API and executable original
+SQL/RLS tests pass, including old-save restoration, unsaved Rain default, all
+three accepted models, preserved hidden wardrobe values and rejected arbitrary
+asset URLs. Typecheck and four authored-asset/resource-isolation cases pass;
+actual Rain/Snow browser images were inspected. The reviewed pre-integration
+World run passes eight contexts with
+real MapLibre/GLB, four fixture venue pins, GPS lifecycle and short-phone controls.
+Projected-anchor error stays below 0.498px through pan/zoom/tilt/resize; restoring
+position:relative produces 290.553px error. The later combined model/CSP browser
+run, full source check, clean Cloudflare package, exact-head hosted CI and live
+source/asset verification must be recorded separately in the release PR. No
+physical-device, live coordinate comparison or production authenticated pass
+is inferred from the local fixtures.
+
+**Rollback.** Revert scoped source/assets while retaining appearance and legacy
+game rows. Old source does not understand new explicit model IDs; preserve those
+rows for restoration instead of rewriting or deleting them. No schema, role,
+customer-row, billing or provider rollback is required.

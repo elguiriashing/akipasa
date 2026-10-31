@@ -4,6 +4,24 @@ import { fileURLToPath } from "node:url";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "form-action 'self' https://accounts.google.com",
+  "frame-ancestors 'none'",
+  "object-src 'none'",
+  `script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com/beacon.min.js https://static.cloudflareinsights.com/beacon.min.js/${
+    isDevelopment ? " 'unsafe-eval'" : ""
+  }`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https://akipasa.supabase.co https://tiles.openfreemap.org https://tile.openstreetmap.org https://*.google-analytics.com https://*.analytics.google.com https://pagead2.googlesyndication.com https://www.googleadservices.com https://www.google.com https://www.google.es",
+  "font-src 'self' data:",
+  "connect-src 'self' https://akipasa.supabase.co wss://akipasa.supabase.co https://tiles.openfreemap.org https://tile.openstreetmap.org https://*.google-analytics.com https://*.analytics.google.com https://pagead2.googlesyndication.com https://www.googleadservices.com https://www.google.com https://www.google.es",
+  "manifest-src 'self'",
+  "worker-src 'self' blob:",
+  "upgrade-insecure-requests",
+].join("; ");
+
 const nextConfig: NextConfig = {
   async redirects() {
     // Shared product privacy links must also work without an account session.
@@ -63,23 +81,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: "Content-Security-Policy",
-            value: [
-              "default-src 'self'",
-              "base-uri 'self'",
-              "form-action 'self' https://accounts.google.com",
-              "frame-ancestors 'none'",
-              "object-src 'none'",
-              `script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com/beacon.min.js https://static.cloudflareinsights.com/beacon.min.js/${
-                isDevelopment ? " 'unsafe-eval'" : ""
-              }`,
-              "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https://akipasa.supabase.co https://tiles.openfreemap.org https://tile.openstreetmap.org https://*.google-analytics.com https://*.analytics.google.com https://pagead2.googlesyndication.com https://www.googleadservices.com https://www.google.com https://www.google.es",
-              "font-src 'self' data:",
-              "connect-src 'self' https://akipasa.supabase.co wss://akipasa.supabase.co https://tiles.openfreemap.org https://tile.openstreetmap.org https://*.google-analytics.com https://*.analytics.google.com https://pagead2.googlesyndication.com https://www.googleadservices.com https://www.google.com https://www.google.es",
-              "manifest-src 'self'",
-              "worker-src 'self' blob:",
-              "upgrade-insecure-requests",
-            ].join("; "),
+            value: contentSecurityPolicy,
           },
           {
             key: "Strict-Transport-Security",
@@ -90,6 +92,15 @@ const nextConfig: NextConfig = {
       {
         source: "/pals/world/:path*",
         headers: [
+          {
+            key: "Content-Security-Policy",
+            // Embedded GLB textures are fetched as same-document blob URLs by
+            // Three's ImageBitmapLoader. Keep this allowance on private World.
+            value: contentSecurityPolicy.replace(
+              "connect-src 'self' ",
+              "connect-src 'self' blob: ",
+            ),
+          },
           { key: "Cache-Control", value: "private, no-store, max-age=0" },
           { key: "CDN-Cache-Control", value: "no-store" },
           { key: "Referrer-Policy", value: "no-referrer" },

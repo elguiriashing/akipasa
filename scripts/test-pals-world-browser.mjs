@@ -12,11 +12,50 @@ import {
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { createRequire } from "node:module";
 
 // Actual World, MapLibre, Three.js and GLB meshes. Only data and GPS are fixtures.
 const output = resolve("test-results/pals-world-browser");
 const temp = mkdtempSync(resolve(tmpdir(), "pals-world-"));
+const require = createRequire(import.meta.url);
 mkdirSync(output, { recursive: true });
+await build({
+  entryPoints: ["next.config.ts"],
+  outfile: resolve(temp, "next-config.mjs"),
+  bundle: true,
+  format: "esm",
+  platform: "node",
+  define: { "process.env.NODE_ENV": '"production"' },
+});
+const { default: productionConfig } = await import(
+  pathToFileURL(resolve(temp, "next-config.mjs"))
+);
+const headerRules = await productionConfig.headers();
+const publicHeaders = Object.fromEntries(
+  headerRules
+    .find((rule) => rule.source === "/(.*)")
+    .headers.map((h) => [h.key, h.value]),
+);
+const worldHeaders = {
+  ...publicHeaders,
+  ...Object.fromEntries(
+    headerRules
+      .find((rule) => rule.source === "/pals/world/:path*")
+      .headers.map((h) => [h.key, h.value]),
+  ),
+};
+const publicCsp = publicHeaders["Content-Security-Policy"];
+const worldCsp = worldHeaders["Content-Security-Policy"];
+assert.equal(
+  worldCsp.replace("connect-src 'self' blob: ", "connect-src 'self' "),
+  publicCsp,
+  "Only private World gains blob connection access for embedded GLB textures",
+);
+assert.match(worldCsp, /connect-src 'self' blob: /);
+assert.doesNotMatch(
+  publicCsp.split(";").find((d) => d.trim().startsWith("connect-src")),
+  /blob:/,
+);
 await build({
   stdin: {
     contents:
@@ -34,6 +73,27 @@ await build({
     "process.env.NODE_ENV": '"production"',
     "process.env": JSON.stringify({ NODE_ENV: "production" }),
   },
+  plugins: [
+    {
+      name: "observe-genuine-world-map",
+      setup(builder) {
+        builder.onResolve({ filter: /^maplibre-gl$/ }, () => ({
+          path: "observed-maplibre",
+          namespace: "world-map-observation",
+        }));
+        builder.onLoad(
+          { filter: /.*/, namespace: "world-map-observation" },
+          () => ({
+            // Expose the real instance only in this test bundle. No projection,
+            // camera, marker, renderer or production source is replaced.
+            contents: `import {Map as RealMap, Marker, AttributionControl} from ${JSON.stringify(require.resolve("maplibre-gl"))}; export {Marker, AttributionControl}; export class Map extends RealMap { constructor(...args) { super(...args); window.palsFixtureMap = this; } }`,
+            loader: "js",
+            resolveDir: process.cwd(),
+          }),
+        );
+      },
+    },
+  ],
 });
 await build({
   stdin: {
@@ -65,6 +125,22 @@ const fixtureVenues = [
     latitude: 36.5424,
     longitude: -4.6237,
     claimStatus: "claimed",
+  },
+  {
+    id: "test-world-3",
+    slug: "fixture-north",
+    name: "TEST ONLY North Venue",
+    latitude: 36.545,
+    longitude: -4.625,
+    claimStatus: "claimed",
+  },
+  {
+    id: "test-world-4",
+    slug: "fixture-south",
+    name: "TEST ONLY South Venue",
+    latitude: 36.5411,
+    longitude: -4.6209,
+    claimStatus: "unclaimed",
   },
 ];
 const fixtures = {
@@ -112,9 +188,21 @@ const server = createServer((req, res) => {
     res.writeHead(status, {
       "Content-Type": type,
       "Cache-Control": "no-store",
+      ...(url.pathname === "/pals/world" ? worldHeaders : {}),
+      ...(url.pathname === "/csp-probe"
+        ? {
+            "Content-Security-Policy":
+              url.searchParams.get("legacy") === "1" ? publicCsp : worldCsp,
+          }
+        : {}),
     });
     res.end(data);
   };
+  if (url.pathname === "/csp-probe")
+    return send(
+      "text/html",
+      "<!doctype html><title>Local CSP probe</title>Disposable policy test",
+    );
   if (url.pathname === "/pals/world")
     return send(
       "text/html",
@@ -138,10 +226,23 @@ const server = createServer((req, res) => {
       "model/gltf-binary",
       readFileSync("public/pals/models/akipals-base-" + model[1] + ".glb"),
     );
+  const professionalModel =
+    /^\/pals\/models\/professional\/(rain-v3|snow-v4)-20261031\.glb$/.exec(
+      url.pathname,
+    );
+  if (professionalModel)
+    return send(
+      "model/gltf-binary",
+      readFileSync(
+        "public/pals/models/professional/" +
+          professionalModel[1] +
+          "-20261031.glb",
+      ),
+    );
   if (url.pathname === "/pals/identity")
     return send(
       "application/json",
-      JSON.stringify({ appearance: DEFAULT_APPEARANCE, saved: true }),
+      JSON.stringify({ appearance: DEFAULT_APPEARANCE, saved: false }),
     );
   if (url.pathname === "/pals/world/venues")
     return send(
@@ -174,6 +275,23 @@ async function setup(context) {
     });
   });
   await context.addInitScript(() => {
+    window.palsCspViolations = [];
+    window.palsDecodedImages = [];
+    const decodeImage = window.createImageBitmap.bind(window);
+    window.createImageBitmap = async (...args) => {
+      const image = await decodeImage(...args);
+      window.palsDecodedImages.push({
+        width: image.width,
+        height: image.height,
+      });
+      return image;
+    };
+    document.addEventListener("securitypolicyviolation", (event) => {
+      window.palsCspViolations.push({
+        directive: event.effectiveDirective,
+        blocked: event.blockedURI,
+      });
+    });
     // Observe the actual mount/result without replacing the renderer or motion.
     window.addEventListener(
       "akipals:3d-ready",
@@ -234,20 +352,143 @@ async function setup(context) {
     };
   });
 }
+
+async function projectedPins(page) {
+  return page.evaluate((venues) => {
+    const map = window.palsFixtureMap;
+    const mapBox = map.getContainer().getBoundingClientRect();
+    return venues.map((venue) => {
+      const marker = [...document.querySelectorAll(".maplibregl-marker")].find(
+        (node) => node.getAttribute("aria-label") === "Explore " + venue.name,
+      );
+      if (!marker) return { id: venue.id, error: 99999 };
+      const point = map.project([venue.longitude, venue.latitude]);
+      const box = marker.getBoundingClientRect();
+      // The stem is an in-flow ::after flex child, so its foot is included in
+      // this bottom-centre anchor. Shadows/3D face styling do not move it.
+      return {
+        id: venue.id,
+        position: getComputedStyle(marker).position,
+        stemPosition: getComputedStyle(marker, "::after").position,
+        error: Math.max(
+          Math.abs(box.left + box.width / 2 - (mapBox.left + point.x)),
+          Math.abs(box.bottom - (mapBox.top + point.y)),
+        ),
+      };
+    });
+  }, fixtureVenues);
+}
+
+async function assertProjectedPins(page, step) {
+  await expect
+    .poll(async () =>
+      Math.max(...(await projectedPins(page)).map((p) => p.error)),
+    )
+    .toBeLessThan(1.6);
+  const pins = await projectedPins(page);
+  for (const pin of pins) {
+    assert.equal(
+      pin.position,
+      "absolute",
+      step + ": marker is outside normal flow",
+    );
+    assert.equal(
+      pin.stemPosition,
+      "static",
+      step + ": stem belongs to the anchor box",
+    );
+  }
+  return { step, maximumPixelError: Math.max(...pins.map((p) => p.error)) };
+}
+
 try {
-  for (const width of [360, 390, 430, 820, 1440]) {
+  const cspContext = await browser.newContext();
+  await setup(cspContext);
+  const cspPage = await cspContext.newPage();
+  const fetchEmbeddedBlob = async () =>
+    cspPage.evaluate(async () => {
+      const url = URL.createObjectURL(
+        new Blob(["embedded-texture-probe"], { type: "text/plain" }),
+      );
+      try {
+        return await (await fetch(url)).text();
+      } catch {
+        return "blocked";
+      } finally {
+        URL.revokeObjectURL(url);
+      }
+    });
+  await cspPage.goto(origin + "/csp-probe?legacy=1");
+  assert.equal(
+    await fetchEmbeddedBlob(),
+    "blocked",
+    "The old global policy really blocks embedded-image fetch",
+  );
+  await expect
+    .poll(() =>
+      cspPage.evaluate(() =>
+        window.palsCspViolations.some(
+          (v) => v.directive === "connect-src" && v.blocked === "blob",
+        ),
+      ),
+    )
+    .toBe(true);
+  await cspPage.goto(origin + "/csp-probe");
+  assert.equal(
+    await fetchEmbeddedBlob(),
+    "embedded-texture-probe",
+    "Actual World policy permits same-document image blobs",
+  );
+  assert.deepEqual(await cspPage.evaluate(() => window.palsCspViolations), []);
+  await cspContext.close();
+  for (const { width, height } of [
+    ...[360, 390, 430, 820, 1440].map((width) => ({ width, height: 900 })),
+    { width: 390, height: 640 },
+  ]) {
     const context = await browser.newContext({
-      viewport: { width, height: 900 },
+      viewport: { width, height },
       deviceScaleFactor: 1,
       reducedMotion: width === 430 ? "reduce" : "no-preference",
     });
     await setup(context);
     const page = await context.newPage();
+    const expectedModel = width === 430 ? "snow-v4" : "rain-v3";
+    if (expectedModel === "snow-v4") {
+      await page.route("**/pals/identity", (route) =>
+        route.fulfill({
+          contentType: "application/json",
+          body: JSON.stringify({
+            appearance: { ...DEFAULT_APPEARANCE, model: "snow-v4" },
+            saved: true,
+          }),
+        }),
+      );
+    }
+    const modelRequests = [];
+    page.on("request", (request) => {
+      if (request.url().endsWith(".glb")) modelRequests.push(request.url());
+    });
     await page.goto(origin + "/pals/world");
     await expect(page.locator("[data-pals-world-avatar]")).toHaveAttribute(
       "data-rendered",
       "true",
       { timeout: 45000 },
+    );
+    await expect(page.locator("[data-pals-world-avatar]")).toHaveAttribute(
+      "data-model-id",
+      expectedModel,
+    );
+    assert.ok(
+      modelRequests.some((url) =>
+        url.endsWith(`/professional/${expectedModel}-20261031.glb`),
+      ),
+      "World requests the actual selected professional model",
+    );
+    const decodedImages = await page.evaluate(() => window.palsDecodedImages);
+    assert.ok(
+      decodedImages.length > 0 &&
+        decodedImages.every((image) => image.width > 0 && image.height > 0),
+      "Native ImageBitmap decoding completes for embedded model textures",
     );
     await expect(
       page.getByRole("button", { name: /TEST ONLY Music Room/ }).first(),
@@ -268,14 +509,141 @@ try {
       true,
       "No horizontal overflow",
     );
+    await expect(page.locator("[data-pals-world-details]")).toHaveCount(0);
+    const projection = [await assertProjectedPins(page, "initial")];
+    let negativeControlMaximumPixelError = null;
+    if (width === 390 && height === 900) {
+      const regression = await page.addStyleTag({
+        content:
+          '.maplibregl-marker[aria-label^="Explore TEST ONLY"] { position: relative !important; }',
+      });
+      negativeControlMaximumPixelError = Math.max(
+        ...(await projectedPins(page)).map((p) => p.error),
+      );
+      assert.ok(
+        negativeControlMaximumPixelError > 20,
+        "The former normal-flow positioning must fail coordinate placement",
+      );
+      await regression.evaluate((style) => style.remove());
+      projection.push(
+        await assertProjectedPins(page, "negative control restored"),
+      );
+    }
+    for (const [step, camera] of [
+      ["pan", { center: [-4.6244, 36.5437] }],
+      ["zoom", { zoom: 17.2 }],
+      ["tilt and rotate", { pitch: 34, bearing: 31 }],
+    ]) {
+      await page.evaluate(
+        (camera) => window.palsFixtureMap.jumpTo(camera),
+        camera,
+      );
+      projection.push(await assertProjectedPins(page, step));
+    }
+    await page.setViewportSize({
+      width: Math.max(320, width - 37),
+      height: height - 80,
+    });
+    projection.push(await assertProjectedPins(page, "resize"));
+    await page.setViewportSize({ width, height });
+    await page.evaluate(() =>
+      window.palsFixtureMap.jumpTo({
+        center: [-4.6234, 36.543],
+        zoom: 16.1,
+        pitch: 55,
+        bearing: -14,
+      }),
+    );
+    projection.push(await assertProjectedPins(page, "restored"));
+    if (width <= 880) {
+      const mapBox = await page
+        .getByRole("region", { name: "AkiPals interactive exploration map" })
+        .boundingBox();
+      const hudBox = await page.locator("[data-pals-world-hud]").boundingBox();
+      assert.ok(
+        mapBox.height >= height - 115,
+        "Map gets the viewport below compact navigation",
+      );
+      assert.ok(
+        hudBox.height < 90,
+        "Default controls cannot become another large popup",
+      );
+      assert.ok(
+        mapBox.height - hudBox.height >= height * 0.67,
+        "At least two-thirds of the phone remains clear map",
+      );
+      assert.equal(
+        await page.evaluate(
+          () => document.documentElement.scrollHeight <= window.innerHeight + 1,
+        ),
+        true,
+        "Closed panels never push the phone map into a scrolling page",
+      );
+      await expect(
+        page.getByRole("region", { name: "Nearby venue list" }),
+      ).not.toBeVisible();
+      await page
+        .getByRole("button", { name: "Nearby places", exact: true })
+        .click();
+      await expect(
+        page.getByRole("region", { name: "Nearby venue list" }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: "Locate my AkiPal", exact: true }),
+      ).toBeVisible();
+      await page.getByRole("button", { name: "Close nearby places" }).click();
+      await expect(
+        page.getByRole("button", { name: "Nearby places", exact: true }),
+      ).toBeFocused();
+      const attribution = page.locator(".maplibregl-ctrl-attrib-button");
+      const attributionBox = await attribution.boundingBox();
+      assert.ok(attributionBox.width >= 44 && attributionBox.height >= 44);
+      assert.equal(
+        await attribution.evaluate(
+          (node) => getComputedStyle(node).backgroundRepeat,
+        ),
+        "no-repeat",
+        "Larger accessible attribution control must not tile its icon",
+      );
+      await attribution.click();
+      await expect(
+        page.locator(".maplibregl-ctrl-attrib-inner"),
+      ).not.toBeVisible();
+      await attribution.click();
+      await expect(page.locator(".maplibregl-ctrl-attrib-inner")).toBeVisible();
+    }
+    await page.getByRole("button", { name: "About AkiWorld" }).click();
+    await expect(
+      page.getByRole("heading", { name: "Your city. Your adventure." }),
+    ).toBeVisible();
+    const helpInk = await page
+      .getByRole("heading", { name: "Your city. Your adventure." })
+      .evaluate((node) => getComputedStyle(node).color);
+    assert.equal(
+      helpInk,
+      "rgb(255, 241, 230)",
+      "World cards set readable ink above global heading rules",
+    );
+    await page.keyboard.press("Escape");
+    await expect(page.locator("[data-pals-world-details]")).toHaveCount(0);
+    await expect(
+      page.getByRole("button", { name: "About AkiWorld" }),
+    ).toBeFocused();
+    projection.push(await assertProjectedPins(page, "help collapsed"));
     await page.screenshot({
-      path: resolve(output, `world-${width}.png`),
+      path: resolve(
+        output,
+        `world-${width}${height === 640 ? "-short" : ""}.png`,
+      ),
       fullPage: true,
     });
     await page
       .getByRole("button", { name: "Locate my AkiPal", exact: true })
       .click();
     assert.equal(await page.evaluate(() => window.palsGPS.state.calls), 1);
+    await expect(
+      page.getByRole("button", { name: "Stop location tracking", exact: true }),
+    ).toBeVisible();
     await page.evaluate(() => window.palsGPS.emit(36.54311, -4.62312));
     await expect(page.locator("[data-pals-gps-status]")).toContainText(
       "Following you",
@@ -297,6 +665,15 @@ try {
     await expect(
       page.getByRole("heading", { name: "TEST ONLY Music Room", exact: true }),
     ).toBeVisible();
+    projection.push(
+      await assertProjectedPins(page, "venue opened while following"),
+    );
+    if (width === 390 && height === 640) {
+      await page.screenshot({
+        path: resolve(output, "world-390-short-venue.png"),
+        fullPage: true,
+      });
+    }
     const stop = page.getByRole("button", {
       name: "Stop location tracking",
       exact: true,
@@ -355,10 +732,23 @@ try {
       "Unmount clears the sensor",
     );
     assert.deepEqual(browserErrors, [], "No JavaScript runtime errors");
+    assert.deepEqual(
+      await page.evaluate(() => window.palsCspViolations),
+      [],
+      "Real World renderer, texture fetches and map workers satisfy production CSP",
+    );
     receipt.push({
       width,
+      height,
+      compactDefaultControls: true,
+      detailsDismissible: true,
+      projectedPins: projection,
+      negativeControlMaximumPixelError,
       realMapLibre: true,
       realGLB: true,
+      modelId: expectedModel,
+      savedAppearance: expectedModel === "snow-v4",
+      decodedTextureImages: decodedImages,
       realWorldModeAndGpsPortraitUpdate: true,
       gpsInitiallyOff: true,
       stopVisibleOnVenue: true,
@@ -387,6 +777,12 @@ try {
     );
     await page.goto(origin + "/pals/world");
     if (kind === "venues") {
+      await expect(
+        page.getByRole("button", { name: "Nearby places", exact: true }),
+      ).toContainText("Retry");
+      await page
+        .getByRole("button", { name: "Nearby places", exact: true })
+        .click();
       await expect(
         page.getByText("Venue feed unavailable.", { exact: false }),
       ).toBeVisible();
@@ -429,6 +825,9 @@ try {
       {
         suite: "actual World/MapLibre/GLB with disposable data and sensors",
         productionAuthOrPhysicalGps: false,
+        productionWorldCspEnforced: true,
+        globalBlobFetchDenied: true,
+        privateWorldBlobFetchAllowed: true,
         checks: receipt,
         requestCount: requests.length,
       },

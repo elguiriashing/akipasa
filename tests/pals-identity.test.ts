@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   appearanceSchema,
@@ -7,14 +8,45 @@ import {
 } from "@/lib/pals/avatar-v2";
 
 describe("AkiPals human avatar identity", () => {
-  it("has a valid fully customisable free starter appearance", () => {
+  it("has a valid free starter appearance with an authored model", () => {
     expect(appearanceSchema.safeParse(DEFAULT_APPEARANCE).success).toBe(true);
+    expect(DEFAULT_APPEARANCE.model).toBe("rain-v3");
     for (const [key, choices] of Object.entries(APPEARANCE_OPTIONS)) {
       expect(choices).toContain(
         DEFAULT_APPEARANCE[key as keyof typeof DEFAULT_APPEARANCE],
       );
       expect(choices.length).toBeGreaterThan(1);
     }
+  });
+
+  it("keeps older saved wardrobe choices on their original model", () => {
+    const legacy: Record<string, unknown> = {
+      ...DEFAULT_APPEARANCE,
+      skin: "deep",
+      hair: "bun",
+      top: "jacket",
+      bottom: "tailored",
+      bag: "backpack",
+    };
+    delete legacy.model;
+    expect(appearanceSchema.parse(legacy)).toEqual({
+      ...legacy,
+      model: "classic-v2",
+    });
+  });
+
+  it("keeps the server model choices aligned with the local renderer allowlist", () => {
+    const renderer = readFileSync("src/components/pals/studio-3d.js", "utf8");
+    const models = renderer.match(
+      /const PROFESSIONAL_MODELS = \{([\s\S]*?)\n\};/,
+    );
+    expect(models).not.toBeNull();
+    const ids = [
+      ...models![1].matchAll(
+        /"([a-z]+-v\d+)":\s*"(\/pals\/models\/professional\/[^"\s]+\.glb)"/g,
+      ),
+    ].map((match) => match[1]);
+    expect(APPEARANCE_OPTIONS.model).toEqual(["classic-v2", ...ids]);
   });
 
   it("rejects extra fields, injected markup and invalid body values", () => {

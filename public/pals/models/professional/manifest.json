@@ -1,0 +1,160 @@
+{
+  "version": "20261031",
+  "format": "glTF 2.0",
+  "blenderVersion": "4.4.0",
+  "models": [
+    {
+      "id": "rain-v3",
+      "name": "Rain",
+      "url": "/pals/models/professional/rain-v3-20261031.glb",
+      "sha256": "b16df7b7804f5df80b6887ffce5fc5723c2bc6b289c7f7ab8f2b1006307c1256",
+      "bytes": 5391220,
+      "source": "https://studio.blender.org/download-source/files/ee/a7/eea73e55dba1cea31c09848df6a794b2-4.zip",
+      "sourcePage": "https://studio.blender.org/characters/rain/",
+      "archiveSha256": "80217f163f6392dc829233d63c2cfb5e1376775bc34101ad14f39631fea70d24",
+      "blendSha256": "831ab6d837c679040285862b15dc9ee5180b018442a88aeaf92aaa7509b80258",
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "credit": "Rain Rig (CC) Blender Foundation | studio.blender.org",
+      "engine": "three-gltf",
+      "pose": {
+        "method": "authored-FK-controls-baked",
+        "controls": {
+          "L": "FK-Upperarm.L",
+          "R": "FK-Upperarm.R"
+        },
+        "ikFkEndpoint": 0,
+        "trials": [
+          {
+            "forearmMeanHeight": 0.9075112640857697,
+            "mode": 0
+          },
+          {
+            "forearmMeanHeight": 1.2336367964744568,
+            "mode": 1
+          }
+        ]
+      },
+      "modifications": [
+        "Baked authored standing pose and modifiers; removed production rig and hidden helper geometry.",
+        "Reduced subdivision/triangles for mobile; normalized height to 1.8 metres.",
+        "Converted authored materials to glTF PBR, retained colour textures capped at 1024px, and split UDIM tiles.",
+        "Blender-only roughness, SSS and detail-normal shader effects are omitted."
+      ],
+      "restoredMaterialSlots": [],
+      "meshCount": 18,
+      "materialCount": 20,
+      "textureCount": 6,
+      "joints": 0,
+      "triangles": 79594,
+      "boundsMetres": {
+        "height": 1.8,
+        "width": 0.5965873894467693,
+        "depth": 0.7594506900906295
+      },
+      "embeddedScriptsExecuted": false
+    },
+    {
+      "id": "snow-v4",
+      "name": "Snow",
+      "url": "/pals/models/professional/snow-v4-20261031.glb",
+      "sha256": "054a902706b7c46332a838f6807131a88980c6c7f795c3f2ae5b192448aaec3a",
+      "bytes": 7079264,
+      "source": "https://studio.blender.org/download-source/files/ba/0f/ba0fe6d810333b1d73c1c359e4dc03cb-6.zip",
+      "sourcePage": "https://studio.blender.org/characters/snow/",
+      "archiveSha256": "98d58ef3a07083ede14140bc462cccb55d317062846aa0eb652d2e4a7ac422a6",
+      "blendSha256": "80fd0a81bca90f0efdcdcb98422df0e198ae57f4a1c239e13fb795922779b1fc",
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "credit": "Snow Rig (CC) Blender Foundation | studio.blender.org",
+      "engine": "three-gltf",
+      "pose": {
+        "method": "authored-FK-controls-baked",
+        "controls": {
+          "L": "FK-UpperArm.L",
+          "R": "FK-UpperArm.R"
+        },
+        "ikFkEndpoint": 0,
+        "trials": [
+          {
+            "forearmMeanHeight": 0.9568575322628021,
+            "mode": 0
+          },
+          {
+            "forearmMeanHeight": 1.3331848680973053,
+            "mode": 1
+          }
+        ]
+      },
+      "modifications": [
+        "Baked authored standing pose and modifiers; removed production rig and hidden helper geometry.",
+        "Reduced subdivision/triangles for mobile; normalized height to 1.8 metres.",
+        "Converted authored materials to glTF PBR, retained colour textures capped at 1024px, and split UDIM tiles.",
+        "Blender-only roughness, SSS and detail-normal shader effects are omitted."
+      ],
+      "restoredMaterialSlots": [
+        {
+          "mesh": "GEO-snow-body",
+          "slot": 0,
+          "material": "snow.skin"
+        },
+        {
+          "mesh": "GEO-snow-head",
+          "slot": 0,
+          "material": "snow.skin"
+        },
+        {
+          "mesh": "GEO-snow-head",
+          "slot": 1,
+          "material": "snow.skin_darker"
+        },
+        {
+          "mesh": "GEO-snow-head",
+          "slot": 2,
+          "material": "snow.skin_upper_lip"
+        },
+        {
+          "mesh": "GEO-snow-head",
+          "slot": 3,
+          "material": "snow.skin_lower_lip"
+        },
+        {
+          "mesh": "GEO-snow-pants",
+          "slot": 0,
+          "material": "snow.pants"
+        },
+        {
+          "mesh": "GEO-snow-shirt",
+          "slot": 0,
+          "material": "snow.shirt"
+        },
+        {
+          "mesh": "GEO-snow-shoes_base",
+          "slot": 0,
+          "material": "snow.shoe"
+        },
+        {
+          "mesh": "GEO-snow-shoes_bottom",
+          "slot": 0,
+          "material": "snow.shoe"
+        },
+        {
+          "mesh": "GEO-snow-shoes_parts",
+          "slot": 0,
+          "material": "snow.shoe"
+        }
+      ],
+      "meshCount": 17,
+      "materialCount": 16,
+      "textureCount": 8,
+      "joints": 0,
+      "triangles": 59274,
+      "boundsMetres": {
+        "height": 1.8,
+        "width": 0.8101602481963895,
+        "depth": 0.35224200850402837
+      },
+      "embeddedScriptsExecuted": false
+    }
+  ]
+}

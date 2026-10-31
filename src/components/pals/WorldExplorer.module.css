@@ -2,7 +2,9 @@
 .root {
   --aki: #ff8049;
   --ink: #09101b;
-  min-height: 100dvh;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
   background: var(--ink);
   color: #fff1e6;
   display: flex;
@@ -29,16 +31,20 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  min-height: 69px;
-  padding: 10px clamp(14px, 3vw, 32px);
+  min-height: 54px;
+  flex-shrink: 0;
+  padding: 3px clamp(12px, 3vw, 28px);
   background: #0c1521;
   border-bottom: 1px solid #ffffff1a;
   position: relative;
   z-index: 8;
 }
 .brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   font-weight: 850;
-  font-size: 24px;
+  font-size: 22px;
   text-decoration: none;
   color: #fff;
   letter-spacing: -0.065em;
@@ -62,16 +68,44 @@
   border-radius: 50%;
   background: var(--aki);
 }
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.helpButton,
+.closeButton {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #ffffff28;
+  border-radius: 50%;
+  background: #ffffff08;
+  color: #fff1e6;
+  flex-shrink: 0;
+  font-size: 20px !important;
+}
+.closeButton {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  border: 0;
+  background: transparent;
+  font-size: 26px !important;
+}
 .layout {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
-  min-height: calc(100dvh - 70px);
+  min-height: 0;
   flex: 1;
 }
 .world {
   position: relative;
   min-width: 0;
-  height: calc(100dvh - 70px);
+  height: 100%;
+  min-height: 0;
   background: #1a2331;
   overflow: hidden;
 }
@@ -80,7 +114,8 @@
   inset: 0;
 }
 .map :global(.maplibregl-ctrl-bottom-right) {
-  bottom: 218px;
+  bottom: var(--pals-attribution-clearance, 90px);
+  right: 4px;
 }
 .map :global(.maplibregl-ctrl-attrib) {
   background: #101a27d9;
@@ -90,6 +125,19 @@
 }
 .map :global(.maplibregl-ctrl-attrib a) {
   color: #fff0e6;
+}
+.map :global(.maplibregl-ctrl-attrib.maplibregl-compact) {
+  min-height: 44px;
+  min-width: 44px;
+  padding-right: 44px;
+}
+.map :global(.maplibregl-ctrl-attrib-button) {
+  width: 44px;
+  height: 44px;
+  background-color: #e3eaf2;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 24px;
 }
 .topbar {
   position: absolute;
@@ -139,16 +187,19 @@
 }
 .tourCard {
   position: absolute;
-  bottom: 23px;
-  left: 17px;
-  right: 17px;
+  bottom: calc(var(--pals-hud-clearance, 82px) + 10px);
+  left: 12px;
+  right: 12px;
   z-index: 4;
   max-width: 480px;
   border-radius: 22px;
   background: #111b29ef;
   border: 1px solid #ffa1686c;
   backdrop-filter: blur(16px);
-  padding: 17px;
+  padding: 16px;
+  padding-right: 48px;
+  max-height: 46%;
+  overflow: auto;
   box-shadow: 0 10px 35px #0009;
 }
 .tourCard h2 {
@@ -156,11 +207,68 @@
   font-size: 23px;
   letter-spacing: -0.05em;
 }
+.root .tourCard h2,
+.root .side h1,
+.root .panel h2 {
+  color: #fff1e6;
+}
 .tourCard p {
   font-size: 13px;
   line-height: 1.5;
   color: #d4c9c4;
   margin: 0;
+}
+.tourCard .futureNote {
+  margin-top: 9px;
+  font-size: 11px;
+  color: #b9c3d0;
+}
+.hud {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  max-width: 540px;
+  padding: 8px 10px;
+  border: 1px solid #ffffff45;
+  border-radius: 18px;
+  background: #111b29f5;
+  box-shadow: 0 5px 18px #0005;
+}
+.gpsStatus {
+  margin: 0;
+  color: #e9e2dc;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.hud .primary {
+  white-space: nowrap;
+}
+.placesButton {
+  display: none;
+}
+.mobileOnly {
+  display: none;
+}
+.mapError {
+  position: absolute;
+  z-index: 3;
+  top: 68px;
+  left: 12px;
+  right: 74px;
+  max-width: 340px;
+  padding: 10px 12px;
+  border: 1px solid #ffb08a;
+  border-radius: 12px;
+  background: #111b29f5;
+  color: #ffe1cc;
+  font-size: 12px;
+  line-height: 1.4;
 }
 .eyebrow {
   font-size: 10px;
@@ -179,7 +287,7 @@
 .secondary {
   border-radius: 13px;
   border: 1px solid #ffffff2f;
-  min-height: 43px;
+  min-height: 44px;
   padding: 10px 14px;
   font-size: 13px !important;
   font-weight: 750 !important;
@@ -196,13 +304,17 @@
   color: #f6f0ec;
 }
 .venuePin {
-  position: relative;
+  /* MapLibre owns the outer anchor and its transform. Normal-flow positioning
+     stacks each projected marker below the previous one. */
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   max-width: 155px;
-  transform: translateY(-8px);
   background: transparent;
   border: 0;
   padding: 0;
@@ -291,7 +403,8 @@
   flex-direction: column;
   gap: 20px;
   overflow: auto;
-  max-height: calc(100dvh - 70px);
+  min-height: 0;
+  max-height: 100%;
 }
 .side h1 {
   font-size: 36px;
@@ -335,6 +448,7 @@
   cursor: not-allowed;
 }
 .panel {
+  position: relative;
   background: #ffffff0b;
   border: 1px solid #ffffff24;
   border-radius: 19px;
@@ -431,79 +545,143 @@
 .bottomNav {
   display: none;
 }
+/* The phone map owns the available viewport; sheets open only on request. */
 @media (max-width: 880px) {
   .header {
-    min-height: 60px;
-    padding: 9px 16px;
+    min-height: 50px;
+    padding: 2px 12px;
   }
   .brand {
     font-size: 22px;
   }
+  .topTag {
+    font-size: 10px;
+    padding: 5px 7px;
+    border: 0;
+  }
+  .headerActions {
+    gap: 2px;
+  }
   .layout {
-    display: flex;
-    flex-direction: column;
-    min-height: calc(100dvh - 60px);
+    display: block;
+    min-height: 0;
   }
   .world {
-    height: calc(100dvh - 210px);
-    min-height: 390px;
-    flex: 1;
+    height: 100%;
+    min-height: 0;
   }
   .side {
-    max-height: none;
-    padding: 15px 15px 99px;
-    gap: 13px;
-  }
-  .side h1 {
-    font-size: 25px;
-  }
-  .intro {
     display: none;
   }
-  .side > .nav {
-    display: none;
+  .sideOpen {
+    display: block;
+    position: absolute;
+    z-index: 6;
+    left: 10px;
+    right: 10px;
+    bottom: 110px;
+    padding: 0;
+    max-height: min(60dvh, calc(100% - 150px));
+    border: 1px solid #ffffff45;
+    border-radius: 18px;
+    background: #111b29fa;
+    box-shadow: 0 8px 25px #0007;
   }
-  .side > .panel {
-    display: none;
-  }
+  .side > .intro,
+  .side > .nav,
+  .side > .panel,
   .side > .tip {
     display: none;
   }
-  .world .tourCard {
-    bottom: 13px;
-    left: 12px;
-    right: 12px;
-    max-width: none;
+  .side > .panel:last-of-type {
+    display: block;
+    border: 0;
+    background: transparent;
+    padding: 18px 14px;
   }
-  .bottomNav {
-    position: fixed;
-    z-index: 10;
+  .side .eyebrow {
+    display: block;
+    padding-right: 32px;
+  }
+  .venueList {
+    max-height: 210px;
+    margin-top: 10px;
+  }
+  .mobileOnly {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 7px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 9px 10px max(11px, env(safe-area-inset-bottom));
-    background: #101a27f5;
-    border-top: 1px solid #ffffff35;
-    backdrop-filter: blur(12px);
   }
-  .bottomNav a,
-  .bottomNav button {
-    border: 1px solid #ffffff24;
-    background: #ffffff09;
-    color: #f5e7de;
-    border-radius: 12px;
+  .hud {
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    grid-template-columns: minmax(0, 1fr) auto 44px;
+    max-width: none;
+    gap: 7px;
+    padding: 7px 8px;
+  }
+  .gpsStatus {
     font-size: 11px;
-    font-weight: 750;
-    min-height: 52px;
-    text-decoration: none;
+    line-height: 1.35;
+  }
+  .hud .primary {
+    font-size: 12px !important;
+    padding: 9px 11px;
+  }
+  .placesButton {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
+    width: 44px;
+    min-height: 44px;
+    gap: 1px;
+    color: #ffe3cc;
+    background: #ffffff0c;
+    border: 1px solid #ffffff30;
+    border-radius: 12px;
+    font-size: 11px !important;
+  }
+  .world .tourCard {
+    max-width: none;
+    border-radius: 18px;
+  }
+  .tourCard h2 {
+    font-size: 20px;
+  }
+  .tourCard .ctas {
+    gap: 7px;
+    margin-top: 12px;
+  }
+  .tourCard .primary,
+  .tourCard .secondary {
+    min-height: 44px;
+    padding: 9px;
+    font-size: 12px !important;
+  }
+  .bottomNav {
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 6px 10px max(6px, env(safe-area-inset-bottom));
+    background: #101a27;
+    border-top: 1px solid #ffffff25;
+  }
+  .bottomNav a {
+    border: 1px solid #ffffff24;
+    background: #ffffff09;
+    color: #f5e7de;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 750;
+    min-height: 44px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
   }
   .bottomNav .active {
     background: #ff87302b;
@@ -517,13 +695,13 @@
   }
   .tag {
     font-size: 11px;
-    padding: 8px;
+    padding: 8px 10px;
+  }
+  .tagCaption {
+    display: none;
   }
 }
 @media (max-width: 390px) {
-  .tourCard h2 {
-    font-size: 20px;
-  }
   .venueLabel {
     font-size: 10px;
     max-width: 95px;
@@ -539,28 +717,6 @@
     transition: none !important;
   }
 }
-
-/* Keep recovery and venue list available on touch screens. */
-@media (max-width: 880px) {
-  .side > .panel:last-of-type {
-    display: block;
-  }
-  .venueList {
-    max-height: 170px;
-  }
-  .world {
-    min-height: 440px;
-  }
-  .tourCard p[data-pals-gps-status] {
-    font-size: 11px;
-    margin-bottom: 8px;
-  }
-  .map :global(.maplibregl-ctrl-bottom-right) {
-    bottom: 255px;
-  }
-}
-
-/* World playtest viewport clearance: the map must not shrink behind its list. */
 .root,
 .root *,
 .root *::before,
@@ -569,26 +725,4 @@
 }
 .avatarPin {
   pointer-events: none;
-}
-@media (max-width: 880px) {
-  .layout {
-    display: block;
-    min-height: 0;
-  }
-  .world {
-    height: calc(100dvh - 132px);
-    min-height: 480px;
-    flex: none;
-  }
-  .tourCard .ctas {
-    flex-wrap: nowrap;
-  }
-  .tourCard .primary,
-  .tourCard .secondary {
-    flex: 1;
-    min-width: 0;
-    min-height: 44px;
-    padding: 10px 9px;
-    font-size: 12px !important;
-  }
 }

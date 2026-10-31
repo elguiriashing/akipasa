@@ -6,6 +6,9 @@ import { z } from "zod";
  */
 export const appearanceSchema = z
   .object({
+    // Older saved looks retain their original renderer until the owner chooses
+    // a different model. Model IDs are local presets, never supplied asset URLs.
+    model: z.enum(["classic-v2", "rain-v3", "snow-v4"]).default("classic-v2"),
     bodyStyle: z.enum(["feminine", "masculine"]).default("feminine"),
     skin: z.enum(["porcelain", "light", "warm", "olive", "brown", "deep"]),
     face: z.enum(["oval", "round", "angular"]),
@@ -43,6 +46,7 @@ export const appearanceSchema = z
 export type Appearance = z.infer<typeof appearanceSchema>;
 
 export const DEFAULT_APPEARANCE: Appearance = {
+  model: "rain-v3",
   bodyStyle: "feminine",
   skin: "warm",
   face: "oval",
@@ -69,6 +73,7 @@ export const DEFAULT_APPEARANCE: Appearance = {
 
 /** Every starter item and colour is free. No paid, random or unlockable gear here. */
 export const APPEARANCE_OPTIONS: Record<keyof Appearance, readonly string[]> = {
+  model: ["classic-v2", "rain-v3", "snow-v4"],
   bodyStyle: ["feminine", "masculine"],
   skin: ["porcelain", "light", "warm", "olive", "brown", "deep"],
   face: ["oval", "round", "angular"],

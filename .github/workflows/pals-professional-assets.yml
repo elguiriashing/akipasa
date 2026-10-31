@@ -1,0 +1,55 @@
+name: Prepare licensed AkiPals character assets
+on:
+  push:
+    branches: [work/pals-professional-assets-20261031]
+    paths:
+      - ".github/workflows/pals-professional-assets.yml"
+      - "scripts/inspect-pals-professional-models.py"
+      - "scripts/export-pals-professional-models.py"
+permissions:
+  contents: write
+concurrency:
+  group: pals-professional-assets
+  cancel-in-progress: true
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install pinned Blender Python runtime
+        run: python -m pip install --disable-pip-version-check 'numpy==1.26.4' 'bpy==4.4.0'
+      - name: Inspect the official CC-BY character rigs
+        run: python scripts/inspect-pals-professional-models.py
+      - name: Export reviewed character conversion when present
+        run: |
+          if test -f scripts/export-pals-professional-models.py; then
+            python scripts/export-pals-professional-models.py
+          fi
+      - name: Checkpoint generated assets only on the preparation branch
+        run: |
+          test "$GITHUB_REF_NAME" = 'work/pals-professional-assets-20261031'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- docs/receipts/AKIPALS_PROFESSIONAL_ASSET_INSPECTION_20261031.json
+          if test -d public/pals/models/professional; then
+            git add -- public/pals/models/professional
+          fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'build(pals): checkpoint licensed character conversion evidence'
+            git push origin HEAD:refs/heads/work/pals-professional-assets-20261031
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pals-professional-assets
+          path: |
+            docs/receipts/AKIPALS_PROFESSIONAL_ASSET_INSPECTION_20261031.json
+            public/pals/models/professional
+          retention-days: 7
