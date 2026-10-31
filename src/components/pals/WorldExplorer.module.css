@@ -8,7 +8,7 @@
 .topTag i{height:7px;width:7px;border-radius:50%;background:var(--aki)}
 .layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;min-height:calc(100dvh - 70px);flex:1}
 .world{position:relative;min-width:0;height:calc(100dvh - 70px);background:#1a2331;overflow:hidden}
-.map{position:absolute;inset:0}.map :global(.maplibregl-control-container){display:none}
+.map{position:absolute;inset:0}.map :global(.maplibregl-ctrl-bottom-right){bottom:218px}.map :global(.maplibregl-ctrl-attrib){background:#101a27d9;color:#ffffffb8;border-radius:8px;font-size:10px}.map :global(.maplibregl-ctrl-attrib a){color:#fff0e6}
 .topbar{position:absolute;top:15px;left:15px;right:15px;display:flex;justify-content:space-between;align-items:flex-start;gap:9px;pointer-events:none;z-index:3}
 .topbar>*{pointer-events:auto}
 .tag{display:inline-flex;align-items:center;gap:7px;background:#101722e8;border:1px solid #ffffff38;border-radius:18px;padding:9px 12px;backdrop-filter:blur(12px);font-size:12px;color:#fce8d9;box-shadow:0 5px 18px #0005}
