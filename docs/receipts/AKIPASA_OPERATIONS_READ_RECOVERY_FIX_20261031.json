@@ -1,0 +1,214 @@
+{
+  "receiptId": "operations-workspace-read-recovery-20261031",
+  "reviewedAt": "2026-10-31T12:09:18.793286+00:00",
+  "baseCommit": "d6859859ece002436838be215c16c284fcfe7222",
+  "sourceDirty": true,
+  "scope": [
+    "src/app/[locale]/account/subscription/operations/page.tsx",
+    "tests/akisuite-operations-status.test.tsx"
+  ],
+  "problem": "A failed crm_workspaces read fell through to the empty create-location CTA and was described as billing verification pending.",
+  "fix": [
+    "Make a workspace read error authoritative even when stale rows accompany it; skip dependent initial/scheduled/migration reads and forms.",
+    "Show a localized unavailable alert with a native same-route Retry anchor.",
+    "Reuse the existing accountReturnPath sanitizer for authentication return and Retry, retaining only valid workspace/tier scope.",
+    "Hide billing-awaiting and initial-saved notices when locations could not be read; retain the create-location CTA after a successful empty read."
+  ],
+  "sourceHashes": {
+    "src/app/[locale]/account/subscription/operations/page.tsx": {
+      "before": "61202fc54ad62d2357501628dd7ca6614cc51ae9aa09262f911d349a32a97b79",
+      "after": "fb90cc7ad7154626a24802402ee55abe93be5666abd37b10d70f26e576219228"
+    },
+    "tests/akisuite-operations-status.test.tsx": {
+      "before": "24f172fc9b73e4aa9619aad1ca7a219b138cf1f1028daf9602c0b3be4f38f63a",
+      "after": "fbce9d0658b3a502e87630f901a960e4ad80c3bda593ae84926adcedb9049695"
+    }
+  },
+  "checks": [
+    {
+      "command": "npx vitest run --config vitest.akisuite.config.ts tests/akisuite-operations-status.test.tsx tests/akisuite-account-child-return.test.tsx tests/akisuite-account-return.test.tsx",
+      "status": "passed",
+      "files": 3,
+      "tests": 73,
+      "operationsStatusTests": 19,
+      "newRegressionCases": 8
+    },
+    {
+      "command": "npx eslint 'src/app/[locale]/account/subscription/operations/page.tsx' tests/akisuite-operations-status.test.tsx",
+      "status": "passed"
+    },
+    {
+      "command": "git diff --check -- 'src/app/[locale]/account/subscription/operations/page.tsx' tests/akisuite-operations-status.test.tsx",
+      "status": "passed"
+    },
+    {
+      "command": "npx prettier --write 'src/app/[locale]/account/subscription/operations/page.tsx' tests/akisuite-operations-status.test.tsx",
+      "status": "passed",
+      "runtimeSourceUnchangedByFormatting": true
+    },
+    {
+      "command": "npx vitest run --config vitest.akisuite.config.ts tests/akisuite-operations-status.test.tsx",
+      "status": "passed",
+      "tests": 19,
+      "purpose": "Rechecked final source after replacing the alert wrapper notice class with stack."
+    }
+  ],
+  "regressionsCovered": [
+    "EN/ES failed null rows",
+    "EN/ES failed read with stale rows",
+    "no forms or raw diagnostic leakage on read failure",
+    "no dependent RPCs on read failure",
+    "safe Retry scope excludes saved/status query",
+    "EN/ES true empty CTA",
+    "EN/ES healthy selected workspace and tier",
+    "existing account authentication return and sanitizer contracts"
+  ],
+  "browserEvidence": {
+    "status": "passed",
+    "owner": "staff_business_review",
+    "runner": "scripts/review-remaining-operations-browser.mjs",
+    "runnerSha256": "de2912cda9ac309b85f45a927b545197ccb45e8d64d811c7b585a8b9917de0e0",
+    "results": "/workspace/scratch/5ff731a563cb/akipasa-review/test-results/remaining-operations-review/results.json",
+    "resultsSha256": "a532942a27c4fb618be8776753ffec81bc1ac0846a58b35ae22a22622d2c6851",
+    "cases": 16,
+    "nativeFailedReadRecoveries": 4,
+    "singleLineRetryLabelChecks": 4,
+    "browser": "153.0.8010.0",
+    "actualPageExport": true,
+    "actualAppShell": true,
+    "actualNext": false,
+    "fixtureOnly": true,
+    "testedPageSha256": "fb90cc7ad7154626a24802402ee55abe93be5666abd37b10d70f26e576219228",
+    "casesSummary": [
+      {
+        "name": "operations-en-light-360-populated",
+        "state": "populated",
+        "pass": true
+      },
+      {
+        "name": "operations-en-light-360-empty",
+        "state": "empty",
+        "pass": true
+      },
+      {
+        "name": "operations-en-light-360-failed",
+        "state": "failed",
+        "pass": true
+      },
+      {
+        "name": "operations-en-light-360-scheduled",
+        "state": "scheduled",
+        "pass": true
+      },
+      {
+        "name": "operations-es-dark-390-populated",
+        "state": "populated",
+        "pass": true
+      },
+      {
+        "name": "operations-es-dark-390-empty",
+        "state": "empty",
+        "pass": true
+      },
+      {
+        "name": "operations-es-dark-390-failed",
+        "state": "failed",
+        "pass": true
+      },
+      {
+        "name": "operations-es-dark-390-scheduled",
+        "state": "scheduled",
+        "pass": true
+      },
+      {
+        "name": "operations-en-dark-1440-populated",
+        "state": "populated",
+        "pass": true
+      },
+      {
+        "name": "operations-en-dark-1440-empty",
+        "state": "empty",
+        "pass": true
+      },
+      {
+        "name": "operations-en-dark-1440-failed",
+        "state": "failed",
+        "pass": true
+      },
+      {
+        "name": "operations-en-dark-1440-scheduled",
+        "state": "scheduled",
+        "pass": true
+      },
+      {
+        "name": "operations-es-light-820-populated",
+        "state": "populated",
+        "pass": true
+      },
+      {
+        "name": "operations-es-light-820-empty",
+        "state": "empty",
+        "pass": true
+      },
+      {
+        "name": "operations-es-light-820-failed",
+        "state": "failed",
+        "pass": true
+      },
+      {
+        "name": "operations-es-light-820-scheduled",
+        "state": "scheduled",
+        "pass": true
+      }
+    ],
+    "independentlyInspectedImages": [
+      {
+        "file": "/workspace/scratch/5ff731a563cb/akipasa-review/test-results/remaining-operations-review/operations-en-light-360-failed.png",
+        "sha256": "cb70d8f06a688f1362da61d05dd3760b0ec85e80500634e573c9384d076ea49d",
+        "observation": "Unavailable message and full-width single-line Retry are legible; no create-location CTA or dependent forms appear."
+      },
+      {
+        "file": "/workspace/scratch/5ff731a563cb/akipasa-review/test-results/remaining-operations-review/operations-es-dark-390-failed.png",
+        "sha256": "4d5c1e1a0ca3e2a119f7adea49b75fb2d694210337416db98eee1ad7fa9e7b8f",
+        "observation": "Unavailable message and full-width single-line Retry are legible; no create-location CTA or dependent forms appear."
+      }
+    ]
+  },
+  "limitations": [
+    "Read identities and actions use synthetic adapters. The browser renders actual async page exports and AppShell but is not an actual Next deployment.",
+    "No real identity, tenant/RLS, provider/payment or physical-device acceptance is claimed."
+  ],
+  "unchanged": [
+    "Authentication policy",
+    "Owner-scoped workspace query",
+    "RPC names and arguments",
+    "Server actions",
+    "Checkout readiness gates",
+    "Prices and tool entitlement logic",
+    "Shared CSS",
+    "Admin source"
+  ],
+  "initialInvocationNote": "An initial command without vitest.akisuite.config.ts could not resolve @/ aliases and collected no tests. The configured command above passed; no application change was made to address that runner invocation issue.",
+  "visualCorrection": {
+    "issue": "First browser screenshots showed shared notice pill/flex styling wrapping Retry labels vertically on 360/390px screens.",
+    "fix": "Use existing stack class for a readable alert and full-width Retry anchor. No shared CSS change.",
+    "supersededPageSha256": "d8b42563c19c8f4f2d28235005f6008aebf4d20fa58bdb5af37641b3439ac1f9",
+    "finalPageSha256": "fb90cc7ad7154626a24802402ee55abe93be5666abd37b10d70f26e576219228",
+    "status": "Resolved; the final 16-case browser run passed and both narrow EN/ES failed views were independently visually inspected."
+  },
+  "subsequentSharedCssReconciliation": {
+    "path": "src/components/PasaCinematic.css",
+    "testedSha256": "f5b80b832b3626f5864473d8764f04bcea6d4993c9dc7d1ee6f583b5196e8368",
+    "currentSha256": "2070cf72788406246f87b964982397e581a6a73b3945e93c1038cf7ca0aa5906",
+    "scope": "A later Map-only light-theme event title rule was added. Its selector requires a .map-page descendant of AppShell and a .map-results-drawer event card, neither present in the Operations DOM. This is explicit unchanged-applicability reasoning, not a claim that all current source hashes equal the original browser bundle."
+  },
+  "publication": {
+    "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+    "reviewedSourceTree": "7de020d02387bb7196fe56fdc4f930e23500d852",
+    "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+    "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+    "hostedExecution": "Fresh final-head workflows required; no future run ID or artifact is asserted.",
+    "sourceBinding": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added."
+  },
+  "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895"
+}

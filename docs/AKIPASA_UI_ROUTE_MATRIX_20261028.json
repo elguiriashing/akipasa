@@ -38,8 +38,19 @@
     },
     "src/app/[locale]/account/membership/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
+      "status": "accepted",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review. Reviewed as a redirect-only route using real Next HTTP responses from byte-identical page files: EN/ES guest and permitted redirects, invalid-locale 404, and Staff audit role denials. No standalone screenshot applies. See AKIPASA_REDIRECT_ROUTE_REVIEW_20261031.json; fixture identities do not certify production Auth/RLS or the destination page.",
+      "acceptance": {
+        "reviewer": "Codex root actual Next HTTP route reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+        "sourceSha256": "9afef6346c4c7d8c20cf9740f44871b63b504357c4793ee7ddfdbec8286eeb84",
+        "evidenceType": "redirect-only actual Next HTTP; byte-identical route source, explicit local Auth/profile read fixture; no standalone screenshot applicable",
+        "destinationAcceptance": false,
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/account/memberships/page.tsx": {
       "scope": "consumer",
@@ -102,13 +113,36 @@
     },
     "src/app/[locale]/account/referrals/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
+      "status": "accepted",
+      "note": "Individually reviewed and accepted within the bounded UI/native-control scope in the linked receipt. Actual Referrals page, AccountLayout and AppShell retain a clear unavailable explanation while AKISUITE_REFERRALS_READY remains false. Integrated Auth/RLS/private-provider and physical-device release gates remain separate.",
+      "acceptance": {
+        "reviewer": "Codex staff_business_review independent responsible tester",
+        "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+        "sourceSha256": "3b78291fe853fe796ed889d158b0e4fcad123185583ef8a93f198e461f9ca9bd",
+        "evidenceType": "actual-page composition and production CSS in local Chromium with explicit synthetic read/auth boundaries; forbidden mutations",
+        "receipt": "docs/receipts/AKIPASA_STAFF_BUSINESS_ROUTE_REVIEW_20261031.json",
+        "scope": "Individually inspected actual page/layout/AppShell and recorded native read-only controls; explicit synthetic auth/read adapters. Actual Referrals page, AccountLayout and AppShell retain a clear unavailable explanation while AKISUITE_REFERRALS_READY remains false.",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/account/rewards/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
+      "status": "accepted",
+      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review. Reviewed as a redirect-only route using real Next HTTP responses from byte-identical page files: EN/ES guest and permitted redirects, invalid-locale 404, and Staff audit role denials. No standalone screenshot applies. See AKIPASA_REDIRECT_ROUTE_REVIEW_20261031.json; fixture identities do not certify production Auth/RLS or the destination page.",
+      "acceptance": {
+        "reviewer": "Codex root actual Next HTTP route reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+        "sourceSha256": "b960c1ec17f27cf000b15d19957461edd67a4db89f3a5fc6507ca62620e9ccad",
+        "evidenceType": "redirect-only actual Next HTTP; byte-identical route source, explicit local Auth/profile read fixture; no standalone screenshot applicable",
+        "destinationAcceptance": false,
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/account/saved/page.tsx": {
       "scope": "consumer",
@@ -134,8 +168,20 @@
     },
     "src/app/[locale]/account/subscription/operations/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared Account WorkspaceShell and PasaSharedSurfaces skin applied; individual route must still pass browser/interaction/EN-ES review."
+      "status": "accepted",
+      "note": "Individually reviewed and accepted within the bounded UI/native-control scope in the linked receipt. Actual Operations page, AccountLayout and AppShell were captured for populated workspaces, true empty workspaces, failed workspace reads and scheduled change state in four locale/theme/width contexts. Integrated Auth/RLS/private-provider and physical-device release gates remain separate.",
+      "acceptance": {
+        "reviewer": "Codex staff_business_review independent responsible tester",
+        "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+        "sourceSha256": "fb90cc7ad7154626a24802402ee55abe93be5666abd37b10d70f26e576219228",
+        "evidenceType": "actual-page composition and production CSS in local Chromium with explicit synthetic read/auth boundaries; forbidden mutations",
+        "receipt": "docs/receipts/AKIPASA_STAFF_BUSINESS_ROUTE_REVIEW_20261031.json",
+        "scope": "Individually inspected actual page/layout/AppShell and recorded native read-only controls; explicit synthetic auth/read adapters. Actual Operations page, AccountLayout and AppShell were captured for populated workspaces, true empty workspaces, failed workspace reads and scheduled change state in four locale/theme/width contexts.",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/account/subscription/page.tsx": {
       "scope": "consumer",
@@ -168,33 +214,93 @@
     },
     "src/app/[locale]/admin/achievements/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed on 31 October against current d685985 hosted actual-page/AppShell images and maintained native-control results; see AKIPASA_ADMIN_ROUTE_REVIEW_20261031.json for exact inspected images, source hashes and scope. Real Auth/RLS/tenant/provider/private-write/XP and physical Android remain separate overall release gates.",
+      "acceptance": {
+        "reviewer": "Codex release_github independent Admin visual/function reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+        "sourceSha256": "1670e83bb9924baf58596600bdf2490ed6ac2667933d4da7e7b799d6d6f6b1b4",
+        "evidenceType": "Actual route and AppShell fixture visuals plus reviewed native-control results; source-identical GitHub synthetic merge",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/achievements/venues/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed on 31 October against current d685985 hosted actual-page/AppShell images and maintained native-control results; see AKIPASA_ADMIN_ROUTE_REVIEW_20261031.json for exact inspected images, source hashes and scope. Real Auth/RLS/tenant/provider/private-write/XP and physical Android remain separate overall release gates.",
+      "acceptance": {
+        "reviewer": "Codex release_github independent Admin visual/function reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+        "sourceSha256": "2a36fa1f5d199fa71e0e18e168661173ef215a1ed6f4121d977a8f47196ef8a0",
+        "evidenceType": "Actual route and AppShell fixture visuals plus reviewed native-control results; source-identical GitHub synthetic merge",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/ai-team/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed on 31 October against current d685985 hosted actual-page/AppShell images and maintained native-control results; see AKIPASA_ADMIN_ROUTE_REVIEW_20261031.json for exact inspected images, source hashes and scope. Real Auth/RLS/tenant/provider/private-write/XP and physical Android remain separate overall release gates.",
+      "acceptance": {
+        "reviewer": "Codex release_github independent Admin visual/function reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+        "sourceSha256": "117707dcebc59b97a11750b5e7460c15ba455e9f8181f5092fa24ebc730f56ec",
+        "evidenceType": "Actual route and AppShell fixture visuals plus reviewed native-control results; source-identical GitHub synthetic merge",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/audit/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed on 31 October against current d685985 hosted actual-page/AppShell images and maintained native-control results; see AKIPASA_ADMIN_ROUTE_REVIEW_20261031.json for exact inspected images, source hashes and scope. Real Auth/RLS/tenant/provider/private-write/XP and physical Android remain separate overall release gates.",
+      "acceptance": {
+        "reviewer": "Codex release_github independent Admin visual/function reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+        "sourceSha256": "9c123fbc6871d787f46cc9f64a1e1f893ff5db5be7c38b5a135d19c37cedc4cc",
+        "evidenceType": "Actual route and AppShell fixture visuals plus reviewed native-control results; source-identical GitHub synthetic merge",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/business-applications/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed on 31 October against current d685985 hosted actual-page/AppShell images and maintained native-control results; see AKIPASA_ADMIN_ROUTE_REVIEW_20261031.json for exact inspected images, source hashes and scope. Real Auth/RLS/tenant/provider/private-write/XP and physical Android remain separate overall release gates.",
+      "acceptance": {
+        "reviewer": "Codex release_github independent Admin visual/function reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+        "sourceSha256": "d733fedad8d189afa3a21a6f6e6b2af4997c0073849a4baf2836102a9fd8ace1",
+        "evidenceType": "Actual route and AppShell fixture visuals plus reviewed native-control results; source-identical GitHub synthetic merge",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/catalogue/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed on 31 October against current d685985 hosted actual-page/AppShell images and maintained native-control results; see AKIPASA_ADMIN_ROUTE_REVIEW_20261031.json for exact inspected images, source hashes and scope. Real Auth/RLS/tenant/provider/private-write/XP and physical Android remain separate overall release gates.",
+      "acceptance": {
+        "reviewer": "Codex release_github independent Admin visual/function reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+        "sourceSha256": "3cc6717c09af0592f6d2a888ed71f68242ddbfda103e4eb4eeff149406095d68",
+        "evidenceType": "Actual route and AppShell fixture visuals plus reviewed native-control results; source-identical GitHub synthetic merge",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/listing-review/page.tsx": {
       "scope": "operational",
@@ -230,68 +336,200 @@
     },
     "src/app/[locale]/admin/passports/awards/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed on 31 October against current d685985 hosted actual-page/AppShell images and maintained native-control results; see AKIPASA_ADMIN_ROUTE_REVIEW_20261031.json for exact inspected images, source hashes and scope. Real Auth/RLS/tenant/provider/private-write/XP and physical Android remain separate overall release gates.",
+      "acceptance": {
+        "reviewer": "Codex release_github independent Admin visual/function reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+        "sourceSha256": "bef48f0aacee24bb7902f6fdd9637727e251f48706ee4d83a9c712cfeef0879d",
+        "evidenceType": "Actual route and AppShell fixture visuals plus reviewed native-control results; source-identical GitHub synthetic merge",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/passports/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed on 31 October against current d685985 hosted actual-page/AppShell images and maintained native-control results; see AKIPASA_ADMIN_ROUTE_REVIEW_20261031.json for exact inspected images, source hashes and scope. Real Auth/RLS/tenant/provider/private-write/XP and physical Android remain separate overall release gates.",
+      "acceptance": {
+        "reviewer": "Codex release_github independent Admin visual/function reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+        "sourceSha256": "984faae12207a936cfe18d212abd017cf1fadb634844b43b0ce0e604e207d836",
+        "evidenceType": "Actual route and AppShell fixture visuals plus reviewed native-control results; source-identical GitHub synthetic merge",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/passports/prestige/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed on 31 October against current d685985 hosted actual-page/AppShell images and maintained native-control results; see AKIPASA_ADMIN_ROUTE_REVIEW_20261031.json for exact inspected images, source hashes and scope. Real Auth/RLS/tenant/provider/private-write/XP and physical Android remain separate overall release gates.",
+      "acceptance": {
+        "reviewer": "Codex release_github independent Admin visual/function reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+        "sourceSha256": "0bd2f879481c9b4624b122ce67888040e1848784a2801ca4fd7f6e188103f905",
+        "evidenceType": "Actual route and AppShell fixture visuals plus reviewed native-control results; source-identical GitHub synthetic merge",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/personalisation/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed on 31 October against current d685985 hosted actual-page/AppShell images and maintained native-control results; see AKIPASA_ADMIN_ROUTE_REVIEW_20261031.json for exact inspected images, source hashes and scope. Real Auth/RLS/tenant/provider/private-write/XP and physical Android remain separate overall release gates.",
+      "acceptance": {
+        "reviewer": "Codex release_github independent Admin visual/function reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+        "sourceSha256": "1adffe2864e9b95bcdb173b2c5152771f82724af97be2e93b57826d079b79fa4",
+        "evidenceType": "Actual route and AppShell fixture visuals plus reviewed native-control results; source-identical GitHub synthetic merge",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/privacy/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed on 31 October against current d685985 hosted actual-page/AppShell images and maintained native-control results; see AKIPASA_ADMIN_ROUTE_REVIEW_20261031.json for exact inspected images, source hashes and scope. Real Auth/RLS/tenant/provider/private-write/XP and physical Android remain separate overall release gates.",
+      "acceptance": {
+        "reviewer": "Codex release_github independent Admin visual/function reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+        "sourceSha256": "3a3036e66174184cf6a03e0fe6dc85ad881ec514d0fed2384f180a080f6c244d",
+        "evidenceType": "Actual route and AppShell fixture visuals plus reviewed native-control results; source-identical GitHub synthetic merge",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/promotions/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed on 31 October against current d685985 hosted actual-page/AppShell images and maintained native-control results; see AKIPASA_ADMIN_ROUTE_REVIEW_20261031.json for exact inspected images, source hashes and scope. Real Auth/RLS/tenant/provider/private-write/XP and physical Android remain separate overall release gates.",
+      "acceptance": {
+        "reviewer": "Codex release_github independent Admin visual/function reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+        "sourceSha256": "2fee3dcae19d08b262624dc596dea9da2617e857c5497cbdba8dd4aec6f12d95",
+        "evidenceType": "Actual route and AppShell fixture visuals plus reviewed native-control results; source-identical GitHub synthetic merge",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/referrals/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed on 31 October against current d685985 hosted actual-page/AppShell images and maintained native-control results; see AKIPASA_ADMIN_ROUTE_REVIEW_20261031.json for exact inspected images, source hashes and scope. Real Auth/RLS/tenant/provider/private-write/XP and physical Android remain separate overall release gates.",
+      "acceptance": {
+        "reviewer": "Codex release_github independent Admin visual/function reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+        "sourceSha256": "d0fe901da9ab34b8e4ceafd28d3eceeaf03ecbc0d2161aa6b19e921ba7b51afd",
+        "evidenceType": "Actual route and AppShell fixture visuals plus reviewed native-control results; source-identical GitHub synthetic merge",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/selector-lab/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed on 31 October against current d685985 hosted actual-page/AppShell images and maintained native-control results; see AKIPASA_ADMIN_ROUTE_REVIEW_20261031.json for exact inspected images, source hashes and scope. Real Auth/RLS/tenant/provider/private-write/XP and physical Android remain separate overall release gates.",
+      "acceptance": {
+        "reviewer": "Codex release_github independent Admin visual/function reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+        "sourceSha256": "6829a8ade634da71276c23ba81d388ac9a1864f78262c1b1e01447f59d8bfd20",
+        "evidenceType": "Actual route and AppShell fixture visuals plus reviewed native-control results; source-identical GitHub synthetic merge",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/settings/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed on 31 October against current d685985 hosted actual-page/AppShell images and maintained native-control results; see AKIPASA_ADMIN_ROUTE_REVIEW_20261031.json for exact inspected images, source hashes and scope. Real Auth/RLS/tenant/provider/private-write/XP and physical Android remain separate overall release gates.",
+      "acceptance": {
+        "reviewer": "Codex release_github independent Admin visual/function reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+        "sourceSha256": "4c26081efda9b3fcfa9cfdd197c0229fd6a9a2883e7eec95e3f24766ce3593be",
+        "evidenceType": "Actual route and AppShell fixture visuals plus reviewed native-control results; source-identical GitHub synthetic merge",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/users/[id]/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed on 31 October against current d685985 hosted actual-page/AppShell images and maintained native-control results; see AKIPASA_ADMIN_ROUTE_REVIEW_20261031.json for exact inspected images, source hashes and scope. Real Auth/RLS/tenant/provider/private-write/XP and physical Android remain separate overall release gates.",
+      "acceptance": {
+        "reviewer": "Codex release_github independent Admin visual/function reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+        "sourceSha256": "ffa872c1eef46e6ce83939bfe2876479f667dd10985aa4ed8407397d0895a417",
+        "evidenceType": "Actual route and AppShell fixture visuals plus reviewed native-control results; source-identical GitHub synthetic merge",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/users/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed on 31 October against current d685985 hosted actual-page/AppShell images and maintained native-control results; see AKIPASA_ADMIN_ROUTE_REVIEW_20261031.json for exact inspected images, source hashes and scope. Real Auth/RLS/tenant/provider/private-write/XP and physical Android remain separate overall release gates.",
+      "acceptance": {
+        "reviewer": "Codex release_github independent Admin visual/function reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+        "sourceSha256": "ab25c630310aa0f867764be03564f6322efa9e8907ef4daa806de7b9754a4114",
+        "evidenceType": "Actual route and AppShell fixture visuals plus reviewed native-control results; source-identical GitHub synthetic merge",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/admin/venue-relevance/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed on 31 October against current d685985 hosted actual-page/AppShell images and maintained native-control results; see AKIPASA_ADMIN_ROUTE_REVIEW_20261031.json for exact inspected images, source hashes and scope. Real Auth/RLS/tenant/provider/private-write/XP and physical Android remain separate overall release gates.",
+      "acceptance": {
+        "reviewer": "Codex release_github independent Admin visual/function reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029016202",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/job/124428462610",
+        "sourceSha256": "3201418dd3fb704819164adeef0666772c374894b640df969716ca6572497d10",
+        "evidenceType": "Actual route and AppShell fixture visuals plus reviewed native-control results; source-identical GitHub synthetic merge",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/akipals/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": ""
+      "status": "accepted",
+      "note": "Individually reviewed bounded page acceptance. Existing gated public entry is readable: AkiPals hero, sign-in action, Passport/My profile links, and explicit 3D studio in development wording. Real provider/private-write/device and final coordinated release remain separate.",
+      "acceptance": {
+        "reviewer": "Codex release_cloudflare independent responsible consumer/Owner reviewer",
+        "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+        "sourceSha256": "93f5cd274e1bcad890fd54624b4ad82c3ce2729da122110a2c1de16a9183b6f6",
+        "evidenceType": "Individually inspected actual source-bound page/AppShell screenshots and native-control results; fixture/source qualifications in receipt.",
+        "receipt": "docs/receipts/AKIPASA_CONSUMER_OWNER_ROUTE_REVIEW_20261031.json",
+        "scope": "Existing gated public entry is readable: AkiPals hero, sign-in action, Passport/My profile links, and explicit 3D studio in development wording.",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/auth/page.tsx": {
       "scope": "consumer",
@@ -319,20 +557,44 @@
     },
     "src/app/[locale]/business/apply/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared responsive business application hero, 3-stage progress strip, form/help panels and light/dark styles implemented. EN/ES phone/desktop/Android-emulated guest-return browser tests authored; authenticated applicant, actual form submission, visual screenshots and physical Android review still outstanding; NOT accepted."
+      "status": "accepted",
+      "note": "Individually reviewed and accepted within the bounded UI/native-control scope in the linked receipt. Actual application page and actual SpainAddressAutocomplete render with AppShell; no address input replacement remains in the accepted captures. Integrated Auth/RLS/private-provider and physical-device release gates remain separate.",
+      "acceptance": {
+        "reviewer": "Codex staff_business_review independent responsible tester",
+        "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+        "sourceSha256": "2679e0579e53c12ad47f1deed55f333325663275295ee85f76a33c20654193a6",
+        "evidenceType": "actual-page composition and production CSS in local Chromium with explicit synthetic read/auth boundaries; forbidden mutations",
+        "receipt": "docs/receipts/AKIPASA_STAFF_BUSINESS_ROUTE_REVIEW_20261031.json",
+        "scope": "Individually inspected actual page/layout/AppShell and recorded native read-only controls; explicit synthetic auth/read adapters. Actual application page and actual SpainAddressAutocomplete render with AppShell; no address input replacement remains in the accepted captures.",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/business/early-partner/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "AkiPasa-branded responsive early-partner form skin and EN/ES business-host claim-query guest handoff tests committed. Not accepted: authorized claimant rendering, consent/feedback mutations, Premium grant, mobile/desktop/light-dark screenshot review and physical Android are outstanding."
+      "status": "accepted",
+      "note": "Individually reviewed and accepted within the bounded UI/native-control scope in the linked receipt. Actual approved-claim feedback form is readable across the four contexts. Both radio questions, optional textarea, private-feedback explanation and contact opt-in are visible. Integrated Auth/RLS/private-provider and physical-device release gates remain separate.",
+      "acceptance": {
+        "reviewer": "Codex staff_business_review independent responsible tester",
+        "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+        "sourceSha256": "0c961bb4c40a33cd74403c60f06ac5730b162407ac14f85e68893dc0c109f970",
+        "evidenceType": "actual-page composition and production CSS in local Chromium with explicit synthetic read/auth boundaries; forbidden mutations",
+        "receipt": "docs/receipts/AKIPASA_STAFF_BUSINESS_ROUTE_REVIEW_20261031.json",
+        "scope": "Individually inspected actual page/layout/AppShell and recorded native read-only controls; explicit synthetic auth/read adapters. Actual approved-claim feedback form is readable across the four contexts. Both radio questions, optional textarea, private-feedback explanation and contact opt-in are visible.",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/business/memberships/page.tsx": {
       "scope": "operational",
       "status": "accepted",
       "note": "Redirect-only, independently reviewed EN/ES actual HTTP chain/targets, source and15route-export tests. No standalone image claimed; destination routes separate.",
       "acceptance": {
-        "reviewer": "Codex business_screens \u2014 independent business entry review",
+        "reviewer": "Codex business_screens — independent business entry review",
         "reviewedCommit": "c10d7adcb45c0add6c82accfe398bdedec2dd0f6",
         "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
         "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
@@ -356,23 +618,68 @@
     },
     "src/app/[locale]/business/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Independent membership/profile/editorial, catalogue/media, programme/redemption, claim and promotion errors now retain healthy siblings and known partial rows while complete counts stay unknown. New event creation only depends on its own known inputs; exact existing actions/roles/entitlements retained. 38 focused and 160 integrated disposable browser cases passed, including canonical Retry and real image decode. Real protected-role/device/source-reviewed release acceptance remains outstanding."
+      "status": "accepted",
+      "note": "Independent membership/profile/editorial, catalogue/media, programme/redemption, claim and promotion errors now retain healthy siblings and known partial rows while complete counts stay unknown. New event creation only depends on its own known inputs; exact existing actions/roles/entitlements retained. 38 focused and 160 integrated disposable browser cases passed, including canonical Retry and real image decode. Real protected-role/device/source-reviewed release acceptance remains outstanding. Individually reviewed against current hosted whole-page layout, inspected populated/empty/error screenshots and native-control results on 31 October; see AKIPASA_STAFF_BUSINESS_ROUTE_REVIEW_20261031.json. Real Auth/RLS/provider/private mutations and physical-device acceptance remain separate.",
+      "acceptance": {
+        "reviewer": "Codex staff_business_review independent responsible tester",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13028725999",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371",
+        "evidenceType": "actual business page and workspace component with synthetic reads; all ten failure/state families independently inspected",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/business/venue/[id]/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Existing authorized VenueDashboard retained. Failed catalogue reads now withhold dependent catalogue/event editors, show localized same-section retry and unknown count rather than false zero; successful missing catalogue stays editable. Actual loader and dashboard regression tests pass. Real owner/editor/manager role, populated/error browser workflow and final screenshot/device review still required; not accepted. Booking settings/notification/inventory failures now withhold dependent editors and expose localized retry; recovered settings and unknown pending counts retain truthfulness. 112 isolated browser failure/default states passed; production role/device acceptance remains outstanding."
+      "status": "accepted",
+      "note": "Individually reviewed and accepted within the bounded UI/native-control scope in the linked receipt. Actual Business Venue page with AppShell shows the owned-venue overview, setup steps and truthful unavailable analytics; actual catalogue empty and catalogue read-failure sections were captured. Integrated Auth/RLS/private-provider and physical-device release gates remain separate.",
+      "acceptance": {
+        "reviewer": "Codex staff_business_review independent responsible tester",
+        "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+        "sourceSha256": "43bf96ebf8ca0534c9bd7f489b40e1c2e97a0ec17d8b8af6697244ad6d9bc20a",
+        "evidenceType": "actual-page composition and production CSS in local Chromium with explicit synthetic read/auth boundaries; forbidden mutations",
+        "receipt": "docs/receipts/AKIPASA_STAFF_BUSINESS_ROUTE_REVIEW_20261031.json",
+        "scope": "Individually inspected actual page/layout/AppShell and recorded native read-only controls; explicit synthetic auth/read adapters. Actual Business Venue page with AppShell shows the owned-venue overview, setup steps and truthful unavailable analytics; actual catalogue empty and catalogue read-failure sections were captured.",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/check-in/[token]/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Real QR-token venue page and EN/ES mobile proof copy updated; client GPS is labelled received, not verified, stale fixes invalidated, server-owned geofence and XP/loyalty logic untouched. UI regression tests added. Real credential fixture screenshots, Android WebView and visual sign-off remain outstanding."
+      "status": "accepted",
+      "note": "Individually reviewed bounded page acceptance. Actual token page and AppShell are readable across phone/tablet/desktop, EN/ES and dark/light representative captures. Real provider/private-write/device and final coordinated release remain separate.",
+      "acceptance": {
+        "reviewer": "Codex release_cloudflare independent responsible consumer/Owner reviewer",
+        "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+        "sourceSha256": "299e5cd95bde8d5e39e3301acea3a2492f71442aae47b52b05ba07028faf2eb6",
+        "evidenceType": "Individually inspected actual source-bound page/AppShell screenshots and native-control results; fixture/source qualifications in receipt.",
+        "receipt": "docs/receipts/AKIPASA_CONSUMER_OWNER_ROUTE_REVIEW_20261031.json",
+        "scope": "Actual token page and AppShell are readable across phone/tablet/desktop, EN/ES and dark/light representative captures.",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/check-in/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": ""
+      "status": "accepted",
+      "note": "Individually reviewed bounded page acceptance. Actual public route has readable responsive hero, explicit Scan venue QR action, camera activation consent wording and lower three-step explanation. Real provider/private-write/device and final coordinated release remain separate.",
+      "acceptance": {
+        "reviewer": "Codex release_cloudflare independent responsible consumer/Owner reviewer",
+        "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+        "sourceSha256": "0f85750e71d9121ec8e63cb2286c7359ad746a1bc4869738bb477b92e29f2bbf",
+        "evidenceType": "Individually inspected actual source-bound page/AppShell screenshots and native-control results; fixture/source qualifications in receipt.",
+        "receipt": "docs/receipts/AKIPASA_CONSUMER_OWNER_ROUTE_REVIEW_20261031.json",
+        "scope": "Actual public route has readable responsive hero, explicit Scan venue QR action, camera activation consent wording and lower three-step explanation.",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/community/creator/page.tsx": {
       "scope": "consumer",
@@ -428,7 +735,7 @@
       "status": "accepted",
       "note": "Canonical creator components receive a shared scoped cinematic theme and retain filtered navigation; private studio fails closed on unavailable reads. Focused regression tests passed. Real responsive/browser and authenticated visual acceptance remain required; aliases preserve locale and canonical redirects. Individually accepted after responsible-tester source, actual hosted image/HTTP and functional review. See AKIPASA_INDIVIDUAL_BATCH_ACCEPTANCE_20261030.json; destination pages and overall provider/device/production approval are not inferred.",
       "acceptance": {
-        "reviewer": "Codex venue_event_screens \u2014 independent redirect HTTP review",
+        "reviewer": "Codex venue_event_screens — independent redirect HTTP review",
         "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
         "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/artifacts/13004526929",
         "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/job/124257651856",
@@ -458,7 +765,7 @@
       "status": "accepted",
       "note": "Redirect-only, independently reviewed EN/ES actual HTTP chain/targets, source and15route-export tests. No standalone image claimed; destination routes separate.",
       "acceptance": {
-        "reviewer": "Codex business_screens \u2014 independent business entry review",
+        "reviewer": "Codex business_screens — independent business entry review",
         "reviewedCommit": "c10d7adcb45c0add6c82accfe398bdedec2dd0f6",
         "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
         "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
@@ -469,8 +776,18 @@
     },
     "src/app/[locale]/events/[slug]/book/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Reuses shared booking wizard and canonical remaining-capacity RPC; distinguishes full/empty/read failure, retains native gating and event/occurrence return. New pending/EN-ES/responsive browser regressions are under validation. No final-source reviewer/device acceptance yet."
+      "status": "accepted",
+      "note": "Reuses shared booking wizard and canonical remaining-capacity RPC; distinguishes full/empty/read failure, retains native gating and event/occurrence return. New pending/EN-ES/responsive browser regressions are under validation. No final-source reviewer/device acceptance yet. Individually reviewed on 31 October against source-identical hosted images and actual component/native-control results; see AKIPASA_CONSUMER_OWNER_ROUTE_REVIEW_20261031.json for inspected files and qualifications. Overall Auth/RLS/provider/private-write/XP/device gates remain separate.",
+      "acceptance": {
+        "reviewer": "Codex release_cloudflare independent responsible consumer/Owner reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318414/artifacts/13028244380",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318414",
+        "sourceSha256": "a2414fc6ffe1bcdfce3bcc9f97b50bfa7810e60d7c3eafa3650bd805c1603d64",
+        "evidenceType": "Actual page/component and production CSS fixtures, inspected whole-page states and native recovery; synthetic identity/reads",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/events/[slug]/page.tsx": {
       "scope": "consumer",
@@ -488,8 +805,20 @@
     },
     "src/app/[locale]/map/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": ""
+      "status": "accepted",
+      "note": "Individually reviewed bounded page acceptance. Independently verified scoped light-theme Map List title repair: white-on-white title contrast1.007949 is now15.989432 on the opaque light card. Spanish desktop and English phone light captures show a readable dark title; dark phone title is visually unchanged and readable. Real provider/private-write/device and final coordinated release remain separate.",
+      "acceptance": {
+        "reviewer": "Codex release_cloudflare independent responsible consumer/Owner reviewer",
+        "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+        "sourceSha256": "2019c458fee66f78d73b890a2d01ef8cf4a3aa654800555fa1db110896c64b41",
+        "evidenceType": "Individually inspected actual source-bound page/AppShell screenshots and native-control results; fixture/source qualifications in receipt.",
+        "receipt": "docs/receipts/AKIPASA_CONSUMER_OWNER_ROUTE_REVIEW_20261031.json",
+        "scope": "Independently verified scoped light-theme Map List title repair: white-on-white title contrast1.007949 is now15.989432 on the opaque light card. Spanish desktop and English phone light captures show a readable dark title; dark phone title is visually unchanged and readable.",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/membership/page.tsx": {
       "scope": "consumer",
@@ -509,7 +838,7 @@
       "status": "accepted",
       "note": "Legacy redirect-only compatibility route: validated locale, allowlisted canonical destinations and safe queue encoding; EN/ES auth-gated redirect and phone/desktop/Android-like guest handoff tests added. No standalone screen exists. Destination role permissions, authenticated queue interactions, final source browser evidence and physical Android review remain unaccepted. Individually accepted after responsible-tester source, actual hosted image/HTTP and functional review. See AKIPASA_INDIVIDUAL_BATCH_ACCEPTANCE_20261030.json; destination pages and overall provider/device/production approval are not inferred.",
       "acceptance": {
-        "reviewer": "Codex venue_event_screens \u2014 independent redirect HTTP review",
+        "reviewer": "Codex venue_event_screens — independent redirect HTTP review",
         "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
         "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/artifacts/13004526929",
         "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41112378492/job/124257651856",
@@ -551,8 +880,18 @@
     },
     "src/app/[locale]/owner/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Private owner cockpit EN/ES control-room hero and responsive shared operations styling implemented; owner access and existing data/actions retained. Guest gate/browser EN/ES phone/tablet/desktop/Android-emulated tests added but exact-head CI, authenticated owner populated/empty/error screenshot review and physical Android acceptance remain outstanding. NOT accepted."
+      "status": "accepted",
+      "note": "Private owner cockpit EN/ES control-room hero and responsive shared operations styling implemented; owner access and existing data/actions retained. Guest gate/browser EN/ES phone/tablet/desktop/Android-emulated tests added but exact-head CI, authenticated owner populated/empty/error screenshot review and physical Android acceptance remain outstanding. NOT accepted. Individually reviewed on 31 October against source-identical hosted images and actual component/native-control results; see AKIPASA_CONSUMER_OWNER_ROUTE_REVIEW_20261031.json for inspected files and qualifications. Overall Auth/RLS/provider/private-write/XP/device gates remain separate.",
+      "acceptance": {
+        "reviewer": "Codex release_cloudflare independent responsible consumer/Owner reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029126168",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371",
+        "sourceSha256": "515bb41ba221294529b3eab9111b7123b3577bb336b73e394d3b306ea81b22fb",
+        "evidenceType": "Actual page/component and production CSS fixtures, inspected whole-page states and native recovery; synthetic identity/reads",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/page.tsx": {
       "scope": "consumer",
@@ -570,8 +909,20 @@
     },
     "src/app/[locale]/passports/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Generated cover/index chapter URLs now survive server reload; existing invalid/default/city/feedback behavior retained. Photo-card city captions corrected for contrast; no check-in/XP mutations. 25 isolated production browser cases passed; final integrated source/reviewer/device acceptance remains outstanding. Physical paper interiors and black/orange chapter chrome implemented while preserving inherited app theme tokens, closed cover, real XP/stamps/privacy/actions.46focused tests passed after unchanged theme regression identified and repaired. Final source visual/device acceptance pending. Additional actual-page/book adapter checks cover192 protected chapter states and2 synthetic earned-city cases. Short-tablet820x900 cover clipping was reproduced and repaired; four native click/tap/Enter and two explicit desktop journal checks pass. These are scoped source/visual proofs, not owner/device or live provider acceptance."
+      "status": "accepted",
+      "note": "Individually reviewed bounded page acceptance. Independently inspected repaired Spanish dark360 loyalty title: dark brown title now reads clearly on cream paper; original 1.014:1 failure resolved. Real provider/private-write/device and final coordinated release remain separate.",
+      "acceptance": {
+        "reviewer": "Codex release_cloudflare independent responsible consumer/Owner reviewer",
+        "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+        "sourceSha256": "de9e3a07b0a628d31d07c6b1e9574be7f70450f1e95fc6d978a64b15891a378e",
+        "evidenceType": "Individually inspected actual source-bound page/AppShell screenshots and native-control results; fixture/source qualifications in receipt.",
+        "receipt": "docs/receipts/AKIPASA_CONSUMER_OWNER_ROUTE_REVIEW_20261031.json",
+        "scope": "Independently inspected repaired Spanish dark360 loyalty title: dark brown title now reads clearly on cream paper; original 1.014:1 failure resolved.",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/passports/places/page.tsx": {
       "scope": "consumer",
@@ -616,8 +967,18 @@
     },
     "src/app/[locale]/passports/prestige/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES."
+      "status": "accepted",
+      "note": "Existing AkiPasa auth/Passport family receives shared cinematic styles; verify each nested surface, privacy, consent, state and EN/ES. Individually reviewed on 31 October against source-identical hosted images and actual component/native-control results; see AKIPASA_CONSUMER_OWNER_ROUTE_REVIEW_20261031.json for inspected files and qualifications. Overall Auth/RLS/provider/private-write/XP/device gates remain separate.",
+      "acceptance": {
+        "reviewer": "Codex release_cloudflare independent responsible consumer/Owner reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13028391341",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371",
+        "sourceSha256": "56a3af85f98e413f331ac26ac438233ffe926c202548f89a404d1924c875ad0a",
+        "evidenceType": "Actual page/component and production CSS fixtures, inspected whole-page states and native recovery; synthetic identity/reads",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/photo-credits/page.tsx": {
       "scope": "consumer",
@@ -647,8 +1008,18 @@
     },
     "src/app/[locale]/privacy/prestige/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Private Prestige privacy hero, award cards and honest empty/error states implemented with shared controls; source and EN/ES guest flag/auth browser tests added. Authenticated award/delete UI, dark/light responsive screenshot inspection, physical Android and final actions evidence still REQUIRED. No acceptance claimed."
+      "status": "accepted",
+      "note": "Private Prestige privacy hero, award cards and honest empty/error states implemented with shared controls; source and EN/ES guest flag/auth browser tests added. Authenticated award/delete UI, dark/light responsive screenshot inspection, physical Android and final actions evidence still REQUIRED. No acceptance claimed. Individually reviewed on 31 October against source-identical hosted images and actual component/native-control results; see AKIPASA_CONSUMER_OWNER_ROUTE_REVIEW_20261031.json for inspected files and qualifications. Overall Auth/RLS/provider/private-write/XP/device gates remain separate.",
+      "acceptance": {
+        "reviewer": "Codex release_cloudflare independent responsible consumer/Owner reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13028391341",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371",
+        "sourceSha256": "961046121b7cdc32c054b24fa8176cf6e3db6d27c85b2e93ede35f54e8beaaca",
+        "evidenceType": "Actual page/component and production CSS fixtures, inspected whole-page states and native recovery; synthetic identity/reads",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/referrals/page.tsx": {
       "scope": "consumer",
@@ -678,8 +1049,19 @@
     },
     "src/app/[locale]/staff/audit/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Reviewed as a redirect-only route using real Next HTTP responses from byte-identical page files: EN/ES guest and permitted redirects, invalid-locale 404, and Staff audit role denials. No standalone screenshot applies. See AKIPASA_REDIRECT_ROUTE_REVIEW_20261031.json; fixture identities do not certify production Auth/RLS or the destination page.",
+      "acceptance": {
+        "reviewer": "Codex root actual Next HTTP route reviewer",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+        "sourceSha256": "90bb6b33f905aaa22674b51ae683d713737bb5825264bc665209308466c5f42f",
+        "evidenceType": "redirect-only actual Next HTTP; byte-identical route source, explicit local Auth/profile read fixture; no standalone screenshot applicable",
+        "destinationAcceptance": false,
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/staff/catalogue/page.tsx": {
       "scope": "operational",
@@ -714,13 +1096,34 @@
     },
     "src/app/[locale]/staff/creators/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed against current hosted whole-page layout, inspected populated/empty/error screenshots and native-control results on 31 October; see AKIPASA_STAFF_BUSINESS_ROUTE_REVIEW_20261031.json. Real Auth/RLS/provider/private mutations and physical-device acceptance remain separate.",
+      "acceptance": {
+        "reviewer": "Codex staff_business_review independent responsible tester",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029355129",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371",
+        "evidenceType": "actual-page-plus-StaffLayout-AppShell with disposable adapters; independent current screenshot and native-control result review",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/staff/moderation/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Selected pending queues use bounded stable twenty-row pages, truthful counts and retained action/retry context; claims retain existing paged RPC authorization. Responsive/role/action regressions under validation. Final reviewer/device acceptance still required."
+      "status": "accepted",
+      "note": "Individually reviewed and accepted within the bounded UI/native-control scope in the linked receipt. Actual Moderation page is composed with StaffLayout, AppShell and production CSS, with populated, empty and failed queue reads. Phone/tablet/desktop headings, native decisions and navigation remain readable with no horizontal overflow. Integrated Auth/RLS/private-provider and physical-device release gates remain separate.",
+      "acceptance": {
+        "reviewer": "Codex staff_business_review independent responsible tester",
+        "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+        "sourceSha256": "2b7dd29c1ebd6e1ecb906151751c41658489020a2884dbd1090da42acff0d239",
+        "evidenceType": "actual-page composition and production CSS in local Chromium with explicit synthetic read/auth boundaries; forbidden mutations",
+        "receipt": "docs/receipts/AKIPASA_STAFF_BUSINESS_ROUTE_REVIEW_20261031.json",
+        "scope": "Individually inspected actual page/layout/AppShell and recorded native read-only controls; explicit synthetic auth/read adapters. Actual Moderation page is composed with StaffLayout, AppShell and production CSS, with populated, empty and failed queue reads. Phone/tablet/desktop headings, native decisions and navigation remain readable with no horizontal overflow.",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/staff/page.tsx": {
       "scope": "operational",
@@ -740,13 +1143,34 @@
     },
     "src/app/[locale]/staff/promotions/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Individually reviewed and accepted within the bounded UI/native-control scope in the linked receipt. Actual Promotions page, StaffLayout and AppShell show a bounded request inbox, distinct status counts and readable native details cards. Integrated Auth/RLS/private-provider and physical-device release gates remain separate.",
+      "acceptance": {
+        "reviewer": "Codex staff_business_review independent responsible tester",
+        "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+        "sourceSha256": "74a15231a43c74997cad021bb9fede0d2c2ac0ca34be1bdbf4655fc2d79cc226",
+        "evidenceType": "actual-page composition and production CSS in local Chromium with explicit synthetic read/auth boundaries; forbidden mutations",
+        "receipt": "docs/receipts/AKIPASA_STAFF_BUSINESS_ROUTE_REVIEW_20261031.json",
+        "scope": "Individually inspected actual page/layout/AppShell and recorded native read-only controls; explicit synthetic auth/read adapters. Actual Promotions page, StaffLayout and AppShell show a bounded request inbox, distinct status counts and readable native details cards.",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/staff/support/page.tsx": {
       "scope": "operational",
-      "status": "in-progress",
-      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance."
+      "status": "accepted",
+      "note": "Shared authenticated WorkspaceShell skin applied; requires role-based route, desktop/mobile, empty/error and mutation acceptance. Individually reviewed against current hosted whole-page layout, inspected populated/empty/error screenshots and native-control results on 31 October; see AKIPASA_STAFF_BUSINESS_ROUTE_REVIEW_20261031.json. Real Auth/RLS/provider/private mutations and physical-device acceptance remain separate.",
+      "acceptance": {
+        "reviewer": "Codex staff_business_review independent responsible tester",
+        "reviewedCommit": "d6859859ece002436838be215c16c284fcfe7222",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371/artifacts/13029355129",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41164318371",
+        "evidenceType": "actual-page-plus-StaffLayout-AppShell with disposable adapters; independent current screenshot and native-control result review",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/terms/accept/page.tsx": {
       "scope": "consumer",
@@ -776,8 +1200,20 @@
     },
     "src/app/[locale]/venues/[slug]/book/page.tsx": {
       "scope": "consumer",
-      "status": "in-progress",
-      "note": "Shared responsive booking presentation committed; real authenticated EN/ES phone/desktop/Android visual and functional acceptance still missing. Guest-only redirect captures do not count."
+      "status": "accepted",
+      "note": "Individually reviewed bounded page acceptance. Actual Venue booking page, shared wizard and AppShell compose correctly. Phone contact controls, desktop slot picker and tablet empty state are legible. Real provider/private-write/device and final coordinated release remain separate.",
+      "acceptance": {
+        "reviewer": "Codex release_cloudflare independent responsible consumer/Owner reviewer",
+        "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "screenshots": "https://github.com/elguiriashing/akipasa/pull/332",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/pull/332",
+        "sourceSha256": "00099bb9b8e20acee23f00f7f0d0c8935387c725a9a4d98116fcaf512c1efd83",
+        "evidenceType": "Individually inspected actual source-bound page/AppShell screenshots and native-control results; fixture/source qualifications in receipt.",
+        "receipt": "docs/receipts/AKIPASA_CONSUMER_OWNER_ROUTE_REVIEW_20261031.json",
+        "scope": "Actual Venue booking page, shared wizard and AppShell compose correctly. Phone contact controls, desktop slot picker and tablet empty state are legible.",
+        "realAuthRlsProviderOrMutationAcceptance": false,
+        "physicalDeviceAcceptance": false
+      }
     },
     "src/app/[locale]/venues/[slug]/page.tsx": {
       "scope": "consumer",
@@ -863,7 +1299,7 @@
       "status": "accepted",
       "note": "Independent public-gateway review:20actualNext EN/ES themes/viewports/WebView-like states,40captures, nativekeyboard/threecorrectlinks/noindex/nooverflow. AkiHQ remains separate from AkiBusiness; no destination authenticated-operation or fullrelease acceptance inferred.",
       "acceptance": {
-        "reviewer": "Codex business_screens \u2014 independent business entry review",
+        "reviewer": "Codex business_screens — independent business entry review",
         "reviewedCommit": "c10d7adcb45c0add6c82accfe398bdedec2dd0f6",
         "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
         "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41058881346",
@@ -877,7 +1313,7 @@
       "status": "accepted",
       "note": "Redirect-only route: independently reviewed actual308 response and exact /es target at6a923495. No page/screenshot exists. Actions link records HTTP evidence, not an invented image. Does not accept destination page, authenticated/device journeys or full release.",
       "acceptance": {
-        "reviewer": "Codex canonical_plan \u2014 independent redirect review",
+        "reviewer": "Codex canonical_plan — independent redirect review",
         "reviewedCommit": "6a9234952542bc3fd59456fb2a43638183c2af7a",
         "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41053750511",
         "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41053750511",
@@ -893,7 +1329,7 @@
       "status": "accepted",
       "note": "Redirect-only route: independently reviewed actual308 response and exact /es/roadmap target at6a923495. No page/screenshot exists. Actions link records HTTP evidence, not an invented image. Does not accept destination page, authenticated/device journeys or full release.",
       "acceptance": {
-        "reviewer": "Codex canonical_plan \u2014 independent redirect review",
+        "reviewer": "Codex canonical_plan — independent redirect review",
         "reviewedCommit": "6a9234952542bc3fd59456fb2a43638183c2af7a",
         "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41053750511",
         "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41053750511",
@@ -907,7 +1343,7 @@
     "src/app/waitlist/confirm/page.tsx": {
       "scope": "cross-product",
       "status": "accepted",
-      "note": "Cinematic responsive EN/ES confirmation for AkiPasa/AkiDuermo/AkiCoches committed. Real defect repaired: POST success redirect now derives product from verified database row, not caller hint; failure product hint allowlisted. Non-mutating Playwright cases cover invalid links, 360/390/1440 and Android-style emulation, dark/light. Exact-head CI/screenshot inspection, physical Android and genuine signup\u2192email\u2192verification acceptance still pending. In-progress, not accepted. Individually accepted after responsible-tester source, actual hosted image/HTTP and functional review. See AKIPASA_INDIVIDUAL_BATCH_ACCEPTANCE_20261030.json; destination pages and overall provider/device/production approval are not inferred.",
+      "note": "Cinematic responsive EN/ES confirmation for AkiPasa/AkiDuermo/AkiCoches committed. Real defect repaired: POST success redirect now derives product from verified database row, not caller hint; failure product hint allowlisted. Non-mutating Playwright cases cover invalid links, 360/390/1440 and Android-style emulation, dark/light. Exact-head CI/screenshot inspection, physical Android and genuine signup→email→verification acceptance still pending. In-progress, not accepted. Individually accepted after responsible-tester source, actual hosted image/HTTP and functional review. See AKIPASA_INDIVIDUAL_BATCH_ACCEPTANCE_20261030.json; destination pages and overall provider/device/production approval are not inferred.",
       "acceptance": {
         "reviewer": "Codex canonical_plan (independent responsible tester)",
         "reviewedCommit": "67bd0fa141b16a058515ff48f94ab50c41bbf7a9",
@@ -933,6 +1369,24 @@
       "note": " Individual current hosted source-bound public UI/function review recorded; see AKIPASA_PUBLIC_DISCOVERY_ACCEPTANCE_20261030.json. Tonight remains default off. Booking subroutes, authenticated transactions, GPS/provider/device and final release remain separate."
     }
   },
-  "releaseStatus": "blocked-pending-visual-and-functional-acceptance",
-  "acceptancePolicy": "In-progress indicates a shared shell or skin has been implemented, NOT that the route passed visual or functional acceptance. Accepted requires real reviewed evidence and all exact-head checks."
+  "releaseStatus": "page-review-complete-pending-integrated-release-gates",
+  "acceptancePolicy": "In-progress indicates a shared shell or skin has been implemented, NOT that the route passed visual or functional acceptance. Accepted requires real reviewed evidence and all exact-head checks.",
+  "reviewCheckpoint": {
+    "date": "2026-10-31",
+    "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+    "acceptedInScopeRoutes": 90,
+    "outstandingInScopeRoutes": 0,
+    "excludedSeparateProductRoutes": 13,
+    "acceptedFallbackStates": 6,
+    "newlyAcceptedThisSession": 41,
+    "releaseApproved": false,
+    "remainingReleaseGates": [
+      "Fresh exact-head CI and strict audit",
+      "Real isolated Auth/roles/RLS/tenant/private-state/provider/booking/verified-XP evidence",
+      "Full-candidate physical Android and final Alex review"
+    ],
+    "pendingSqlApplied": false,
+    "paidQaResourceCreated": false,
+    "productionChanged": false
+  }
 }

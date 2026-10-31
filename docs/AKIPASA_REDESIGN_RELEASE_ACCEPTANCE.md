@@ -2,7 +2,14 @@
 
 **Scope:** All 103 source page routes. The 13 separate-product routes are deliberately excluded; 90 other consumer, operational and cross-product pages require review. The definitive source of route state is `docs/AKIPASA_UI_ROUTE_MATRIX_20261028.json`.
 
-**Current status:** work in progress. Ordinary GitHub workflows being green is not a substitute for this checklist. Never mark an unreviewed route accepted or merge solely to make the site appear updated.
+**Current status — 31 October 2026:** all **90/90 in-scope page reviews and six fallback reviews are accepted**, with zero outstanding pages and thirteen separate-product exclusions. The final41 were individually reviewed and source-bound; see `docs/receipts/AKIPASA_ROUTE_REVIEW_COMPLETION_20261031.json` and the route matrix. This current count supersedes historical counts below. Coordinated release remains pending fresh exact-head CI, real isolated protected/provider evidence, full-candidate physical Android and final Alex review. Ordinary green workflows or bounded screen acceptance do not replace those integrated gates.
+
+The final review source is `09d20f03aeec9db99216fdc4ee03ef06c5b26895`. Actual inspection
+resolved Passport text contrast, Operations failed-read recovery and Map light List
+title contrast. New full-page fixtures supplement existing hosted evidence; their
+synthetic read/auth/GPS/basemap boundaries are explicit. Redirect-only pages use
+actual Next HTTP evidence and do not claim nonexistent screenshots or accept their
+destinations. The strict route gate is unchanged and must now pass normally.
 
 ## Current release precedence — 29 October 2026
 

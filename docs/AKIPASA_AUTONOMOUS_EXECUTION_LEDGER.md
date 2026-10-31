@@ -1,6 +1,45 @@
 # AkiPasa autonomous execution ledger
 
-Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
+Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 31 October 2026 UTC.
+
+## 31 October — all 90 page reviews complete; do not restart the 49/90 backlog
+
+The remaining **41 individual reviews are complete**: 18 Admin, three existing
+Staff/business, four Owner/consumer, three redirect-only, seven fresh composed
+Staff/business/Account, and six fresh consumer reviews. The matrix now records
+**90/90 accepted, zero outstanding, 13 excluded; all six fallback states accepted**.
+The previous 49 accepted records and separate-product exclusions are preserved.
+Every added acceptance has a responsible reviewer, actual inspected evidence and
+source binding. This checkpoint supersedes the historical route counts below.
+
+Reviewed new runtime/QA source is `09d20f03aeec9db99216fdc4ee03ef06c5b26895`.
+Earlier hosted artifacts use d685 or its full-tree-identical synthetic merge,
+not an unrelated ancestor. Final local evidence commits the tested working-tree
+bytes, with explicit reconciliation of one later Map-only shared CSS selector.
+See `docs/receipts/AKIPASA_ROUTE_REVIEW_COMPLETION_20261031.json` and the dated
+Admin, Staff/business, consumer/Owner, redirect and three fix receipts.
+
+Actual inspection found and repaired three runtime issues: Passport loyalty and
+motion-status contrast; Operations failed location reads masquerading as empty
+accounts, with native Retry and a corrected narrow-screen label; and white event
+titles in the light Map List. Only three runtime files change. Passport194,
+Staff/business/Account72 (including four native GET recoveries), Map60 and real
+Next redirect27 pass. Operations/return units73 and owner appearance19 pass.
+Consumer process reports180 passes, while final local JSON retains178 rows;
+the exact storage discrepancy and final inspected image are preserved, with no
+invented rows. Fresh hosted complete evidence and combined exact-head CI remain
+required. All six old tablet jobs are retained; one additive job uploads the new
+bounded fixtures and redirect evidence.
+
+**Release remains draft for integrated gates, not unfinished page reviews.**
+Actual isolated Auth/roles/RLS/tenant/private-state/provider/booking/verified-XP
+evidence, full-candidate physical Android and final Alex review remain. Synthetic
+read/identity/GPS/tile fixtures do not certify those journeys. Paid QA resources
+are uncreated and pending Staff/preview SQL unapplied; Tonight remains off and
+the separate AkiPals World/avatar work stays private. No master merge or production
+deployment occurred in this review batch. The known live master76cb/Worker972fd
+remains the independently released340 baseline. Publish the combined evidence
+update once, require fresh CI, and continue from these concrete remaining gates.
 
 ## 31 October 03:20 UTC — Admin and detail release live; consolidated source validated
 

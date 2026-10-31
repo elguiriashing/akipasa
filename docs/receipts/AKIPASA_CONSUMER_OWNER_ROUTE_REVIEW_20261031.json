@@ -1,0 +1,1351 @@
+{
+  "version": 2,
+  "reviewer": "Codex release_cloudflare independent responsible consumer/Owner reviewer",
+  "reviewedAt": "2026-10-31T12:18:33.705697+00:00",
+  "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+  "githubSyntheticMerge": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+  "identicalGitTree": "595b0410f3b4a7ace7d4fe388d2eeec5879cdc9d",
+  "scope": "Route presentation plus existing source-bound disposable functional evidence. Overall private/provider/device release gates remain separate.",
+  "complete": true,
+  "routes": [
+    {
+      "route": "src/app/[locale]/passports/page.tsx",
+      "decision": "accept",
+      "sourceSha256": "de9e3a07b0a628d31d07c6b1e9574be7f70450f1e95fc6d978a64b15891a378e",
+      "images": [
+        {
+          "file": "passport-small-release/en-dark-390-populated-progress.png",
+          "sha256": "9d6556b0319739d0380e7878ce4f91977e1eef707c8d9e2e05e55bbf2fcfca18",
+          "inspected": true
+        },
+        {
+          "file": "passport-small-release/es-light-1440-populated-passports.png",
+          "sha256": "173129da36e53b5fff39cea71ac47dccce37ad8456e58f17bb1ba9538c2a435e",
+          "inspected": true
+        },
+        {
+          "file": "passport-small-release/es-dark-360-populated-stamps.png",
+          "sha256": "93a69364b7410fce23c5bd30c9d0dc68cb9c9884f71e6c84d4a2759d0cfc065c",
+          "inspected": true
+        },
+        {
+          "file": "passport-small-release/en-light-820-populated-badges.png",
+          "sha256": "d1689d9dc748bb6f6906c47826281a2fa4ae10f32e53450cc0dbd8869fe3bd77",
+          "inspected": true
+        },
+        {
+          "file": "passport-small-release/en-dark-390-unavailable-passports.png",
+          "sha256": "c6dffa054c2be69ec4e09c8d0f4f2c188e271050a7c7c0bb0ebcc6db5bd24521",
+          "inspected": true
+        },
+        {
+          "file": "passport-small-release/es-light-390-empty-progress.png",
+          "sha256": "68b1f696cff2b7611a5603889eb459689bcfcc1098dec0fc6933488a30946ea0",
+          "inspected": true
+        },
+        {
+          "file": "passport-small-release/en-dark-1440-populated-city.png",
+          "sha256": "3f1573d3a87a5253028281779d4219b0359c839710e851b16b4a9ef94dbb7ca7",
+          "inspected": true
+        },
+        {
+          "file": "passport-repair/es-dark-360-populated-stamps.png",
+          "sha256": "6084ac7b72c2495c0d4889a93117149488ef4be180ff78d986f15090e801388c",
+          "inspected": true
+        },
+        {
+          "file": "passport-repair/en-light-820-populated-badges.png",
+          "sha256": "ed8bc77dc4ad9b29175472223e8978b2f684f3b347d2cc475fb0febba335807d",
+          "inspected": true
+        }
+      ],
+      "observations": [
+        "Independently inspected repaired Spanish dark360 loyalty title: dark brown title now reads clearly on cream paper; original 1.014:1 failure resolved.",
+        "Independently inspected repaired English light820 reduced-motion status: beige text on black chapter navigation is readable; original 2.874:1 failure resolved.",
+        "Existing paper chapter hierarchy, unavailable/empty states and city panel remain supported by original source-equivalent images. Page and PassportBook TSX inputs are unchanged; two scoped CSS ink selectors plus additive maintained browser assertions changed."
+      ],
+      "functionalEvidence": {
+        "file": "passport-repair/results.json",
+        "sha256": "70dd8f1f2281d4e85ae573e58ee2cfc3c416e9c4c7c24a46321e0862a3dd0ce5",
+        "cases": 194,
+        "sourceDirty": true,
+        "sourceHashes": {
+          "src/app/[locale]/passports/page.tsx": "de9e3a07b0a628d31d07c6b1e9574be7f70450f1e95fc6d978a64b15891a378e",
+          "src/components/PassportBook.tsx": "b17b21ce39a297787f139221a43635681df2073563c0e63212a4554643e1649c",
+          "src/components/PassportBook.module.css": "c72ed10a6f6b1c800eee7ddc3ed9750f387960f0a848120541ab3f2b0342973c",
+          "scripts/test-passport-chapter-browser.mjs": "41f6f91f4917ca7e98b94dc0b88eb230aa7d4a297954257368d88e16fe857aab"
+        },
+        "pageErrors": [],
+        "blocked": [],
+        "titleMinContrast": 13.762708333411608,
+        "motionMinContrast": 11.040893683974462,
+        "actualPageAndBook": true,
+        "identityAndReadsAreDisposableAdapters": true
+      },
+      "limits": [
+        "No actual production Auth/RLS, private writes, providers/payment, attendance/XP or physical Android acceptance is inferred.",
+        "No public AkiPals World/Avatar release, feature activation, SQL application, merge or deployment is authorized by this receipt."
+      ],
+      "artifacts": [
+        {
+          "id": 13028796132,
+          "runId": 41164318371
+        }
+      ],
+      "baselineDecision": "reject",
+      "baselineObservations": [
+        "Confirmed visual blocker: Spanish dark360 populated loyalty chapter renders the programme title Programa de prueba nearly white on cream paper. Screenshot pixel samples foreground RGB250,247,242/background255,245,223 imply approximately1.014:1 contrast. The source hashes all match current PR head.",
+        "Paper chapter hierarchy, empty/unavailable states and city stamp panel otherwise appear readable.",
+        "Additional low-contrast candidate: reduced-motion helper text in the light820 black chapter navigation. Needs direct computed-color verification before accepting."
+      ],
+      "baselineFunctionalEvidence": {
+        "file": "passport-small-release/results.json",
+        "cases": 194,
+        "sourceHashesMatchCurrentHead": 4,
+        "sourceHashMismatches": 0,
+        "visualFailureImage": "passport-small-release/es-dark-360-populated-stamps.png",
+        "visualFailureImageSha256": "93a69364b7410fce23c5bd30c9d0dc68cb9c9884f71e6c84d4a2759d0cfc065c"
+      },
+      "acceptanceRequiresLocalRepair": true,
+      "repairedSourceHashes": {
+        "src/app/[locale]/passports/page.tsx": "de9e3a07b0a628d31d07c6b1e9574be7f70450f1e95fc6d978a64b15891a378e",
+        "src/components/PassportBook.tsx": "b17b21ce39a297787f139221a43635681df2073563c0e63212a4554643e1649c",
+        "src/components/PassportBook.module.css": "c72ed10a6f6b1c800eee7ddc3ed9750f387960f0a848120541ab3f2b0342973c",
+        "scripts/test-passport-chapter-browser.mjs": "41f6f91f4917ca7e98b94dc0b88eb230aa7d4a297954257368d88e16fe857aab"
+      },
+      "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+      "publication": {
+        "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "reviewedSourceTree": "7de020d02387bb7196fe56fdc4f930e23500d852",
+        "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+        "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+        "hostedExecution": "Fresh final-head workflows required; no future run ID or artifact is asserted.",
+        "sourceBinding": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added."
+      }
+    },
+    {
+      "route": "src/app/[locale]/venues/[slug]/book/page.tsx",
+      "decision": "accept",
+      "sourceSha256": "00099bb9b8e20acee23f00f7f0d0c8935387c725a9a4d98116fcaf512c1efd83",
+      "images": [
+        {
+          "file": "consumer-route-review-rebound/venue-en-dark-360-contact-focused.png",
+          "sha256": "422fae2706d4ce41fd1a20f697a3a703da744f16549472bea3fa0b030f8ba55a",
+          "inspected": true,
+          "identicalToIndependentlyInspectedImage": "consumer-route-review-final/venue-en-dark-360-contact-focused.png"
+        },
+        {
+          "file": "consumer-route-review-rebound/venue-es-light-1440-dates.png",
+          "sha256": "2ac8844fc53e934ec44b293ff3af4e33410f5d425858c35dba26e4ba2c2adeb2",
+          "inspected": true,
+          "identicalToIndependentlyInspectedImage": "consumer-route-review-final/venue-es-light-1440-dates.png"
+        },
+        {
+          "file": "consumer-route-review-rebound/venue-es-dark-360-availability-error.png",
+          "sha256": "164b2cdc0797d2bbeaa504f0e0f4098181134b2f152f2e639c3e53784535022d",
+          "inspected": true,
+          "identicalToIndependentlyInspectedImage": "consumer-route-review-final/venue-es-dark-360-availability-error.png"
+        },
+        {
+          "file": "consumer-route-review-rebound/venue-en-light-820-empty.png",
+          "sha256": "a1af18276b21a3b8167f7f23bead0c942a7c7089d5f899dbf1a267c6dcf4ec79",
+          "inspected": true,
+          "identicalToIndependentlyInspectedImage": "consumer-route-review-final/venue-en-light-820-empty.png"
+        },
+        {
+          "file": "consumer-route-review-rebound/venue-es-light-360-metadata-error.png",
+          "sha256": "82591dfc5ddf509745f85bd706c72b8dd9f79514a7fe402f04fd378fd6e97f85",
+          "inspected": true,
+          "identicalToIndependentlyInspectedImage": "consumer-route-review-final/venue-es-light-360-metadata-error.png"
+        },
+        {
+          "file": "consumer-route-review-rebound/venue-es-light-1440-empty.png",
+          "sha256": "1065e97deccf34f9c4e3a26ebdc2be59c776191ed64f67220faa90f8e2d30b4b",
+          "inspected": true
+        }
+      ],
+      "observations": [
+        "Actual Venue booking page, shared wizard and AppShell compose correctly. Phone contact controls, desktop slot picker and tablet empty state are legible.",
+        "Native date/guest/contact progression retains synthetic contact defaults; the request control has visible keyboard focus and three unobstructed hit points. No request is submitted.",
+        "Metadata and availability read failures differ from zero available slots, suppress stale slots and diagnostics, and recover through a new native GET Retry. Deposit copy states no payment is taken when requesting."
+      ],
+      "functionalEvidence": {
+        "file": "consumer-route-review-rebound/results.json",
+        "sha256": "756384cfcca79b08e894c7c18a44f4efa48adf81b5487b15b77cb8a27f06b7eb",
+        "script": "scripts/test-consumer-route-review-browser.mjs",
+        "scriptSha256": "efedcf5f52467bef18cc50ba99b294be5debba7dee6e4d887a6e87b6168bc4c8",
+        "cases": 94,
+        "contexts": 12,
+        "widths": [360, 820, 1440],
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "sourceInputHashes": 48,
+        "initialFinalInputsEqual": true,
+        "nativeGetRetries": 12,
+        "pageErrors": [],
+        "outboundOrWriteViolations": [],
+        "positiveOverflow": 0,
+        "actualNext": false,
+        "actualPageAndAppShell": true,
+        "browserVersion": "153.0.8010.0",
+        "method": "esbuild actual exports with disposable navigation/auth/read/GPS adapters; synthetic data; actions throw-only; UTF-8 document and CSS",
+        "rejectedFixtureRun": "consumer-route-review/REJECTED-EVIDENCE.json",
+        "executionCompletionObservation": {
+          "file": "consumer-route-review-rebound/execution-completion-observation.json",
+          "sha256": "e7b198db5acf5a15585af9d759e302c2540485e086ab35b74c8a1e071c25795c",
+          "reportedExecutedTotalCases": 180,
+          "persistedTotalRows": 178,
+          "exitCode": 0,
+          "qualification": "Process reported all180 passed. Final two result rows were not retained; original178-row JSON and final empty-state screenshot are preserved. No rows reconstructed. Await hosted CI artifact for complete raw trace."
+        }
+      },
+      "limits": [
+        "No actual production Auth/RLS, private writes, providers/payment, attendance/XP or physical Android acceptance is inferred.",
+        "No public AkiPals World/Avatar release, feature activation, SQL application, merge or deployment is authorized by this receipt.",
+        "No booking action, provider payment, notification, private transport or database persistence is tested. Missing-venue cases certify page notFound return only, not the Next 404 layout.",
+        "Local final execution reported180 passing cases but retained178 JSON rows; the final Spanish desktop empty image was independently inspected. Complete raw hosted trace remains a CI deliverable."
+      ],
+      "artifacts": [],
+      "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+      "publication": {
+        "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "reviewedSourceTree": "7de020d02387bb7196fe56fdc4f930e23500d852",
+        "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+        "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+        "hostedExecution": "Fresh final-head workflows required; no future run ID or artifact is asserted.",
+        "sourceBinding": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added."
+      }
+    },
+    {
+      "route": "src/app/[locale]/check-in/page.tsx",
+      "decision": "accept",
+      "sourceSha256": "0f85750e71d9121ec8e63cb2286c7359ad746a1bc4869738bb477b92e29f2bbf",
+      "images": [
+        {
+          "file": "public-discovery/pasa-review-en-check-in-phone-dark.png",
+          "sha256": "5546f12b425477a76fc55c395558996a0a20a0ed5dae237475f11d73dd4b6413",
+          "inspected": true
+        },
+        {
+          "file": "public-discovery/pasa-review-es-check-in-desktop-light.png",
+          "sha256": "970aae769fe10641d1fe4130715677c3093791caec84708004439baaeedb2a87",
+          "inspected": true
+        },
+        {
+          "file": "public-discovery/pasa-review-es-check-in-small-phone-dark.png",
+          "sha256": "6735514b04a7db7d8d3fe9da8c4da3af9f7c8dfc2724bd2add595975e2f4dcf7",
+          "inspected": true
+        },
+        {
+          "file": "public-discovery/pasa-review-en-check-in-tablet-light.png",
+          "sha256": "b5d0ec6466cc4b73a10ac0a44ba73735a26e1560727b7d24f4f592d2ea3e1ce9",
+          "inspected": true
+        }
+      ],
+      "observations": [
+        "Actual public route has readable responsive hero, explicit Scan venue QR action, camera activation consent wording and lower three-step explanation.",
+        "Tablet capture shows the final statement that opening/scanning does not record attendance or grant points; verification and confirmation remain required.",
+        "Representative phone, small-phone, tablet and desktop images preserve canonical navigation without obscuring the scanner entry."
+      ],
+      "functionalEvidence": {
+        "method": "Hosted built-route render receipts plus independent manual representative screenshot review. Automated-render-only records remain distinct from functional provider acceptance.",
+        "publicRenderContexts": 16,
+        "allStatus200": true,
+        "sourceTreeEquivalence": "595b0410f3b4a7ace7d4fe388d2eeec5879cdc9d",
+        "renderRecords": [
+          {
+            "file": "public-discovery/pasa-route-evidence-en-desktop-dark.json",
+            "sha256": "286f5ed3cbfb07a03126d78fcbecf336369db7c92957186cde760fa0c667ac21",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/en/check-in",
+              "surface": "checkin",
+              "status": 200,
+              "viewport": "desktop",
+              "screenshot": "test-results/pasa-review-en-check-in-desktop-dark.png",
+              "theme": "dark"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-en-desktop-light.json",
+            "sha256": "cb6527a2a56e6c623756e66faf9cc93758042fd3adecd07108663bbc76da3281",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/en/check-in",
+              "surface": "checkin",
+              "status": 200,
+              "viewport": "desktop",
+              "screenshot": "test-results/pasa-review-en-check-in-desktop-light.png",
+              "theme": "light"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-en-phone-dark.json",
+            "sha256": "d1335bd0306d4ab1601d7763cc99fb7b672251568a35ed7875f108b09776c6ef",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/en/check-in",
+              "surface": "checkin",
+              "status": 200,
+              "viewport": "phone",
+              "screenshot": "test-results/pasa-review-en-check-in-phone-dark.png",
+              "theme": "dark"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-en-phone-light.json",
+            "sha256": "5eee700bb2096b80cdf1c2e941dac20cd08e247ddffaf69d5f33d65486d49b75",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/en/check-in",
+              "surface": "checkin",
+              "status": 200,
+              "viewport": "phone",
+              "screenshot": "test-results/pasa-review-en-check-in-phone-light.png",
+              "theme": "light"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-en-small-phone-dark.json",
+            "sha256": "476fa915e3244dafb67c2795d1c7beb72a93e21e2fe29c5d2bc31f775bd77ecc",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/en/check-in",
+              "surface": "checkin",
+              "status": 200,
+              "viewport": "small-phone",
+              "screenshot": "test-results/pasa-review-en-check-in-small-phone-dark.png",
+              "theme": "dark"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-en-small-phone-light.json",
+            "sha256": "c96fab6a628cd5a3070572a078371dec06ac380018e3c333bbc43ece8487fe71",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/en/check-in",
+              "surface": "checkin",
+              "status": 200,
+              "viewport": "small-phone",
+              "screenshot": "test-results/pasa-review-en-check-in-small-phone-light.png",
+              "theme": "light"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-en-tablet-dark.json",
+            "sha256": "540ff3e3376c452cdd0bb203a6413f94e2924a0fae63b12ea3c8c38f24428588",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/en/check-in",
+              "surface": "checkin",
+              "status": 200,
+              "viewport": "tablet",
+              "screenshot": "test-results/pasa-review-en-check-in-tablet-dark.png",
+              "theme": "dark"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-en-tablet-light.json",
+            "sha256": "e2e209d84d12517ccf5e1c275f4d1adb7869461d74e5fe63269b5f4ddc62f047",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/en/check-in",
+              "surface": "checkin",
+              "status": 200,
+              "viewport": "tablet",
+              "screenshot": "test-results/pasa-review-en-check-in-tablet-light.png",
+              "theme": "light"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-es-desktop-dark.json",
+            "sha256": "1ed9aea9f465710e7dd677738a998a20b7572854f29f43b946be6295e5920f7e",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/es/check-in",
+              "surface": "checkin",
+              "status": 200,
+              "viewport": "desktop",
+              "screenshot": "test-results/pasa-review-es-check-in-desktop-dark.png",
+              "theme": "dark"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-es-desktop-light.json",
+            "sha256": "93d88c7719ded7d2bcd51fe138da093fbf65f60d94100d967ff002382ef20fdb",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/es/check-in",
+              "surface": "checkin",
+              "status": 200,
+              "viewport": "desktop",
+              "screenshot": "test-results/pasa-review-es-check-in-desktop-light.png",
+              "theme": "light"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-es-phone-dark.json",
+            "sha256": "5eb2477a403ad7a9f486e5d7f1bd5ffe96b376e0455b9008d4fb83d3650ce646",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/es/check-in",
+              "surface": "checkin",
+              "status": 200,
+              "viewport": "phone",
+              "screenshot": "test-results/pasa-review-es-check-in-phone-dark.png",
+              "theme": "dark"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-es-phone-light.json",
+            "sha256": "eb00c73df82ea5db2b1e04190e229497969e2ae35ca0eeb757c8ea951c16f40c",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/es/check-in",
+              "surface": "checkin",
+              "status": 200,
+              "viewport": "phone",
+              "screenshot": "test-results/pasa-review-es-check-in-phone-light.png",
+              "theme": "light"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-es-small-phone-dark.json",
+            "sha256": "787d8070484380f8c6b56ba6ea342913c28d0c33c90e8b0cd28a7e29b7944667",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/es/check-in",
+              "surface": "checkin",
+              "status": 200,
+              "viewport": "small-phone",
+              "screenshot": "test-results/pasa-review-es-check-in-small-phone-dark.png",
+              "theme": "dark"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-es-small-phone-light.json",
+            "sha256": "d7baa5ac736ca0c2c0f7fd881dab22d7c8c501599574bbf7e9bd58d630416754",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/es/check-in",
+              "surface": "checkin",
+              "status": 200,
+              "viewport": "small-phone",
+              "screenshot": "test-results/pasa-review-es-check-in-small-phone-light.png",
+              "theme": "light"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-es-tablet-dark.json",
+            "sha256": "1ff88ce11cfb84849694243878861a3ba201f91ff40c81aaa5cfdf3489038914",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/es/check-in",
+              "surface": "checkin",
+              "status": 200,
+              "viewport": "tablet",
+              "screenshot": "test-results/pasa-review-es-check-in-tablet-dark.png",
+              "theme": "dark"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-es-tablet-light.json",
+            "sha256": "98e7c1dfb1e0f4a726a9b8717937e4097b64d87f34c9b80d21be1f52e015f75b",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/es/check-in",
+              "surface": "checkin",
+              "status": 200,
+              "viewport": "tablet",
+              "screenshot": "test-results/pasa-review-es-check-in-tablet-light.png",
+              "theme": "light"
+            }
+          }
+        ]
+      },
+      "limits": [
+        "No actual production Auth/RLS, private writes, providers/payment, attendance/XP or physical Android acceptance is inferred.",
+        "No public AkiPals World/Avatar release, feature activation, SQL application, merge or deployment is authorized by this receipt.",
+        "Camera/device permission, QR decoding, precise geolocation, attendance writes and XP are not exercised by these render artifacts."
+      ],
+      "artifacts": [
+        {
+          "id": 13029350734
+        }
+      ],
+      "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+      "publication": {
+        "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "reviewedSourceTree": "7de020d02387bb7196fe56fdc4f930e23500d852",
+        "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+        "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+        "hostedExecution": "Fresh final-head workflows required; no future run ID or artifact is asserted.",
+        "sourceBinding": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added."
+      }
+    },
+    {
+      "route": "src/app/[locale]/check-in/[token]/page.tsx",
+      "decision": "accept",
+      "sourceSha256": "299e5cd95bde8d5e39e3301acea3a2492f71442aae47b52b05ba07028faf2eb6",
+      "images": [
+        {
+          "file": "consumer-route-review-rebound/token-en-dark-360-ready.png",
+          "sha256": "657a1a4c785b17ed6d8a5a8a07d015a45578dace8043f2efde26585ccc0380ff",
+          "inspected": true,
+          "identicalToIndependentlyInspectedImage": "consumer-route-review-final/token-en-dark-360-ready.png"
+        },
+        {
+          "file": "consumer-route-review-rebound/token-es-light-1440-location-received.png",
+          "sha256": "8caba4ddf69d3ad9a6bd075eba348c3b8e9b7827e59af65da3cb4ab26bbdddc1",
+          "inspected": true,
+          "identicalToIndependentlyInspectedImage": "consumer-route-review-final/token-es-light-1440-location-received.png"
+        },
+        {
+          "file": "consumer-route-review-rebound/token-es-dark-360-error.png",
+          "sha256": "abc60f1943d45d0f2ad7c38fb03c71ad3d78859ef80e20a11d76f0645e292424",
+          "inspected": true,
+          "identicalToIndependentlyInspectedImage": "consumer-route-review-final/token-es-dark-360-error.png"
+        },
+        {
+          "file": "consumer-route-review-rebound/token-en-light-820-denied-stale-fix-rejected.png",
+          "sha256": "4b1cb2cabee5224bfe53e50b538bef54bf6e214a12399b49225ad62cafe567d5",
+          "inspected": true
+        },
+        {
+          "file": "consumer-route-review-rebound/token-es-light-360-paused.png",
+          "sha256": "b242a1161ba8cb9f991fbc13b6b58f27540a7e1db7b10c4330aa865a77a23eb0",
+          "inspected": true,
+          "identicalToIndependentlyInspectedImage": "consumer-route-review-final/token-es-light-360-paused.png"
+        }
+      ],
+      "observations": [
+        "Actual token page and AppShell are readable across phone/tablet/desktop, EN/ES and dark/light representative captures.",
+        "Confirmation remains disabled before location receipt. A simulated callback enables it and displays Location received, without claiming a completed visit. A new request invalidates the old location; denial plus a stale callback leaves confirmation disabled.",
+        "Private preview failure hides stale venue and backend diagnostics and withholds the form. Native keyboard Retry performs a new GET at the same localized token route and recovers. Paused state explicitly says no visit was recorded."
+      ],
+      "functionalEvidence": {
+        "file": "consumer-route-review-rebound/results.json",
+        "sha256": "756384cfcca79b08e894c7c18a44f4efa48adf81b5487b15b77cb8a27f06b7eb",
+        "script": "scripts/test-consumer-route-review-browser.mjs",
+        "scriptSha256": "efedcf5f52467bef18cc50ba99b294be5debba7dee6e4d887a6e87b6168bc4c8",
+        "cases": 84,
+        "contexts": 12,
+        "widths": [360, 820, 1440],
+        "locales": ["en", "es"],
+        "themes": ["dark", "light"],
+        "sourceInputHashes": 48,
+        "initialFinalInputsEqual": true,
+        "nativeGetRetries": 12,
+        "pageErrors": [],
+        "outboundOrWriteViolations": [],
+        "positiveOverflow": 0,
+        "actualNext": false,
+        "actualPageAndAppShell": true,
+        "browserVersion": "153.0.8010.0",
+        "method": "esbuild actual exports with disposable navigation/auth/read/GPS adapters; synthetic data; actions throw-only; UTF-8 document and CSS",
+        "rejectedFixtureRun": "consumer-route-review/REJECTED-EVIDENCE.json",
+        "executionCompletionObservation": {
+          "file": "consumer-route-review-rebound/execution-completion-observation.json",
+          "sha256": "e7b198db5acf5a15585af9d759e302c2540485e086ab35b74c8a1e071c25795c",
+          "reportedExecutedTotalCases": 180,
+          "persistedTotalRows": 178,
+          "exitCode": 0,
+          "qualification": "Process reported all180 passed. Final two result rows were not retained; original178-row JSON and final empty-state screenshot are preserved. No rows reconstructed. Await hosted CI artifact for complete raw trace."
+        }
+      },
+      "limits": [
+        "No actual production Auth/RLS, private writes, providers/payment, attendance/XP or physical Android acceptance is inferred.",
+        "No public AkiPals World/Avatar release, feature activation, SQL application, merge or deployment is authorized by this receipt.",
+        "No GPS provider request, camera scan, check-in submission, attendance write or XP award is executed. Missing-token cases certify page notFound return only, not the Next 404 layout.",
+        "Local final execution reported180 passing cases but retained178 JSON rows; the final Spanish desktop empty image was independently inspected. Complete raw hosted trace remains a CI deliverable."
+      ],
+      "artifacts": [],
+      "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+      "publication": {
+        "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "reviewedSourceTree": "7de020d02387bb7196fe56fdc4f930e23500d852",
+        "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+        "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+        "hostedExecution": "Fresh final-head workflows required; no future run ID or artifact is asserted.",
+        "sourceBinding": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added."
+      }
+    },
+    {
+      "route": "src/app/[locale]/map/page.tsx",
+      "decision": "accept",
+      "sourceSha256": "2019c458fee66f78d73b890a2d01ef8cf4a3aa654800555fa1db110896c64b41",
+      "images": [
+        {
+          "file": "map-route-repaired/map-en-dark-360-outage.png",
+          "sha256": "dea32806de2d823cd232078906c64e62c55674323e1e1ec516c4ee5fd8bf600e",
+          "inspected": true,
+          "identicalToIndependentlyInspectedImage": "map-route-review-utf8/map-en-dark-360-outage.png"
+        },
+        {
+          "file": "map-route-repaired/map-en-dark-360-marker-popup.png",
+          "sha256": "3967f1d8555a5ced1721c145051d7c66542c7226526ff7d8445f0b485bca2393",
+          "inspected": true,
+          "identicalToIndependentlyInspectedImage": "map-route-review-utf8/map-en-dark-360-marker-popup.png"
+        },
+        {
+          "file": "map-route-repaired/map-en-dark-360-list.png",
+          "sha256": "e8931a9aa81c59d4e82235609bfd6c7f996d5cc228ba8c0537e90b6b83db0e58",
+          "inspected": true,
+          "identicalToIndependentlyInspectedImage": "map-route-review-utf8/map-en-dark-360-list.png"
+        },
+        {
+          "file": "map-route-repaired/map-en-dark-360-filters.png",
+          "sha256": "98d55398a1808f1688d29880d754b3840ca8b4ed0ee5a897d5f4e1d32f488206",
+          "inspected": true,
+          "identicalToIndependentlyInspectedImage": "map-route-review-utf8/map-en-dark-360-filters.png"
+        },
+        {
+          "file": "map-route-repaired/map-en-light-820-filters.png",
+          "sha256": "af4625713c57b0301cea3d18eaf53d75acd81c9007d90528609d6f0e8b10f294",
+          "inspected": true,
+          "identicalToIndependentlyInspectedImage": "map-route-review-utf8/map-en-light-820-filters.png"
+        },
+        {
+          "file": "map-route-repaired/map-es-light-1440-marker-popup.png",
+          "sha256": "7a3965d11e5c6e7036aadec902d5aab678ae19b3db71894186c025d2f38b4b96",
+          "inspected": true
+        },
+        {
+          "file": "map-route-repaired/map-es-dark-360-filters.png",
+          "sha256": "ce81a5d960b8848584bca78477abf6640db71e8214932087ad33740a58a0871e",
+          "inspected": true,
+          "identicalToIndependentlyInspectedImage": "map-route-review-utf8/map-es-dark-360-filters.png"
+        },
+        {
+          "file": "map-route-repaired/map-es-light-1440-list.png",
+          "sha256": "2f228a18f1de749bf134cd3abbaf974c78ee8f8b4e98487ea58268df86cc770a",
+          "inspected": true
+        },
+        {
+          "file": "map-route-repaired/map-en-light-360-list.png",
+          "sha256": "f007d069ea867ce5da43573b940e752459c4b7e6048dcb6ff70ea45454b5e4eb",
+          "inspected": true
+        }
+      ],
+      "observations": [
+        "Independently verified scoped light-theme Map List title repair: white-on-white title contrast1.007949 is now15.989432 on the opaque light card. Spanish desktop and English phone light captures show a readable dark title; dark phone title is visually unchanged and readable.",
+        "Actual async Map page, AppShell, MapLibre renderer, event popup, List drawer and filter panel compose visibly across EN/ES, dark/light and 360/820/1440 views. Synthetic event and tileless synthetic basemap are explicitly labelled.",
+        "Style outage presents a readable truthful alert. Native keyboard Retry requests a new style; real MapLibre then renders the synthetic marker. Native marker click exposes the actual popup with a localized event link retaining its occurrence.",
+        "Native List control opens a readable current-centre result drawer. Native Search opens current music/free filter state; no geolocation/provider query or actual backend search is certified.",
+        "Nonblocking localization residual: Spanish applied-filter chips display raw MUSIC/FREE values, while select labels are localized. Desktop floating Search slightly overlaps the upper-left visual edge of List, but the native List centre remains reachable and passes.",
+        "Original hosted public Map captures were blank and are not accepted as populated-map evidence. The composed synthetic run supplies route UI proof; live tile/provider acceptance remains separate."
+      ],
+      "functionalEvidence": {
+        "file": "map-route-repaired/results.json",
+        "sha256": "01c194311e45ff9aa962bacf6dbc8bdd19cab18b9f5f344d2ac54f6035815a79",
+        "script": "scripts/test-map-route-review-browser.mjs",
+        "scriptSha256": "88e5dc5a47d6bac6f74bed53e5aaceaa33b398e017c5f4d26bd4c367a75c2e18",
+        "cases": 60,
+        "contexts": 12,
+        "states": ["outage", "recovered", "marker-popup", "list", "filters"],
+        "sourceInputHashes": 63,
+        "initialFinalInputsEqual": true,
+        "actualPageAndAppShell": true,
+        "actualMapLibre": true,
+        "actualNext": false,
+        "syntheticBasemap": true,
+        "syntheticReadRecommendation": true,
+        "nativeStyleRetries": 12,
+        "nativeMarkerPopups": 12,
+        "nativeListAndFilterOpenings": 24,
+        "pageErrors": [],
+        "outboundOrWriteViolations": [],
+        "positiveOverflow": 0,
+        "browserVersion": "153.0.8010.0",
+        "lightTitleMinimumExactContrast": 15.989431827984154,
+        "titleContrastCases": 12,
+        "contrastMethodQualification": "Computed foreground versus first opaque CSS ancestor. Exact for light opaque rgb card; dark metric is an opaque-ancestor estimate and does not composite the semitransparent oklab card. Dark readability was independently inspected; no exact dark pixel-contrast claim.",
+        "fixturesOnly": true
+      },
+      "limits": [
+        "No actual production Auth/RLS, private writes, providers/payment, attendance/XP or physical Android acceptance is inferred.",
+        "No public AkiPals World/Avatar release, feature activation, SQL application, merge or deployment is authorized by this receipt.",
+        "No live map tiles, venue dataset completeness, provider reliability, real geolocation, Next server navigation, physical device or private portrait acceptance. Existing MapLibre style404 fixture additionally verifies position/filter preservation; this receipt does not infer production map coverage."
+      ],
+      "artifacts": [
+        {
+          "id": 13029355129,
+          "runId": 41164318371
+        }
+      ],
+      "baselineDecision": "reject",
+      "baselineVisualFailure": {
+        "file": "map-route-contrast-before/results.json",
+        "sha256": "ebba41b24cb62322807d74135f9ad3165ad527b412a778f2576041464f18fb7e",
+        "image": "map-route-contrast-before/map-es-light-1440-list.png",
+        "imageSha256": "e5c985f230ede098b7a07516a97f3cef0fb850cec6f7183706e1a1c0170a6fae",
+        "selector": ".event-plan-card .card-body h3",
+        "foreground": [255, 255, 255],
+        "background": [255, 254, 252],
+        "contrast": 1.0079493898232783
+      },
+      "acceptanceRequiresLocalRepair": true,
+      "repairedSourceHashes": {
+        "src/components/PasaCinematic.css": "2070cf72788406246f87b964982397e581a6a73b3945e93c1038cf7ca0aa5906",
+        "scripts/test-map-route-review-browser.mjs": "88e5dc5a47d6bac6f74bed53e5aaceaa33b398e017c5f4d26bd4c367a75c2e18"
+      },
+      "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+      "publication": {
+        "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "reviewedSourceTree": "7de020d02387bb7196fe56fdc4f930e23500d852",
+        "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+        "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+        "hostedExecution": "Fresh final-head workflows required; no future run ID or artifact is asserted.",
+        "sourceBinding": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added."
+      }
+    },
+    {
+      "route": "src/app/[locale]/akipals/page.tsx",
+      "decision": "accept",
+      "sourceSha256": "93f5cd274e1bcad890fd54624b4ad82c3ce2729da122110a2c1de16a9183b6f6",
+      "images": [
+        {
+          "file": "public-discovery/pasa-review-en-akipals-phone-dark.png",
+          "sha256": "cc4f1f020f4ccaebeacedf2d67839012229ad2e755ca3d0515591b1241b67366",
+          "inspected": true
+        },
+        {
+          "file": "public-discovery/pasa-review-es-akipals-desktop-light.png",
+          "sha256": "cec034e9cf285df0d4fd014492e615066869cb2062260d870257460f1d77ae99",
+          "inspected": true
+        },
+        {
+          "file": "public-discovery/pasa-review-es-akipals-small-phone-light.png",
+          "sha256": "b0f816ea7a201b9b81cb428164526efdd4462be18c0f4b30b17e13befe6e0dcf",
+          "inspected": true
+        },
+        {
+          "file": "public-discovery/pasa-review-en-akipals-tablet-dark.png",
+          "sha256": "52249a23c6abfffeb116aae8d531c2347640350354e8c426bd94fa7dc7fc7586",
+          "inspected": true
+        }
+      ],
+      "observations": [
+        "Existing gated public entry is readable: AkiPals hero, sign-in action, Passport/My profile links, and explicit 3D studio in development wording.",
+        "Spanish small-phone light theme retains deliberate dark main canvas and readable white hero; English tablet dark and Spanish desktop light layouts stay within viewport.",
+        "Acceptance covers the existing gated landing only. Legacy private mascot playtest artifacts do not certify separate World/Avatar work."
+      ],
+      "functionalEvidence": {
+        "method": "Hosted built-route render receipts plus independent manual representative screenshot review. Automated-render-only records remain distinct from functional provider acceptance.",
+        "publicRenderContexts": 16,
+        "allStatus200": true,
+        "sourceTreeEquivalence": "595b0410f3b4a7ace7d4fe388d2eeec5879cdc9d",
+        "renderRecords": [
+          {
+            "file": "public-discovery/pasa-route-evidence-en-desktop-dark.json",
+            "sha256": "286f5ed3cbfb07a03126d78fcbecf336369db7c92957186cde760fa0c667ac21",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/en/akipals",
+              "surface": "pals",
+              "status": 200,
+              "viewport": "desktop",
+              "screenshot": "test-results/pasa-review-en-akipals-desktop-dark.png",
+              "theme": "dark"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-en-desktop-light.json",
+            "sha256": "cb6527a2a56e6c623756e66faf9cc93758042fd3adecd07108663bbc76da3281",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/en/akipals",
+              "surface": "pals",
+              "status": 200,
+              "viewport": "desktop",
+              "screenshot": "test-results/pasa-review-en-akipals-desktop-light.png",
+              "theme": "light"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-en-phone-dark.json",
+            "sha256": "d1335bd0306d4ab1601d7763cc99fb7b672251568a35ed7875f108b09776c6ef",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/en/akipals",
+              "surface": "pals",
+              "status": 200,
+              "viewport": "phone",
+              "screenshot": "test-results/pasa-review-en-akipals-phone-dark.png",
+              "theme": "dark"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-en-phone-light.json",
+            "sha256": "5eee700bb2096b80cdf1c2e941dac20cd08e247ddffaf69d5f33d65486d49b75",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/en/akipals",
+              "surface": "pals",
+              "status": 200,
+              "viewport": "phone",
+              "screenshot": "test-results/pasa-review-en-akipals-phone-light.png",
+              "theme": "light"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-en-small-phone-dark.json",
+            "sha256": "476fa915e3244dafb67c2795d1c7beb72a93e21e2fe29c5d2bc31f775bd77ecc",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/en/akipals",
+              "surface": "pals",
+              "status": 200,
+              "viewport": "small-phone",
+              "screenshot": "test-results/pasa-review-en-akipals-small-phone-dark.png",
+              "theme": "dark"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-en-small-phone-light.json",
+            "sha256": "c96fab6a628cd5a3070572a078371dec06ac380018e3c333bbc43ece8487fe71",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/en/akipals",
+              "surface": "pals",
+              "status": 200,
+              "viewport": "small-phone",
+              "screenshot": "test-results/pasa-review-en-akipals-small-phone-light.png",
+              "theme": "light"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-en-tablet-dark.json",
+            "sha256": "540ff3e3376c452cdd0bb203a6413f94e2924a0fae63b12ea3c8c38f24428588",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/en/akipals",
+              "surface": "pals",
+              "status": 200,
+              "viewport": "tablet",
+              "screenshot": "test-results/pasa-review-en-akipals-tablet-dark.png",
+              "theme": "dark"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-en-tablet-light.json",
+            "sha256": "e2e209d84d12517ccf5e1c275f4d1adb7869461d74e5fe63269b5f4ddc62f047",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/en/akipals",
+              "surface": "pals",
+              "status": 200,
+              "viewport": "tablet",
+              "screenshot": "test-results/pasa-review-en-akipals-tablet-light.png",
+              "theme": "light"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-es-desktop-dark.json",
+            "sha256": "1ed9aea9f465710e7dd677738a998a20b7572854f29f43b946be6295e5920f7e",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/es/akipals",
+              "surface": "pals",
+              "status": 200,
+              "viewport": "desktop",
+              "screenshot": "test-results/pasa-review-es-akipals-desktop-dark.png",
+              "theme": "dark"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-es-desktop-light.json",
+            "sha256": "93d88c7719ded7d2bcd51fe138da093fbf65f60d94100d967ff002382ef20fdb",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/es/akipals",
+              "surface": "pals",
+              "status": 200,
+              "viewport": "desktop",
+              "screenshot": "test-results/pasa-review-es-akipals-desktop-light.png",
+              "theme": "light"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-es-phone-dark.json",
+            "sha256": "5eb2477a403ad7a9f486e5d7f1bd5ffe96b376e0455b9008d4fb83d3650ce646",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/es/akipals",
+              "surface": "pals",
+              "status": 200,
+              "viewport": "phone",
+              "screenshot": "test-results/pasa-review-es-akipals-phone-dark.png",
+              "theme": "dark"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-es-phone-light.json",
+            "sha256": "eb00c73df82ea5db2b1e04190e229497969e2ae35ca0eeb757c8ea951c16f40c",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/es/akipals",
+              "surface": "pals",
+              "status": 200,
+              "viewport": "phone",
+              "screenshot": "test-results/pasa-review-es-akipals-phone-light.png",
+              "theme": "light"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-es-small-phone-dark.json",
+            "sha256": "787d8070484380f8c6b56ba6ea342913c28d0c33c90e8b0cd28a7e29b7944667",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/es/akipals",
+              "surface": "pals",
+              "status": 200,
+              "viewport": "small-phone",
+              "screenshot": "test-results/pasa-review-es-akipals-small-phone-dark.png",
+              "theme": "dark"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-es-small-phone-light.json",
+            "sha256": "d7baa5ac736ca0c2c0f7fd881dab22d7c8c501599574bbf7e9bd58d630416754",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/es/akipals",
+              "surface": "pals",
+              "status": 200,
+              "viewport": "small-phone",
+              "screenshot": "test-results/pasa-review-es-akipals-small-phone-light.png",
+              "theme": "light"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-es-tablet-dark.json",
+            "sha256": "1ff88ce11cfb84849694243878861a3ba201f91ff40c81aaa5cfdf3489038914",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/es/akipals",
+              "surface": "pals",
+              "status": 200,
+              "viewport": "tablet",
+              "screenshot": "test-results/pasa-review-es-akipals-tablet-dark.png",
+              "theme": "dark"
+            }
+          },
+          {
+            "file": "public-discovery/pasa-route-evidence-es-tablet-light.json",
+            "sha256": "98e7c1dfb1e0f4a726a9b8717937e4097b64d87f34c9b80d21be1f52e015f75b",
+            "sourceCommit": "4bd706d7ceb55ed62b2f83bfe6cbbb45e179dd21",
+            "acceptance": "automated-render-only",
+            "record": {
+              "route": "/es/akipals",
+              "surface": "pals",
+              "status": 200,
+              "viewport": "tablet",
+              "screenshot": "test-results/pasa-review-es-akipals-tablet-light.png",
+              "theme": "light"
+            }
+          }
+        ]
+      },
+      "limits": [
+        "No actual production Auth/RLS, private writes, providers/payment, attendance/XP or physical Android acceptance is inferred.",
+        "No public AkiPals World/Avatar release, feature activation, SQL application, merge or deployment is authorized by this receipt.",
+        "The newer secret AkiPals World/Avatar branch remains isolated. No public 3D engine/avatar activation, authenticated private playtest or asset/provider acceptance is implied."
+      ],
+      "artifacts": [
+        {
+          "id": 13029350734
+        }
+      ],
+      "reviewedCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+      "publication": {
+        "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+        "reviewedSourceTree": "7de020d02387bb7196fe56fdc4f930e23500d852",
+        "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+        "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+        "hostedExecution": "Fresh final-head workflows required; no future run ID or artifact is asserted.",
+        "sourceBinding": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added."
+      }
+    }
+  ],
+  "evidenceRoot": "/workspace/scratch/5ff731a563cb/review-evidence",
+  "reviewedCommitMeaning": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added.",
+  "newlyCompletedRoutes": 6,
+  "totalOwnedRoutesReviewed": 10,
+  "pendingRoutes": [],
+  "previouslyCompletedRoutes": [
+    {
+      "route": "src/app/[locale]/owner/page.tsx",
+      "decision": "accept",
+      "sourceSha256": "515bb41ba221294529b3eab9111b7123b3577bb336b73e394d3b306ea81b22fb",
+      "images": [
+        {
+          "file": "owner/en-dark-390-populated-upper.png",
+          "sha256": "d460e6a02812cd4a0440912ff65866fa9b616c59cd3b31801b6f2526a4462613",
+          "inspected": true
+        },
+        {
+          "file": "owner/en-dark-390-populated-lower.png",
+          "sha256": "e74c493dbc30940678db8b3a5878a139472e1b47191e0ca177b10e27687a431a",
+          "inspected": true
+        },
+        {
+          "file": "owner/en-dark-390-unavailable-upper.png",
+          "sha256": "64670bd7dc64077e0a9cbc364a6f490eebee369c0cd5fd560a9b2218b4ad9455",
+          "inspected": true
+        },
+        {
+          "file": "owner/es-light-1440-populated-upper.png",
+          "sha256": "26a02c48b833b91f6170e98f94bde9ed5a91150abfc3d0c04d451c7ad31ef1cd",
+          "inspected": true
+        },
+        {
+          "file": "owner/es-light-1440-populated-lower.png",
+          "sha256": "dde8b7db0e55b73b3e7d8b5a6b43e2f8862e9c188478a2215855f090e4becad3",
+          "inspected": true
+        },
+        {
+          "file": "owner/es-light-1440-unavailable-upper.png",
+          "sha256": "d6a9cfadee2a3b722bf377d083d6e3b3c24e7ca360b07f19aced48481d600ffc",
+          "inspected": true
+        },
+        {
+          "file": "owner/en-dark-390-photo-full.png",
+          "sha256": "4094526245539085230bd95d196b15f11fdad402b69f60d01d5766218cf0ec8a",
+          "inspected": true
+        },
+        {
+          "file": "owner/es-light-1440-empty-full.png",
+          "sha256": "186241d72828f378dce467d6f95a190c32d0cb03e74dce958c1a5674d638064b",
+          "inspected": true
+        },
+        {
+          "file": "owner/en-dark-390-preferences-unavailable-lower.png",
+          "sha256": "400c641b5ee7d226d9549de2b8ed60c0d5760f7a3cf587c8e5b88c15b930ae1c",
+          "inspected": true
+        },
+        {
+          "file": "owner/es-light-1440-photo-lower.png",
+          "sha256": "9862f0819c3117a966d3afcded84b43b9a06d16bd63625adb80fcc93e610668a",
+          "inspected": true
+        }
+      ],
+      "observations": [
+        "Dark phone and Spanish light desktop show coherent control-room hero, truthful counts, readable cards, navigation and distinct empty/unavailable states.",
+        "Private background fixture remains visible behind readable overlays. Appearance-dependent writes are withheld when preference/storage reads fail.",
+        "Existing fixed DEV launcher partially overlays the far-right edge of mobile Retry and static toolbox copy in one scroll position. Retry centre remains visible; native GET recovery passes. Recorded as a nonblocking residual, not hidden."
+      ],
+      "functionalEvidence": {
+        "file": "owner/results.json",
+        "cases": 69,
+        "nativeGetRecoveries": 16,
+        "inputHashesMatchCurrentHead": 1897,
+        "inputHashMismatches": 0,
+        "overflowFailures": 0,
+        "pageErrors": 0,
+        "productionWrites": false,
+        "actualNext": false
+      },
+      "limits": [
+        "No actual production Auth/RLS, private writes, providers/payment, attendance/XP or physical Android acceptance is inferred.",
+        "No public AkiPals World/Avatar release, feature activation, SQL application, merge or deployment is authorized by this receipt."
+      ],
+      "artifacts": [
+        {
+          "id": 13029126168,
+          "runId": 41164318371
+        }
+      ]
+    },
+    {
+      "route": "src/app/[locale]/passports/prestige/page.tsx",
+      "decision": "accept",
+      "sourceSha256": "56a3af85f98e413f331ac26ac438233ffe926c202548f89a404d1924c875ad0a",
+      "images": [
+        {
+          "file": "prestige-route/en-dark-390-member-ready-full.png",
+          "sha256": "ec208ee8a9660db06397781a8a4c0616b37ef75b651c4058cc3fa9ae71a7dfa3",
+          "inspected": true
+        },
+        {
+          "file": "prestige-route/en-dark-390-member-ready-lower.png",
+          "sha256": "287d23c63b95e636f06610aad5c08ed5916ee8cda34c4d20d2d0940ed883d9f1",
+          "inspected": true
+        },
+        {
+          "file": "prestige-route/es-light-1440-member-ready-full.png",
+          "sha256": "d95063b84f3a95004e6fccef1c31ae622b913e8ea228204ff3310d84377c4947",
+          "inspected": true
+        },
+        {
+          "file": "prestige-route/en-dark-390-member-error-full.png",
+          "sha256": "104ac1b9c6aca5e8c45dd5b90137fe26dfbcf43c9aabfbdee36277f77afd1e4b",
+          "inspected": true
+        },
+        {
+          "file": "prestige-route/es-light-1440-member-empty-full.png",
+          "sha256": "59f31244021ec2da4f3834dc4d2211cbf559fb8790686ea7b8200fa29486f024",
+          "inspected": true
+        },
+        {
+          "file": "prestige-route/es-dark-360-member-ready-lower.png",
+          "sha256": "c909d779b0682d53736884ef19744704e7480f3e2385d59cb4a7b0b4382aa662",
+          "inspected": true
+        },
+        {
+          "file": "prestige-route/en-light-820-member-ready-full.png",
+          "sha256": "fa979f020fa7a613fd7d5a269d30e6378043c4751d37f029e3164c80267179da",
+          "inspected": true
+        }
+      ],
+      "observations": [
+        "Award card, optional public sharing/Hall controls, disabled delivery message and next-achievement section are readable at phone/tablet/desktop sizes.",
+        "Native focus and three-point visibility evidence covers lower controls without bottom-dock obstruction after scrolling.",
+        "Error state is truthful and keeps navigation, but has no inline Retry control; browser refresh/return navigation remain available."
+      ],
+      "functionalEvidence": {
+        "file": "prestige-route/results.json",
+        "routeCases": 20,
+        "sourceHashesMatch": 22,
+        "nativeLowerControlProofs": 128,
+        "allFocused": true,
+        "allThreePointHitsClear": true,
+        "overflowFailures": 0
+      },
+      "limits": [
+        "No actual production Auth/RLS, private writes, providers/payment, attendance/XP or physical Android acceptance is inferred.",
+        "No public AkiPals World/Avatar release, feature activation, SQL application, merge or deployment is authorized by this receipt.",
+        "Feature remains under existing gate; synthetic identity/RPC and forbidden-action adapters do not certify saving privacy or issuing awards."
+      ],
+      "artifacts": [
+        {
+          "id": 13028391341,
+          "runId": 41164318371
+        }
+      ]
+    },
+    {
+      "route": "src/app/[locale]/privacy/prestige/page.tsx",
+      "decision": "accept",
+      "sourceSha256": "961046121b7cdc32c054b24fa8176cf6e3db6d27c85b2e93ede35f54e8beaaca",
+      "images": [
+        {
+          "file": "prestige-route/en-dark-390-privacy-ready-full.png",
+          "sha256": "0304f8cb42ac015db8bcea9a6f5e4347ca86416f996db3da6480812c2301b7f9",
+          "inspected": true
+        },
+        {
+          "file": "prestige-route/en-dark-390-privacy-ready-lower.png",
+          "sha256": "98aee4e3de40ff36e9b6144835ad6ecb3286cd12fd75a750166c3e18016095d2",
+          "inspected": true
+        },
+        {
+          "file": "prestige-route/es-light-1440-privacy-ready-full.png",
+          "sha256": "8a5f914e7f4c29fb7fd1ed06ebe892041b5241b6939e7123f1c09f7e387f320e",
+          "inspected": true
+        },
+        {
+          "file": "prestige-route/es-light-1440-privacy-ready-lower.png",
+          "sha256": "42f632d99b2ead37849cf0452bc5a443d7d39480d89c008b0a50c227d61a346e",
+          "inspected": true
+        },
+        {
+          "file": "prestige-route/en-dark-390-privacy-error-full.png",
+          "sha256": "6f206765b6d8abf218d466d646a0c21b44a1d5a3c38a7971767a8fcc4119de65",
+          "inspected": true
+        },
+        {
+          "file": "prestige-route/es-light-1440-privacy-empty-full.png",
+          "sha256": "b48f5eed40e40e8acc086dc663e35d028d6832ca00fa266c5ebca7c59e46df12",
+          "inspected": true
+        },
+        {
+          "file": "prestige-route/es-dark-360-privacy-ready-lower.png",
+          "sha256": "2689e7871997b5c835750d4b703fcb2c75d7a6d44751e4e6a626699ca1c29839",
+          "inspected": true
+        },
+        {
+          "file": "prestige-route/en-light-820-privacy-ready-full.png",
+          "sha256": "29d0ce41248d7996fcdd756648a2d039130a1a5a9f62cc1589fb509a5a70f36f",
+          "inspected": true
+        }
+      ],
+      "observations": [
+        "Privacy hero, export entry, own award count, retention wording and address-deletion control are readable in EN/ES, dark/light and narrow/tablet/desktop views.",
+        "No private address is shown in award card. Empty and unavailable states are visually distinct.",
+        "Bottom deletion control is reached by native keyboard with visible focus and three unobstructed hit points; actual deletion is not executed."
+      ],
+      "functionalEvidence": {
+        "file": "prestige-route/results.json",
+        "routeCases": 48,
+        "sourceHashesMatch": 22,
+        "nativeLowerControlProofs": 48,
+        "allFocused": true,
+        "allThreePointHitsClear": true,
+        "overflowFailures": 0
+      },
+      "limits": [
+        "No actual production Auth/RLS, private writes, providers/payment, attendance/XP or physical Android acceptance is inferred.",
+        "No public AkiPals World/Avatar release, feature activation, SQL application, merge or deployment is authorized by this receipt.",
+        "Synthetic identity/RPC, no real private export/delete transport or persistence acceptance."
+      ],
+      "artifacts": [
+        {
+          "id": 13028391341,
+          "runId": 41164318371
+        }
+      ]
+    },
+    {
+      "route": "src/app/[locale]/events/[slug]/book/page.tsx",
+      "decision": "accept",
+      "sourceSha256": "a2414fc6ffe1bcdfce3bcc9f97b50bfa7810e60d7c3eafa3650bd805c1603d64",
+      "images": [
+        {
+          "file": "booking-browser/event-booking-browser/en-390-dark-dates.png",
+          "sha256": "ee4df1e7453530c778a9fb3c1ace1c3aca213a11721ef02477c8df2268f709ba",
+          "inspected": true
+        },
+        {
+          "file": "booking-browser/event-booking-browser/es-1440-light-contact.png",
+          "sha256": "4cadd32959e4e977baec2c843a2e02cd0d2419ca995b68d2e1eca622bfe31997",
+          "inspected": true
+        },
+        {
+          "file": "booking-browser/event-booking-browser/en-360-dark-submitting.png",
+          "sha256": "3f6ebf9fc27ce045c3feed92c10809ebe035e0e9d2508f84cc54ea45c1a9a1ec",
+          "inspected": true
+        },
+        {
+          "file": "booking-browser/event-booking-browser/es-390-light-submit-error.png",
+          "sha256": "3e8e02a9ac046d22fd339afbfd4a3ca9d513a822e3e165dc7b8edd76b6a7b51e",
+          "inspected": true
+        },
+        {
+          "file": "booking-browser/event-booking-browser/es-360-dark-full.png",
+          "sha256": "4f30ac57a2d9a0a1b1c670fc76637a99719d950ba45d6761adc424a09bfc1b90",
+          "inspected": true
+        },
+        {
+          "file": "booking-browser/event-booking-browser/en-1440-light-availability-error.png",
+          "sha256": "a4b3b0b8634de87c610772b8049bb8d53064b3d334c8c6c5ad5b47f5ef75ae86",
+          "inspected": true
+        },
+        {
+          "file": "booking-browser/event-booking-browser/es-820-dark-requested.png",
+          "sha256": "6e187f3ae1cf87c6fdfa34d097b83683b11a4c212e1b92e0c5706cc308480d86",
+          "inspected": true
+        },
+        {
+          "file": "booking-browser/event-booking-browser/en-390-light-external.png",
+          "sha256": "6a56cbf3abd9aaa3b707ab691b0eb7bb14d0fbe0b771d60c681081d3268824c2",
+          "inspected": true
+        }
+      ],
+      "observations": [
+        "Actual page export and booking wizard show legible responsive date/guest/contact steps, pending submission, refreshed availability and distinct full/unavailable/external states.",
+        "Request confirmation states that venue acceptance is required. Deposit wording explicitly says no payment is taken when sending the request.",
+        "Recovery offers Retry/Back to event; disabled sold-out slot is distinct from available slot."
+      ],
+      "functionalEvidence": {
+        "file": "booking-browser/event-booking-browser/results.json",
+        "cases": 208,
+        "sourceHashesMatchCurrentHead": 13,
+        "sourceHashMismatches": 0,
+        "states": [
+          "dates",
+          "guests",
+          "contact",
+          "submitting",
+          "submit-error",
+          "retry-contact",
+          "requested",
+          "full",
+          "empty",
+          "availability-error",
+          "metadata-error",
+          "inactive",
+          "external"
+        ]
+      },
+      "limits": [
+        "No actual production Auth/RLS, private writes, providers/payment, attendance/XP or physical Android acceptance is inferred.",
+        "No public AkiPals World/Avatar release, feature activation, SQL application, merge or deployment is authorized by this receipt.",
+        "Actual page/wizard rendered using disposable auth/database/action adapters; global layout composition and real booking transport remain separate."
+      ],
+      "artifacts": [
+        {
+          "id": 13028244380,
+          "run": 41164318414
+        }
+      ]
+    }
+  ],
+  "delegatedRoutes": [
+    {
+      "route": "src/app/[locale]/account/membership/page.tsx",
+      "owner": "root and Staff acceptance reviewer",
+      "decision": "separate receipt; excluded from this reviewer count"
+    },
+    {
+      "route": "src/app/[locale]/account/referrals/page.tsx",
+      "owner": "root and Staff acceptance reviewer",
+      "decision": "separate receipt; excluded from this reviewer count"
+    },
+    {
+      "route": "src/app/[locale]/account/rewards/page.tsx",
+      "owner": "root and Staff acceptance reviewer",
+      "decision": "separate receipt; excluded from this reviewer count"
+    },
+    {
+      "route": "src/app/[locale]/account/subscription/operations/page.tsx",
+      "owner": "root and Staff acceptance reviewer",
+      "decision": "separate receipt; excluded from this reviewer count"
+    }
+  ],
+  "globalReleaseAcceptance": false,
+  "finalSourceOverrides": {
+    "src/components/PassportBook.module.css": "c72ed10a6f6b1c800eee7ddc3ed9750f387960f0a848120541ab3f2b0342973c",
+    "src/components/PasaCinematic.css": "2070cf72788406246f87b964982397e581a6a73b3945e93c1038cf7ca0aa5906"
+  },
+  "publication": {
+    "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+    "reviewedSourceTree": "7de020d02387bb7196fe56fdc4f930e23500d852",
+    "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+    "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+    "hostedExecution": "Fresh final-head workflows required; no future run ID or artifact is asserted.",
+    "sourceBinding": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added."
+  },
+  "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222"
+}

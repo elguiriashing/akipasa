@@ -1,0 +1,225 @@
+{
+  "version": 1,
+  "reviewer": "Codex root actual Next HTTP route reviewer",
+  "sourceCommit": "d6859859ece002436838be215c16c284fcfe7222",
+  "routePaths": [
+    "src/app/[locale]/account/membership/page.tsx",
+    "src/app/[locale]/account/rewards/page.tsx",
+    "src/app/[locale]/staff/audit/page.tsx"
+  ],
+  "testResultsSha256": "5ae0c64f1cbb9393af7ff05e8695122e45a2f867233a2f4a1cc21e3588e8c2ee",
+  "evidence": {
+    "sourceCommit": "d6859859ece002436838be215c16c284fcfe7222",
+    "sourceHashes": {
+      "src/app/[locale]/account/membership/page.tsx": "9afef6346c4c7d8c20cf9740f44871b63b504357c4793ee7ddfdbec8286eeb84",
+      "src/app/[locale]/account/rewards/page.tsx": "b960c1ec17f27cf000b15d19957461edd67a4db89f3a5fc6507ca62620e9ccad",
+      "src/app/[locale]/staff/audit/page.tsx": "90bb6b33f905aaa22674b51ae683d713737bb5825264bc665209308466c5f42f",
+      "src/lib/config.ts": "99bcd28eb21688269d1115aef445e529f5eb5bc7b2bcb09303e19a8fd845a5db",
+      "src/lib/roles.ts": "6e0bc650d1125662984c221f1cc07cd0a6bbf89bf6bd624f01d552d7b454332d",
+      "package-lock.json": "1f981d778b95529e0ea44bc3004f64a2f26f7e446b7ada2de781f9dbbe526a94",
+      "scripts/review-remaining-redirect-http.mjs": "29c05bce8cf3a4c99efe0a91f29920c3b85f2fd0bcf731e3ae1c48641d9b3b30"
+    },
+    "actualNextHttp": true,
+    "identityAndProfileFixtureOnly": true,
+    "productionAuthRls": false,
+    "screenshotsApplicable": false,
+    "destinationAccepted": false,
+    "mutations": 0,
+    "results": [
+      {
+        "path": "/en/account/membership",
+        "role": "guest",
+        "status": 307,
+        "location": "/en/auth?next=%2Fen%2Faccount%2Fmembership",
+        "pass": true
+      },
+      {
+        "path": "/en/account/membership",
+        "role": "consumer",
+        "status": 307,
+        "location": "/en/account/subscription",
+        "pass": true
+      },
+      {
+        "path": "/en/account/membership",
+        "role": "administrator",
+        "status": 307,
+        "location": "/en/account/subscription",
+        "pass": true
+      },
+      {
+        "path": "/en/account/rewards",
+        "role": "guest",
+        "status": 307,
+        "location": "/en/auth?next=%2Fen%2Faccount%2Frewards",
+        "pass": true
+      },
+      {
+        "path": "/en/account/rewards",
+        "role": "consumer",
+        "status": 307,
+        "location": "/en/passports",
+        "pass": true
+      },
+      {
+        "path": "/en/account/rewards",
+        "role": "administrator",
+        "status": 307,
+        "location": "/en/passports",
+        "pass": true
+      },
+      {
+        "path": "/en/staff/audit",
+        "role": "guest",
+        "status": 307,
+        "location": "/en/auth?next=%2Fen%2Fstaff%2Faudit",
+        "pass": true
+      },
+      {
+        "path": "/en/staff/audit",
+        "role": "consumer",
+        "status": 404,
+        "location": null,
+        "pass": true
+      },
+      {
+        "path": "/en/staff/audit",
+        "role": "organiser",
+        "status": 404,
+        "location": null,
+        "pass": true
+      },
+      {
+        "path": "/en/staff/audit",
+        "role": "moderator",
+        "status": 404,
+        "location": null,
+        "pass": true
+      },
+      {
+        "path": "/en/staff/audit",
+        "role": "administrator",
+        "status": 307,
+        "location": "/en/admin/audit",
+        "pass": true
+      },
+      {
+        "path": "/en/staff/audit",
+        "role": "missing",
+        "status": 404,
+        "location": null,
+        "pass": true
+      },
+      {
+        "path": "/es/account/membership",
+        "role": "guest",
+        "status": 307,
+        "location": "/es/auth?next=%2Fes%2Faccount%2Fmembership",
+        "pass": true
+      },
+      {
+        "path": "/es/account/membership",
+        "role": "consumer",
+        "status": 307,
+        "location": "/es/account/subscription",
+        "pass": true
+      },
+      {
+        "path": "/es/account/membership",
+        "role": "administrator",
+        "status": 307,
+        "location": "/es/account/subscription",
+        "pass": true
+      },
+      {
+        "path": "/es/account/rewards",
+        "role": "guest",
+        "status": 307,
+        "location": "/es/auth?next=%2Fes%2Faccount%2Frewards",
+        "pass": true
+      },
+      {
+        "path": "/es/account/rewards",
+        "role": "consumer",
+        "status": 307,
+        "location": "/es/passports",
+        "pass": true
+      },
+      {
+        "path": "/es/account/rewards",
+        "role": "administrator",
+        "status": 307,
+        "location": "/es/passports",
+        "pass": true
+      },
+      {
+        "path": "/es/staff/audit",
+        "role": "guest",
+        "status": 307,
+        "location": "/es/auth?next=%2Fes%2Fstaff%2Faudit",
+        "pass": true
+      },
+      {
+        "path": "/es/staff/audit",
+        "role": "consumer",
+        "status": 404,
+        "location": null,
+        "pass": true
+      },
+      {
+        "path": "/es/staff/audit",
+        "role": "organiser",
+        "status": 404,
+        "location": null,
+        "pass": true
+      },
+      {
+        "path": "/es/staff/audit",
+        "role": "moderator",
+        "status": 404,
+        "location": null,
+        "pass": true
+      },
+      {
+        "path": "/es/staff/audit",
+        "role": "administrator",
+        "status": 307,
+        "location": "/es/admin/audit",
+        "pass": true
+      },
+      {
+        "path": "/es/staff/audit",
+        "role": "missing",
+        "status": 404,
+        "location": null,
+        "pass": true
+      },
+      {
+        "path": "/fr/account/membership",
+        "role": "administrator",
+        "status": 404,
+        "location": null,
+        "pass": true
+      },
+      {
+        "path": "/fr/account/rewards",
+        "role": "administrator",
+        "status": 404,
+        "location": null,
+        "pass": true
+      },
+      {
+        "path": "/fr/staff/audit",
+        "role": "administrator",
+        "status": 404,
+        "location": null,
+        "pass": true
+      }
+    ]
+  },
+  "limits": [
+    "Actual Next framework executes unchanged route files; the original parent layouts are not included in this redirect-isolation fixture.",
+    "Identity/profile reads are synthetic; no production Auth/RLS, private-state, destination or physical-device acceptance is inferred.",
+    "No standalone page imagery exists for redirect-only routes; response status and Location are the evidence."
+  ]
+}

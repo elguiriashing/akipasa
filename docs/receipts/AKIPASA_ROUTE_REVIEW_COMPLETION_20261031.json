@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "reviewer": "Codex root integration and source-binding review",
+  "date": "2026-10-31",
+  "publication": {
+    "reviewedSourceCommit": "09d20f03aeec9db99216fdc4ee03ef06c5b26895",
+    "reviewedSourceTree": "7de020d02387bb7196fe56fdc4f930e23500d852",
+    "captureCheckoutBase": "d6859859ece002436838be215c16c284fcfe7222",
+    "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
+    "hostedExecution": "Fresh final-head workflows required; no future run ID or artifact is asserted.",
+    "sourceBinding": "The tested working-tree runtime and QA bytes are committed in reviewedSourceCommit. Explicit unmatched Map-only CSS deltas qualify captures taken before that selector was added."
+  },
+  "before": {
+    "accepted": 49,
+    "outstanding": 41,
+    "excluded": 13
+  },
+  "after": {
+    "accepted": 90,
+    "in-progress": 0,
+    "pending": 0,
+    "excluded": 13
+  },
+  "fallbacksAccepted": 6,
+  "newRouteCounts": {
+    "admin": 18,
+    "staffBusinessExistingEvidence": 3,
+    "consumerOwnerExistingEvidence": 4,
+    "redirectOnly": 3,
+    "staffBusinessAccountFresh": 7,
+    "consumerFresh": 6
+  },
+  "runtimeChangedFiles": [
+    "src/components/PassportBook.module.css",
+    "src/app/[locale]/account/subscription/operations/page.tsx",
+    "src/components/PasaCinematic.css"
+  ],
+  "validation": {
+    "redirectHttp": {
+      "passed": 27,
+      "actualNext": true,
+      "fixtureIdentity": true
+    },
+    "staffBusinessAccount": {
+      "passed": 72,
+      "sixRoutes": 56,
+      "finalOperations": 16,
+      "nativeGetRecoveries": 4,
+      "singleLineRetryChecks": 4
+    },
+    "map": {
+      "captures": 60,
+      "contexts": 12,
+      "inputHashes": 63,
+      "minimumLightTitleContrast": 15.989432
+    },
+    "passport": {
+      "passed": 194,
+      "minimumLoyaltyTitleContrast": 13.762708,
+      "minimumMotionStatusContrast": 11.040894
+    },
+    "consumer": {
+      "stdoutReportedPassingCases": 180,
+      "finalPersistedResultRows": 178,
+      "storageQualification": "Final two rows absent from local result JSON despite successful process exit and final screenshot; no rows reconstructed. Earlier corrected180-case run remains, current source hashes frozen, and fresh hosted complete evidence is required."
+    },
+    "unitTests": {
+      "operationsAndReturns": 73,
+      "finalOperationsOnly": 19,
+      "ownerAppearance": 19
+    },
+    "originalTabletJobsPreserved": 6,
+    "newMandatoryTabletJobs": 1
+  },
+  "sharedCssReconciliation": {
+    "path": "src/components/PasaCinematic.css",
+    "beforeSha256": "f5b80b832b3626f5864473d8764f04bcea6d4993c9dc7d1ee6f583b5196e8368",
+    "afterSha256": "2070cf72788406246f87b964982397e581a6a73b3945e93c1038cf7ca0aa5906",
+    "onlyAddedSelector": "html[data-theme=\"light\"] .app-shell:has(.map-page) .map-results-drawer .pasa-event-card .card-body h3",
+    "scope": "Only the light Map drawer event title can match. Earlier non-Map captured inputs are not called byte-identical; their composed DOM cannot match this selector. Map has fresh final-CSS evidence."
+  },
+  "independentRootImageInspection": [
+    "operations-en-light-360-failed.png",
+    "map-es-light-1440-list.png"
+  ],
+  "releaseApproved": false,
+  "productionChanged": false,
+  "scopeQualifications": [
+    "Synthetic local identities/reads/GPS/Map style do not prove real backend/RLS/provider/private-write journeys.",
+    "Public gated AkiPals entry only; isolated World/avatar work remains private.",
+    "Physical Android and final full-candidate owner review remain pending.",
+    "No SQL, paid QA, payments, attendance/XP, consent choices, master merge or production deployment."
+  ]
+}
