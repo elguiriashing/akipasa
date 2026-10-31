@@ -90,5 +90,28 @@
     "Public gated AkiPals entry only; isolated World/avatar work remains private.",
     "Physical Android and final full-candidate owner review remain pending.",
     "No SQL, paid QA, payments, attendance/XP, consent choices, master merge or production deployment."
-  ]
+  ],
+  "postReviewQaOnlyCorrection": {
+    "failureHead": "ddb520235d6137cd835393303735e94749aa18fa",
+    "failedFullCheck": "https://github.com/elguiriashing/akipasa/actions/runs/41200870690/job/124536244619",
+    "failure": "ESLint no-unused-vars on unused token constant in the new Map runner; no application or browser assertion failure.",
+    "correction": "Delete that single unused constant. All runtime, fixture data, assertions and request blockers remain unchanged.",
+    "path": "scripts/test-map-route-review-browser.mjs",
+    "beforeSha256": "88e5dc5a47d6bac6f74bed53e5aaceaa33b398e017c5f4d26bd4c367a75c2e18",
+    "afterSha256": "5204b0588a213684655f1e5bfa7994982889c6b40694d787593abbe61b5c56ca",
+    "validation": [
+      "Scoped ESLint with zero warnings passed",
+      "Node syntax passed",
+      "Diff whitespace passed"
+    ],
+    "freshFullCiRequired": true
+  },
+  "hostedBrowserEvidence": {
+    "head": "ddb520235d6137cd835393303735e94749aa18fa",
+    "syntheticMerge": "ff4838274bd656c2c66458acfb60507146ed6df7",
+    "identicalTree": "ef5b0f6b262099a57591f7532987ecbf7a05f83b",
+    "artifact": "https://github.com/elguiriashing/akipasa/actions/runs/41200870691/artifacts/13042128091",
+    "artifactSha256": "7cf64f9753a672f95609849b52142eb4abf139855587313de3c499de0e7da9fe",
+    "reviewSteps": "All four new review steps passed and evidence uploaded; full workflow status and complete raw-row reconciliation are separate."
+  }
 }

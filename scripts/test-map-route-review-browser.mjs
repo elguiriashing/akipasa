@@ -16,7 +16,6 @@ const out = resolve(
   process.env.MAP_REVIEW_EVIDENCE_DIR || "test-results/map-route-review",
 );
 mkdirSync(out, { recursive: true });
-const token = "91000000-0000-4000-8000-000000000001";
 const globals = [
   ...readFileSync("src/app/layout.tsx", "utf8").matchAll(
     /import\s+["'](\.\/[^"']+\.css)["'];/g,
