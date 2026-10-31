@@ -1,0 +1,38 @@
+name: Read-only AkiPals production response probe
+on:
+  push:
+    branches: [diagnostic/akipals-live-20261031]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Read exact deployed source and anonymous response boundaries
+        run: |
+          node --input-type=module <<'NODE'
+          import {writeFileSync} from 'node:fs';
+          const origin='https://akipasa.com';
+          const paths=['/release-source.json','/api/bookings/release','/api/health/release','/pals','/pals/identity','/pals/world','/pals/world/venues?lat=36.54&lng=-4.62','/pals/runtime/creator.min.js','/pals/models/akipals-base-female.glb','/en','/es'];
+          const results=await Promise.all(paths.map(async path=>{
+            try {
+              const u=new URL(path,origin);u.searchParams.set('release_probe',String(Date.now()));
+              const r=await fetch(u,{redirect:'manual',cache:'no-store',signal:AbortSignal.timeout(15000)});
+              const bytes=new Uint8Array(await r.arrayBuffer());
+              const text=new TextDecoder().decode(bytes);
+              let data;try{data=JSON.parse(text)}catch{}
+              return {path,status:r.status,type:r.headers.get('content-type'),cache:r.headers.get('cache-control'),robots:r.headers.get('x-robots-tag'),location:r.headers.get('location'),mitigated:r.headers.get('cf-mitigated'),source:data?.sourceCommit,bytes:bytes.length,glb:bytes.length>4&&new TextDecoder().decode(bytes.slice(0,4))==='glTF',publicPalsLink:/href=["'](?:https:\/\/akipasa\.com)?\/pals(?:["'/?#])/i.test(text),title:/(?:<title>)([^<]{0,150})/.exec(text)?.[1]};
+            } catch(e){return {path,error:String(e),cause:String(e.cause||'')}}
+          }));
+          writeFileSync('live-responses.json',JSON.stringify({expectedSource:'6047abc2186e2bab0eacae5ffcb800d73b66d64a',checkedAt:new Date().toISOString(),results},null,2));
+          console.log(JSON.stringify(results,null,2));
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pals-live-responses
+          path: live-responses.json
+          retention-days: 3
