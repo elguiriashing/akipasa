@@ -1,5 +1,24 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-31 | Restore ordinary Privacy access above detail action bars
+
+Postdeploy339 real phone-sized hit tests showed Venue's ordinary Privacy trigger
+entirely covered by its fixed Directions bar. General56HTTPS reads passed but did
+not test this native control; the baseline failure is retained. Two detail-only
+mobile CSS rules now reserve the actual action-bar/dock clearance and matching
+focus scroll margin: Venue<=600, Event<=850. Full-detail roots, ordinary flow,
+Owner-focus/Map/Passport exclusions prevent spill. Dialog, choices, cookie logic,
+tracking, booking/controller, private identity and authorization are unchanged.
+
+Existing32 Spotlight tests remain. Another24 actual built Next cases exercise
+both pages in EN/ES/light/dark/360/390/820: five native hit points after bottom
+scroll, native Tab auto-scroll and after closing, Enter/Escape/pointer Close,
+four unchecked toggles and unchanged saved privacy/motion/queue state; no writes
+attempted. Fresh56 cases and optimized build pass, four actual screenshots and
+frozen source independently reviewed. Combined340 source now has six bounded
+runtime files; remaining1,002 Master paths and all original CI jobs stay intact.
+Fresh final-head clean CI remains mandatory; no fix deployment is claimed yet.
+
 ## 2026-10-31 | Admin workbench presentation and truthful read recovery
 
 This independently bounded batch follows authorized public339 master0775. Four

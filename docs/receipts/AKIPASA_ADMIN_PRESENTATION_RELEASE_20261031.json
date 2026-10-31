@@ -20,6 +20,14 @@
     {
       "path": "src/app/[locale]/admin/promotions/page.tsx",
       "sha256": "2fee3dcae19d08b262624dc596dea9da2617e857c5497cbdba8dd4aec6f12d95"
+    },
+    {
+      "path": "src/app/[locale]/venues/[slug]/venue-spotlight.css",
+      "sha256": "bd1e324f891bed14c95ac9e719c292e6ba48fe459c9c0f6d4c075a0a73eb9efb"
+    },
+    {
+      "path": "src/app/[locale]/events/[slug]/event-spotlight.css",
+      "sha256": "76d99780307154cb2194714ba82ef28aade15330c37caf0ce270a8487da65b90"
     }
   ],
   "qa": [
@@ -38,9 +46,13 @@
     {
       "path": "scripts/test-admin-promotion-read-recovery-browser.mjs",
       "sha256": "8f23f108c2ce3d79c59c1ecc6f5f6e7fd4333ea8c46d045bb2f79bae7898267b"
+    },
+    {
+      "path": "tests/e2e/spotlight-public-layout.spec.ts",
+      "sha256": "efca9242ca49cd3593a99d0befa7c528c46a2cbc37d443883dcfac5a550b22da"
     }
   ],
-  "protectedMasterPaths": 1004,
+  "protectedMasterPaths": 1002,
   "rootWorkflowDeltaProof": "root-additive-workflow-proof.json",
   "masterGuardQueryFormSignature": "promotions-protected-signature.json",
   "implemented": [
@@ -151,9 +163,25 @@
     "vitestPassed": 2184,
     "stages": 15,
     "buildId": "zbgrRS66q52M7NRCZwob1",
-    "setupFailurePreserved": "/tmp/akipasa-admin-release-fullcheck-20261031.log"
+    "setupFailurePreserved": "/tmp/akipasa-admin-release-fullcheck-20261031.log",
+    "qualification": "Passed before the final two-CSS demonstrated privacy repair; fresh exact-head full check/clean CI required before merge."
   },
   "exactHeadCI": "Required after publication; not claimed passed",
   "merged": false,
-  "deployed": false
+  "deployed": false,
+  "detailPrivacyHotfix": {
+    "baseline": "/workspace/akipasa-main-checkpoints/public339-native-privacy-overlap-before-fix-20261031.json",
+    "proof": "/tmp/akipasa-detail-privacy-clearance-20261031/spotlight56-build-browser.log",
+    "actualNextCasesPassed": 56,
+    "existingCasesRetained": 32,
+    "newNativePrivacyCasesPassed": 24,
+    "sourceHashes": {
+      "src/app/[locale]/venues/[slug]/venue-spotlight.css": "bd1e324f891bed14c95ac9e719c292e6ba48fe459c9c0f6d4c075a0a73eb9efb",
+      "src/app/[locale]/events/[slug]/event-spotlight.css": "76d99780307154cb2194714ba82ef28aade15330c37caf0ce270a8487da65b90",
+      "tests/e2e/spotlight-public-layout.spec.ts": "efca9242ca49cd3593a99d0befa7c528c46a2cbc37d443883dcfac5a550b22da"
+    },
+    "buildId": "TvbkcLQY30Rtk9v6lTurL",
+    "independentReview": "/workspace/akipasa-main-checkpoints/detail-privacy-clearance-independent-review-20261031.json",
+    "qualification": "Original four Admin runtime/three QA source hashes unchanged; initial Admin evidence retained. Fresh combined final-head full CI required, including all56 Spotlight and mandatory832/24."
+  }
 }

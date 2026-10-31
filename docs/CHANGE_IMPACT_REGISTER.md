@@ -3479,3 +3479,23 @@ in the concrete release proposal; explicit owner exception remains required.
   mandatory. Owner-authorized independent shipping only; full332 strict gate and
   49/90 formal count unchanged. Rollback to verified339 Worker035e006c if needed;
   no SQL/customer/payment/consent/resource operation in this batch.
+
+## 2026-10-31 | Demonstrated detail mobile Privacy overlap repair
+
+- **Trigger:** Real live339 Venue390 at settled bottom scroll: all three sampled
+  points on Privacy hit the fixed Directions link instead. Preserve the failure;
+  56 general HTTPS passes do not establish native control accessibility.
+- **Repair:** Only two detail CSS files add24 lines each for ordinary trigger
+  flow clearance and focus scroll margin at their actual CTA breakpoints,600px
+  Venue and850px Event. Full-root/Owner-focus/Map/Passport guards retained; no
+  dialog, consent choice, saved value, handler, controller or provider changes.
+- **Evidence:** Original32 Spotlight assertions retained plus24 actual Next native
+  privacy cases across both pages/ENES/themes/360390820 allPASS,56 total. Each
+  native case checks five hit points at bottom/Tab/after Close, real keyboard and
+  pointer opening/closing, four unchecked choices and unchanged saved state;
+  attempted writes empty. Fresh build passes; four actual images independently
+  reviewed. All four original Admin runtime and three QA hashes stay unchanged.
+- **Release:** Fold this actual defect repair into340 rather than ship from old
+  1a greens. Fresh final-head full CI/832/24/56/Cloudflare and source review required.
+  Production339 remains known affected until the replacement deploys and real
+  HTTPS native hit tests pass. No full332 acceptance or real-device claim.

@@ -1176,3 +1176,27 @@ html:not([data-owner-focus="true"])
   background: var(--spotlight-chrome-raised);
   border-color: var(--spotlight-chrome-line);
 }
+
+/* Ordinary Privacy remains in document flow above both the existing dock and
+   this detail page's second action bar. Dialog/choices and other routes stay unchanged. */
+@media (max-width: 600px) {
+  html:not([data-owner-focus="true"])
+    body:has(.app-detail-page.spotlight-page.spotlight-venue):not(
+      :has(.map-page, .passports-workspace, #passport-privacy-controls)
+    )
+    > .privacy-preferences:not(.privacy-preferences--passport) {
+    padding-bottom: calc(
+      1rem + var(--app-bottom, 64px) + 5rem + env(safe-area-inset-bottom, 0px)
+    );
+  }
+  html:not([data-owner-focus="true"])
+    body:has(.app-detail-page.spotlight-page.spotlight-venue):not(
+      :has(.map-page, .passports-workspace, #passport-privacy-controls)
+    )
+    > .privacy-preferences:not(.privacy-preferences--passport)
+    > button {
+    scroll-margin-block-end: calc(
+      var(--app-bottom, 64px) + 5rem + env(safe-area-inset-bottom, 0px)
+    );
+  }
+}

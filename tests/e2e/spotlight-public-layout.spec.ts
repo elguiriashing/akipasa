@@ -633,6 +633,241 @@ test.describe("Spotlight public route acceptance", () => {
     }
   }
 
+  for (const locale of ["en", "es"] as const) {
+    for (const theme of ["light", "dark"] as const) {
+      for (const width of [360, 390, 820] as const) {
+        for (const kind of ["venue", "event"] as const) {
+          test(`detail Privacy native ${kind} ${locale} ${theme} ${width}`, async ({
+            page,
+            context,
+          }) => {
+            test.setTimeout(60_000);
+            await page.setViewportSize({ width, height: 844 });
+            await page.emulateMedia({
+              colorScheme: theme,
+              reducedMotion: "reduce",
+            });
+            await context.addCookies(
+              ["analytics", "personalisation", "marketing"].map((name) => ({
+                name: `ak_${name}`,
+                value: "denied",
+                url: fixture.siteUrl,
+              })),
+            );
+            await page.addInitScript((value) => {
+              localStorage.setItem("akipasa.theme", value);
+              localStorage.setItem("akipasa:passport-motion", "off");
+            }, theme);
+            const attemptedWrites: string[] = [];
+            await page.route("**/*", (route) => {
+              if (!["GET", "HEAD"].includes(route.request().method())) {
+                attemptedWrites.push(
+                  `${route.request().method()} ${new URL(route.request().url()).pathname}`,
+                );
+                return route.abort("blockedbyclient");
+              }
+              return route.fallback();
+            });
+            await page.goto(
+              `/${locale}/${kind === "venue" ? "venues" : "events"}/${kind === "venue" ? fixture.venue.slug : fixture.event.slug}`,
+            );
+            await expect(
+              page.locator(`main.spotlight-${kind} h1`),
+            ).toBeVisible();
+            await expect(page.locator("html")).toHaveAttribute(
+              "data-theme",
+              theme,
+            );
+            const trigger = page.locator(
+              "body > .privacy-preferences:not(.privacy-preferences--passport) > button",
+            );
+            await expect(trigger).toHaveAttribute("aria-expanded", "false");
+            const savedPrivacy = () =>
+              page.evaluate(() => ({
+                cookies: document.cookie
+                  .split("; ")
+                  .filter((cookie) =>
+                    /^ak_(analytics|personalisation|marketing|consent_version)=/.test(
+                      cookie,
+                    ),
+                  )
+                  .sort(),
+                motion: localStorage.getItem("akipasa:passport-motion"),
+                behaviourQueue: localStorage.getItem(
+                  "akipasa:behaviour-queue:v1",
+                ),
+              }));
+            const before = await savedPrivacy();
+            const samples = async () =>
+              trigger.evaluate((button) => {
+                const bounds = button.getBoundingClientRect();
+                return {
+                  bounds: {
+                    x: bounds.x,
+                    y: bounds.y,
+                    width: bounds.width,
+                    height: bounds.height,
+                  },
+                  viewportHeight: innerHeight,
+                  scrollY,
+                  documentHeight: document.documentElement.scrollHeight,
+                  points: [
+                    [0.5, 0.5],
+                    [0.1, 0.1],
+                    [0.9, 0.1],
+                    [0.1, 0.9],
+                    [0.9, 0.9],
+                  ].map(([x, y]) => {
+                    const target = document.elementFromPoint(
+                      bounds.x + bounds.width * x,
+                      bounds.y + bounds.height * y,
+                    );
+                    return (
+                      !!target && (target === button || button.contains(target))
+                    );
+                  }),
+                };
+              });
+            const assertClear = (
+              value: Awaited<ReturnType<typeof samples>>,
+            ) => {
+              expect(value.bounds.height).toBeGreaterThanOrEqual(44);
+              expect(value.bounds.y).toBeGreaterThanOrEqual(0);
+              expect(value.bounds.y + value.bounds.height).toBeLessThanOrEqual(
+                value.viewportHeight + 1,
+              );
+              expect(
+                value.points,
+                "The whole Privacy control must own its centre and all four corner hits above both action bars",
+              ).toEqual([true, true, true, true, true]);
+            };
+            await page.evaluate(() =>
+              window.scrollTo({
+                top: document.documentElement.scrollHeight,
+                behavior: "instant",
+              }),
+            );
+            await page.evaluate(
+              () =>
+                new Promise<void>((resolve) =>
+                  requestAnimationFrame(() =>
+                    requestAnimationFrame(() => resolve()),
+                  ),
+                ),
+            );
+            const atBottom = await samples();
+            expect(
+              Math.abs(
+                atBottom.scrollY +
+                  atBottom.viewportHeight -
+                  atBottom.documentHeight,
+              ),
+            ).toBeLessThanOrEqual(2);
+            assertClear(atBottom);
+            // Reach the trigger by native Tab from the document start. The browser
+            // must keep it above both bars when focus scrolls it into view.
+            await page.evaluate(() => {
+              if (document.activeElement instanceof HTMLElement)
+                document.activeElement.blur();
+              window.scrollTo({ top: 0, behavior: "instant" });
+            });
+            let tabSteps = 0;
+            for (; tabSteps < 120; tabSteps++) {
+              await page.keyboard.press("Tab");
+              if (
+                await trigger.evaluate(
+                  (button) => button === document.activeElement,
+                )
+              )
+                break;
+            }
+            expect(
+              tabSteps,
+              "Native Tab reaches the existing outside Privacy trigger",
+            ).toBeLessThan(120);
+            await expect(trigger).toBeFocused();
+            const afterNativeTab = await samples();
+            assertClear(afterNativeTab);
+            await page.screenshot({
+              path: `test-results/spotlight-routes/privacy-${kind}-${locale}-${theme}-${width}-focused.png`,
+              fullPage: false,
+              animations: "disabled",
+            });
+            await page.keyboard.press("Enter");
+            const dialog = page.locator("aside.personalisation-consent");
+            await expect(dialog).toBeVisible();
+            await expect(trigger).toHaveAttribute("aria-expanded", "true");
+            await expect(dialog.locator('input[type="checkbox"]')).toHaveCount(
+              4,
+            );
+            for (const checkbox of await dialog
+              .locator('input[type="checkbox"]')
+              .all())
+              await expect(checkbox).not.toBeChecked();
+            const close = dialog.getByRole("button", {
+              name:
+                locale === "es"
+                  ? "Cerrar opciones de privacidad"
+                  : "Close privacy choices",
+              exact: true,
+            });
+            for (
+              let step = 0;
+              step < 12 &&
+              !(await close.evaluate(
+                (button) => button === document.activeElement,
+              ));
+              step++
+            )
+              await page.keyboard.press("Tab");
+            await expect(close).toBeFocused();
+            await page.keyboard.press("Escape");
+            await expect(dialog).toHaveCount(0);
+            await expect(trigger).toBeFocused();
+            assertClear(await samples());
+            // Native pointer clicks must also work without forced clicks or
+            // changing any checkbox/save/reject/accept action.
+            await trigger.click();
+            await expect(dialog).toBeVisible();
+            await close.click();
+            await expect(dialog).toHaveCount(0);
+            await expect(trigger).toBeFocused();
+            const afterClose = await samples();
+            assertClear(afterClose);
+            expect(await savedPrivacy()).toEqual(before);
+            expect(attemptedWrites).toEqual([]);
+            await page.screenshot({
+              path: `test-results/spotlight-routes/privacy-${kind}-${locale}-${theme}-${width}-closed.png`,
+              fullPage: false,
+              animations: "disabled",
+            });
+            await writeFile(
+              `test-results/spotlight-routes/privacy-${kind}-${locale}-${theme}-${width}.json`,
+              JSON.stringify(
+                {
+                  locale,
+                  theme,
+                  width,
+                  kind,
+                  atBottom,
+                  afterNativeTab,
+                  afterClose,
+                  tabSteps: tabSteps + 1,
+                  savedPrivacyUnchanged: true,
+                  attemptedWrites,
+                  physicalAndroid: false,
+                  reducedMotion: true,
+                },
+                null,
+                2,
+              ),
+            );
+          });
+        }
+      }
+    }
+  }
+
   test("sparse venues retain useful information without fabricated menu, hours or booking", async ({
     page,
   }) => {
