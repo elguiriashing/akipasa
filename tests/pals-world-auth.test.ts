@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  safeAuthDestination,
-  taskFromAuthCallback,
-} from "@/lib/auth-security";
+import { safeAuthDestination, taskFromAuthCallback } from "@/lib/auth-security";
 
 describe("restricted World login return", () => {
   for (const locale of ["en", "es"] as const) {
