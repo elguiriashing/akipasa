@@ -9,7 +9,6 @@ on:
       - "scripts/test-pals-world-browser.mjs"
 permissions:
   contents: read
-  actions: read
 jobs:
   world:
     runs-on: ubuntu-latest
@@ -22,23 +21,45 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-      - name: Capture previous browser error tail
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          mkdir -p test-results/pals-world-diagnostics
-          curl --fail --silent --show-error --location -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/elguiriashing/akipasa/actions/jobs/124532638533/logs" -o /tmp/previous.log
-          tail -100 /tmp/previous.log > test-results/pals-world-diagnostics/previous-tail.txt
-          cat test-results/pals-world-diagnostics/previous-tail.txt
       - name: Locked dependencies and Chromium
         run: |
+          mkdir -p test-results/pals-world-diagnostics
           npm ci --no-audit --no-fund >/tmp/install.log 2>&1 || { tail -50 /tmp/install.log; exit 1; }
           npx playwright install --with-deps chromium >/tmp/chromium.log 2>&1 || { tail -50 /tmp/chromium.log; exit 1; }
       - run: npm run pals:3d:bundle
       - name: Actual World component browser checks
         run: |
           set +e
-          node scripts/test-pals-world-browser.mjs >test-results/pals-world-diagnostics/world.log 2>&1
+          node --input-type=module >test-results/pals-world-diagnostics/world.log 2>&1 <<'NODE'
+          import { chromium } from '@playwright/test';
+          import { writeFileSync } from 'node:fs';
+          const launch = chromium.launch.bind(chromium);
+          chromium.launch = async (...args) => {
+            const browser = await launch(...args);
+            const newContext = browser.newContext.bind(browser);
+            browser.newContext = async (...args) => {
+              const context = await newContext(...args);
+              context.on('page', page => {
+                page.on('pageerror', error => console.error('BROWSER EXCEPTION:',error.stack));
+                page.on('console', event => { if(event.type()==='error') console.error('BROWSER CONSOLE:',event.text().slice(0,1500)); });
+                page.on('requestfailed', request => console.error('FAILED REQUEST:', request.url(), request.failure()));
+              });
+              return context;
+            };
+            const close = browser.close.bind(browser);
+            browser.close = async (...args) => {
+              for(const [index,page] of browser.contexts().flatMap(c=>c.pages()).entries()) {
+                try {
+                  writeFileSync('test-results/pals-world-diagnostics/last-page-'+index+'.html', await page.content());
+                  await page.screenshot({path:'test-results/pals-world-diagnostics/last-page-'+index+'.png',fullPage:true});
+                } catch {}
+              }
+              return close(...args);
+            };
+            return browser;
+          };
+          await import('./scripts/test-pals-world-browser.mjs');
+          NODE
           result=$?
           tail -100 test-results/pals-world-diagnostics/world.log
           exit "$result"
