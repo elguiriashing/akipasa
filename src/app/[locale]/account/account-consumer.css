@@ -1,0 +1,837 @@
+/* Consumer Account only. Staff/Admin keep WorkspaceShell's existing workbench. */
+.pasa-consumer-account {
+  --account-canvas: #07090b;
+  --account-panel: #111518;
+  --account-raised: #191e22;
+  --account-ink: #f8f7f4;
+  --account-muted: #adb5bd;
+  --account-line: #2a3035;
+  --account-accent: #ff8230;
+  --account-accent-ink: #ffad76;
+  min-width: 0;
+  width: 100%;
+}
+html[data-theme="light"] .pasa-consumer-account {
+  --account-canvas: #faf8f4;
+  --account-panel: #ffffff;
+  --account-raised: #f2eee8;
+  --account-ink: #172026;
+  --account-muted: #52606b;
+  --account-line: #d8d9d7;
+  --account-accent-ink: #983600;
+}
+.app-shell:has(.pasa-consumer-account) .app-content {
+  background: var(--account-canvas, #07090b);
+}
+html[data-theme="light"] .app-shell:has(.pasa-consumer-account) .app-content {
+  background: #faf8f4;
+}
+.app-shell .pasa-consumer-account .account-workspace {
+  --surface: #131619;
+  --surface-alt: var(--account-raised);
+  --ink: var(--account-ink);
+  --muted: var(--account-muted);
+  --line: var(--account-line);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0;
+  width: min(100%, 72rem);
+  min-width: 0;
+  margin: 0 auto;
+  padding: 1rem clamp(0.25rem, 2vw, 1.25rem) 1rem;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+html[data-theme="light"] .app-shell .pasa-consumer-account .account-workspace {
+  --surface: #ffffff;
+}
+.app-shell .pasa-consumer-account .account-workspace > .workspace-sidebar {
+  display: none;
+}
+.app-shell .pasa-consumer-account .account-workspace > .workspace-content {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+}
+.app-shell .pasa-consumer-account .account-workspace .workspace-grid-body {
+  display: block;
+  padding: 0;
+  margin: 0;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-mobile-navigation {
+  display: block;
+  grid-column: 2;
+  grid-row: 1;
+  align-self: start;
+  position: relative;
+  top: auto;
+  z-index: 70;
+  width: 5.6rem;
+  height: 44px;
+  margin: 0;
+}
+.app-shell .pasa-consumer-account .account-workspace .workspace-mobile-trigger {
+  display: flex;
+  justify-content: center;
+  gap: 0.55rem;
+  width: 100%;
+  height: 44px;
+  min-height: 44px;
+  margin: 0;
+  padding: 0.6rem;
+  border: 1px solid var(--account-line);
+  border-radius: 999px;
+  background: var(--account-panel);
+  color: var(--account-ink);
+  box-shadow: none;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-mobile-trigger
+  > span:nth-child(2) {
+  display: none;
+}
+.app-shell .pasa-consumer-account .account-workspace .workspace-menu-glyph {
+  width: 15px;
+  height: 15px;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.app-shell .pasa-consumer-account .account-workspace .workspace-drawer-layer {
+  display: block;
+  position: absolute;
+  inset: calc(100% + 0.65rem) 0 auto auto;
+  width: min(24rem, calc(100vw - 2rem));
+  margin: 0;
+  padding: 0;
+  background: none;
+}
+.app-shell .pasa-consumer-account .account-workspace .workspace-drawer {
+  display: block;
+  position: relative;
+  inset: auto;
+  width: 100%;
+  max-width: none;
+  max-height: min(65dvh, calc(100dvh - 12rem));
+  margin: 0;
+  padding: 0.75rem;
+  overflow: auto;
+  border: 1px solid var(--account-line);
+  border-radius: 1.25rem;
+  background: var(--account-panel);
+  color: var(--account-ink);
+  box-shadow: 0 22px 65px #0007;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-drawer
+  .workspace-brand {
+  display: none;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-drawer
+  .workspace-navigation {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.35rem;
+  overflow: visible;
+}
+.app-shell .pasa-consumer-account .account-workspace .workspace-navigation a {
+  min-height: 48px;
+  padding: 0.6rem;
+  border: 0;
+  border-radius: 0.75rem;
+  color: var(--account-ink);
+  white-space: normal;
+  background: transparent;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-navigation
+  a.active {
+  color: var(--account-accent-ink);
+  background: color-mix(
+    in srgb,
+    var(--account-accent) 14%,
+    var(--account-panel)
+  );
+  box-shadow: none;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-navigation
+  a.active
+  .workspace-glyph {
+  color: inherit;
+  background: none;
+}
+.account-section-links {
+  display: flex;
+  gap: 0.3rem;
+  min-width: 0;
+  margin: 0 0 1.6rem;
+  padding-inline-end: 6rem;
+}
+.account-section-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  color: var(--account-muted);
+  text-decoration: none;
+  font-size: 0.84rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.account-section-links a[aria-current="page"] {
+  color: var(--account-canvas);
+  background: var(--account-accent);
+}
+html[data-theme="light"] .account-section-links a[aria-current="page"] {
+  color: #171717;
+}
+.account-section-links a:focus-visible {
+  outline: 2px solid var(--account-accent-ink);
+  outline-offset: 3px;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-page-heading {
+  min-height: 0;
+  margin: 0 0 1.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-page-heading
+  > div
+  > span {
+  color: var(--account-accent-ink);
+  font-size: 0.7rem;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-page-heading
+  h1 {
+  margin: 0.35rem 0 0.65rem;
+  color: var(--account-ink);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.055em;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-page-heading
+  p {
+  max-width: 48rem;
+  color: var(--account-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+/* A personal profile, with identity and real saved/followed counts. */
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-overview {
+  --personal-bg: var(--account-canvas);
+  --personal-card: var(--account-panel);
+  --personal-ink: var(--account-ink);
+  --personal-muted: var(--account-muted);
+  --personal-line: var(--account-line);
+  --personal-orange: var(--account-accent-ink);
+  max-width: 64rem;
+  padding: 0;
+  gap: 1.2rem;
+  border-radius: 0;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-welcome {
+  grid-template-columns: 6rem minmax(0, 1fr) 44px;
+  gap: 1.15rem;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-avatar {
+  width: 6rem;
+  height: 6rem;
+  border: 2px solid var(--account-accent);
+  box-shadow: 0 0 0 6px
+    color-mix(in srgb, var(--account-accent) 8%, transparent);
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-welcome-copy
+  h1 {
+  font-size: clamp(1.9rem, 4vw, 3.2rem);
+  letter-spacing: -0.045em;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-pulse {
+  margin-top: 0.25rem;
+  padding: 0.6rem 0;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-pulse
+  strong {
+  font-size: 1.55rem;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-overview-main {
+  gap: 1.6rem;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-next-step {
+  min-height: 15rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 1.4rem;
+  border: 1px solid #ffffff21;
+  border-radius: 1.2rem;
+  background-color: #07090b;
+  background-size: cover;
+  background-position: center 40%;
+  color: #fff;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-next-step
+  h2 {
+  max-width: 20ch;
+  color: #fff;
+  font-size: clamp(1.65rem, 3vw, 2.2rem);
+  letter-spacing: -0.04em;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-next-step
+  > div
+  > span {
+  color: #ffb27a;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-next-step
+  .account-discover-link {
+  min-height: 44px;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  color: #101010;
+  background: #ff8230;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-shortcuts {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 1rem;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-shortcuts
+  > a {
+  min-height: 76px;
+  gap: 0.7rem;
+  padding: 0.7rem 0;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-shortcuts
+  > a
+  > svg {
+  width: 15px;
+}
+/* Settings are deliberate rows, not a dashboard of repeated cards. */
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-settings-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  max-width: 56rem;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-settings-grid
+  > .account-control-card {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 0.55rem 1rem;
+  padding: 1.5rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--account-line);
+  border-radius: 0;
+  background: none;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-settings-grid
+  .account-control-heading {
+  display: flex;
+  grid-column: 1 / -1;
+  gap: 1rem;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-settings-grid
+  .account-control-heading
+  > div {
+  grid-column: 2;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-settings-grid
+  .account-control-icon {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  border: 0;
+  border-radius: 50%;
+  background: var(--account-raised);
+  color: var(--account-accent-ink);
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-settings-grid
+  > article
+  > :not(header) {
+  grid-column: 2;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-settings-grid
+  h2 {
+  font-size: 1.1rem;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-settings-grid
+  .account-email-value {
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  font-size: 0.88rem;
+  color: var(--account-muted);
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-settings-grid
+  .account-control-disclosure,
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-settings-grid
+  .account-card-action {
+  margin: 0.5rem 0 0;
+  max-width: 34rem;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-settings-grid
+  .account-card-action
+  button {
+  justify-content: flex-start;
+  width: auto;
+  min-height: 44px;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  background: var(--account-raised);
+}
+/* The editor keeps every existing field/action, led by the member's identity. */
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-profile-screen
+  .account-profile-layout {
+  grid-template-columns: 18rem minmax(0, 1fr);
+  gap: 2.5rem;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-profile-media.account-control-card {
+  gap: 1rem;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-profile-media
+  > .account-control-heading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-profile-preview {
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--account-line);
+  border-radius: 1.3rem;
+  background:
+    radial-gradient(ellipse at 0 0, #ff823025, transparent 75%),
+    var(--account-panel);
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-profile-cover {
+  width: 100%;
+  height: 7.5rem;
+  object-fit: cover;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-profile-identity {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+  padding: 1.25rem;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-profile-avatar {
+  width: 5rem;
+  height: 5rem;
+  font-size: 2rem;
+  font-weight: 750;
+  border: 2px solid var(--account-accent);
+  border-radius: 50%;
+  background: var(--account-raised);
+  color: var(--account-accent-ink);
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-profile-identity
+  strong {
+  font-size: 1.5rem;
+  letter-spacing: -0.04em;
+  color: var(--account-ink);
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-profile-identity
+  small,
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-profile-visibility {
+  color: var(--account-muted);
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-profile-uploads {
+  display: grid;
+  gap: 0.65rem;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-profile-form {
+  gap: 0;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-profile-form
+  > .account-control-card {
+  gap: 1.2rem;
+  padding: 0 0 1.5rem;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-profile-form
+  > .account-control-disclosure {
+  padding-block: 0.3rem;
+  border: 0;
+  border-bottom: 1px solid var(--account-line);
+  border-radius: 0;
+  background: none;
+}
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-profile-screen
+  .account-profile-save {
+  margin-top: 1.5rem;
+}
+@media (max-width: 950px) {
+  .app-shell
+    .pasa-consumer-account
+    .account-workspace
+    .workspace-grid-body
+    .account-profile-screen
+    .account-profile-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.75rem;
+  }
+  .app-shell
+    .pasa-consumer-account
+    .account-workspace
+    .workspace-grid-body
+    .account-profile-identity {
+    grid-template-columns: 5rem minmax(0, 1fr);
+    align-items: center;
+  }
+  .app-shell
+    .pasa-consumer-account
+    .account-workspace
+    .workspace-grid-body
+    .account-profile-uploads {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .app-shell
+    .pasa-consumer-account
+    .account-workspace
+    .workspace-grid-body
+    .account-profile-uploads
+    details[open] {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 600px) {
+  .app-shell .pasa-consumer-account .account-workspace {
+    padding-inline: 1rem;
+  }
+  .account-section-links {
+    gap: 0;
+    margin-bottom: 1.35rem;
+  }
+  .account-section-links a {
+    padding-inline: 0.65rem;
+    font-size: 0.78rem;
+  }
+  .app-shell
+    .pasa-consumer-account
+    .account-workspace
+    .workspace-grid-body
+    .account-welcome {
+    grid-template-columns: 4.7rem minmax(0, 1fr) 36px;
+    gap: 0.9rem;
+  }
+  .app-shell
+    .pasa-consumer-account
+    .account-workspace
+    .workspace-grid-body
+    .account-avatar {
+    width: 4.7rem;
+    height: 4.7rem;
+  }
+  .app-shell
+    .pasa-consumer-account
+    .account-workspace
+    .workspace-grid-body
+    .account-welcome-copy
+    h1 {
+    font-size: 1.8rem;
+  }
+  .app-shell
+    .pasa-consumer-account
+    .account-workspace
+    .workspace-grid-body
+    .account-shortcuts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (min-width: 851px) {
+  .app-shell
+    .pasa-consumer-account
+    .account-workspace
+    .workspace-mobile-navigation {
+    top: auto;
+  }
+}
+
+/* Override historical cinematic workbench hero styles only inside this consumer view. */
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-overview
+  .account-welcome {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.app-shell
+  .pasa-consumer-account
+  .account-workspace
+  .workspace-grid-body
+  .account-email-value {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+html:has(.pasa-consumer-account),
+body:has(.pasa-consumer-account) {
+  background: #07090b;
+  scrollbar-color: #444b50 #07090b;
+}
+html[data-theme="light"]:has(.pasa-consumer-account),
+html[data-theme="light"] body:has(.pasa-consumer-account) {
+  background: #faf8f4;
+  scrollbar-color: #b4b4b0 #faf8f4;
+}
+
+/* Keep native keyboard focus inside the visible area above the consumer dock. */
+@media (min-width: 851px) {
+  .app-shell
+    .pasa-consumer-account
+    .account-workspace
+    .workspace-mobile-navigation {
+    margin-inline-end: 4rem;
+  }
+}
+
+@media (max-width: 850px) {
+  html:has(.pasa-consumer-account) {
+    scroll-padding-top: 4rem;
+    scroll-padding-bottom: 6rem;
+  }
+  .pasa-consumer-account :where(input, textarea, select, button, summary) {
+    scroll-margin-top: 4rem;
+    scroll-margin-bottom: 6rem;
+  }
+}
+
+/* Pale status fills need darker text in the consumer light theme. Keep the
+   existing state, message, borders and dark-theme colors unchanged. */
+html[data-theme="light"]
+  .pasa-consumer-account
+  .account-controls-page
+  .notice-error {
+  color: #a11d28 !important;
+}
+
+html[data-theme="light"]
+  .pasa-consumer-account
+  .account-controls-page
+  .notice-success {
+  color: #176336 !important;
+}
+
+/* The shared audience component stays byte-identical across discovery apps.
+   Give only its decorative Account handoff glyph a native symbol fallback. */
+.pasa-consumer-account .subscription-app aside a > span[aria-hidden="true"] {
+  font-family:
+    "DejaVu Sans", "Segoe UI Symbol", "Apple Symbols", Arial, sans-serif;
+}

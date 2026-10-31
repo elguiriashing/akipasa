@@ -1,3 +1,5 @@
+import Image from "next/image";
+import styles from "./account-personal.module.css";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AccountWorkspacePortals } from "@/components/AccountWorkspacePortals";
@@ -21,7 +23,9 @@ export default async function AccountOverview({
   ] = await Promise.all([
     supabase
       .from("profiles")
-      .select("display_name,app_role,preferred_locale,membership_tier")
+      .select(
+        "display_name,app_role,preferred_locale,membership_tier,username,bio,avatar_url",
+      )
       .eq("id", user.id)
       .maybeSingle(),
     supabase
@@ -82,14 +86,28 @@ export default async function AccountOverview({
   ];
 
   return (
-    <div className="account-overview">
+    <div className={`account-overview ${styles.profile}`} data-personal-account>
       <header className="account-welcome">
         <div className="account-avatar" aria-hidden="true">
-          {firstName.slice(0, 1).toUpperCase()}
+          {profile?.avatar_url ? (
+            <Image
+              src={profile.avatar_url}
+              alt=""
+              width={96}
+              height={96}
+              unoptimized
+              className="pasa-profile-avatar-image"
+            />
+          ) : (
+            firstName.slice(0, 1).toUpperCase()
+          )}
         </div>
         <div className="account-welcome-copy">
-          <span>{es ? "Tu espacio" : "Your space"}</span>
-          <h1>{es ? `Hola, ${firstName}` : `Hi, ${firstName}`}</h1>
+          <span>{es ? "Tu perfil AkiPasa" : "Your AkiPasa profile"}</span>
+          <h1>{displayName}</h1>
+          {profile?.username ? (
+            <p className="pasa-profile-handle">@{profile.username}</p>
+          ) : null}
           <p>
             {profileError
               ? es
@@ -111,8 +129,78 @@ export default async function AccountOverview({
         </Link>
       </header>
 
+      <section
+        className="account-pulse"
+        aria-label={es ? "Tus planes" : "Your plans"}
+      >
+        <Link href={`/${locale}/account/saved`}>
+          <strong>{savedError ? "—" : (savedCount ?? 0)}</strong>
+          <span>{es ? "guardados" : "saved"}</span>
+        </Link>
+        <Link href={`/${locale}/account/following`}>
+          <strong>{followedError ? "—" : (followedCount ?? 0)}</strong>
+          <span>{es ? "siguiendo" : "following"}</span>
+        </Link>
+        <Link href={`/${locale}/account/subscription`}>
+          <strong>
+            {profileError ? "—" : premium ? "Premium" : es ? "Gratis" : "Free"}
+          </strong>
+          <span>{es ? "tu plan" : "your plan"}</span>
+        </Link>
+      </section>
+      <Link className={styles.editProfile} href={`/${locale}/account/profile`}>
+        <Icon name="person" />
+        {es ? "Editar perfil" : "Edit profile"}
+      </Link>
       <div className="account-overview-main">
-        <section className="account-next-step">
+        <section className={styles.about} aria-labelledby="account-about-title">
+          <h2 id="account-about-title">{es ? "Sobre mí" : "About me"}</h2>
+          <p>
+            {profile?.bio ||
+              (es
+                ? "Añade una pequeña presentación a tu perfil."
+                : "Add a little introduction to your profile.")}
+          </p>
+          {!profile?.bio && (
+            <Link href={`/${locale}/account/profile`}>
+              {es ? "Completar mi perfil" : "Complete my profile"}
+              <Icon name="arrow-right" />
+            </Link>
+          )}
+        </section>
+        <section
+          className={styles.activity}
+          aria-labelledby="account-activity-title"
+        >
+          <header>
+            <h2 id="account-activity-title">
+              {es ? "Tus planes" : "Your plans"}
+            </h2>
+            <Link href={`/${locale}/account/activity`}>
+              {es ? "Ver actividad" : "View activity"}
+              <Icon name="arrow-right" />
+            </Link>
+          </header>
+          <div className={styles.activityLinks}>
+            <Link href={`/${locale}/account/bookings`}>
+              <Icon name="calendar" />
+              <strong>{es ? "Mis reservas" : "My bookings"}</strong>
+              <span>{es ? "Próximas e historial" : "Upcoming and past"}</span>
+            </Link>
+            <Link href={`/${locale}/account/saved`}>
+              <Icon name="saved" />
+              <strong>{es ? "Planes guardados" : "Saved plans"}</strong>
+              <span>{es ? "Lo que quieres hacer" : "What you want to do"}</span>
+            </Link>
+          </div>
+        </section>
+        <section
+          className="account-next-step"
+          style={{
+            backgroundImage:
+              "linear-gradient(0deg, #050708f5, #05070812), url('/images/akipasa/nightlife-editorial.webp')",
+          }}
+        >
           <div>
             <span>{es ? "Siguiente plan" : "Find your next plan"}</span>
             <h2>
@@ -127,31 +215,6 @@ export default async function AccountOverview({
           </Link>
         </section>
 
-        <section
-          className="account-pulse"
-          aria-label={es ? "Tu actividad" : "Your activity"}
-        >
-          <Link href={`/${locale}/account/saved`}>
-            <strong>{savedError ? "—" : (savedCount ?? 0)}</strong>
-            <span>{es ? "guardados" : "saved"}</span>
-          </Link>
-          <Link href={`/${locale}/account/following`}>
-            <strong>{followedError ? "—" : (followedCount ?? 0)}</strong>
-            <span>{es ? "siguiendo" : "following"}</span>
-          </Link>
-          <Link href={`/${locale}/account/subscription`}>
-            <strong>
-              {profileError
-                ? "—"
-                : premium
-                  ? "Premium"
-                  : es
-                    ? "Gratis"
-                    : "Free"}
-            </strong>
-            <span>{es ? "tu plan" : "your plan"}</span>
-          </Link>
-        </section>
         {(profileError || savedError || followedError) && (
           <p className="notice" role="status">
             {es

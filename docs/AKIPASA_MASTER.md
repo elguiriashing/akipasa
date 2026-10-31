@@ -1,5 +1,28 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-30 | Isolated Account consumer presentation candidate
+
+Following authorizedlive337c51, this candidate applies11surgicalAccountfiles
+(including pureHTTP(S)-website display helper), 10lineWorkspaceShell menu-close
+on actualhistory/routechange, existingSVGhandoff/CTAarrows inHub/Grid; sharedStudio stayscanonical and legacydockprivacy
+spacing.15runtimefiles only;14protectedauth/actions/data-leaves staybyteidentical
+to c51. Accountlayout retains existing trustedmembership-header returnresolver/
+requireUser and profile writes/exports/deletion/billing/permissions/7leafqueries
+areunchanged. Overviewreads existingusername/bio/avatar foronlycallerID; profile
+maxlength2000 matchesalready-existingservervalidator. No SQL/newdependency/Pals
+wardrobe/provider/consentchoice/event/XP/customer mutation or productboundary change.
+
+MaintainedMaster310Accountbrowserrunner unchanged; additive90actualcomponentstates
++160nativecontrols and pure18websitevectors runinexistingrequiredCIjob/config,
+withboundedreviewartifact.58focusedtests,504prefinalfixturecontexts and final90/160
+with93stablecompileddependencyhashes pass. Original11portedfull332auth-contract
+failures are preserved/notpassed: they demand a different requireUserreturnAPI,
+which this isolatedcandidate intentionallydoesnotcopy. AlloriginalMasterchecks
+remainrequired. Localfullcheck2184tests/15stages passed before the finaltwoSVG-only repairs;
+finaloptimizedbuild and49actualNext cases pass, including20guest routeguards
+on the candidate origin and8nativeprivacy cases. Exact-head fullCI/CF and final
+independentreview remain required; no newAccountmerge/deployment claimed.
+
 ## 2026-10-30 | Finished public-screen release, isolated from the full overhaul
 
 Alex explicitly authorizes shipping finished independent public screens ahead of

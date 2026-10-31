@@ -10,6 +10,8 @@ import { isLocale } from "@/lib/config";
 import "./account-suite.css";
 import "./account-controls.css";
 import "./account-collections.css";
+import "./account-consumer.css";
+import { AccountSectionLinks } from "./AccountSectionLinks";
 
 export default async function AccountLayout({
   children,
@@ -44,7 +46,7 @@ export default async function AccountLayout({
           },
         ]
       : []),
-    { href: base, label: es ? "Resumen" : "Overview", icon: "home" },
+    { href: base, label: es ? "Mi perfil" : "My profile", icon: "home" },
     { href: `${base}/saved`, label: es ? "Guardados" : "Saved", icon: "saved" },
     {
       href: `${base}/following`,
@@ -72,7 +74,7 @@ export default async function AccountLayout({
       : []),
     {
       href: `${base}/profile`,
-      label: es ? "Perfil" : "Profile",
+      label: es ? "Editar perfil" : "Edit profile",
       icon: "person",
     },
     {
@@ -92,20 +94,23 @@ export default async function AccountLayout({
     },
   ];
   return (
-    <WorkspaceShell
-      title={profile?.display_name || (es ? "Tu cuenta" : "Your account")}
-      navigationTitle={es ? "Tu cuenta" : "Your account"}
-      eyebrow={es ? "Cuenta AkiPasa" : "AkiPasa account"}
-      description={
-        es
-          ? "Tus planes, reservas y preferencias."
-          : "Your plans, bookings and preferences."
-      }
-      homeHref={base}
-      items={items}
-      hidePageHeading
-    >
-      {children}
-    </WorkspaceShell>
+    <div className="pasa-consumer-account">
+      <WorkspaceShell
+        title={profile?.display_name || (es ? "Tu cuenta" : "Your account")}
+        navigationTitle={es ? "Tu cuenta" : "Your account"}
+        eyebrow={es ? "Cuenta AkiPasa" : "AkiPasa account"}
+        description={
+          es
+            ? "Tus planes, reservas y preferencias."
+            : "Your plans, bookings and preferences."
+        }
+        homeHref={base}
+        items={items}
+        hidePageHeading
+      >
+        <AccountSectionLinks locale={locale} />
+        {children}
+      </WorkspaceShell>
+    </div>
   );
 }

@@ -5,6 +5,8 @@
   --account-gap: clamp(0.8rem, 1.5vw, 1.2rem);
   min-width: 0;
   gap: var(--account-gap);
+  /* Keep intrinsic rows at the top when the shared shell has a minimum height. */
+  align-content: start;
 }
 
 .account-workspace.workspace-grid-system .workspace-content {
@@ -549,4 +551,36 @@
   .account-workspace .account-pulse a {
     padding-inline: 0.4rem;
   }
+}
+
+/* Personal Account inherits the consumer palette, not the operations workbench.
+   These local variables also pair controls and destructive text with the panels. */
+html:not([data-theme="light"]) .app-shell .account-workspace.workspace-shell {
+  --surface: #131619;
+  --surface-alt: #1b1f24;
+  --ink: #f7f8fa;
+  --muted: #bec6d1;
+  --line: #343b45;
+  --danger: #ffaaa2;
+  --pasa-ui-panel: #131619;
+  --pasa-ui-elevated: #1b1f24;
+  --pasa-ui-glass: #101316;
+  --pasa-ui-border: #343b45;
+  --pasa-ui-text: #f7f8fa;
+  --pasa-ui-subtle: #bec6d1;
+}
+
+html[data-theme="light"] .app-shell .account-workspace.workspace-shell {
+  --surface: #ffffff;
+  --surface-alt: #faf7f2;
+  --ink: #17202a;
+  --muted: #526071;
+  --line: #d4d9df;
+  --danger: #a22b2b;
+  --pasa-ui-panel: #ffffff;
+  --pasa-ui-elevated: #faf7f2;
+  --pasa-ui-glass: #ffffff;
+  --pasa-ui-border: #d4d9df;
+  --pasa-ui-text: #17202a;
+  --pasa-ui-subtle: #526071;
 }
