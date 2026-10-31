@@ -1,0 +1,27 @@
+name: AkiPals isolated source review
+on:
+  push:
+    branches: [feature/akipals-world-explorer-20261031]
+    paths: [.github/workflows/pals-world-review.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Package tracked source only
+        run: |
+          git archive --format=tar.gz --output=/tmp/akipals-review-source.tar.gz HEAD
+          git rev-parse HEAD > /tmp/akipals-review-sha.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: akipals-review-source
+          path: |
+            /tmp/akipals-review-source.tar.gz
+            /tmp/akipals-review-sha.txt
+          retention-days: 2
