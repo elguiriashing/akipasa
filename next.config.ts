@@ -5,6 +5,16 @@ import { fileURLToPath } from "node:url";
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    // Shared product privacy links must also work without an account session.
+    return [
+      {
+        source: "/:locale(en|es)/account-deletion",
+        destination: "/:locale/privacy#account-deletion",
+        permanent: false,
+      },
+    ];
+  },
   async rewrites() {
     // Keep sitemap files at the site root so robots discovery covers all URLs,
     // even before the sitemap is submitted in Search Console.

@@ -5100,3 +5100,28 @@ AKIPASA_THEME_FALLBACK_ACCEPTANCE_20261030.json.
   fresh required workflows must bind the corrected head before merge/live.
 - **Preserved failure:** [Job 124583210533](https://github.com/elguiriashing/akipasa/actions/runs/41216901369/job/124583210533);
   `../reviews/pr332-ci-970064e-public-shard1.log`, SHA256 `c52abc18681693ceb68136a361642f029f2b550a1707aab98782144c99ec4acc`.
+
+## 2026-10-31 | Restore public shared-account deletion links
+
+The remaining AkiSuite privacy PRs link to /en|es/account-deletion, which
+returned the branded unavailable page on live source62140bfc. Add a fixed
+locale-preserving307 redirect to the existing public privacy section and
+bilingual instructions for signed-in requests and no-login support contact.
+The notice identifies the shared five-product identity and human verification,
+states the48-hour handling target, and distinguishes recording a request from
+completed deletion and restricted retained business/provider/backup records.
+No request is submitted by viewing the page or following the privacy link.
+
+Dependencies: Next redirect configuration, existing public Privacy page,
+localized account/privacy destination and existing support address. No new
+page root or route-inventory reclassification; the104/90/14 review totals
+remain intact. No identity executor, schema, retention job, provider setting,
+customer data, mail, billing, authentication, role or permission changes.
+Four maintained browser cases passed locally in Chromium with the repository
+disposable public-page configuration: both locales at390/1440px, actual307 and
+200 destination, no sign-in wall, fixed support/account links and no overflow.
+EN phone and ES desktop full-page screenshots were visually inspected. An
+initial missing-local-environment500 was corrected by using the existing CI
+configuration; no application guard or assertion was weakened.
+Full hosted CI and live public-link readback gate release. Revert these source
+changes to roll back; no data rollback is needed.
