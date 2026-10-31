@@ -4,8 +4,8 @@
 
 Following authorizedlive337c51, this candidate applies11surgicalAccountfiles
 (including pureHTTP(S)-website display helper), 10lineWorkspaceShell menu-close
-on actualhistory/routechange, existingSVGhandoff/CTAarrows inHub/Grid/AudienceStudio and legacydockprivacy
-spacing.16runtimefiles only;14protectedauth/actions/data-leaves staybyteidentical
+on actualhistory/routechange, existingSVGhandoff/CTAarrows inHub/Grid; sharedStudio stayscanonical and legacydockprivacy
+spacing.15runtimefiles only;14protectedauth/actions/data-leaves staybyteidentical
 to c51. Accountlayout retains existing trustedmembership-header returnresolver/
 requireUser and profile writes/exports/deletion/billing/permissions/7leafqueries
 areunchanged. Overviewreads existingusername/bio/avatar foronlycallerID; profile

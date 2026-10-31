@@ -828,3 +828,10 @@ html[data-theme="light"]
   .notice-success {
   color: #176336 !important;
 }
+
+/* The shared audience component stays byte-identical across discovery apps.
+   Give only its decorative Account handoff glyph a native symbol fallback. */
+.pasa-consumer-account .subscription-app aside a > span[aria-hidden="true"] {
+  font-family:
+    "DejaVu Sans", "Segoe UI Symbol", "Apple Symbols", Arial, sans-serif;
+}
