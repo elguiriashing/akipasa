@@ -69,7 +69,7 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
   const [worldStatus, setWorldStatus] = useState("Loading real places…");
   const [mapError, setMapError] = useState(false);
 
-  const center = useMemo(() => position.current || WORLD_START, [gpsActive, venues]);
+  const center = useMemo(() => position.current || WORLD_START, [gpsActive, gpsStatus, venues]);
   const orderedVenues = useMemo(() => [...venues].sort((a, b) =>
     distanceMetres(center, a) - distanceMetres(center, b)), [center, venues]);
   const selected = venues.find((v) => v.id === selectedId) || null;
@@ -137,14 +137,17 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
         // Show the explicit avatar fallback; the map must not fail due to WebGL.
       }
     };
+    const onMapReady = () => { void start(); };
+    window.addEventListener("akipals:world-map-ready", onMapReady);
     void start();
     return () => {
       cancelled = true;
+      window.removeEventListener("akipals:world-map-ready", onMapReady);
       avatarStage.current?.dispose();
       avatarStage.current = null;
       script?.remove();
     };
-  }, [mapError]);
+  }, []);
 
   useEffect(() => {
     if (!mapNode.current) return;
