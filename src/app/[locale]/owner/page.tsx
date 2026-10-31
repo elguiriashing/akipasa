@@ -100,7 +100,7 @@ export default async function OwnerConsolePage({
     ? await supabase.storage
         .from(ownerBackgroundBucket)
         .createSignedUrls(backgroundPaths, 21600)
-    : { data: [] };
+    : { data: [], error: null };
   const backgroundImages: OwnerBackgroundImage[] = backgroundFiles.flatMap(
     (file, index) => {
       const url = signedBackgrounds.data?.[index]?.signedUrl;
@@ -110,17 +110,56 @@ export default async function OwnerConsolePage({
     },
   );
 
+  const preferencesUnavailable = Boolean(preferencesResult.error);
+  const backgroundsUnavailable =
+    Boolean(backgroundList.error) ||
+    Boolean(signedBackgrounds.error) ||
+    backgroundPaths.some(
+      (_, index) => !signedBackgrounds.data?.[index]?.signedUrl,
+    );
+  const agentsUnavailable = Boolean(agents.error) || agents.data === null;
+  const activityUnavailable =
+    Boolean(recentActivity.error) || recentActivity.data === null;
   const agentRows = agents.data || [];
-  const workingAgents = agentRows.filter(
-    (agent) => agent.status === "working",
-  ).length;
-  const failedAgents = agentRows.filter(
-    (agent) => agent.status === "failed",
-  ).length;
+  const workingAgents = agentsUnavailable
+    ? null
+    : agentRows.filter((agent) => agent.status === "working").length;
+  const failedAgents = agentsUnavailable
+    ? null
+    : agentRows.filter((agent) => agent.status === "failed").length;
+  const pendingTaskCount = pendingTasks.error ? null : pendingTasks.count;
+  const pendingApprovalCount = pendingApprovals.error
+    ? null
+    : pendingApprovals.count;
   const moderationTotal =
-    (pendingVenues.count || 0) +
-    (pendingEvents.count || 0) +
-    (pendingCommunity.count || 0);
+    pendingVenues.error ||
+    pendingEvents.error ||
+    pendingCommunity.error ||
+    pendingVenues.count === null ||
+    pendingEvents.count === null ||
+    pendingCommunity.count === null
+      ? null
+      : pendingVenues.count + pendingEvents.count + pendingCommunity.count;
+  const metricsUnavailable =
+    agentsUnavailable ||
+    pendingTaskCount === null ||
+    pendingApprovalCount === null ||
+    moderationTotal === null;
+  const unavailable = es ? "No disponible" : "Unavailable";
+  function readUnavailable(label: string, section: string) {
+    return (
+      <div className="notice" role="alert">
+        <p>
+          {es
+            ? `No se pudo cargar: ${label}. Vuelve a intentarlo.`
+            : `Could not load ${label}. Please try again.`}
+        </p>
+        <Link className="button secondary" href={`/${locale}/owner#${section}`}>
+          {es ? "Reintentar" : "Retry"}
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <main className="owner-console-page owner-console-v3">
@@ -182,35 +221,57 @@ export default async function OwnerConsolePage({
         </div>
       </section>
 
+      {metricsUnavailable &&
+        readUnavailable(
+          es ? "estado operativo" : "operational status",
+          "owner-status",
+        )}
       <section
+        id="owner-status"
         className="owner-metric-grid"
         aria-label={es ? "Estado operativo" : "Operational status"}
       >
         <article>
           <span>{es ? "IA" : "AI"}</span>
-          <strong>{workingAgents}</strong>
+          <strong aria-label={workingAgents === null ? unavailable : undefined}>
+            {workingAgents ?? "—"}
+          </strong>
           <small>{es ? "agentes trabajando" : "agents working"}</small>
         </article>
         <article>
           <span>{es ? "COLA" : "QUEUE"}</span>
-          <strong>{pendingTasks.count || 0}</strong>
+          <strong
+            aria-label={pendingTaskCount === null ? unavailable : undefined}
+          >
+            {pendingTaskCount ?? "—"}
+          </strong>
           <small>{es ? "tareas activas" : "active tasks"}</small>
         </article>
         <article>
           <span>{es ? "CONFIANZA" : "TRUST"}</span>
-          <strong>{moderationTotal}</strong>
+          <strong
+            aria-label={moderationTotal === null ? unavailable : undefined}
+          >
+            {moderationTotal ?? "—"}
+          </strong>
           <small>
             {es ? "pendientes de moderación" : "pending moderation"}
           </small>
         </article>
         <article className={failedAgents ? "owner-metric-alert" : ""}>
           <span>{es ? "ESTADO" : "HEALTH"}</span>
-          <strong>{failedAgents}</strong>
+          <strong aria-label={failedAgents === null ? unavailable : undefined}>
+            {failedAgents ?? "—"}
+          </strong>
           <small>{es ? "agentes con error" : "agents in error"}</small>
         </article>
         <article>
           <span>{es ? "APROBACIÓN" : "APPROVAL"}</span>
-          <strong>{pendingApprovals.count || 0}</strong>
+          <strong
+            aria-label={pendingApprovalCount === null ? unavailable : undefined}
+          >
+            {pendingApprovalCount ?? "—"}
+          </strong>
           <small>{es ? "aprobaciones esperando" : "approvals waiting"}</small>
         </article>
       </section>
@@ -234,7 +295,9 @@ export default async function OwnerConsolePage({
               <span>
                 {es ? "Equipo IA" : "AI Team"}
                 <small>
-                  {agentRows.length} {es ? "agentes" : "agents"}
+                  {agentsUnavailable
+                    ? unavailable
+                    : `${agentRows.length} ${es ? "agentes" : "agents"}`}
                 </small>
               </span>
             </Link>
@@ -243,7 +306,9 @@ export default async function OwnerConsolePage({
               <span>
                 {es ? "Moderación" : "Moderation"}
                 <small>
-                  {moderationTotal} {es ? "pendientes" : "pending"}
+                  {moderationTotal === null
+                    ? unavailable
+                    : `${moderationTotal} ${es ? "pendientes" : "pending"}`}
                 </small>
               </span>
             </Link>
@@ -286,7 +351,7 @@ export default async function OwnerConsolePage({
           </div>
         </section>
 
-        <section className="panel owner-appearance-card">
+        <section className="panel owner-appearance-card" id="owner-appearance">
           <div className="owner-section-heading">
             <span>02</span>
             <div>
@@ -298,14 +363,23 @@ export default async function OwnerConsolePage({
               </p>
             </div>
           </div>
-          <OwnerAppearanceForm
-            locale={locale}
-            preferences={preferences}
-            images={backgroundImages}
-          />
+          {preferencesUnavailable || backgroundsUnavailable ? (
+            readUnavailable(
+              es
+                ? "apariencia y fondos privados"
+                : "appearance and private backgrounds",
+              "owner-appearance",
+            )
+          ) : (
+            <OwnerAppearanceForm
+              locale={locale}
+              preferences={preferences}
+              images={backgroundImages}
+            />
+          )}
         </section>
 
-        <section className="panel owner-agent-radar">
+        <section className="panel owner-agent-radar" id="owner-agents">
           <div className="owner-section-heading">
             <span>03</span>
             <div>
@@ -318,16 +392,26 @@ export default async function OwnerConsolePage({
             </div>
           </div>
           <div>
-            {agentRows.map((agent) => (
-              <article key={agent.id}>
-                <i className={`owner-agent-dot status-${agent.status}`} />
-                <span>
-                  <strong>{agent.display_name}</strong>
-                  <small>{agent.agent_key}</small>
-                </span>
-                <em>{agent.status}</em>
-              </article>
-            ))}
+            {agentsUnavailable ? (
+              readUnavailable(es ? "agentes" : "agents", "owner-agents")
+            ) : agentRows.length === 0 ? (
+              <p>
+                {es
+                  ? "Todavía no hay agentes configurados."
+                  : "No agents are configured yet."}
+              </p>
+            ) : (
+              agentRows.map((agent) => (
+                <article key={agent.id}>
+                  <i className={`owner-agent-dot status-${agent.status}`} />
+                  <span>
+                    <strong>{agent.display_name}</strong>
+                    <small>{agent.agent_key}</small>
+                  </span>
+                  <em>{agent.status}</em>
+                </article>
+              ))
+            )}
           </div>
         </section>
 
@@ -344,22 +428,35 @@ export default async function OwnerConsolePage({
             </div>
           </div>
           <div>
-            {(recentActivity.data || []).map((item) => (
-              <article key={item.id}>
-                <time>
-                  {new Date(item.created_at).toLocaleString(locale, {
-                    dateStyle: "short",
-                    timeStyle: "short",
-                    timeZone: "Europe/Madrid",
-                  })}
-                </time>
-                <span>
-                  <strong>{item.message}</strong>
-                  <small>{item.event_type}</small>
-                </span>
-                <i className={`level-${item.level}`} />
-              </article>
-            ))}
+            {activityUnavailable ? (
+              readUnavailable(
+                es ? "actividad reciente" : "recent activity",
+                "owner-activity",
+              )
+            ) : recentActivity.data?.length === 0 ? (
+              <p>
+                {es
+                  ? "Todavía no hay actividad reciente."
+                  : "No recent activity yet."}
+              </p>
+            ) : (
+              (recentActivity.data || []).map((item) => (
+                <article key={item.id}>
+                  <time>
+                    {new Date(item.created_at).toLocaleString(locale, {
+                      dateStyle: "short",
+                      timeStyle: "short",
+                      timeZone: "Europe/Madrid",
+                    })}
+                  </time>
+                  <span>
+                    <strong>{item.message}</strong>
+                    <small>{item.event_type}</small>
+                  </span>
+                  <i className={`level-${item.level}`} />
+                </article>
+              ))
+            )}
           </div>
         </section>
       </div>

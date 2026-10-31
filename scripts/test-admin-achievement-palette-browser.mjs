@@ -285,7 +285,7 @@ try {
             };
             return [
               ...document.querySelectorAll(
-                '[class*="toolbar"] select,[class*="venueRow"] summary,[class*="venueRow"] summary small',
+                '[class*="toolbar"] select,[class*="venueRow"] summary,[class*="venueRow"] summary small,[class*="threshold"] strong,[class*="threshold"] > span',
               ),
             ]
               .filter((e) => e.checkVisibility())
@@ -325,6 +325,59 @@ try {
               (x) => x.textContent,
             ),
           }));
+          let editorPreviewContrast = null;
+          if (route === "achievements") {
+            await page
+              .getByRole("button", { name: /^(New achievement|Nuevo logro)$/ })
+              .click();
+            editorPreviewContrast = await page.evaluate(() => {
+              const e = document.querySelector(
+                'dialog[open] [class*="preview"] > div > span',
+              );
+              if (!e) throw Error("Editor preview missing");
+              const painter = document
+                .createElement("canvas")
+                .getContext("2d", { willReadFrequently: true });
+              const rgb = (s) => {
+                painter.clearRect(0, 0, 1, 1);
+                painter.fillStyle = s;
+                painter.fillRect(0, 0, 1, 1);
+                return [...painter.getImageData(0, 0, 1, 1).data].slice(0, 3);
+              };
+              const lum = (c) =>
+                c
+                  .map((v) => {
+                    v /= 255;
+                    return v <= 0.04045
+                      ? v / 12.92
+                      : ((v + 0.055) / 1.055) ** 2.4;
+                  })
+                  .reduce((n, v, i) => n + v * [0.2126, 0.7152, 0.0722][i], 0);
+              const fg = rgb(getComputedStyle(e).color),
+                bg = rgb(
+                  getComputedStyle(e.closest('[class*="preview"]'))
+                    .backgroundColor,
+                ),
+                a = lum(fg),
+                b = lum(bg);
+              return {
+                text: e.textContent,
+                foreground: fg,
+                background: bg,
+                contrast: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05),
+              };
+            });
+            assert.ok(
+              editorPreviewContrast.contrast >= 4.5,
+              "Editor preview contrast",
+            );
+            await page.screenshot({ path: out + "/" + stem + "-editor.png" });
+            await page.keyboard.press("Escape");
+            await page.waitForFunction(
+              () => !document.querySelector("dialog[open]"),
+            );
+            assert.deepEqual(await page.evaluate(() => window.__actions), []);
+          }
           results.push({
             ...context,
             route,
@@ -333,6 +386,7 @@ try {
             errors,
             palette,
             nativeDisclosure,
+            editorPreviewContrast,
           });
         } catch (e) {
           failure = String(e);

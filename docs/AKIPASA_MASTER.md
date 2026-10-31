@@ -1,5 +1,31 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-31 | Complete responsive Admin evidence and truthful Owner recovery
+
+EighteenAdminworkbenches nowhave explicitEN/ES,dark/light,360/390/820/1440
+ready/empty/error/static/missing-recordfixturecoverage:832requested,800rendered,
+32expectednotFounddenials,600nativeMenuchecks. StaticSelectorstate isdeduplicated.
+Originalproofretains16invalidPassportdateDTOimages as superseded; correctedvalid
+DTO16followup and finaldefault areexplicit. Actualstate/popuptextaudit identified
+LIGHT XPcard/editor,Selectorintro/nightpanelhead,Auditneutralbadge/time and
+Promotionshint contrastdefects; narrowlyscopedexistingpalette repairs preserve
+darkcanvas/geometry/forms/actions.64finaltargeted208contrasts(min5.2598), maintained
+24/72contrasts(min6.0253),104stateaudit withzeroeligiblecandidates pass. Fresh
+committed832CI remainsrequired; screenshotexistence alone isnot acceptance.
+
+Ownerpreviously treatedall8readfailures as0/empty andalloweddefaultpreferences
+Apply. Onepageonlynowmarksfailedmetricsunknown, distinguishes unavailable/empty,
+adds localizedGETretry andwithholdsdependentpreference/backgroundwritesonfailed
+prefs/list/signing. Allqueries/Ownerguard/actions remainunchanged.69actualcomponent
+cases including16GETrecoveries/5partialfailures,19units/type/lint/format pass; no
+realprivateAuth/RLS/storage mutation/provider/device approval is inferred.
+
+Portable832+Owner69 runners aremandatory inoneNEWparallel20minjob insideexisting
+tabletworkflow; alloldjobs/assertions retained. No schema/consent/role/billing or
+production operation inthisbatch.49individualroutes+6fallbacks accepted;41still
+await requiredreview. Rootwillreconcileauthorizedlive338 normally, freeze/test
+combinedsource once, thenpush332freshCI; full332remainsdraft andstrictgateactive.
+
 ## 2026-10-30 | Public337 production and normal overhaul reconciliation
 
 Owner-authorized public release337 passed all6exact-head workflows and merged

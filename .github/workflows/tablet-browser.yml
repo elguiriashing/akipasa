@@ -150,6 +150,36 @@ jobs:
             test-results/support-ui-upgrades
           retention-days: 7
 
+  operations-responsive-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NEXT_PUBLIC_DATA_PROVIDER: fixtures
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium chrome
+      - name: Verify every Admin workbench responsive state and contrast
+        run: node scripts/test-admin-compact-workbenches-responsive-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: admin-responsive-workbench-evidence
+          path: test-results/admin-compact-workbenches-responsive
+          retention-days: 7
+      - name: Verify Owner read failures and native recovery
+        run: node scripts/test-owner-read-recovery-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: owner-read-recovery-evidence
+          path: test-results/owner-read-recovery
+          retention-days: 7
+
   tablet-layout-and-spotlight:
     runs-on: ubuntu-latest
     timeout-minutes: 20

@@ -709,3 +709,28 @@ html[data-theme="light"]
   ) {
   color: var(--primary-strong);
 }
+
+/* Opaque light-theme ink keeps audit and disclosure text readable on pale panels. */
+html[data-theme="light"]
+  .app-shell
+  .admin-workspace
+  .status-pill.badge-neutral {
+  /* The legacy global badge declarations are important; keep this override local. */
+  color: var(--muted) !important;
+  background: var(--surface-alt) !important;
+  border-color: var(--line) !important;
+}
+html[data-theme="light"]
+  .app-shell
+  .admin-workspace
+  .workspace-grid-body
+  .audit-card
+  .audit-time,
+html[data-theme="light"]
+  .app-shell
+  .admin-workspace
+  .workspace-disclosure
+  > summary
+  small {
+  color: var(--muted);
+}
