@@ -695,7 +695,8 @@ function clearGroup(group) {
     }
   });
 }
-function create(container) {
+function create(container, { mode = "studio" } = {}) {
+  const isWorld = mode === "world";
   if (!container || !container.isConnected)
     throw new Error("3D stage not mounted");
   const prefersReducedMotion = window.matchMedia(
@@ -704,10 +705,10 @@ function create(container) {
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
     alpha: true,
-    powerPreference: "high-performance",
-    preserveDrawingBuffer: true,
+    powerPreference: isWorld ? "low-power" : "high-performance",
+    preserveDrawingBuffer: !isWorld,
   });
-  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  renderer.setPixelRatio(Math.min(isWorld ? 1.25 : 2, window.devicePixelRatio || 1));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.42;
@@ -724,11 +725,12 @@ function create(container) {
     "width:100%;height:100%;display:block;touch-action:none;";
   container.replaceChildren(renderer.domElement);
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(33, 1, 0.05, 90);
-  camera.position.set(0, 1.33, 3.42);
+  const camera = new THREE.PerspectiveCamera(isWorld ? 39 : 33, 1, 0.05, 90);
+  camera.position.set(0, isWorld ? 1.23 : 1.33, isWorld ? 2.62 : 3.42);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.target.set(0, 0.99, 0);
   controls.enablePan = false;
+  controls.enabled = !isWorld;
   controls.enableDamping = true;
   controls.dampingFactor = 0.07;
   controls.minDistance = 2.05;
@@ -765,7 +767,7 @@ function create(container) {
   );
   floor.position.y = -0.1;
   floor.receiveShadow = true;
-  scene.add(floor);
+  if (!isWorld) scene.add(floor);
   const ringMat = new THREE.MeshBasicMaterial({
     color: "#da835b",
     transparent: true,
@@ -777,7 +779,7 @@ function create(container) {
   );
   ring.rotation.x = -Math.PI / 2;
   ring.position.y = -0.058;
-  scene.add(ring);
+  if (!isWorld) scene.add(ring);
   const root = new THREE.Group();
   scene.add(root);
   let base = null,
@@ -787,6 +789,7 @@ function create(container) {
     loadNumber = 0,
     active = true,
     raf = 0;
+  let worldWalking = false, worldHeading = 0, worldTurn = 0;
   let faceType = null,
     previousStyle = null;
   const resize = () => {
@@ -806,7 +809,16 @@ function create(container) {
     raf = requestAnimationFrame(tick);
     frame += 0.016;
     if (!prefersReducedMotion) {
-      root.position.y = Math.sin(frame * 0.8) * 0.007;
+      root.position.y = isWorld
+        ? (worldWalking ? Math.abs(Math.sin(frame * 11)) * 0.025 : Math.sin(frame * 0.8) * 0.007)
+        : Math.sin(frame * 0.8) * 0.007;
+      if (isWorld && worldWalking) root.rotation.z = Math.sin(frame * 5.5) * 0.025;
+      else root.rotation.z *= 0.85;
+    }
+    if (isWorld) {
+      const difference = Math.atan2(Math.sin(worldHeading - worldTurn), Math.cos(worldHeading - worldTurn));
+      worldTurn += difference * 0.09;
+      root.rotation.y = worldTurn;
     }
     controls.update();
     renderer.render(scene, camera);
@@ -867,6 +879,11 @@ function create(container) {
   }
   return {
     setAppearance,
+    setMotion({ walking = false, headingDegrees } = {}) {
+      if (!isWorld) return;
+      worldWalking = Boolean(walking);
+      if (Number.isFinite(headingDegrees)) worldHeading = (headingDegrees * Math.PI) / 180;
+    },
     rotate(angle = Math.PI / 4) {
       camera.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
       controls.update();
