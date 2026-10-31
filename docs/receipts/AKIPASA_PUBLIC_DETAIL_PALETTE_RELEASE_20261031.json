@@ -1,0 +1,49 @@
+{
+  "base": "9e7da60fae3c24037a076e2998761a25eb8d436c",
+  "sourceReference": "994a975313f0d4b6d81630606a4d9fca7fd69044",
+  "runtimeOnly": [
+    "src/app/[locale]/events/[slug]/event-spotlight.css",
+    "src/app/[locale]/venues/[slug]/venue-spotlight.css"
+  ],
+  "protectedMasterPaths": 1004,
+  "protectedVerifier": "PASS after final whole-page refinement; 1004 protected Master paths unchanged",
+  "focusedTestsPassed": 17,
+  "actualCandidateBrowser": {
+    "result": "PASS",
+    "cases": 32,
+    "log": "/tmp/akipasa-public-detail-whole-page-browser-20261031.log",
+    "source": "actual Next build of candidate; original assertions preserved, additive full-page/1440/palette assertions",
+    "viewports": [360, 390, 600, 820, 1280, 1440, 1536],
+    "states": ["ready", "sparse", "cancelled", "sold-out"],
+    "stateCoverage": "Ready EN/ES themes at seven widths; sparse ES light390, cancelled/sold-out EN light1280"
+  },
+  "independentReview": {
+    "result": "Qualified bounded presentation approval subject exact-head CI/CF",
+    "receipt": "/workspace/akipasa-main-checkpoints/public-spotlight-whole-page-final-independent-review-20261031.json",
+    "sha256": "27168f90fc89146e25037dbf96741f64f35d2579494010434dd2c63456b01c2d",
+    "actualPngsViewed": 12,
+    "paletteNodesChecked": 508,
+    "minimumCompositedContrast": 5.9056877
+  },
+  "exactHeadCI": "required afterpublication",
+  "merged": false,
+  "deployed": false,
+  "runtimeSha256": {
+    "venue": "a2b20674078cef6ea940c513eb69f6f2fa01503e09964e07322ba0107a0bb8ea",
+    "event": "d4c7e74d12da9980b153885495ae9038c22f036e20cb873e30a95a3fb571f15c"
+  },
+  "fullCheck": {
+    "result": "PASS",
+    "exitCode": 0,
+    "log": "/tmp/akipasa-public-detail-final-check-20261031.log",
+    "vitestStages": 15,
+    "vitestPassed": 2184,
+    "buildId": "ZsFtEiVQ2dXxRJGL_ig5h",
+    "qualification": "Runtime and QA source unchanged through complete check; final receipt-only metadata records actual viewports/review/results; final exact-head CI remains required"
+  },
+  "limitations": [
+    "Synthetic fixture imagery; not production event supply",
+    "No physical Android or real payment/provider acceptance inferred",
+    "Existing minor navy footer link backgrounds and floating Support edge proximity explicitly reviewed"
+  ]
+}

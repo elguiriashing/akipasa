@@ -1,5 +1,28 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-31 | Isolated public Venue/Event detail whole-page palette
+
+Only the two route stylesheets change runtime behavior. Initial reviewed Main
+palette was insufficient on live Master's parent canvas and lower sections;
+independent actual screenshot review caught the inherited navy. Full-detail-root
+surface aliases now finish About/Information/business panels, with guarded parent
+canvas/header/dock/footer ink and ordinary Privacy trigger styling. Owner focus
+and private background canvas remain protected; the Privacy dialog and choices
+are unchanged. Synthetic test artwork is intentionally retained, not photography
+or evidence of production event supply. Small inherited footer button backgrounds
+and floating Support edge proximity remain explicit review observations.
+
+All 1,004 pinned Master runtime/schema/workflow/package/runner paths are unchanged.
+Venue/Event pages, shared templates, Map drawer, data/controllers, booking/auth,
+consent, XP and providers stay live338 bytes. No global skin, asset or SQL copied.
+Seventeen focused tests and fresh actual Next 32-case Spotlight suite pass with
+EN/ES, dark/light, 360/390/600/820/1280/1440/1536 coverage, original interactions and
+sparse/cancelled/sold-out states. Full-page screenshots and actual composed lower
+surface/chrome contrast assertions extend the original tests without removing
+assertions. This is bounded presentation evidence, not real provider/payment or
+physical-device acceptance. Full check, published exact-head CI and final review
+must pass before expected-head merge; no deployment is claimed by this entry.
+
 ## 2026-10-30 | Isolated Account consumer presentation candidate
 
 Following authorizedlive337c51, this candidate applies11surgicalAccountfiles
