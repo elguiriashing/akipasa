@@ -158,13 +158,17 @@ export function CommunityLanding({
         className={styles.actions}
         aria-label={es ? "Tu comunidad" : "Your community"}
       >
-        <Link href={`${base}?view=suggest`}>
+        <Link
+          href={`${base}?view=suggest`}
+          aria-label={es ? "Proponer un plan" : "Suggest a plan"}
+          aria-describedby="community-suggest-description"
+        >
           <span>
             <Icon name="plus" size={21} />
           </span>
           <div>
             <strong>{es ? "Proponer un plan" : "Suggest a plan"}</strong>
-            <small>
+            <small id="community-suggest-description">
               {es
                 ? "Propón una experiencia para que la comunidad la descubra."
                 : "Suggest an experience for the community to discover."}
