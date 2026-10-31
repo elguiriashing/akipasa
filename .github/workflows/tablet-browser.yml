@@ -165,11 +165,15 @@ jobs:
       - run: npx playwright install --with-deps chromium chrome
       - name: Verify every Admin workbench responsive state and contrast
         run: node scripts/test-admin-compact-workbenches-responsive-browser.mjs
+      - name: Verify Promotions stale-read errors and native recovery
+        run: node scripts/test-admin-promotion-read-recovery-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: admin-responsive-workbench-evidence
-          path: test-results/admin-compact-workbenches-responsive
+          path: |
+            test-results/admin-compact-workbenches-responsive
+            test-results/admin-promotion-read-recovery
           retention-days: 7
       - name: Verify Owner read failures and native recovery
         run: node scripts/test-owner-read-recovery-browser.mjs

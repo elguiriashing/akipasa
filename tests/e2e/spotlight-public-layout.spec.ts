@@ -246,6 +246,114 @@ test.describe("Spotlight public route acceptance", () => {
     }
   }
 
+  async function assertDetailPalette(
+    page: Page,
+    kind: "venue" | "event",
+    theme: string,
+  ) {
+    const paint = await page.evaluate((detailKind) => {
+      const root = document.querySelector(`main.spotlight-${detailKind}`)!;
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = 1;
+      const context = canvas.getContext("2d")!;
+      const color = (value: string) => {
+        context.clearRect(0, 0, 1, 1);
+        context.fillStyle = value;
+        context.fillRect(0, 0, 1, 1);
+        return [...context.getImageData(0, 0, 1, 1).data];
+      };
+      const targets = [
+        ...root.querySelectorAll(
+          ".event-spotlight-about p, .event-spotlight-access p, .venue-spotlight-information p, :scope > details > summary",
+        ),
+        ...document.querySelectorAll(
+          ".footer, .footer a, .app-topbar-mobile, .app-topbar-mobile .brand-wordmark, .app-bottom-nav, .suite-discovery-nav[data-product='pasa'], body > .privacy-preferences:not(.privacy-preferences--passport) > button",
+        ),
+      ];
+      const texts = targets
+        .filter((element) => {
+          const bounds = element.getBoundingClientRect();
+          return (
+            bounds.width > 0 &&
+            bounds.height > 0 &&
+            getComputedStyle(element).visibility !== "hidden"
+          );
+        })
+        .map((element) => {
+          const ancestors: Element[] = [];
+          for (
+            let current: Element | null = element;
+            current;
+            current = current.parentElement
+          )
+            ancestors.push(current);
+          context.clearRect(0, 0, 1, 1);
+          for (const ancestor of ancestors.reverse()) {
+            context.fillStyle = getComputedStyle(ancestor).backgroundColor;
+            context.fillRect(0, 0, 1, 1);
+          }
+          const background = [...context.getImageData(0, 0, 1, 1).data];
+          return {
+            selector: element.className || element.tagName,
+            foreground: color(getComputedStyle(element).color),
+            background,
+          };
+        });
+      return {
+        body: color(getComputedStyle(document.body).backgroundColor),
+        texts,
+      };
+    }, kind);
+    const canvas = paint.body.slice(0, 3);
+    expect(paint.body[3], "Detail canvas is opaque").toBe(255);
+    expect(
+      Math.max(...canvas) - Math.min(...canvas),
+      "Detail canvas remains neutral rather than inherited navy",
+    ).toBeLessThanOrEqual(16);
+    if (theme === "light")
+      expect(Math.min(...canvas)).toBeGreaterThanOrEqual(235);
+    else expect(Math.max(...canvas)).toBeLessThanOrEqual(24);
+    const luminance = (channels: number[]) =>
+      channels
+        .slice(0, 3)
+        .map((channel) => {
+          const value = channel / 255;
+          return value <= 0.04045
+            ? value / 12.92
+            : ((value + 0.055) / 1.055) ** 2.4;
+        })
+        .reduce(
+          (sum, value, index) => sum + value * [0.2126, 0.7152, 0.0722][index],
+          0,
+        );
+    const checks = paint.texts.map((text) => {
+      expect(
+        text.background[3],
+        "Lower text/chrome has an opaque composited backdrop",
+      ).toBe(255);
+      const alpha = text.foreground[3] / 255;
+      const foreground = text.foreground
+        .slice(0, 3)
+        .map(
+          (channel, index) =>
+            channel * alpha + text.background[index] * (1 - alpha),
+        );
+      const a = luminance(foreground),
+        b = luminance(text.background);
+      const contrast = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+      expect(
+        contrast,
+        `${kind}/${theme} lower text and chrome ${text.selector}`,
+      ).toBeGreaterThanOrEqual(4.5);
+      return { ...text, contrast };
+    });
+    expect(
+      checks.length,
+      "Actual lower sections and surrounding chrome were checked",
+    ).toBeGreaterThanOrEqual(4);
+    return { canvas: paint.body, checks };
+  }
+
   async function capture(
     page: Page,
     locale: Locale,
@@ -253,6 +361,11 @@ test.describe("Spotlight public route acceptance", () => {
     viewport: (typeof viewports)[number],
     kind: "venue" | "event",
   ) {
+    const palette = await assertDetailPalette(page, kind, theme);
+    await writeFile(
+      `test-results/spotlight-routes/${kind}-${locale}-${theme}-${viewport.name}-palette.json`,
+      JSON.stringify(palette, null, 2),
+    );
     await page.screenshot({
       path: `test-results/spotlight-routes/${kind}-${locale}-${theme}-${viewport.name}.png`,
       fullPage: false,
@@ -621,6 +734,238 @@ test.describe("Spotlight public route acceptance", () => {
         expect(missing.status()).toBe(404);
       }
     });
+    for (const theme of ["light", "dark"] as const) {
+      for (const width of [360, 390, 820] as const) {
+        for (const kind of ["venue", "event"] as const) {
+          test(`detail Privacy native ${kind} ${locale} ${theme} ${width}`, async ({
+            page,
+            context,
+          }) => {
+            test.setTimeout(60_000);
+            await page.setViewportSize({ width, height: 844 });
+            await page.emulateMedia({
+              colorScheme: theme,
+              reducedMotion: "reduce",
+            });
+            await context.addCookies(
+              ["analytics", "personalisation", "marketing"].map((name) => ({
+                name: `ak_${name}`,
+                value: "denied",
+                url: fixture.siteUrl,
+              })),
+            );
+            await page.addInitScript((value) => {
+              localStorage.setItem("akipasa.theme", value);
+              localStorage.setItem("akipasa:passport-motion", "off");
+            }, theme);
+            const attemptedWrites: string[] = [];
+            await page.route("**/*", (route) => {
+              if (!["GET", "HEAD"].includes(route.request().method())) {
+                attemptedWrites.push(
+                  `${route.request().method()} ${new URL(route.request().url()).pathname}`,
+                );
+                return route.abort("blockedbyclient");
+              }
+              return route.fallback();
+            });
+            await page.goto(
+              `/${locale}/${kind === "venue" ? "venues" : "events"}/${kind === "venue" ? fixture.venue.slug : fixture.event.slug}`,
+            );
+            await expect(
+              page.locator(`main.spotlight-${kind} h1`),
+            ).toBeVisible();
+            await expect(page.locator("html")).toHaveAttribute(
+              "data-theme",
+              theme,
+            );
+            const trigger = page.locator(
+              "body > .privacy-preferences:not(.privacy-preferences--passport) > button",
+            );
+            await expect(trigger).toHaveAttribute("aria-expanded", "false");
+            const savedPrivacy = () =>
+              page.evaluate(() => ({
+                cookies: document.cookie
+                  .split("; ")
+                  .filter((cookie) =>
+                    /^ak_(analytics|personalisation|marketing|consent_version)=/.test(
+                      cookie,
+                    ),
+                  )
+                  .sort(),
+                motion: localStorage.getItem("akipasa:passport-motion"),
+                behaviourQueue: localStorage.getItem(
+                  "akipasa:behaviour-queue:v1",
+                ),
+              }));
+            const before = await savedPrivacy();
+            const samples = async () =>
+              trigger.evaluate((button) => {
+                const bounds = button.getBoundingClientRect();
+                return {
+                  bounds: {
+                    x: bounds.x,
+                    y: bounds.y,
+                    width: bounds.width,
+                    height: bounds.height,
+                  },
+                  viewportHeight: innerHeight,
+                  scrollY,
+                  documentHeight: document.documentElement.scrollHeight,
+                  points: [
+                    [0.5, 0.5],
+                    [0.1, 0.1],
+                    [0.9, 0.1],
+                    [0.1, 0.9],
+                    [0.9, 0.9],
+                  ].map(([x, y]) => {
+                    const target = document.elementFromPoint(
+                      bounds.x + bounds.width * x,
+                      bounds.y + bounds.height * y,
+                    );
+                    return (
+                      !!target && (target === button || button.contains(target))
+                    );
+                  }),
+                };
+              });
+            const assertClear = (
+              value: Awaited<ReturnType<typeof samples>>,
+            ) => {
+              expect(value.bounds.height).toBeGreaterThanOrEqual(44);
+              expect(value.bounds.y).toBeGreaterThanOrEqual(0);
+              expect(value.bounds.y + value.bounds.height).toBeLessThanOrEqual(
+                value.viewportHeight + 1,
+              );
+              expect(
+                value.points,
+                "The whole Privacy control must own its centre and all four corner hits above both action bars",
+              ).toEqual([true, true, true, true, true]);
+            };
+            await page.evaluate(() =>
+              window.scrollTo({
+                top: document.documentElement.scrollHeight,
+                behavior: "instant",
+              }),
+            );
+            await page.evaluate(
+              () =>
+                new Promise<void>((resolve) =>
+                  requestAnimationFrame(() =>
+                    requestAnimationFrame(() => resolve()),
+                  ),
+                ),
+            );
+            const atBottom = await samples();
+            expect(
+              Math.abs(
+                atBottom.scrollY +
+                  atBottom.viewportHeight -
+                  atBottom.documentHeight,
+              ),
+            ).toBeLessThanOrEqual(2);
+            assertClear(atBottom);
+            // Reach the trigger by native Tab from the document start. The browser
+            // must keep it above both bars when focus scrolls it into view.
+            await page.evaluate(() => {
+              if (document.activeElement instanceof HTMLElement)
+                document.activeElement.blur();
+              window.scrollTo({ top: 0, behavior: "instant" });
+            });
+            let tabSteps = 0;
+            for (; tabSteps < 120; tabSteps++) {
+              await page.keyboard.press("Tab");
+              if (
+                await trigger.evaluate(
+                  (button) => button === document.activeElement,
+                )
+              )
+                break;
+            }
+            expect(
+              tabSteps,
+              "Native Tab reaches the existing outside Privacy trigger",
+            ).toBeLessThan(120);
+            await expect(trigger).toBeFocused();
+            const afterNativeTab = await samples();
+            assertClear(afterNativeTab);
+            await page.screenshot({
+              path: `test-results/spotlight-routes/privacy-${kind}-${locale}-${theme}-${width}-focused.png`,
+              fullPage: false,
+              animations: "disabled",
+            });
+            await page.keyboard.press("Enter");
+            const dialog = page.locator("aside.personalisation-consent");
+            await expect(dialog).toBeVisible();
+            await expect(trigger).toHaveAttribute("aria-expanded", "true");
+            await expect(dialog.locator('input[type="checkbox"]')).toHaveCount(
+              4,
+            );
+            for (const checkbox of await dialog
+              .locator('input[type="checkbox"]')
+              .all())
+              await expect(checkbox).not.toBeChecked();
+            const close = dialog.getByRole("button", {
+              name:
+                locale === "es"
+                  ? "Cerrar opciones de privacidad"
+                  : "Close privacy choices",
+              exact: true,
+            });
+            for (
+              let step = 0;
+              step < 12 &&
+              !(await close.evaluate(
+                (button) => button === document.activeElement,
+              ));
+              step++
+            )
+              await page.keyboard.press("Tab");
+            await expect(close).toBeFocused();
+            await page.keyboard.press("Escape");
+            await expect(dialog).toHaveCount(0);
+            await expect(trigger).toBeFocused();
+            assertClear(await samples());
+            // Native pointer clicks must also work without forced clicks or
+            // changing any checkbox/save/reject/accept action.
+            await trigger.click();
+            await expect(dialog).toBeVisible();
+            await close.click();
+            await expect(dialog).toHaveCount(0);
+            await expect(trigger).toBeFocused();
+            const afterClose = await samples();
+            assertClear(afterClose);
+            expect(await savedPrivacy()).toEqual(before);
+            expect(attemptedWrites).toEqual([]);
+            await page.screenshot({
+              path: `test-results/spotlight-routes/privacy-${kind}-${locale}-${theme}-${width}-closed.png`,
+              fullPage: false,
+              animations: "disabled",
+            });
+            await writeFile(
+              `test-results/spotlight-routes/privacy-${kind}-${locale}-${theme}-${width}.json`,
+              JSON.stringify(
+                {
+                  locale,
+                  theme,
+                  width,
+                  kind,
+                  atBottom,
+                  afterNativeTab,
+                  afterClose,
+                  tabSteps: tabSteps + 1,
+                  savedPrivacyUnchanged: true,
+                  attemptedWrites,
+                  physicalAndroid: false,
+                  reducedMotion: true,
+                },
+                null,
+                2,
+              ),
+            );
+          });
+        }
+      }
+    }
   }
 
   test("sparse venues retain useful information without fabricated menu, hours or booking", async ({
@@ -653,6 +998,15 @@ test.describe("Spotlight public route acceptance", () => {
       "https://akihq.app/es/business?view=claims&venueId=00000000-0000-4000-8000-000000000020",
     );
     await fitsViewport(page, venue, 390);
+    const actualTheme =
+      (await page.locator("html").getAttribute("data-theme")) || "light";
+    await assertDetailPalette(page, "venue", actualTheme);
+    for (const fullPage of [false, true])
+      await page.screenshot({
+        path: `test-results/spotlight-routes/state-sparse-es-${actualTheme}-390${fullPage ? "-full" : ""}.png`,
+        fullPage,
+        animations: "disabled",
+      });
   });
 
   test("booking availability keeps external precedence and hides cancelled or sold-out booking actions", async ({
@@ -681,6 +1035,16 @@ test.describe("Spotlight public route acceptance", () => {
       await expect(
         page.locator(".event-spotlight-primary-action a"),
       ).toHaveAccessibleName("Directions");
+      const actualTheme =
+        (await page.locator("html").getAttribute("data-theme")) || "light";
+      await fitsViewport(page, page.locator("main.spotlight-event"), 1280);
+      await assertDetailPalette(page, "event", actualTheme);
+      for (const fullPage of [false, true])
+        await page.screenshot({
+          path: `test-results/spotlight-routes/state-${slug}-en-${actualTheme}-1280${fullPage ? "-full" : ""}.png`,
+          fullPage,
+          animations: "disabled",
+        });
     }
   });
 

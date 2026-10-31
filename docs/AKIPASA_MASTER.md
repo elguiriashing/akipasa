@@ -1,5 +1,106 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-31 | Preserve the full overhaul while integrating finished live batches
+
+Public339 and Admin/detail340 are reconciled normally into the existing332
+candidate, retaining all source history and stronger Auth/Owner/route tests. Only
+three route/Admin CSS files change Main runtime; its existing Promotions recovery
+already matches the live port. The duplicate operations job from textual merge is
+resolved to one mandatory job retaining all old steps, Owner69 and Promotions24.
+All original23 Admin assertion calls remain, with37 after added coverage.
+
+Main's own compact-header white wordmark override conflicted with the new light
+route chrome. Actual reviewed images showed invisible Aki text. Three guarded
+wordmark rules inherit the existing active chrome ink; Home/Login/other routes
+and the orange Pasa logo remain unchanged. The detail collector measures actual
+visible wordmark contrast; a separate Admin visual probe explicitly covers its
+aria-hidden branding without weakening decorative-text filtering or the original
+seven Selector checks. Six hundred Aki samples exceed15.98; two fixture-only white
+negative controls fail below4.5 and are removed before positive screenshots.
+
+Main100 actual Next detail/Event cases, Admin832, Promotions24 and Owner69 pass;
+private fixture evidence does not establish real Auth/RLS/provider/private-write
+or physical-device acceptance. Full2,926-test check passed before final ink/probe
+refinements; fresh exact-head full CI is mandatory. Matrix49/90 and6 fallback
+acceptances are preserved honestly;41 remain pending and strict release remains
+blocked. Production340 identity/native evidence and all qualification details are
+in the corresponding receipts; no full332 deployment is implied.
+
+## 2026-10-31 | Restore ordinary Privacy access above detail action bars
+
+Postdeploy339 real phone-sized hit tests showed Venue's ordinary Privacy trigger
+entirely covered by its fixed Directions bar. General56HTTPS reads passed but did
+not test this native control; the baseline failure is retained. Two detail-only
+mobile CSS rules now reserve the actual action-bar/dock clearance and matching
+focus scroll margin: Venue<=600, Event<=850. Full-detail roots, ordinary flow,
+Owner-focus/Map/Passport exclusions prevent spill. Dialog, choices, cookie logic,
+tracking, booking/controller, private identity and authorization are unchanged.
+
+Existing32 Spotlight tests remain. Another24 actual built Next cases exercise
+both pages in EN/ES/light/dark/360/390/820: five native hit points after bottom
+scroll, native Tab auto-scroll and after closing, Enter/Escape/pointer Close,
+four unchecked toggles and unchanged saved privacy/motion/queue state; no writes
+attempted. Fresh56 cases and optimized build pass, four actual screenshots and
+frozen source independently reviewed. Combined340 source now has six bounded
+runtime files; remaining1,002 Master paths and all original CI jobs stay intact.
+Fresh final-head clean CI remains mandatory; no fix deployment is claimed yet.
+
+## 2026-10-31 | Admin workbench presentation and truthful read recovery
+
+This independently bounded batch follows authorized public339 master0775. Four
+runtime files finish Admin workbench/achievement/Selector lab styling and repair
+Promotions read errors. Main review evidence exposed inherited Master navy parent
+canvas plus failed promotions reads appearing as zero/empty; scoped Admin parent
+chrome now matches the neutral workbenches. Owner focus/custom backgrounds and
+Privacy dialog/choices remain unchanged. Selector's private preview stays dark;
+small EN360 Achievements label wrapping remains a reviewed nonblocking residual.
+
+Promotions handles each existing read error independently, shows unknown counts,
+withholds required-event-dependent creation on events failure, and offers native
+localized GET retry. Query expressions, requireAdmin, successful forms and all
+server actions remain unchanged. No roles, SQL, RLS, provider, billing, private
+records, consent choices, XP or AkiPals behavior changes.
+
+Fresh actual-component/AppShell evidence:832 requested contexts,800 renders and
+32 expected missing-record denials,600 native menu checks,240 text contrast checks
+(minimum5.96),800 canvas/chrome checks;54 existing unit tests and24 maintained
+palette cases pass. Another24 faithful Promotions cases include stale/combined
+errors and16 native GET recoveries. Actual built Next guest boundaries pass42
+cases across all21 Admin routes in EN/ES, using an anonymous localhost-only read
+fixture. This is not authenticated-session/RLS/provider/private-write/device proof.
+Local full check2184 tests/15 stages plus build passes after repairing a missing
+worktree automation dependency link; initial setup failure and unconfigured-preview
+42 failures are preserved. Four runtime hashes remain frozen through normal
+fast-forward to339; fresh combined exact-head CI is required before publication.
+
+A new parallel mandatory Admin responsive/recovery job retains all original CI
+jobs/assertions and uploads its evidence. Formal332 route statuses remain intact:
+49/90 accepted and41 pending. This presentation release does not waive the full
+overhaul's protected-role/provider/device/final-review gates.
+
+## 2026-10-31 | Isolated public Venue/Event detail whole-page palette
+
+Only the two route stylesheets change runtime behavior. Initial reviewed Main
+palette was insufficient on live Master's parent canvas and lower sections;
+independent actual screenshot review caught the inherited navy. Full-detail-root
+surface aliases now finish About/Information/business panels, with guarded parent
+canvas/header/dock/footer ink and ordinary Privacy trigger styling. Owner focus
+and private background canvas remain protected; the Privacy dialog and choices
+are unchanged. Synthetic test artwork is intentionally retained, not photography
+or evidence of production event supply. Small inherited footer button backgrounds
+and floating Support edge proximity remain explicit review observations.
+
+All 1,004 pinned Master runtime/schema/workflow/package/runner paths are unchanged.
+Venue/Event pages, shared templates, Map drawer, data/controllers, booking/auth,
+consent, XP and providers stay live338 bytes. No global skin, asset or SQL copied.
+Seventeen focused tests and fresh actual Next 32-case Spotlight suite pass with
+EN/ES, dark/light, 360/390/600/820/1280/1440/1536 coverage, original interactions and
+sparse/cancelled/sold-out states. Full-page screenshots and actual composed lower
+surface/chrome contrast assertions extend the original tests without removing
+assertions. This is bounded presentation evidence, not real provider/payment or
+physical-device acceptance. Full check, published exact-head CI and final review
+must pass before expected-head merge; no deployment is claimed by this entry.
+
 ## 2026-10-31 | Complete responsive Admin evidence and truthful Owner recovery
 
 EighteenAdminworkbenches nowhave explicitEN/ES,dark/light,360/390/820/1440

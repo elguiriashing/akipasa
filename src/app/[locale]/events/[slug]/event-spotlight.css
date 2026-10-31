@@ -1,6 +1,15 @@
 /* Keep public detail surfaces in AkiPasa's charcoal and ember palette.
    The legacy blue token remains the shared link/tab contract, with warm ink. */
 .app-detail-page.spotlight-page.spotlight-event {
+  /* Generic lower panels and the business prompt inherit the same page palette. */
+  --surface: var(--spotlight-surface);
+  --surface-alt: var(--spotlight-surface-alt);
+  --surface-card: var(--spotlight-surface);
+  --surface-muted: var(--spotlight-surface-alt);
+  --panel: var(--spotlight-surface);
+  --ink: var(--spotlight-ink);
+  --muted: var(--spotlight-muted);
+  --line: var(--spotlight-line);
   --spotlight-surface: #101010;
   --spotlight-surface-alt: #181715;
   --spotlight-ink: #f9f5f0;
@@ -888,4 +897,153 @@ html.theme-light .app-detail-page.spotlight-page.spotlight-event {
   .spotlight-event .event-spotlight-mobile-actions {
     position: static;
   }
+}
+
+/* The existing shell remains byte-identical. Paint only this active detail's
+   surrounding chrome; do not change generic body tokens or consent-panel styles. */
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-event) {
+  --spotlight-chrome-canvas: #07090b;
+  --spotlight-chrome-surface: #101010;
+  --spotlight-chrome-raised: #181715;
+  --spotlight-chrome-ink: #f9f5f0;
+  --spotlight-chrome-muted: #c0b9b0;
+  --spotlight-chrome-line: rgb(255 245 230 / 14%);
+}
+
+html[data-theme="light"]:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-event),
+html.theme-light:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-event) {
+  --spotlight-chrome-canvas: #f8f6f2;
+  --spotlight-chrome-surface: #fffefc;
+  --spotlight-chrome-raised: #f5f0e9;
+  --spotlight-chrome-ink: #25201d;
+  --spotlight-chrome-muted: #695d54;
+  --spotlight-chrome-line: rgb(87 55 31 / 18%);
+}
+
+html:not([data-owner-focus="true"]):has(
+    .app-detail-page.spotlight-page.spotlight-event
+  ) {
+  background-color: #07090b;
+}
+html[data-theme="light"]:not([data-owner-focus="true"]):has(
+    .app-detail-page.spotlight-page.spotlight-event
+  ),
+html.theme-light:not([data-owner-focus="true"]):has(
+    .app-detail-page.spotlight-page.spotlight-event
+  ) {
+  background-color: #f8f6f2;
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-event) {
+  color: var(--spotlight-chrome-ink);
+}
+/* A deliberately selected private Owner image still owns its canvas. */
+html:not([data-owner-focus="true"]):not([data-owner-custom-background="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-event) {
+  background: var(--spotlight-chrome-canvas);
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-event)
+  :is(.app-shell, .app-content) {
+  background: transparent;
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-event)
+  :is(
+    .app-topbar-mobile,
+    .app-bottom-nav,
+    .suite-discovery-nav[data-product="pasa"]
+  ) {
+  color: var(--spotlight-chrome-ink);
+  background: var(--spotlight-chrome-surface);
+  border-color: var(--spotlight-chrome-line);
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-event)
+  .app-bottom-nav
+  :is(a, button) {
+  color: var(--spotlight-chrome-muted);
+}
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-event)
+  .app-bottom-nav
+  .active {
+  color: var(--primary-text, var(--primary));
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-event)
+  :is(
+    .global-search-trigger,
+    .app-topbar-mobile > button,
+    .suite-discovery-tools > button,
+    .suite-discovery-tools > a,
+    .suite-discovery-menu > summary
+  ) {
+  color: var(--spotlight-chrome-ink);
+  background: var(--spotlight-chrome-raised);
+  border-color: var(--spotlight-chrome-line);
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-event)
+  .footer {
+  color: var(--spotlight-chrome-muted);
+  background: transparent;
+  border-color: var(--spotlight-chrome-line);
+}
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-event)
+  .footer
+  :is(a, button) {
+  color: var(--spotlight-chrome-muted);
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-event)
+  > .privacy-preferences:not(.privacy-preferences--passport)
+  > button {
+  color: var(--spotlight-chrome-ink);
+  background: var(--spotlight-chrome-raised);
+  border-color: var(--spotlight-chrome-line);
+}
+
+/* Ordinary Privacy remains in document flow above both the existing dock and
+   this detail page's second action bar. Dialog/choices and other routes stay unchanged. */
+@media (max-width: 850px) {
+  html:not([data-owner-focus="true"])
+    body:has(.app-detail-page.spotlight-page.spotlight-event):not(
+      :has(.map-page, .passports-workspace, #passport-privacy-controls)
+    )
+    > .privacy-preferences:not(.privacy-preferences--passport) {
+    padding-bottom: calc(
+      1rem + var(--app-bottom, 64px) + 5rem + env(safe-area-inset-bottom, 0px)
+    );
+  }
+  html:not([data-owner-focus="true"])
+    body:has(.app-detail-page.spotlight-page.spotlight-event):not(
+      :has(.map-page, .passports-workspace, #passport-privacy-controls)
+    )
+    > .privacy-preferences:not(.privacy-preferences--passport)
+    > button {
+    scroll-margin-block-end: calc(
+      var(--app-bottom, 64px) + 5rem + env(safe-area-inset-bottom, 0px)
+    );
+  }
+}
+
+/* Main's compact header uses white wordmark ink on dark surfaces. The active
+   workspace/detail chrome also supports light mode, so inherit its matching ink. */
+html:not([data-owner-focus="true"])
+  body:has(.app-detail-page.spotlight-page.spotlight-event)
+  .app-topbar-mobile
+  .brand-wordmark {
+  color: var(--spotlight-chrome-ink);
 }

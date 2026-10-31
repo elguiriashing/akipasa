@@ -2,6 +2,91 @@
 
 Owner: Alex Ashing. Integration owner: Codex `/root`. Updated: 30 October 2026 UTC.
 
+## 31 October 03:20 UTC — Admin and detail release live; consolidated source validated
+
+Production is master `76cb96df21bf9404d50db373cf57bb0287fd9a80` (PR340),
+reviewed head `45a9d9037955fa8c04892a48ecb13d95d18ffaba`. Automatic Cloudflare
+build `5bc752a1-569b-4cdd-a765-f5e79033b7e2` succeeded; Worker
+`972fd06f-85c4-40a9-b47c-577a3dd6b244` serves100%. Merge/review trees match.
+All six exact-head workflows passed:2,184 tests, required Admin832 and Promotions24
+with16 native GET recoveries, Spotlight56. Generic282PASS/57conditionalSKIP is
+separate from dedicated56PASS, never a claim that skipped tests passed.
+
+Real HTTPS native verification now passes12 contexts and48 route checks across
+two real venues, Community and Roadmap, EN/ES/dark/light/360/390/820. Five hit
+points are clear at bottom and after native Tab, keyboard/pointer panel controls
+work, saved cookies/local/session state stays unchanged. Root viewed two actual
+production screenshots: the formerly covered Privacy trigger is now accessible.
+All non-GET requests were blocked;52 attempted POSTs were recorded, not claimed
+as zero. Earlier traces identify existing Cloudflare RUM beacons. Initial operator
+Escape-outside-disclosure failures and later executor Envoy503 transport failures
+are preserved; the unchanged correct native sequence passed after an ordinary
+Home200 verified network recovery. No application rollback or consent alteration.
+
+Local #332 normal merge of0c4+45a preserves stronger auth, Owner recovery and
+all old CI jobs/tests. An automatic merge duplicated the operations YAML job;
+root restored one job retaining Owner69 and adding Promotions24. AST proof
+retains all23 original Admin assertions, now37. The previous60 detail cases and16 Event review cases are retained;24 new native
+privacy cases bring the actual total to100. Full local
+check passed2,926 tests/17 groups before the final Main-only header ink repair.
+Actual screenshots caught white Aki on light compact headers due Main's own
+cinematic override; three guarded CSS ink rules repair it. Final100 cases pass;
+Admin832 includes600 explicit visible Aki checks(min15.99), two fixture-only white
+negative controls fail at1.01 then restore before genuine screenshots. Original
+240 contrast checks/seven Selector checks remain. Promotions24 and Owner69 pass
+on final runtime source; the last QA-only probe addition is qualified separately.
+All1,556 current code/QA hashes are frozen; source roles/actions/SQL unchanged.
+
+Root will commit the validated local45a merge, normally merge actual master76cb
+(expected no runtime change), then push ONE final #332 head and verify all fresh
+11 ordinary workflows, strict audit and Cloudflare packaging. Do not merge #332:
+49/90 formal route records and6 fallback states are accepted;41 remain pending.
+Actual authenticated roles/RLS/private writes/providers/device and final owner
+review remain genuine gates. Paid isolated QA(~US$0.32/day plus usage) remains
+unapproved/uncreated; pending production SQL remains unapplied, Tonight off,
+AkiPals paused. Root exclusive integration lease04:00UTC. Existing hourly task
+is conditional polling, not continuous background engineering.
+
+## 31 October 02:22 UTC — public339 deployed; Admin batch and demonstrated phone repair
+
+Production master0775ee598463a37907c0a711bd03014c44d1ec4b matches reviewed339
+head35fb284/tree19be4f37. All6 exact-head workflows pass; actual generic282PASS/
+33conditionalSKIP, with32 skipped Spotlight cases separately32PASS in required
+realNext dedicated job (new1440cases explain4 extra skips). AutomaticCloudflare
+build87103309 succeeded, Worker035e006c-1012-4819-8cad-0b30d11e70e4 serves100%.
+Rollback0c2e/980f/26e retained; no duplicate manualdeploy/SQL/customer/consentwrite.
+56actualreadonlyENES390/1440/darklightHTTPS cases pass/nooverflow/pageerrors/
+savedprivacychanges. Rootviewed3actualproductionPNGs; realvenues sparse/unclaimed,
+no published event links found, no false photos/events/rewards invented.
+
+IMPORTANT: Extra real390 settlednativehit test found Privacybutton completely
+covered by VenuefixedDirectionsbar (three sampledpoints). General56PASSdoesnot
+supersede this failure. Baseline/source/Worker/metrics preserved in receipt;
+rootauthorized ONLY2detailCSS clearance/scrollmargin +16nativeSpotlighttests,
+retaining all32 existing assertions. No consentchoices/dialog/controller changes.
+Mobilityagent owns those3 files in isolatedAdminworktree untilfresh48 proof freezes.
+
+PR340 initialhead1a10d7c7b19ddd29974a6d5dac2b4d8c16539712 contains4frozenAdmin
+runtimefiles+3QA+additiveCI/docs.18workbenches verified832 requested(800renders/
+32expectedrecorddenials),600nativeMenus/800canvaschecks/240textchecks(min5.96),
+54units/24palette/24Promotionsstale/errorcases with16nativeGETrecoveries PASS.
+ActualbuiltNext42anonymousAdminentriesPASS againstreadonlylocalfixture; no actual
+Authsession/RLS/provider/privatewrites/device claim. Fullcheck2184/15+buildPASS;
+initialmissingdependency/unconfiguredpreview failures preserved/repairedsetup.
+Actual12PNGindependentreview sourcebound; guards/actions/queries/formssameMaster.
+Initial1aCIbecomes historical onceprivacyfixpushed; doNOTmergeoldgreens. Rootwill
+publishonefinal340 headwithrelevantsource/QA/docs andrequireALL6freshchecks plus
+mandatory832/24+new48Spotlight, CF/source/review beforeexpectedheadmerge.
+
+Main332 runtime remains0c4b10ff11a6d5ce9694f453c9ed1a4b84bad017; all11ordinary
+checksGREEN, strict41pending/49of90accepted+all6fallbacks accepted. Rootwillbatch
+normalmasterreconciliation AFTER340 finishes, preserveMainstrongerguards/tests/
+Ownerrecoveries, runcombinedrequiredchecks once. No full332 release approval.
+Rootexclusivewriterlease04:00UTC; existinghourlywatcher is notcontinuouscoding.
+PaidisolatedQAresource(~US$0.32/day+usage) unapproved/notcreated; AkiPals paused,
+TonightOFF, pendingStaffSQLunapplied. Protectedrole/RLS/privatewrites/provider/
+physicaldevice and finalownerreview remain genuinefullreleasegates.
+
 ## 31 October 01:10 UTC — combined operations/live338 source passes full validation
 
 Normalmerge994a975+production9e resolvedwithoutlosing strongerMainAuthreturnAPI/

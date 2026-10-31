@@ -734,3 +734,119 @@ html[data-theme="light"]
   small {
   color: var(--muted);
 }
+
+/* The existing shell remains byte-identical. Paint only the active Admin workspace's
+   surrounding chrome; do not change generic body tokens or consent-panel styles. */
+html:not([data-owner-focus="true"]) body:has(.admin-workspace) {
+  --admin-chrome-canvas: #07090b;
+  --admin-chrome-surface: #101010;
+  --admin-chrome-raised: #181715;
+  --admin-chrome-ink: #f9f5f0;
+  --admin-chrome-muted: #c0b9b0;
+  --admin-chrome-line: rgb(255 245 230 / 14%);
+}
+
+html[data-theme="light"]:not([data-owner-focus="true"])
+  body:has(.admin-workspace),
+html.theme-light:not([data-owner-focus="true"]) body:has(.admin-workspace) {
+  --admin-chrome-canvas: #f8f6f2;
+  --admin-chrome-surface: #fffefc;
+  --admin-chrome-raised: #f5f0e9;
+  --admin-chrome-ink: #25201d;
+  --admin-chrome-muted: #695d54;
+  --admin-chrome-line: rgb(87 55 31 / 18%);
+}
+
+html:not([data-owner-focus="true"]):has(.admin-workspace) {
+  background-color: #07090b;
+}
+html[data-theme="light"]:not([data-owner-focus="true"]):has(.admin-workspace),
+html.theme-light:not([data-owner-focus="true"]):has(.admin-workspace) {
+  background-color: #f8f6f2;
+}
+
+html:not([data-owner-focus="true"]) body:has(.admin-workspace) {
+  color: var(--admin-chrome-ink);
+}
+/* A deliberately selected private Owner image still owns its canvas. */
+html:not([data-owner-focus="true"]):not([data-owner-custom-background="true"])
+  body:has(.admin-workspace) {
+  background: var(--admin-chrome-canvas);
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.admin-workspace)
+  :is(.app-shell, .app-content) {
+  background: transparent;
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.admin-workspace)
+  :is(
+    .app-topbar-mobile,
+    .app-bottom-nav,
+    .suite-discovery-nav[data-product="pasa"]
+  ) {
+  color: var(--admin-chrome-ink);
+  background: var(--admin-chrome-surface);
+  border-color: var(--admin-chrome-line);
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.admin-workspace)
+  .app-bottom-nav
+  :is(a, button) {
+  color: var(--admin-chrome-muted);
+}
+html:not([data-owner-focus="true"])
+  body:has(.admin-workspace)
+  .app-bottom-nav
+  .active {
+  color: var(--primary-text, var(--primary));
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.admin-workspace)
+  :is(
+    .global-search-trigger,
+    .app-topbar-mobile > button,
+    .suite-discovery-tools > button,
+    .suite-discovery-tools > a,
+    .suite-discovery-menu > summary
+  ) {
+  color: var(--admin-chrome-ink);
+  background: var(--admin-chrome-raised);
+  border-color: var(--admin-chrome-line);
+}
+
+html:not([data-owner-focus="true"]) body:has(.admin-workspace) .footer {
+  color: var(--admin-chrome-muted);
+  background: transparent;
+  border-color: var(--admin-chrome-line);
+}
+html:not([data-owner-focus="true"])
+  body:has(.admin-workspace)
+  .footer
+  :is(a, button) {
+  color: var(--admin-chrome-muted);
+  background: var(--admin-chrome-raised);
+  border-color: var(--admin-chrome-line);
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.admin-workspace)
+  > .privacy-preferences:not(.privacy-preferences--passport)
+  > button {
+  color: var(--admin-chrome-ink);
+  background: var(--admin-chrome-raised);
+  border-color: var(--admin-chrome-line);
+}
+
+/* Main's compact header uses white wordmark ink on dark surfaces. The active
+   workspace/detail chrome also supports light mode, so inherit its matching ink. */
+html:not([data-owner-focus="true"])
+  body:has(.admin-workspace)
+  .app-topbar-mobile
+  .brand-wordmark {
+  color: var(--admin-chrome-ink);
+}
