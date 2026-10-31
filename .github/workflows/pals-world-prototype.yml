@@ -1,0 +1,56 @@
+name: AkiPals World isolated prototype checks
+
+on:
+  push:
+    branches:
+      - feature/akipals-world-explorer-20261031
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  world-prototype:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Format isolated AkiPals files
+        run: |
+          npx prettier --write \
+            src/lib/pals/world.ts \
+            src/app/pals/world/page.tsx \
+            src/app/pals/world/venues/route.ts \
+            src/components/pals/WorldExplorer.tsx \
+            src/components/pals/WorldExplorer.module.css \
+            src/components/pals/identity-preview.ts \
+            src/components/pals/studio-3d.js \
+            tests/pals-world.test.ts \
+            tests/pals-world-route.test.ts \
+            docs/AKIPALS_WORLD_EXPLORER_20261031.md \
+            docs/AKIPASA_MASTER.md \
+            docs/CHANGE_IMPACT_REGISTER.md
+      - name: Commit formatting without merging or releasing
+        run: |
+          if ! git diff --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add src/lib/pals/world.ts src/app/pals/world/ src/components/pals/WorldExplorer.tsx src/components/pals/WorldExplorer.module.css src/components/pals/identity-preview.ts src/components/pals/studio-3d.js tests/pals-world.test.ts tests/pals-world-route.test.ts docs/AKIPALS_WORLD_EXPLORER_20261031.md docs/AKIPASA_MASTER.md docs/CHANGE_IMPACT_REGISTER.md
+            git commit -m "style(pals): format isolated AkiWorld prototype"
+            git push origin HEAD:feature/akipals-world-explorer-20261031
+          fi
+      - name: Type-check AkiPasa source
+        run: npm run typecheck
+      - name: Test the AkiPals contracts
+        run: npm run test:pals
+      - name: Bundle shared 3D character runtime
+        run: npm run pals:3d:bundle
