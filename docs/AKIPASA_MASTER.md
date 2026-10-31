@@ -16,7 +16,7 @@ All 1,004 pinned Master runtime/schema/workflow/package/runner paths are unchang
 Venue/Event pages, shared templates, Map drawer, data/controllers, booking/auth,
 consent, XP and providers stay live338 bytes. No global skin, asset or SQL copied.
 Seventeen focused tests and fresh actual Next 32-case Spotlight suite pass with
-EN/ES, dark/light, 360/390/820/1024/1280/1440 coverage, original interactions and
+EN/ES, dark/light, 360/390/600/820/1280/1440/1536 coverage, original interactions and
 sparse/cancelled/sold-out states. Full-page screenshots and actual composed lower
 surface/chrome contrast assertions extend the original tests without removing
 assertions. This is bounded presentation evidence, not real provider/payment or
