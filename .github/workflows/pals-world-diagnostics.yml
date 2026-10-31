@@ -1,0 +1,52 @@
+name: AkiPals focused World diagnostics
+on:
+  push:
+    branches: [release/akipals-world-private-20261031]
+    paths:
+      - ".github/workflows/pals-world-diagnostics.yml"
+      - "src/components/pals/WorldExplorer*"
+      - "src/components/pals/studio-3d.js"
+      - "scripts/test-pals-world-browser.mjs"
+permissions:
+  contents: read
+  actions: read
+jobs:
+  world:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Capture previous browser error tail
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p test-results/pals-world-diagnostics
+          curl --fail --silent --show-error --location -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/elguiriashing/akipasa/actions/jobs/124532638533/logs" -o /tmp/previous.log
+          tail -100 /tmp/previous.log > test-results/pals-world-diagnostics/previous-tail.txt
+          cat test-results/pals-world-diagnostics/previous-tail.txt
+      - name: Locked dependencies and Chromium
+        run: |
+          npm ci --no-audit --no-fund >/tmp/install.log 2>&1 || { tail -50 /tmp/install.log; exit 1; }
+          npx playwright install --with-deps chromium >/tmp/chromium.log 2>&1 || { tail -50 /tmp/chromium.log; exit 1; }
+      - run: npm run pals:3d:bundle
+      - name: Actual World component browser checks
+        run: |
+          set +e
+          node scripts/test-pals-world-browser.mjs >test-results/pals-world-diagnostics/world.log 2>&1
+          result=$?
+          tail -100 test-results/pals-world-diagnostics/world.log
+          exit "$result"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pals-world-diagnostics
+          path: |
+            test-results/pals-world-diagnostics
+            test-results/pals-world-browser
+          retention-days: 3
