@@ -94,6 +94,15 @@ html[data-theme="light"] .app-shell:has(.map-page) .map-results-drawer {
   color: var(--ink);
 }
 
+html[data-theme="light"]
+  .app-shell:has(.map-page)
+  .map-results-drawer
+  .pasa-event-card
+  .card-body
+  h3 {
+  color: var(--ink);
+}
+
 .app-shell:has(.map-page) .map-results-drawer .card-media-fallback {
   background: #17130f;
   color: #ff9b62;

@@ -357,18 +357,65 @@ try {
                   exact: true,
                 }),
               ).toBeVisible();
+            await expect(
+              page.locator("#passport-mobile-menu [role='status']"),
+            ).toHaveText(
+              locale === "es"
+                ? "Movimiento reducido activado."
+                : "Reduced motion is enabled.",
+            );
             const nestedText = await page
               .locator(
-                ".console-section-header h2,.console-section-header > div > p,.console-section-header > div > span,section[aria-labelledby='badge-collection-heading'] h3,section[aria-labelledby='badge-collection-heading'] h4,section[aria-labelledby='badge-collection-heading'] p,section[aria-labelledby='badge-collection-heading'] > a",
+                ".console-section-header h2,.console-section-header > div > p,.console-section-header > div > span,section[aria-labelledby='badge-collection-heading'] h3,section[aria-labelledby='badge-collection-heading'] h4,section[aria-labelledby='badge-collection-heading'] p,section[aria-labelledby='badge-collection-heading'] > a,.stamp-card .card-title-row h3,#passport-mobile-menu [role='status']",
               )
               .evaluateAll((labels) =>
                 labels.map((label) => ({
                   label: label.textContent,
+                  target: label.matches(".stamp-card .card-title-row h3")
+                    ? "loyalty-title"
+                    : label.matches("#passport-mobile-menu [role='status']")
+                      ? "motion-status"
+                      : "chapter-label",
                   contrast: window.__textContrast(label),
                 })),
               );
-            for (const label of nestedText)
+            for (const label of nestedText) {
+              if (label.contrast < 4.5) {
+                const failureStem = `${directory}/${locale}-${theme}-${width}-${state}-${chapter}-contrast-failure`;
+                await page.screenshot({
+                  path: `${failureStem}.png`,
+                  fullPage: true,
+                  animations: "disabled",
+                });
+                writeFileSync(
+                  `${failureStem}.json`,
+                  JSON.stringify(
+                    {
+                      locale,
+                      theme,
+                      width,
+                      state,
+                      chapter,
+                      ...label,
+                      sourceHashes: Object.fromEntries(
+                        [
+                          "src/components/PassportBook.module.css",
+                          "scripts/test-passport-chapter-browser.mjs",
+                        ].map((file) => [
+                          file,
+                          createHash("sha256")
+                            .update(readFileSync(file))
+                            .digest("hex"),
+                        ]),
+                      ),
+                    },
+                    null,
+                    2,
+                  ),
+                );
+              }
               expect(label.contrast, label.label).toBeGreaterThanOrEqual(4.5);
+            }
             const placeholders = await page
               .locator(
                 "section[aria-labelledby='badge-collection-heading'] input[placeholder]",
@@ -448,7 +495,17 @@ try {
               fullPage: true,
               animations: "disabled",
             });
-            results.push({ locale, theme, width, state, chapter, file });
+            results.push({
+              locale,
+              theme,
+              width,
+              state,
+              chapter,
+              file,
+              readability: nestedText.filter(
+                (label) => label.target !== "chapter-label",
+              ),
+            });
           }
           await context.close();
         }

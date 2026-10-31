@@ -16,6 +16,37 @@ env:
   NEXT_PUBLIC_SUPABASE_ANON_KEY: tablet-local-disposable
 
 jobs:
+  remaining-route-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Verify legacy redirects through actual Next HTTP handling
+        run: node scripts/review-remaining-redirect-http.mjs
+      - name: Review remaining Staff, business and Account page compositions
+        run: node scripts/review-remaining-operations-browser.mjs
+      - name: Review Check-in, booking and Map page compositions
+        run: node scripts/test-consumer-route-review-browser.mjs
+      - name: Review composed Map recovery, markers and filters
+        run: node scripts/test-map-route-review-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: remaining-route-review-evidence
+          path: |
+            test-results/remaining-redirect-http/results.json
+            test-results/remaining-redirect-http/next.log
+            test-results/remaining-operations-review
+            test-results/consumer-route-review
+            test-results/map-route-review
+          retention-days: 7
+
   consumer-workflow-fixtures:
     runs-on: ubuntu-latest
     timeout-minutes: 20

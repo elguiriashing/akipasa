@@ -1,5 +1,43 @@
 # Change Impact Register
 
+## 2026-10-31 | Complete route evidence and correct three observed UI failures
+
+**Need and scope.** Forty-one reviews remained beyond the recorded 49/90 checkpoint.
+Reviewers inspected actual source-bound hosted screenshots and native-control results,
+then created narrow missing full-page fixtures instead of treating component-only or
+guest-gate evidence as page acceptance. Redirect-only routes use real Next HTTP tests.
+Per-route receipts preserve source hashes, inspected image hashes, failed baselines,
+qualifications and nonblocking observations. The matrix is updated only after each
+route's responsible review, without changing the strict audit or its evidence rules.
+
+**Runtime dependencies.** Passport changes two local CSS selectors: loyalty paper
+heading contrast improves from 1.014:1 to 13.763:1 and rail status from 2.874:1 to
+11.041:1. Operations handles an owned-location read error before empty/healthy UI,
+withholds stale rows, dependent RPCs and forms, and uses its existing safe account
+return path for Retry. A true empty response remains distinct. The initial Retry
+wrapper squeezed letters on phones; the existing stack layout corrects this without
+shared style changes. Map's reused discovery card had a white title on a light List
+card (1.008:1); one selector in PasaCinematic.css assigns the existing drawer ink only
+inside a light-theme Map results drawer. Its changed shared-file hash is explicitly
+reconciled with earlier non-Map evidence; those selectors cannot match other routes.
+
+**Preserved behavior.** Authentication, roles, tenant filters, server action signatures,
+successful query inputs, checkout gates/prices, Map data/camera/pins, Passport XP and
+preferences, privacy choices and all separate-product boundaries are unchanged.
+No schema, production records, provider settings, payments or billable resource changes.
+The new harnesses prohibit mutation actions and external traffic; their synthetic
+identities, GPS, reads and tileless Map do not certify real backend/provider journeys.
+
+**Verification and rollback.** All 194 maintained Passport cases pass with computed
+contrast; owner appearance remains 19/19. Operations/return regressions pass 73 tests;
+the final Operations-only 19 pass again after the layout correction. Final native
+browser recovery is recorded in the scoped receipts. The additional mandatory CI job
+uploads the new page/redirect evidence while retaining every previous job and assertion.
+Fresh combined exact-head CI remains required. Rollback is a source revert of three
+runtime files and their tests; no data rollback or migration is involved. Full coordinated
+release still requires real isolated role/RLS/private/provider evidence, physical Android
+and final owner review. No full PR deployment is implied by completing page reviews.
+
 ## 2026-10-29 | Owner rejects avatar art and source-bound validation checkpoint
 
 Alex rejected both current avatar directions. The isolated procedural head/hand

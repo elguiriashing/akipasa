@@ -1,5 +1,39 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-31 | Finish remaining screen reviews and repair demonstrated failures
+
+The remaining route review uses the existing source-bound screenshot evidence
+where it actually renders the page, and narrow new page/layout/AppShell fixtures
+where previous evidence covered only a subsection or an anonymous gate. Original
+acceptances and all thirteen separate-product exclusions remain intact. Redirect-only
+Membership, Rewards and Staff Audit are verified through actual Next HTTP responses;
+their receipts explicitly do not claim a rendered page or accept their destinations.
+
+Three bounded runtime repairs follow actual failures. Passport loyalty titles now
+use paper ink, and reduced-motion status uses readable ink on the dark chapter rail.
+Operations treats a failed owned-location read as unavailable, suppresses stale rows
+and dependent forms/read RPCs, and offers a native localized Retry that preserves
+the existing safe workspace/package return path. Genuine empty reads keep the
+create-location action. Map List event titles use the existing light-drawer ink;
+the selector requires both light theme and the Map drawer and cannot match other
+route families. Existing guards, owner-scoped queries, server actions, billing
+gates, provider logic, consent and verified reward authority remain unchanged.
+
+The maintained Passport runner retains all 194 cases and adds contrast assertions.
+Operations adds eight regressions to its existing unit file; 73 focused tests pass,
+with the final 19 Operations tests repeated after the narrow Retry layout repair.
+New mandatory browser evidence runs actual composed Staff/business/Account,
+Check-in/booking and Map pages with explicitly synthetic identities and reads.
+Native recovery, truthful read failures, disabled checkout and unavailable flags
+are exercised without customer writes. All existing CI jobs and checks remain.
+
+The route matrix and dated receipts are the current review record. Screen acceptance
+does not establish real hosted Auth/RLS/tenant separation, provider/private-write
+or physical Android acceptance. The coordinated PR remains draft until those
+integrated gates, fresh exact-head checks and final owner review pass. This change
+does not create paid QA resources, apply pending SQL, enable Tonight, expose the
+isolated AkiPals World/avatar work, merge master or deploy production.
+
 ## 2026-10-31 | Preserve the full overhaul while integrating finished live batches
 
 Public339 and Admin/detail340 are reconciled normally into the existing332

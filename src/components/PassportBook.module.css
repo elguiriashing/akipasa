@@ -2333,6 +2333,9 @@
 .page:not(:has(.cover)) .chapter :global(.console-section-heading) {
   color: var(--paper-ink);
 }
+.page:not(:has(.cover)) .chapter :global(.stamp-card .card-title-row h3) {
+  color: var(--paper-ink);
+}
 .page:not(:has(.cover)) .chapter :global(.panel p),
 .page:not(:has(.cover)) .chapter :global(.passport-card p),
 .page:not(:has(.cover)) .chapter :global(.stamp-card p),
@@ -2421,6 +2424,9 @@
 }
 .bookmarks button[aria-current] .bookmarkNumber {
   color: #40240e;
+}
+.bookmarks .motionControls p {
+  color: #d7c5ae;
 }
 .bookmarks .motionControls button[aria-pressed="true"],
 .bookmarks .privacyControls button:hover {
