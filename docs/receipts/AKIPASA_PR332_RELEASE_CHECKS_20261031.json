@@ -1,13 +1,13 @@
 {
   "version": 1,
   "date": "2026-10-31",
-  "recordedAt": "2026-10-31T15:49:39.798181+00:00",
+  "recordedAt": "2026-10-31T16:07:03.097886+00:00",
   "status": "integrated-validation-real-backend-protected-browser-and-production-forwards-passed-application-ci-and-rollout-pending",
   "candidate": {
     "pullRequest": "https://github.com/elguiriashing/akipasa/pull/332",
     "previousReviewedHead": "a48e2c32c6eb1072f0608dae331b35ea5c9e4879",
     "preservedIndependentLiveHead": "6047abc2186e2bab0eacae5ffcb800d73b66d64a",
-    "integratedSourcePublication": "prepared locally; no remote commit or push by this checkpoint task",
+    "integratedSourcePublication": "Integrated head 970064e was published and its exact tree verified. A one-line static inventory expectation correction is prepared locally; fresh hosted checks must bind its corrected publication.",
     "freshHostedChecksRequiredForPublishedHead": true,
     "sourceSha256": {
       "src/components/ProductionMap.tsx": "ea9857d07ad9feeb6fc0d79dac0e74ed81950384b0019a18309a7da5db6d24b5",
@@ -21,7 +21,8 @@
       "tests/e2e/authenticated-production.spec.ts": "85bdbaddfe5fcb0b1762ab6f90f4c348c5847a93fd86a30b4ddda4d66d750d8d",
       "docs/AKIPASA_UI_ROUTE_MATRIX_20261028.json": "e382bfb50a039a1f9a909ac1d6e347639ddf57b4358f597cc17ba9fa30ac06fb",
       "database/migrations/20261030114106_protect_staff_claim_account_eligibility.sql": "154fe91bf7a8a80d433a0a6c5827f22a90bac1ac3e2de99e95063afea24fa160",
-      "database/migrations/20261030163000_add_checkin_venue_preview.sql": "8f863eb676dabfed65955f7febadd1fc4f75b921a040a26e0697c7de4e9cbaeb"
+      "database/migrations/20261030163000_add_checkin_venue_preview.sql": "8f863eb676dabfed65955f7febadd1fc4f75b921a040a26e0697c7de4e9cbaeb",
+      "tests/e2e/pasa-all-route-smoke.spec.ts": "fdb0a58c88196572660bc86e078bedf0a79be913c8f6a2b9258e26893aa841a2"
     },
     "backendSourceSha256": {
       "database/migrations/0027_admin_user_crm.sql": "a861f8220e171a5fbc95c09c941685f3eedeac1a0a84982b231df485490a534f",
@@ -37,7 +38,10 @@
       "src/app/[locale]/check-in/[token]/actions.ts": "21d15b0e1e7e53ca598421ecbcb41ac4cf0fbe9e4b0478e90a34bbef5809aee8"
     },
     "backendSourceFilesUnchangedFromAcceptance": true,
-    "sourceParents": [
+    "sourceParents": ["970064ece3aa7ea3a76f8b8c35efa26569e065f4"],
+    "publishedIntegratedHead": "970064ece3aa7ea3a76f8b8c35efa26569e065f4",
+    "publishedIntegratedTree": "df24f5698fac8c391ef7be75203d7c6c261bfa30",
+    "integratedSourceParents": [
       "a48e2c32c6eb1072f0608dae331b35ea5c9e4879",
       "6047abc2186e2bab0eacae5ffcb800d73b66d64a"
     ]
@@ -433,7 +437,7 @@
     "palsPrivateAccessGate": "preserved"
   },
   "remainingRequirements": [
-    "Publish the integrated candidate and bind fresh required hosted checks to its final head.",
+    "Publish the bounded inventory expectation correction and bind fresh required hosted checks to its corrected head.",
     "Merge PR332 and verify the automatic production deployment source identity, health and authorized journeys."
   ],
   "evidence": {
@@ -645,5 +649,57 @@
     "freshBranchListVerifiedBothAbsent": true,
     "defaultBranchPresent": true,
     "failureAndSuccessReceiptsPreserved": true
+  },
+  "hostedInventoryCountCorrection": {
+    "status": "bounded-test-correction-validated-corrected-head-ci-pending",
+    "failedHead": "970064ece3aa7ea3a76f8b8c35efa26569e065f4",
+    "runId": 41216901369,
+    "jobId": 124583210533,
+    "jobUrl": "https://github.com/elguiriashing/akipasa/actions/runs/41216901369/job/124583210533",
+    "test": "AkiPasa entire route inventory smoke \u203a matrix still inventories the complete AkiPasa surface",
+    "file": "tests/e2e/pasa-all-route-smoke.spec.ts",
+    "line": 69,
+    "failure": {
+      "expectedTotalRoutes": 103,
+      "actualTotalRoutes": 104,
+      "expectedInScopeRoutes": 90,
+      "actualInScopeRoutes": 90,
+      "cause": "Stale expected total after preserving the independently released private World route from PR341.",
+      "shard1Passed": 321,
+      "shard1Skipped": 17,
+      "shard1Failed": 1
+    },
+    "preservedFailureLog": {
+      "path": "../reviews/pr332-ci-970064e-public-shard1.log",
+      "sha256": "c52abc18681693ceb68136a361642f029f2b550a1707aab98782144c99ec4acc",
+      "format": "Decoded GitHub job log preserved locally; hosted job remains the canonical remote evidence."
+    },
+    "correction": {
+      "change": "Only total-route assertion 103\u2192104; existing 90 in-scope assertion and all route checks retained.",
+      "testSourceSha256": "fdb0a58c88196572660bc86e078bedf0a79be913c8f6a2b9258e26893aa841a2",
+      "targetedExistingPlaywrightCase": {
+        "status": "passed",
+        "tests": 1,
+        "durationSeconds": 3.0,
+        "externalServerOption": true,
+        "applicationServerBrowserOrBackendNeeded": false,
+        "executionProvenance": "Release-owner targeted existing Playwright execution on the corrected source."
+      },
+      "scopedEslint": "passed with zero warnings",
+      "scopedPrettier": "passed"
+    },
+    "priorHeadFullCheckAndCloudflarePackaging": {
+      "status": "success",
+      "runId": 41216901387,
+      "url": "https://github.com/elguiriashing/akipasa/actions/runs/41216901387"
+    },
+    "applicationRuntimeChanges": false,
+    "sqlChanges": false,
+    "runtimeSourceFiles": 650,
+    "runtimeSourceManifestSha256": "843a396f73e3df6f43ea5ce79ac2fbd26b664e5c1eb9ca0c472a47cadff9a34b",
+    "runtimeHashRecomputedUnchangedByReleaseOwner": true,
+    "realBackend93AndAuthenticatedRoutes24EvidenceSourceBinding": "unchanged; no repeat backend or application test run required for this static expectation correction",
+    "freshHostedChecksRequiredForCorrectedHead": true,
+    "mergeOrDeploymentClaim": false
   }
 }

@@ -66,7 +66,7 @@ async function sweep(
 
 test.describe("AkiPasa entire route inventory smoke", () => {
   test("matrix still inventories the complete AkiPasa surface", () => {
-    expect(Object.keys(matrix.routes)).toHaveLength(103);
+    expect(Object.keys(matrix.routes)).toHaveLength(104);
     expect(inScope).toHaveLength(90);
   });
 

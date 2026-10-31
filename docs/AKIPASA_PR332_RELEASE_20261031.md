@@ -195,3 +195,26 @@ Rollback retains data: revert the application deployment to the previous
 verified Worker/source if necessary. The additive read RPC can remain while
 rolling back the UI; do not remove avatar saves or weaken the Staff eligibility
 guard as a source rollback.
+
+## Hosted inventory assertion correction
+
+The published integrated head `970064ece3aa7ea3a76f8b8c35efa26569e065f4` passed the full
+check and Cloudflare packaging. [Public UI shard 1](https://github.com/elguiriashing/akipasa/actions/runs/41216901369/job/124583210533)
+reported 321 passed, 17 skipped and one failed static assertion. The test still
+expected 103 total routes; the inventory correctly has 104 after preserving
+#341's private World page, with 90 in-scope pages unchanged.
+
+The only correction is `103` → `104` in the existing total-count assertion in
+`tests/e2e/pasa-all-route-smoke.spec.ts`; its 90-page assertion and all other route
+checks remain. The existing Playwright case passed as one test in 3.0s using the
+external-server option; this static case needs no application server, browser
+session or backend. Scoped ESLint and Prettier passed. The corrected test SHA256
+is `fdb0a58c88196572660bc86e078bedf0a79be913c8f6a2b9258e26893aa841a2`.
+
+The decoded failure log is preserved at `../reviews/pr332-ci-970064e-public-shard1.log`,
+SHA256 `c52abc18681693ceb68136a361642f029f2b550a1707aab98782144c99ec4acc`. No application or SQL source changed.
+The runtime manifest remains 650 files at
+`843a396f73e3df6f43ea5ce79ac2fbd26b664e5c1eb9ca0c472a47cadff9a34b`; the
+93-check genuine backend and 24-route authenticated browser evidence remain
+source-bound. The corrected publication still requires fresh hosted checks; this
+entry does not claim a merge or application deployment.

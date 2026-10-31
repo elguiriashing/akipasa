@@ -4256,3 +4256,21 @@ direction at197source, not a merge or SQL change.5formal route acceptances remai
 Only the connected main Supabase project exists; a requested schema-only QA branch
 cost confirmation expired, and re-listing confirms no branch/resource was created.
 Actual isolated signed-in/provider and physical-device tests remain external gaps.
+
+## 2026-10-31 | PR332 hosted inventory expectation correction
+
+Published integrated head `970064ece3aa7ea3a76f8b8c35efa26569e065f4` passed its full
+check and Cloudflare packaging. Its public UI shard 1 reported 321 passed,
+17 skipped and one failed static inventory assertion: the test still expected
+103 total routes after preserving #341's separate private World page. The actual
+inventory is 104, with the same 90 in-scope pages. Only that expected total changes
+to 104; the existing 90-page assertion and all route checks remain. The existing
+Playwright inventory case now passes (one test, 3.0s), with scoped ESLint and
+Prettier passing. No runtime or SQL source changed. The 650-file runtime manifest
+remains `843a396f73e3df6f43ea5ce79ac2fbd26b664e5c1eb9ca0c472a47cadff9a34b`,
+so the 93 real-backend checks and 24 authenticated route audits retain their exact
+source binding. The failure is preserved in the [hosted job](https://github.com/elguiriashing/akipasa/actions/runs/41216901369/job/124583210533)
+and `../reviews/pr332-ci-970064e-public-shard1.log` (SHA256 `c52abc18681693ceb68136a361642f029f2b550a1707aab98782144c99ec4acc`).
+See `docs/AKIPASA_PR332_RELEASE_20261031.md` and its consolidated receipt for the
+corrected test hash and qualifications. Fresh CI on the corrected head, merge and
+verified application deployment remain pending; no physical-device pass is claimed.

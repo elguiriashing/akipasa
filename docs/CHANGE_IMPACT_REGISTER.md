@@ -5083,3 +5083,20 @@ AKIPASA_THEME_FALLBACK_ACCEPTANCE_20261030.json.
 - Live340 source76cb/Worker972f is separately verified and its native Privacy
   obstruction closed by48 real HTTPS route checks. Preserve prior versions for
   rollback. Full332 stays draft pending required evidence and owner approval.
+
+## 2026-10-31 | PR332 static route-total assertion follows preserved World
+
+- **Trigger:** Head `970064ece3aa7ea3a76f8b8c35efa26569e065f4`, public UI shard 1: 321 passed,
+  17 skipped, one failure. `pasa-all-route-smoke.spec.ts:69` expected 103 routes;
+  the authoritative inventory correctly contains 104 after the separate #341 World
+  addition. The in-scope count remains 90.
+- **Correction:** Only the test's expected total changes from 103 to 104. The
+  existing in-scope assertion and route checks remain. The existing targeted
+  Playwright case passes (one test, 3.0s), with ESLint and Prettier passing. Corrected
+  test SHA256: `fdb0a58c88196572660bc86e078bedf0a79be913c8f6a2b9258e26893aa841a2`.
+- **Boundary:** No application, permission, SQL or runtime change. The unchanged
+  650-file runtime hash preserves the 93-check backend and 24-route authenticated
+  browser evidence. Full-check/Cloudflare packaging passed on the prior head;
+  fresh required workflows must bind the corrected head before merge/live.
+- **Preserved failure:** [Job 124583210533](https://github.com/elguiriashing/akipasa/actions/runs/41216901369/job/124583210533);
+  `../reviews/pr332-ci-970064e-public-shard1.log`, SHA256 `c52abc18681693ceb68136a361642f029f2b550a1707aab98782144c99ec4acc`.
