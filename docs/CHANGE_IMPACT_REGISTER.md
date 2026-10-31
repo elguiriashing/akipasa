@@ -3452,3 +3452,30 @@ in the concrete release proposal; explicit owner exception remains required.
   fresh published exact-head CI/review remain required; full332 stays draft with
   41 pending route acceptances. Map and conversions are excluded for functional
   differences. Rollback is previous live338 Worker/source, no data rollback.
+
+## 2026-10-31 | Admin batch with proven Promotions read-error repair
+
+- **Runtime boundary:** Three Admin/Selector stylesheets and one Promotions page.
+  All1,004 other pinned Master paths remain unchanged relative to public3390775;
+  the workflow is checked separately as one additive required job. Live auth,
+  layout, queries, actions and successful form subtrees remain unchanged.
+- **UI:** Readable light XP/editor, audit badges/time, Selector intro/night-panel
+  headings and promotion hints; guarded Admin parent canvas/header/dock/footer
+  finish. No geometry or consent-dialog/choice change. Existing small mobile tab
+  wrapping and intentionally dark private Selector preview are qualified.
+- **Demonstrated functional defect:** All16 baseline Promotions-error fixtures
+  falsely rendered zero/empty. Existing Main independent-read recovery is ported
+  surgically, with unknown counts, safe GET retry and fail-closed event-dependent
+  creation. All queries, server guards/actions and successful form fields remain.
+- **Evidence:** Final832 contexts (800 renders/32 expected missing-record denials),
+  54 existing tests,24 palette and24 Promotions cases/16 native GET recoveries
+  pass; four runtime hashes and compiled dependencies stay stable. Actual local
+  built Next42 anonymous entry boundaries pass with read-only disposable settings.
+  No actual authenticated/RLS/private-write/provider or physical-device claim.
+- **Failures retained:** Initial16 false-empty failures; new QA gutter assumption
+  corrected to reject positive overflow; initial missing automation dependency
+  and unconfigured preview failures preserved. Full check2184/15 plus build passes.
+- **Release:** Fresh final-head clean-install CI and independent source review are
+  mandatory. Owner-authorized independent shipping only; full332 strict gate and
+  49/90 formal count unchanged. Rollback to verified339 Worker035e006c if needed;
+  no SQL/customer/payment/consent/resource operation in this batch.

@@ -24,6 +24,11 @@
   letter-spacing: 0.12em;
   color: var(--accent);
 }
+:global(html[data-theme="light"]) .eyebrow,
+:global(html[data-theme="light"]) .threshold,
+:global(html[data-theme="light"]) .preview div > span {
+  color: #98400d;
+}
 .hero h2 {
   display: flex;
   align-items: center;
@@ -508,23 +513,23 @@
   min-height: 44px;
   border-radius: 12px;
   padding: 8px 12px;
-  background: #121e37;
-  color: #eaf0e5;
-  border: 1px solid #49635b;
+  background: var(--surface-alt, #1b1f24);
+  color: var(--ink, #f7f8fa);
+  border: 1px solid var(--line, #343b45);
 }
 .venueRow {
   margin: 10px 0;
-  border: 1px solid rgba(156, 201, 181, 0.2);
+  border: 1px solid var(--line, #343b45);
   border-radius: 16px;
   padding: 16px;
-  background: rgba(20, 33, 61, 0.65);
+  background: var(--surface-alt, #1b1f24);
 }
 .venueRow summary {
   cursor: pointer;
 }
 .venueRow summary small {
   display: block;
-  color: #b8ccc3;
+  color: var(--muted, #bec6d1);
   margin-top: 6px;
   font-size: 12px;
 }

@@ -1,5 +1,38 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-31 | Admin workbench presentation and truthful read recovery
+
+This independently bounded batch follows authorized public339 master0775. Four
+runtime files finish Admin workbench/achievement/Selector lab styling and repair
+Promotions read errors. Main review evidence exposed inherited Master navy parent
+canvas plus failed promotions reads appearing as zero/empty; scoped Admin parent
+chrome now matches the neutral workbenches. Owner focus/custom backgrounds and
+Privacy dialog/choices remain unchanged. Selector's private preview stays dark;
+small EN360 Achievements label wrapping remains a reviewed nonblocking residual.
+
+Promotions handles each existing read error independently, shows unknown counts,
+withholds required-event-dependent creation on events failure, and offers native
+localized GET retry. Query expressions, requireAdmin, successful forms and all
+server actions remain unchanged. No roles, SQL, RLS, provider, billing, private
+records, consent choices, XP or AkiPals behavior changes.
+
+Fresh actual-component/AppShell evidence:832 requested contexts,800 renders and
+32 expected missing-record denials,600 native menu checks,240 text contrast checks
+(minimum5.96),800 canvas/chrome checks;54 existing unit tests and24 maintained
+palette cases pass. Another24 faithful Promotions cases include stale/combined
+errors and16 native GET recoveries. Actual built Next guest boundaries pass42
+cases across all21 Admin routes in EN/ES, using an anonymous localhost-only read
+fixture. This is not authenticated-session/RLS/provider/private-write/device proof.
+Local full check2184 tests/15 stages plus build passes after repairing a missing
+worktree automation dependency link; initial setup failure and unconfigured-preview
+42 failures are preserved. Four runtime hashes remain frozen through normal
+fast-forward to339; fresh combined exact-head CI is required before publication.
+
+A new parallel mandatory Admin responsive/recovery job retains all original CI
+jobs/assertions and uploads its evidence. Formal332 route statuses remain intact:
+49/90 accepted and41 pending. This presentation release does not waive the full
+overhaul's protected-role/provider/device/final-review gates.
+
 ## 2026-10-31 | Isolated public Venue/Event detail whole-page palette
 
 Only the two route stylesheets change runtime behavior. Initial reviewed Main

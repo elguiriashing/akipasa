@@ -1,3 +1,4 @@
+import { AdminReadFailure } from "../AdminReadState";
 import {
   promotionServiceLabel,
   promotionStateLabel,
@@ -40,25 +41,28 @@ export default async function AdminPromotionsPage({
   if (!isLocale(locale)) notFound();
   const query = await searchParams;
   const { supabase } = await requireUser(locale, `/${locale}/admin/promotions`);
-  const [{ data: requests }, { data: slots }, { data: events }] =
-    await Promise.all([
-      supabase
-        .from("promotion_requests")
-        .select(
-          "id,venue_id,event_id,service,message,state,operator_notes,created_at,venues(name),events(title_es,title_en),feature_slots(starts_at,ends_at)",
-        )
-        .order("created_at", { ascending: false }),
-      supabase
-        .from("feature_slots")
-        .select("id,event_id,label_en,label_es,starts_at,ends_at")
-        .order("starts_at", { ascending: false })
-        .limit(50),
-      supabase
-        .from("events")
-        .select("id,venue_id,title_en,title_es")
-        .eq("status", "published")
-        .order("title_en"),
-    ]);
+  const [
+    { data: requests, error: requestsError },
+    { data: slots, error: slotsError },
+    { data: events, error: eventsError },
+  ] = await Promise.all([
+    supabase
+      .from("promotion_requests")
+      .select(
+        "id,venue_id,event_id,service,message,state,operator_notes,created_at,venues(name),events(title_es,title_en),feature_slots(starts_at,ends_at)",
+      )
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("feature_slots")
+      .select("id,event_id,label_en,label_es,starts_at,ends_at")
+      .order("starts_at", { ascending: false })
+      .limit(50),
+    supabase
+      .from("events")
+      .select("id,venue_id,title_en,title_es")
+      .eq("status", "published")
+      .order("title_en"),
+  ]);
   const es = locale === "es";
   const eventNames = new Map(
     (events || []).map((event) => [
@@ -96,257 +100,298 @@ export default async function AdminPromotionsPage({
         <article className="panel workspace-stat">
           <span>{es ? "Solicitudes abiertas" : "Open requests"}</span>
           <strong>
-            {(requests || []).filter((item) => item.state === "new").length}
+            {requestsError
+              ? "—"
+              : (requests || []).filter((item) => item.state === "new").length}
           </strong>
         </article>
         <article className="panel workspace-stat">
           <span>{es ? "Destacados programados" : "Scheduled features"}</span>
-          <strong>{slots?.length || 0}</strong>
+          <strong>{slotsError ? "—" : slots?.length || 0}</strong>
         </article>
       </div>
 
-      <details className="panel workspace-disclosure">
-        <summary>
-          <span>
-            <strong>
-              {es ? "Programar un destacado" : "Schedule a feature"}
-            </strong>
-            <small>
-              {es
-                ? "Selecciona un evento y una ventana de publicación."
-                : "Choose an event and publication window."}
-            </small>
-          </span>
-        </summary>
-        <form action={createFeatureSlot} className="stack focused-form">
-          <input type="hidden" name="locale" value={locale} />
-          <label>
-            {es ? "Evento publicado" : "Published event"}
-            <select name="eventId" required defaultValue="">
-              <option value="" disabled>
-                {es ? "Selecciona un evento" : "Select an event"}
-              </option>
-              {(events || []).map((event) => (
-                <option value={event.id} key={event.id}>
-                  {(es ? event.title_es : event.title_en) || event.title_en}
+      {eventsError ? (
+        <AdminReadFailure
+          locale={locale}
+          href={`/${locale}/admin/promotions`}
+        />
+      ) : (
+        <details className="panel workspace-disclosure">
+          <summary>
+            <span>
+              <strong>
+                {es ? "Programar un destacado" : "Schedule a feature"}
+              </strong>
+              <small>
+                {es
+                  ? "Selecciona un evento y una ventana de publicación."
+                  : "Choose an event and publication window."}
+              </small>
+            </span>
+          </summary>
+          <form action={createFeatureSlot} className="stack focused-form">
+            <input type="hidden" name="locale" value={locale} />
+            <label>
+              {es ? "Evento publicado" : "Published event"}
+              <select name="eventId" required defaultValue="">
+                <option value="" disabled>
+                  {es ? "Selecciona un evento" : "Select an event"}
                 </option>
-              ))}
-            </select>
-          </label>
-
-          <div className="form-grid-two">
-            <label>
-              {es ? "Inicio" : "Starts"}
-              <input type="datetime-local" name="startsAt" required />
+                {(events || []).map((event) => (
+                  <option value={event.id} key={event.id}>
+                    {(es ? event.title_es : event.title_en) || event.title_en}
+                  </option>
+                ))}
+              </select>
             </label>
-            <label>
-              {es ? "Fin" : "Ends"}
-              <input type="datetime-local" name="endsAt" required />
-            </label>
-          </div>
 
-          <div className="form-actions-right">
-            <button className="button primary" type="submit">
-              {es ? "Programar destacado" : "Schedule feature"}
-            </button>
-          </div>
-        </form>
-      </details>
+            <div className="form-grid-two">
+              <label>
+                {es ? "Inicio" : "Starts"}
+                <input type="datetime-local" name="startsAt" required />
+              </label>
+              <label>
+                {es ? "Fin" : "Ends"}
+                <input type="datetime-local" name="endsAt" required />
+              </label>
+            </div>
+
+            <div className="form-actions-right">
+              <button className="button primary" type="submit">
+                {es ? "Programar destacado" : "Schedule feature"}
+              </button>
+            </div>
+          </form>
+        </details>
+      )}
 
       <section className="workspace-section">
         <h3>{es ? "Destacados recientes" : "Recent feature slots"}</h3>
-        <AdminSearchList
-          locale={locale}
-          label={es ? "Destacados recientes" : "Recent feature slots"}
-          items={(slots || []).map((slot) => ({
-            id: slot.id,
-            search: [
-              eventNames.get(slot.event_id),
-              slot.label_es,
-              slot.label_en,
-              slot.starts_at,
-            ]
-              .filter(Boolean)
-              .join(" "),
-            content: (
-              <article className="panel settings-row">
-                <strong>
-                  {eventNames.get(slot.event_id) ||
-                    (es ? "Evento no disponible" : "Unavailable event")}
-                </strong>
-                <span>
-                  {new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", {
-                    dateStyle: "medium",
-                    timeStyle: "short",
-                    timeZone: "Europe/Madrid",
-                  }).format(new Date(slot.starts_at))}
-                </span>
-              </article>
-            ),
-          }))}
-        />
-      </section>
-
-      <section className="workspace-section">
-        <h3>{es ? "Solicitudes comerciales" : "Commercial requests"}</h3>
-        <AdminSearchList
-          locale={locale}
-          label={es ? "Solicitudes comerciales" : "Commercial requests"}
-          statusLabels={Object.fromEntries(
-            promotionStates.map((state) => [
-              state,
-              promotionStateLabel(state, locale),
-            ]),
-          )}
-          items={(requests || []).map((item) => {
-            const venue = item.venues as unknown as {
-              name?: string | null;
-            } | null;
-            const selectedEvent = item.events as unknown as {
-              title_es?: string | null;
-              title_en?: string | null;
-            } | null;
-            const rawRequestSlot = item.feature_slots as unknown;
-            const requestSlot = (
-              Array.isArray(rawRequestSlot) ? rawRequestSlot[0] : rawRequestSlot
-            ) as { starts_at: string; ends_at: string } | null | undefined;
-
-            return {
-              id: item.id,
-              status: item.state,
+        {slotsError ? (
+          <AdminReadFailure
+            locale={locale}
+            href={`/${locale}/admin/promotions`}
+          />
+        ) : (
+          <AdminSearchList
+            locale={locale}
+            label={es ? "Destacados recientes" : "Recent feature slots"}
+            items={(slots || []).map((slot) => ({
+              id: slot.id,
               search: [
-                venue?.name,
-                item.service,
-                promotionServiceLabel(item.service, locale),
-                item.message,
-                item.state,
-                promotionStateLabel(item.state, locale),
-                item.operator_notes,
-                selectedEvent?.title_es,
-                selectedEvent?.title_en,
+                eventNames.get(slot.event_id),
+                slot.label_es,
+                slot.label_en,
+                slot.starts_at,
               ]
                 .filter(Boolean)
                 .join(" "),
               content: (
-                <details className="panel settings-row admin-commercial-request">
-                  <summary>
-                    <span className="admin-commercial-request-title">
-                      {venue?.name || (es ? "Local" : "Venue")} /{" "}
-                      {(es
-                        ? selectedEvent?.title_es
-                        : selectedEvent?.title_en) ||
-                        selectedEvent?.title_es ||
-                        promotionServiceLabel(item.service, locale)}
-                    </span>
-                    <span className="status-pill">
-                      {promotionStateLabel(item.state, locale)}
-                    </span>
-                  </summary>
-                  <div className="admin-commercial-request-details">
-                    <div className="admin-commercial-request-message">
-                      <strong>{es ? "Mensaje" : "Message"}</strong>
-                      <p>
-                        {item.message || (es ? "Sin mensaje." : "No message.")}
-                      </p>
-                    </div>
-                    <form
-                      action={updatePromotion}
-                      className="stack admin-commercial-request-form"
-                    >
-                      <input type="hidden" name="locale" value={locale} />
-                      <input type="hidden" name="requestId" value={item.id} />
-                      <input
-                        type="hidden"
-                        name="service"
-                        value={item.service}
-                      />
-                      <label>
-                        {es ? "Estado" : "State"}
-                        <select name="state" defaultValue={item.state}>
-                          {promotionStates.map((state) => (
-                            <option key={state} value={state}>
-                              {promotionStateLabel(state, locale)}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-                      {item.service === "featured_listing" ? (
-                        <>
-                          <label>
-                            {es ? "Evento destacado" : "Featured event"}
-                            <select
-                              name="eventId"
-                              defaultValue={item.event_id || ""}
-                              required
-                            >
-                              <option value="" disabled>
-                                {es
-                                  ? "Selecciona un evento"
-                                  : "Select an event"}
-                              </option>
-                              {(events || [])
-                                .filter(
-                                  (event) => event.venue_id === item.venue_id,
-                                )
-                                .map((event) => (
-                                  <option value={event.id} key={event.id}>
-                                    {(es ? event.title_es : event.title_en) ||
-                                      event.title_es}
-                                  </option>
-                                ))}
-                            </select>
-                          </label>
-                          <div className="form-grid-two">
-                            <label>
-                              {es ? "Inicio del destacado" : "Feature starts"}
-                              <input
-                                type="datetime-local"
-                                name="startsAt"
-                                defaultValue={madridInputValue(
-                                  requestSlot?.starts_at,
-                                )}
-                              />
-                            </label>
-                            <label>
-                              {es ? "Fin del destacado" : "Feature ends"}
-                              <input
-                                type="datetime-local"
-                                name="endsAt"
-                                defaultValue={madridInputValue(
-                                  requestSlot?.ends_at,
-                                )}
-                              />
-                            </label>
-                          </div>
-                        </>
+                <article className="panel settings-row">
+                  <strong>
+                    {eventNames.get(slot.event_id) ||
+                      (es ? "Evento no disponible" : "Unavailable event")}
+                  </strong>
+                  <span>
+                    {new Intl.DateTimeFormat(es ? "es-ES" : "en-GB", {
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                      timeZone: "Europe/Madrid",
+                    }).format(new Date(slot.starts_at))}
+                  </span>
+                </article>
+              ),
+            }))}
+          />
+        )}
+      </section>
+
+      <section className="workspace-section">
+        <h3>{es ? "Solicitudes comerciales" : "Commercial requests"}</h3>
+        {requestsError ? (
+          <AdminReadFailure
+            locale={locale}
+            href={`/${locale}/admin/promotions`}
+          />
+        ) : (
+          <AdminSearchList
+            locale={locale}
+            label={es ? "Solicitudes comerciales" : "Commercial requests"}
+            statusLabels={Object.fromEntries(
+              promotionStates.map((state) => [
+                state,
+                promotionStateLabel(state, locale),
+              ]),
+            )}
+            items={(requests || []).map((item) => {
+              const venue = item.venues as unknown as {
+                name?: string | null;
+              } | null;
+              const selectedEvent = item.events as unknown as {
+                title_es?: string | null;
+                title_en?: string | null;
+              } | null;
+              const rawRequestSlot = item.feature_slots as unknown;
+              const requestSlot = (
+                Array.isArray(rawRequestSlot)
+                  ? rawRequestSlot[0]
+                  : rawRequestSlot
+              ) as { starts_at: string; ends_at: string } | null | undefined;
+
+              return {
+                id: item.id,
+                status: item.state,
+                search: [
+                  venue?.name,
+                  item.service,
+                  promotionServiceLabel(item.service, locale),
+                  item.message,
+                  item.state,
+                  promotionStateLabel(item.state, locale),
+                  item.operator_notes,
+                  selectedEvent?.title_es,
+                  selectedEvent?.title_en,
+                ]
+                  .filter(Boolean)
+                  .join(" "),
+                content: (
+                  <details className="panel settings-row admin-commercial-request">
+                    <summary>
+                      <span className="admin-commercial-request-title">
+                        {venue?.name || (es ? "Local" : "Venue")} /{" "}
+                        {(es
+                          ? selectedEvent?.title_es
+                          : selectedEvent?.title_en) ||
+                          selectedEvent?.title_es ||
+                          promotionServiceLabel(item.service, locale)}
+                      </span>
+                      <span className="status-pill">
+                        {promotionStateLabel(item.state, locale)}
+                      </span>
+                    </summary>
+                    <div className="admin-commercial-request-details">
+                      <div className="admin-commercial-request-message">
+                        <strong>{es ? "Mensaje" : "Message"}</strong>
+                        <p>
+                          {item.message ||
+                            (es ? "Sin mensaje." : "No message.")}
+                        </p>
+                      </div>
+                      {item.service === "featured_listing" && eventsError ? (
+                        <AdminReadFailure
+                          locale={locale}
+                          href={`/${locale}/admin/promotions`}
+                        />
                       ) : (
-                        <>
+                        <form
+                          action={updatePromotion}
+                          className="stack admin-commercial-request-form"
+                        >
+                          <input type="hidden" name="locale" value={locale} />
                           <input
                             type="hidden"
-                            name="eventId"
-                            value={item.event_id || ""}
+                            name="requestId"
+                            value={item.id}
                           />
-                          <input type="hidden" name="startsAt" value="" />
-                          <input type="hidden" name="endsAt" value="" />
-                        </>
+                          <input
+                            type="hidden"
+                            name="service"
+                            value={item.service}
+                          />
+                          <label>
+                            {es ? "Estado" : "State"}
+                            <select name="state" defaultValue={item.state}>
+                              {promotionStates.map((state) => (
+                                <option key={state} value={state}>
+                                  {promotionStateLabel(state, locale)}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                          {item.service === "featured_listing" ? (
+                            <>
+                              <label>
+                                {es ? "Evento destacado" : "Featured event"}
+                                <select
+                                  name="eventId"
+                                  defaultValue={item.event_id || ""}
+                                  required
+                                >
+                                  <option value="" disabled>
+                                    {es
+                                      ? "Selecciona un evento"
+                                      : "Select an event"}
+                                  </option>
+                                  {(events || [])
+                                    .filter(
+                                      (event) =>
+                                        event.venue_id === item.venue_id,
+                                    )
+                                    .map((event) => (
+                                      <option value={event.id} key={event.id}>
+                                        {(es
+                                          ? event.title_es
+                                          : event.title_en) || event.title_es}
+                                      </option>
+                                    ))}
+                                </select>
+                              </label>
+                              <div className="form-grid-two">
+                                <label>
+                                  {es
+                                    ? "Inicio del destacado"
+                                    : "Feature starts"}
+                                  <input
+                                    type="datetime-local"
+                                    name="startsAt"
+                                    defaultValue={madridInputValue(
+                                      requestSlot?.starts_at,
+                                    )}
+                                  />
+                                </label>
+                                <label>
+                                  {es ? "Fin del destacado" : "Feature ends"}
+                                  <input
+                                    type="datetime-local"
+                                    name="endsAt"
+                                    defaultValue={madridInputValue(
+                                      requestSlot?.ends_at,
+                                    )}
+                                  />
+                                </label>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <input
+                                type="hidden"
+                                name="eventId"
+                                value={item.event_id || ""}
+                              />
+                              <input type="hidden" name="startsAt" value="" />
+                              <input type="hidden" name="endsAt" value="" />
+                            </>
+                          )}
+                          <label>
+                            {es ? "Notas internas" : "Internal notes"}
+                            <textarea
+                              name="notes"
+                              defaultValue={item.operator_notes || ""}
+                            />
+                          </label>
+                          <button className="button" type="submit">
+                            {es ? "Actualizar" : "Update"}
+                          </button>
+                        </form>
                       )}
-                      <label>
-                        {es ? "Notas internas" : "Internal notes"}
-                        <textarea
-                          name="notes"
-                          defaultValue={item.operator_notes || ""}
-                        />
-                      </label>
-                      <button className="button" type="submit">
-                        {es ? "Actualizar" : "Update"}
-                      </button>
-                    </form>
-                  </div>
-                </details>
-              ),
-            };
-          })}
-        />
+                    </div>
+                  </details>
+                ),
+              };
+            })}
+          />
+        )}
       </section>
     </>
   );

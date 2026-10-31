@@ -1,0 +1,159 @@
+{
+  "createdAt": "2026-10-31T02:06:31.685320+00:00",
+  "integrationOwner": "root only; no commit/PR/merge/deployment by child",
+  "worktree": "/workspace/akipasa-admin-release-20261031",
+  "branch": "work/pasa-admin-presentation-release-20261031",
+  "base": "0775ee598463a37907c0a711bd03014c44d1ec4b",
+  "runtime": [
+    {
+      "path": "src/app/[locale]/admin/admin-suite.css",
+      "sha256": "51235fd4e985c6b935f8554b7bb76c1039c2058ca1c3a55e9b6c9d6ae0944a47"
+    },
+    {
+      "path": "src/app/[locale]/admin/achievements/achievements.module.css",
+      "sha256": "635f2db34f441d7516849e809bc26061071c985ab77354f9082ce3c802b982c6"
+    },
+    {
+      "path": "src/components/aki-selector/aki-selector-lab.css",
+      "sha256": "0e66c819da0e61f3208f8772742d6321a6ad60f778957cce09e5510eff7c1763"
+    },
+    {
+      "path": "src/app/[locale]/admin/promotions/page.tsx",
+      "sha256": "2fee3dcae19d08b262624dc596dea9da2617e857c5497cbdba8dd4aec6f12d95"
+    }
+  ],
+  "qa": [
+    {
+      "path": "scripts/test-admin-compact-workbenches-responsive-browser.mjs",
+      "sha256": "0698b64f8c8dc285b0ae79acd4d4afb200daa14dd886fabeb6a60c8d821c3077"
+    },
+    {
+      "path": "scripts/test-admin-achievement-palette-browser.mjs",
+      "sha256": "36c1b6eb25d732dd0ab77cd4927dcb8f7dc3d53ec5b22167e3990ff0008d8cb4"
+    },
+    {
+      "path": ".github/workflows/tablet-browser.yml",
+      "sha256": "92a7d64d713b8a14a446efd35c870767ffd135af07ba49d415744dc617f08216"
+    },
+    {
+      "path": "scripts/test-admin-promotion-read-recovery-browser.mjs",
+      "sha256": "8f23f108c2ce3d79c59c1ecc6f5f6e7fd4333ea8c46d045bb2f79bae7898267b"
+    }
+  ],
+  "protectedMasterPaths": 1004,
+  "rootWorkflowDeltaProof": "root-additive-workflow-proof.json",
+  "masterGuardQueryFormSignature": "promotions-protected-signature.json",
+  "implemented": [
+    "Warm-neutral Admin workbench palette, Achievements/Selector contrast repairs reused from reviewed Main0c4",
+    "Admin-only guarded parent canvas/header/dock/footer/ordinary Privacy trigger finish; no geometry, consent-dialog or choices change",
+    "Existing Main Promotions read-error recovery after demonstrable false-zero/false-empty failure, preserves guards, SQL query expressions, action imports/form subtrees; withholds required-event-dependent creation only"
+  ],
+  "tested": {
+    "existingFocusedUnits": {
+      "suites": 7,
+      "passed": 54,
+      "log": "/tmp/akipasa-admin-release-final-focused-20261031.log"
+    },
+    "finalResponsive": {
+      "contexts": 832,
+      "rendered": 800,
+      "expectedMissingRecordDenials": 32,
+      "failures": 0,
+      "nativeMenuChecks": 600,
+      "canvasChromeChecks": 800,
+      "textContrastChecks": 240,
+      "minTextContrast": 5.969252928741087,
+      "compiledDependencyPins": 155,
+      "initialFinalPinsStable": true,
+      "log": "/tmp/akipasa-admin-release-final-responsive832-20261031.log",
+      "results": "/tmp/akipasa-admin-release-browser-evidence-20261031/admin-compact-workbenches-responsive/results.json"
+    },
+    "maintainedAchievementPalette": {
+      "cases": 24,
+      "failures": 0,
+      "initialFinalPinsStable": true,
+      "results": "/tmp/akipasa-admin-release-browser-evidence-20261031/admin-achievement-palette/results.json"
+    },
+    "targetedPromotions": {
+      "contexts": 24,
+      "nativeGetRecoveries": 16,
+      "failures": 0,
+      "initialFinalPinsStable": true,
+      "compiledDependencyPins": 52,
+      "runnerSha256": "8f23f108c2ce3d79c59c1ecc6f5f6e7fd4333ea8c46d045bb2f79bae7898267b",
+      "validServices": ["social_campaign", "featured_listing"],
+      "states": [
+        "ready",
+        "healthy-empty",
+        "stale-requests-error",
+        "stale-slots-error",
+        "stale-events-error",
+        "stale-all-three-error"
+      ],
+      "actionsForbidden": true,
+      "externalRequestsBlocked": true,
+      "log": "/tmp/akipasa-admin-release-promotions24-sealed-recovery-20261031.log",
+      "results": "/tmp/akipasa-admin-release-browser-evidence-20261031/admin-promotion-read-recovery/results.json"
+    },
+    "formatLintDiffCheck": "PASS for owned files"
+  },
+  "preservedFailures": {
+    "baseline832": {
+      "contexts": 832,
+      "realFailures": 16,
+      "failureRoute": "Promotions error false-empty/false-zero only",
+      "sourcePinsStable": true,
+      "results": "/tmp/akipasa-admin-release-browser-evidence-20261031/baseline-before-read-repair-832/results.json",
+      "log": "/tmp/akipasa-admin-release-responsive832-20261031.log"
+    },
+    "newQaGutterAssumption": {
+      "initialTestFailure": "New assertion incorrectly required scrollWidth-innerWidth=0; actual -15 is valid reserved vertical-scrollbar gutter. Corrected to original832 <=0 contract; positive horizontal overflow still rejected. No runtime change.",
+      "results": "/tmp/akipasa-admin-release-browser-evidence-20261031/admin-promotion-read-recovery-initial-gutter-assert-failure/results.json",
+      "log": "/tmp/akipasa-admin-release-promotions24-recovery-20261031.log"
+    }
+  },
+  "independentReview": "/workspace/akipasa-main-checkpoints/admin-final-four-runtime-independent-review-20261031.json",
+  "limitations": [
+    "Actual component fixtures, not Next protected-session/RLS/provider/private-write/physical-device acceptance.",
+    "Main and Master package locks differ; reused installed node_modules is not claimed clean npmci parity. Exact candidate clean fullCI remains required.",
+    "Minor inherited EN360 Achievements final-letter wrap and private Selector navy canvas remain explicitly reviewed.",
+    "Fixture lower captures omit root footer and do not scroll the achievements editor to lower Save controls; no unsupported physical/complete-footer claims.",
+    "All21 Admin route matrix rows remain unchanged by this child;18workbench UI technical proof does not promote formal acceptance."
+  ],
+  "nextExecutableAction": "Root runs required full check/exact-head CI, actual route boundary checks and final review, commits/pushes one authorized independent presentation batch; expected-head merge/automatic CF source verification only by root. No source modifications remain planned.",
+  "localEvidenceBase": "9e7da60fae3c24037a076e2998761a25eb8d436c plus unchanged four Admin runtime hashes",
+  "normalBaseUpdate": {
+    "qualification": "Only two already-reviewed and deployed #339 protected CSS blobs advanced; four frozen Admin runtime files and all other protected dependencies unchanged. Local browser/full-check evidence remains honestly bound to prior base plus these unchanged Admin hashes; fresh combined exact-head CI remains mandatory.",
+    "approvedMasterChanges": [
+      {
+        "path": "src/app/[locale]/events/[slug]/event-spotlight.css",
+        "before": "7ab8f7c81f841b76c3a7c9036cdbef7650ad5deb",
+        "after": "74356b77628d0b67fbb224f815d6f8ce7ceaef3f"
+      },
+      {
+        "path": "src/app/[locale]/venues/[slug]/venue-spotlight.css",
+        "before": "68ba281a84b55d453eb51a85966a0064e5e54583",
+        "after": "a202caa3feea5b841dd55dff2b5e181bfc6a40e9"
+      }
+    ]
+  },
+  "actualBuiltGuestBoundaries": {
+    "cases": 42,
+    "failures": 0,
+    "result": "PASS",
+    "buildId": "OFdjznBnfX-9w9akZKbHN",
+    "fixture": "Anonymous local read-only public backend; no auth session/roles/RLS/private writes proved",
+    "results": "/workspace/akipasa-main-checkpoints/admin-next-guest-boundaries-20261031/results.json"
+  },
+  "fullCheck": {
+    "result": "PASS",
+    "log": "/tmp/akipasa-admin-release-fullcheck-installed-20261031.log",
+    "vitestPassed": 2184,
+    "stages": 15,
+    "buildId": "zbgrRS66q52M7NRCZwob1",
+    "setupFailurePreserved": "/tmp/akipasa-admin-release-fullcheck-20261031.log"
+  },
+  "exactHeadCI": "Required after publication; not claimed passed",
+  "merged": false,
+  "deployed": false
+}
