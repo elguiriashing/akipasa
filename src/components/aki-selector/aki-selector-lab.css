@@ -121,3 +121,21 @@
     border-radius: 17px;
   }
 }
+
+/* The preview canvas stays nocturnal; its surrounding light-page copy does not. */
+html[data-theme="light"] .aks-lab .aks-lab__intro h1,
+html[data-theme="light"] .aks-lab .aks-selector__caption strong {
+  color: #29221c;
+}
+html[data-theme="light"] .aks-lab .aks-lab__eyebrow {
+  color: #934214;
+}
+html[data-theme="light"] .aks-lab .aks-lab__intro p,
+html[data-theme="light"] .aks-lab .aks-selector__caption span,
+html[data-theme="light"] .aks-lab .aks-selector__caption small {
+  color: #685646;
+}
+
+html[data-theme="light"] .aks-lab .aks-lab__panel-heading h2 {
+  color: #f9f8f8;
+}

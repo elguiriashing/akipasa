@@ -27,8 +27,8 @@
   border-radius: 1.2rem;
   background: linear-gradient(
     115deg,
-    color-mix(in srgb, var(--surface) 93%, #352448),
-    color-mix(in srgb, var(--surface) 89%, #1b4264)
+    color-mix(in srgb, var(--surface) 93%, #3b2418),
+    color-mix(in srgb, var(--surface) 89%, #201812)
   );
   overflow: visible;
   box-shadow: none;
@@ -179,8 +179,8 @@
   border-radius: 1.25rem;
   background: linear-gradient(
     125deg,
-    color-mix(in srgb, var(--surface) 88%, #292449),
-    color-mix(in srgb, var(--surface) 88%, #183b53)
+    color-mix(in srgb, var(--surface) 88%, #38251a),
+    color-mix(in srgb, var(--surface) 88%, #211a14)
   );
 }
 .admin-rewards-intro span {
@@ -593,4 +593,251 @@
   > summary::after {
   content: "";
   transform: rotate(225deg);
+}
+
+/* AkiPasa Admin: operational density on one warm, neutral surface contract.
+ * Tokens stop at this workspace; Staff, Business and consumer shells are untouched. */
+.admin-workspace {
+  --surface: #111213;
+  --surface-alt: #1b1b1a;
+  --ink: #faf7f3;
+  --muted: #c9c2bb;
+  --line: #443b33;
+  --consumer-line: #443b33;
+  --primary: #ff762b;
+  --primary-strong: #ffb17c;
+  --primary-text: #ffb17c;
+  --primary-soft: #ff762b1f;
+  --pasa-ui-panel: #111213;
+  --pasa-ui-glass: #111213;
+  --consumer-soft: #ff762b14;
+  --pasa-ui-elevated: #1b1b1a;
+  --pasa-ui-text: #faf7f3;
+  --pasa-ui-subtle: #c9c2bb;
+  --pasa-ui-border: #443b33;
+  --pasa-ui-highlight: #ffb17c;
+  --admin-hero:
+    radial-gradient(ellipse at 92% 0%, #ff762b26, transparent 56%),
+    linear-gradient(135deg, #211711, #0b0c0d 85%);
+  color: var(--ink);
+}
+.app-shell .admin-workspace .admin-operations-overview .operations-hero {
+  background: var(--admin-hero);
+  color: var(--ink);
+}
+.admin-workspace .admin-operations-overview .operations-hero > a {
+  min-height: 44px;
+  background: #ff762b;
+  border: 1px solid #ff762b;
+  color: #17110d;
+}
+.admin-workspace .operations-tools .workspace-glyph,
+.admin-workspace .workspace-navigation .workspace-glyph {
+  color: var(--primary-strong);
+  background: color-mix(in srgb, var(--primary) 11%, var(--surface));
+}
+.admin-workspace .workspace-mobile-trigger,
+.admin-workspace .user-search-result,
+.admin-workspace .admin-master-list,
+.admin-workspace .admin-master-editor,
+.admin-workspace .admin-search-list .settings-row {
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+.admin-workspace :is(input, select, textarea) {
+  border-color: var(--line);
+  background-color: var(--surface-alt);
+  color: var(--ink);
+  accent-color: var(--primary);
+}
+.admin-workspace :is(input, textarea)::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+.admin-workspace
+  :is(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--primary-strong);
+  outline-offset: 3px;
+}
+html[data-theme="light"] .admin-workspace {
+  --surface: #fffdfa;
+  --surface-alt: #f5f0e9;
+  --ink: #27211c;
+  --muted: #62564c;
+  --line: #d1c1b1;
+  --consumer-line: #d1c1b1;
+  --primary-strong: #974010;
+  --primary-text: #974010;
+  --pasa-ui-panel: #fffdfa;
+  --pasa-ui-glass: #fffdfa;
+  --pasa-ui-elevated: #f5f0e9;
+  --pasa-ui-text: #27211c;
+  --pasa-ui-subtle: #62564c;
+  --pasa-ui-border: #d1c1b1;
+  --pasa-ui-highlight: #974010;
+  --admin-hero:
+    radial-gradient(ellipse at 92% 0%, #ff762b19, transparent 56%), #fffdfa;
+}
+html[data-theme="light"]
+  .app-shell
+  .admin-workspace
+  .admin-operations-overview
+  .operations-hero {
+  background: var(--admin-hero);
+  color: var(--ink);
+}
+
+.admin-workspace
+  .admin-operations-overview
+  .operations-tools
+  > nav
+  > a
+  > span:first-child {
+  color: var(--primary-strong);
+  background: color-mix(in srgb, var(--primary) 11%, var(--surface));
+}
+.admin-workspace .admin-operations-overview .operations-hero p {
+  color: var(--muted);
+}
+.admin-workspace
+  .admin-operations-overview
+  :is(
+    .operations-hero > span,
+    .operations-tools > header > span,
+    .operations-recent > header > span
+  ) {
+  color: var(--primary-strong);
+}
+
+/* Opaque light-theme ink keeps audit and disclosure text readable on pale panels. */
+html[data-theme="light"]
+  .app-shell
+  .admin-workspace
+  .status-pill.badge-neutral {
+  /* The legacy global badge declarations are important; keep this override local. */
+  color: var(--muted) !important;
+  background: var(--surface-alt) !important;
+  border-color: var(--line) !important;
+}
+html[data-theme="light"]
+  .app-shell
+  .admin-workspace
+  .workspace-grid-body
+  .audit-card
+  .audit-time,
+html[data-theme="light"]
+  .app-shell
+  .admin-workspace
+  .workspace-disclosure
+  > summary
+  small {
+  color: var(--muted);
+}
+
+/* The existing shell remains byte-identical. Paint only the active Admin workspace's
+   surrounding chrome; do not change generic body tokens or consent-panel styles. */
+html:not([data-owner-focus="true"]) body:has(.admin-workspace) {
+  --admin-chrome-canvas: #07090b;
+  --admin-chrome-surface: #101010;
+  --admin-chrome-raised: #181715;
+  --admin-chrome-ink: #f9f5f0;
+  --admin-chrome-muted: #c0b9b0;
+  --admin-chrome-line: rgb(255 245 230 / 14%);
+}
+
+html[data-theme="light"]:not([data-owner-focus="true"])
+  body:has(.admin-workspace),
+html.theme-light:not([data-owner-focus="true"]) body:has(.admin-workspace) {
+  --admin-chrome-canvas: #f8f6f2;
+  --admin-chrome-surface: #fffefc;
+  --admin-chrome-raised: #f5f0e9;
+  --admin-chrome-ink: #25201d;
+  --admin-chrome-muted: #695d54;
+  --admin-chrome-line: rgb(87 55 31 / 18%);
+}
+
+html:not([data-owner-focus="true"]):has(.admin-workspace) {
+  background-color: #07090b;
+}
+html[data-theme="light"]:not([data-owner-focus="true"]):has(.admin-workspace),
+html.theme-light:not([data-owner-focus="true"]):has(.admin-workspace) {
+  background-color: #f8f6f2;
+}
+
+html:not([data-owner-focus="true"]) body:has(.admin-workspace) {
+  color: var(--admin-chrome-ink);
+}
+/* A deliberately selected private Owner image still owns its canvas. */
+html:not([data-owner-focus="true"]):not([data-owner-custom-background="true"])
+  body:has(.admin-workspace) {
+  background: var(--admin-chrome-canvas);
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.admin-workspace)
+  :is(.app-shell, .app-content) {
+  background: transparent;
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.admin-workspace)
+  :is(
+    .app-topbar-mobile,
+    .app-bottom-nav,
+    .suite-discovery-nav[data-product="pasa"]
+  ) {
+  color: var(--admin-chrome-ink);
+  background: var(--admin-chrome-surface);
+  border-color: var(--admin-chrome-line);
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.admin-workspace)
+  .app-bottom-nav
+  :is(a, button) {
+  color: var(--admin-chrome-muted);
+}
+html:not([data-owner-focus="true"])
+  body:has(.admin-workspace)
+  .app-bottom-nav
+  .active {
+  color: var(--primary-text, var(--primary));
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.admin-workspace)
+  :is(
+    .global-search-trigger,
+    .app-topbar-mobile > button,
+    .suite-discovery-tools > button,
+    .suite-discovery-tools > a,
+    .suite-discovery-menu > summary
+  ) {
+  color: var(--admin-chrome-ink);
+  background: var(--admin-chrome-raised);
+  border-color: var(--admin-chrome-line);
+}
+
+html:not([data-owner-focus="true"]) body:has(.admin-workspace) .footer {
+  color: var(--admin-chrome-muted);
+  background: transparent;
+  border-color: var(--admin-chrome-line);
+}
+html:not([data-owner-focus="true"])
+  body:has(.admin-workspace)
+  .footer
+  :is(a, button) {
+  color: var(--admin-chrome-muted);
+  background: var(--admin-chrome-raised);
+  border-color: var(--admin-chrome-line);
+}
+
+html:not([data-owner-focus="true"])
+  body:has(.admin-workspace)
+  > .privacy-preferences:not(.privacy-preferences--passport)
+  > button {
+  color: var(--admin-chrome-ink);
+  background: var(--admin-chrome-raised);
+  border-color: var(--admin-chrome-line);
 }

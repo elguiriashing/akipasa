@@ -3452,3 +3452,50 @@ in the concrete release proposal; explicit owner exception remains required.
   fresh published exact-head CI/review remain required; full332 stays draft with
   41 pending route acceptances. Map and conversions are excluded for functional
   differences. Rollback is previous live338 Worker/source, no data rollback.
+
+## 2026-10-31 | Admin batch with proven Promotions read-error repair
+
+- **Runtime boundary:** Three Admin/Selector stylesheets and one Promotions page.
+  All1,004 other pinned Master paths remain unchanged relative to public3390775;
+  the workflow is checked separately as one additive required job. Live auth,
+  layout, queries, actions and successful form subtrees remain unchanged.
+- **UI:** Readable light XP/editor, audit badges/time, Selector intro/night-panel
+  headings and promotion hints; guarded Admin parent canvas/header/dock/footer
+  finish. No geometry or consent-dialog/choice change. Existing small mobile tab
+  wrapping and intentionally dark private Selector preview are qualified.
+- **Demonstrated functional defect:** All16 baseline Promotions-error fixtures
+  falsely rendered zero/empty. Existing Main independent-read recovery is ported
+  surgically, with unknown counts, safe GET retry and fail-closed event-dependent
+  creation. All queries, server guards/actions and successful form fields remain.
+- **Evidence:** Final832 contexts (800 renders/32 expected missing-record denials),
+  54 existing tests,24 palette and24 Promotions cases/16 native GET recoveries
+  pass; four runtime hashes and compiled dependencies stay stable. Actual local
+  built Next42 anonymous entry boundaries pass with read-only disposable settings.
+  No actual authenticated/RLS/private-write/provider or physical-device claim.
+- **Failures retained:** Initial16 false-empty failures; new QA gutter assumption
+  corrected to reject positive overflow; initial missing automation dependency
+  and unconfigured preview failures preserved. Full check2184/15 plus build passes.
+- **Release:** Fresh final-head clean-install CI and independent source review are
+  mandatory. Owner-authorized independent shipping only; full332 strict gate and
+  49/90 formal count unchanged. Rollback to verified339 Worker035e006c if needed;
+  no SQL/customer/payment/consent/resource operation in this batch.
+
+## 2026-10-31 | Demonstrated detail mobile Privacy overlap repair
+
+- **Trigger:** Real live339 Venue390 at settled bottom scroll: all three sampled
+  points on Privacy hit the fixed Directions link instead. Preserve the failure;
+  56 general HTTPS passes do not establish native control accessibility.
+- **Repair:** Only two detail CSS files add24 lines each for ordinary trigger
+  flow clearance and focus scroll margin at their actual CTA breakpoints,600px
+  Venue and850px Event. Full-root/Owner-focus/Map/Passport guards retained; no
+  dialog, consent choice, saved value, handler, controller or provider changes.
+- **Evidence:** Original32 Spotlight assertions retained plus24 actual Next native
+  privacy cases across both pages/ENES/themes/360390820 allPASS,56 total. Each
+  native case checks five hit points at bottom/Tab/after Close, real keyboard and
+  pointer opening/closing, four unchecked choices and unchanged saved state;
+  attempted writes empty. Fresh build passes; four actual images independently
+  reviewed. All four original Admin runtime and three QA hashes stay unchanged.
+- **Release:** Fold this actual defect repair into340 rather than ship from old
+  1a greens. Fresh final-head full CI/832/24/56/Cloudflare and source review required.
+  Production339 remains known affected until the replacement deploys and real
+  HTTPS native hit tests pass. No full332 acceptance or real-device claim.

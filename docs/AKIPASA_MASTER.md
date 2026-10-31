@@ -1,5 +1,57 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-31 | Restore ordinary Privacy access above detail action bars
+
+Postdeploy339 real phone-sized hit tests showed Venue's ordinary Privacy trigger
+entirely covered by its fixed Directions bar. General56HTTPS reads passed but did
+not test this native control; the baseline failure is retained. Two detail-only
+mobile CSS rules now reserve the actual action-bar/dock clearance and matching
+focus scroll margin: Venue<=600, Event<=850. Full-detail roots, ordinary flow,
+Owner-focus/Map/Passport exclusions prevent spill. Dialog, choices, cookie logic,
+tracking, booking/controller, private identity and authorization are unchanged.
+
+Existing32 Spotlight tests remain. Another24 actual built Next cases exercise
+both pages in EN/ES/light/dark/360/390/820: five native hit points after bottom
+scroll, native Tab auto-scroll and after closing, Enter/Escape/pointer Close,
+four unchecked toggles and unchanged saved privacy/motion/queue state; no writes
+attempted. Fresh56 cases and optimized build pass, four actual screenshots and
+frozen source independently reviewed. Combined340 source now has six bounded
+runtime files; remaining1,002 Master paths and all original CI jobs stay intact.
+Fresh final-head clean CI remains mandatory; no fix deployment is claimed yet.
+
+## 2026-10-31 | Admin workbench presentation and truthful read recovery
+
+This independently bounded batch follows authorized public339 master0775. Four
+runtime files finish Admin workbench/achievement/Selector lab styling and repair
+Promotions read errors. Main review evidence exposed inherited Master navy parent
+canvas plus failed promotions reads appearing as zero/empty; scoped Admin parent
+chrome now matches the neutral workbenches. Owner focus/custom backgrounds and
+Privacy dialog/choices remain unchanged. Selector's private preview stays dark;
+small EN360 Achievements label wrapping remains a reviewed nonblocking residual.
+
+Promotions handles each existing read error independently, shows unknown counts,
+withholds required-event-dependent creation on events failure, and offers native
+localized GET retry. Query expressions, requireAdmin, successful forms and all
+server actions remain unchanged. No roles, SQL, RLS, provider, billing, private
+records, consent choices, XP or AkiPals behavior changes.
+
+Fresh actual-component/AppShell evidence:832 requested contexts,800 renders and
+32 expected missing-record denials,600 native menu checks,240 text contrast checks
+(minimum5.96),800 canvas/chrome checks;54 existing unit tests and24 maintained
+palette cases pass. Another24 faithful Promotions cases include stale/combined
+errors and16 native GET recoveries. Actual built Next guest boundaries pass42
+cases across all21 Admin routes in EN/ES, using an anonymous localhost-only read
+fixture. This is not authenticated-session/RLS/provider/private-write/device proof.
+Local full check2184 tests/15 stages plus build passes after repairing a missing
+worktree automation dependency link; initial setup failure and unconfigured-preview
+42 failures are preserved. Four runtime hashes remain frozen through normal
+fast-forward to339; fresh combined exact-head CI is required before publication.
+
+A new parallel mandatory Admin responsive/recovery job retains all original CI
+jobs/assertions and uploads its evidence. Formal332 route statuses remain intact:
+49/90 accepted and41 pending. This presentation release does not waive the full
+overhaul's protected-role/provider/device/final-review gates.
+
 ## 2026-10-31 | Isolated public Venue/Event detail whole-page palette
 
 Only the two route stylesheets change runtime behavior. Initial reviewed Main
