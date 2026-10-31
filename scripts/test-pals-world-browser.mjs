@@ -13,8 +13,7 @@ import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
-// Uses the actual World component, MapLibre, Three.js and original GLB meshes.
-// Only catalogue, identity and sensor inputs are disposable fixtures.
+// Actual World, MapLibre, Three.js and GLB meshes. Only data and GPS are fixtures.
 const output = resolve("test-results/pals-world-browser");
 const temp = mkdtempSync(resolve(tmpdir(), "pals-world-"));
 mkdirSync(output, { recursive: true });
@@ -30,7 +29,11 @@ await build({
   format: "iife",
   platform: "browser",
   target: "es2022",
-  define: { "process.env.NODE_ENV": '"production"' },
+  jsx: "automatic",
+  define: {
+    "process.env.NODE_ENV": '"production"',
+    "process.env": JSON.stringify({ NODE_ENV: "production" }),
+  },
 });
 await build({
   stdin: {
@@ -115,7 +118,7 @@ const server = createServer((req, res) => {
   if (url.pathname === "/pals/world")
     return send(
       "text/html",
-      '<!doctype html><html lang="en"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AkiPals World fixture</title><style>body{margin:0}</style><link rel="stylesheet" href="/world.css"><div id="root"></div><script src="/world.js"></script></html>',
+      '<!doctype html><html lang="en"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AkiPals World fixture</title><style>body{margin:0}*,*:before,*:after{box-sizing:border-box}</style><link rel="stylesheet" href="/world.css"><div id="root"></div><script src="/world.js"></script></html>',
     );
   if (url.pathname === "/world.js" || url.pathname === "/world.css")
     return send(
@@ -149,7 +152,7 @@ const server = createServer((req, res) => {
     return send("application/json", JSON.stringify(mapStyle));
   send("text/plain", "Not found", 404);
 });
-await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+await new Promise((ready) => server.listen(0, "127.0.0.1", ready));
 const origin = `http://127.0.0.1:${server.address().port}`;
 const browser = await chromium.launch({
   headless: true,
@@ -160,7 +163,14 @@ const browser = await chromium.launch({
   ],
 });
 const receipt = [];
+const browserErrors = [];
 async function setup(context) {
+  context.on("page", (page) => {
+    page.on("pageerror", (error) => {
+      browserErrors.push(error.message);
+      console.error("World browser exception:", error.stack);
+    });
+  });
   await context.addInitScript(() => {
     const state = {
       calls: 0,
@@ -218,8 +228,6 @@ try {
     });
     await setup(context);
     const page = await context.newPage();
-    const errors = [];
-    page.on("pageerror", (e) => errors.push(e.message));
     await page.goto(origin + "/pals/world");
     await expect(page.locator("[data-pals-world-avatar]")).toHaveAttribute(
       "data-rendered",
@@ -229,11 +237,7 @@ try {
     await expect(
       page.getByRole("button", { name: /TEST ONLY Music Room/ }).first(),
     ).toBeVisible();
-    assert.equal(
-      await page.evaluate(() => window.palsGPS.state.calls),
-      0,
-      "GPS is never automatic",
-    );
+    assert.equal(await page.evaluate(() => window.palsGPS.state.calls), 0);
     assert.equal(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= window.innerWidth + 1,
@@ -280,9 +284,7 @@ try {
     await page
       .getByRole("button", { name: "Locate my AkiPal", exact: true })
       .click();
-    await page.evaluate(() =>
-      window.palsGPS.emit(36.54311, -4.62312, 6, 60000),
-    );
+    await page.evaluate(() => window.palsGPS.emit(36.54311, -4.62312, 6, 60000));
     await expect(page.locator("[data-pals-gps-status]")).toContainText(
       "fresh GPS",
     );
@@ -310,16 +312,14 @@ try {
     await page
       .getByRole("button", { name: "Locate my AkiPal", exact: true })
       .click();
-    const clears = await page.evaluate(
-      () => window.palsGPS.state.clears.length,
-    );
+    const clears = await page.evaluate(() => window.palsGPS.state.clears.length);
     await page.evaluate(() => window.unmountWorld());
     assert.equal(
       await page.evaluate(() => window.palsGPS.state.clears.length),
       clears + 1,
       "Unmount clears the sensor",
     );
-    assert.deepEqual(errors, [], "No JavaScript runtime errors");
+    assert.deepEqual(browserErrors, [], "No JavaScript runtime errors");
     receipt.push({
       width,
       realMapLibre: true,
@@ -331,7 +331,6 @@ try {
       backgroundStop: true,
       denied: true,
       unmountStop: true,
-      errors,
     });
     await context.close();
   }
@@ -387,12 +386,12 @@ try {
     false,
     "World never writes check-ins, rewards, scans or location",
   );
+  assert.deepEqual(browserErrors, [], "No JavaScript runtime errors");
   writeFileSync(
     resolve(output, "receipt.json"),
     JSON.stringify(
       {
-        suite:
-          "actual World/MapLibre/GLB with disposable data and simulated sensor inputs",
+        suite: "actual World/MapLibre/GLB with disposable data and sensors",
         productionAuthOrPhysicalGps: false,
         checks: receipt,
         requestCount: requests.length,
@@ -401,16 +400,22 @@ try {
       2,
     ),
   );
-  console.log(
-    JSON.stringify({
-      result: "PASS",
-      contexts: receipt.length,
-      widths: [360, 390, 430, 820, 1440],
-      noWrites: true,
-    }),
-  );
+  console.log(JSON.stringify({ result: "PASS", contexts: receipt.length }));
+} catch (error) {
+  console.error("World failure:", error, browserErrors);
+  for (const [index, page] of browser
+    .contexts()
+    .flatMap((context) => context.pages())
+    .entries()) {
+    await page.screenshot({
+      path: resolve(output, `failure-${index}.png`),
+      fullPage: true,
+    });
+    writeFileSync(resolve(output, `failure-${index}.html`), await page.content());
+  }
+  throw error;
 } finally {
   await browser.close();
-  await new Promise((resolve) => server.close(resolve));
+  await new Promise((done) => server.close(done));
   rmSync(temp, { recursive: true, force: true });
 }
