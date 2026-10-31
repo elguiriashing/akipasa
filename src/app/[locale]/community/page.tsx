@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { discoveryLocationFromQuery } from "@/lib/discovery-location";
 import { CommunityLanding } from "@/components/community/CommunityLanding";
 import Link from "next/link";
 import { Icon } from "@/components/Icons";
@@ -39,7 +40,16 @@ export default async function CommunityPage({
     : query.target
       ? "report"
       : "home";
-  if (view === "home") return <CommunityLanding locale={locale} />;
+  if (view === "home") {
+    const area = discoveryLocationFromQuery(query, locale);
+    return (
+      <CommunityLanding
+        locale={locale}
+        initialCenter={area.center}
+        areaLabel={area.name}
+      />
+    );
+  }
   const { supabase, user } = await requireUser(
     locale,
     communityWorkflowPath(locale, view as CommunityView, {

@@ -37,6 +37,24 @@ export default async function PrivacyPage({
             ? "Para prestar el servicio, protegerlo contra abusos y ofrecer estadísticas agregadas a los negocios. No vendemos datos personales."
             : "To provide the service, protect it from abuse and give businesses aggregate statistics. We do not sell personal data."}
         </p>
+        <h2 id="city-stories">
+          {es ? "Fotos e historias de ciudades" : "Photos and city stories"}
+        </h2>
+        <p>
+          {es
+            ? "Compartir una foto es opcional y requiere marcar expresamente su publicación en la ciudad del local. Una visita debe haber sido verificada antes de compartir: la foto, la etiqueta de selfie y abrir una página no acreditan asistencia ni conceden XP. Las fotos esperan revisión manual; no enviamos estas imágenes a un servicio de IA para verificar asistencia."
+            : "Sharing a photo is optional and requires an explicit choice to publish it in the venue’s city. A visit must already be verified before sharing: a photo, its selfie label and opening a page do not prove attendance or award XP. Photos await manual review; we do not send these images to an AI service to verify attendance."}
+        </p>
+        <p>
+          {es
+            ? "La foto se vuelve a codificar antes de enviarla y el servidor rechaza los metadatos de imagen no permitidos. La historia muestra el local y su ciudad, no tus coordenadas precisas ni campos privados del perfil. La ubicación para ordenar ciudades cercanas se calcula en tu dispositivo cuando eliges usarla. Los recuentos indican fotos aprobadas recientes, no personas presentes ni aforo."
+            : "The photo is re-encoded before upload and the server rejects disallowed image metadata. A story shows the venue and its city, not your precise coordinates or private profile fields. Location used to order nearby cities is calculated on your device when you choose to use it. Counts mean recent approved photos, not people currently present or venue occupancy."}
+        </p>
+        <p>
+          {es
+            ? "El acceso público caduca como máximo 24 horas después del envío. Caducar el acceso no confirma el borrado físico del archivo. Puedes retirar tus historias desde Comunidad aunque ya no puedas publicar. La retirada revoca el acceso en AkiPasa e intenta borrar el archivo; si queda limpieza pendiente, se indica expresamente. La exportación de la cuenta incluye los registros propios conservados y la eliminación de la cuenta retira los registros vinculados, sin prometer el borrado de copias de seguridad o de copias ya descargadas por otras personas."
+            : "Public access expires no later than 24 hours after submission. Access expiry does not confirm physical file deletion. You can remove your stories from Community even if you can no longer publish. Removal revokes access through AkiPasa and attempts file deletion; outstanding cleanup is explicitly indicated. Account exports include your retained records, and account deletion removes linked records without promising erasure of backups or copies other people already downloaded."}
+        </p>
         <h2>{es ? "Tus derechos" : "Your rights"}</h2>
         <p>
           {es

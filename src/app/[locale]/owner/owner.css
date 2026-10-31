@@ -331,6 +331,10 @@ html[data-theme="light"]
   outline-offset: 4px;
 }
 @media (max-width: 700px) {
+  /* Keep read-recovery controls outside the floating DEV launcher's lane. */
+  .app-shell .owner-console-page.owner-console-v3 .notice[role="alert"] {
+    padding-inline-end: 4.5rem;
+  }
   .app-shell
     .app-content[data-pasa-surface="operations"]
     .owner-console-page.owner-console-v3 {

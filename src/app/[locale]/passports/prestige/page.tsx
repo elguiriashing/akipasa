@@ -48,9 +48,10 @@ export default async function PrestigePage({
       </Link>
       {error || !state ? (
         <p role="alert">
-          {es
-            ? "No se pudo cargar. Reinténtalo."
-            : "Could not load. Please retry."}
+          {es ? "No se pudo cargar." : "Could not load."}{" "}
+          <Link href={`/${locale}/passports/prestige`}>
+            {es ? "Reintentar" : "Retry"}
+          </Link>
         </p>
       ) : (
         <>

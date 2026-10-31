@@ -1,0 +1,221 @@
+.launch,
+.secondary,
+.danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 12px 18px;
+  border-radius: 16px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+}
+.launch {
+  color: #21140c;
+  background: #ff762b;
+  border: 1px solid #ff762b;
+}
+.dialog {
+  --story-bg: #101112;
+  --story-raised: #1b1a18;
+  --story-text: #faf7f3;
+  --story-muted: #c9c2bb;
+  --story-border: #51443b;
+  --story-accent: #ffad78;
+  color: var(--story-text);
+  background: var(--story-bg);
+  border: 1px solid var(--story-border);
+  border-radius: 24px;
+  width: min(900px, calc(100% - 24px));
+  max-height: calc(100dvh - 24px);
+  padding: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+:global(html[data-theme="light"]) .dialog {
+  --story-bg: #fffdfa;
+  --story-raised: #f5f0e9;
+  --story-text: #27211c;
+  --story-muted: #62564c;
+  --story-border: #d1c1b1;
+  --story-accent: #974010;
+}
+.dialog::backdrop {
+  background: #000b;
+}
+.header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border-bottom: 1px solid var(--story-border);
+}
+.header span {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--story-accent);
+  font-weight: 800;
+}
+.dialog h2 {
+  margin: 8px 0 0;
+  font-size: clamp(26px, 4vw, 36px);
+  line-height: 1.1;
+  color: var(--story-text);
+}
+.dialog :is(h3, h4) {
+  color: var(--story-text);
+  margin: 0;
+}
+.dialog p {
+  margin: 0;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.content {
+  padding: clamp(18px, 4vw, 28px);
+  display: grid;
+  gap: 28px;
+  min-width: 0;
+}
+.section {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.sectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.secondary {
+  border: 1px solid var(--story-border, #51443b);
+  background: var(--story-raised, #1b1a18);
+  color: var(--story-text, #faf7f3);
+}
+.danger {
+  border: 1px solid #9c3030;
+  background: #9c3030;
+  color: white;
+}
+.dialog button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.dialog :is(button, a, select, input):focus-visible,
+.launch:focus-visible {
+  outline: 3px solid var(--story-accent, #ffad78);
+  outline-offset: 3px;
+}
+.notice {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid var(--story-border);
+  border-radius: 18px;
+  background: var(--story-raised);
+  min-width: 0;
+}
+.select {
+  display: grid;
+  gap: 10px;
+  font-weight: 700;
+}
+.select select {
+  width: 100%;
+  min-width: 0;
+  min-height: 50px;
+  border-radius: 14px;
+  padding: 12px;
+  background: var(--story-raised);
+  color: var(--story-text);
+  border: 1px solid var(--story-border);
+  font: inherit;
+}
+.hint {
+  color: var(--story-muted);
+  font-size: 13px;
+}
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 16px;
+}
+.card {
+  min-width: 0;
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--story-border);
+  border-radius: 20px;
+  background: var(--story-raised);
+}
+.photo {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4/3;
+  object-fit: contain;
+  max-height: 300px;
+  border-radius: 14px;
+}
+.status {
+  color: var(--story-accent);
+}
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+@media (max-width: 480px) {
+  .header {
+    padding: 18px;
+  }
+  .header .secondary {
+    padding: 10px 14px;
+  }
+}
+
+.storyLaunch {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 9px;
+  width: 92px;
+  min-width: 92px;
+  min-height: 106px;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: #faf7f3;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  cursor: pointer;
+}
+.storyCircle {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  flex: 0 0 76px;
+  border: 2px solid #ff762b;
+  border-radius: 50%;
+  background: #171310;
+  color: #ffad78;
+  box-shadow: 0 0 0 4px #ff762b12;
+}
+.storyLaunch:focus-visible {
+  outline: 3px solid #ffad78;
+  outline-offset: 4px;
+}
+:global(html[data-theme="light"]) .storyLaunch {
+  color: #27211c;
+}

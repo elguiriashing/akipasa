@@ -47,7 +47,13 @@ export default async function PrestigeAdminPage({
       </p>
       {error || !data ? (
         <p role="alert">
-          {es ? "No disponible. Reinténtalo." : "Unavailable. Please retry."}
+          {es ? "No disponible. Reinténtalo." : "Unavailable. Please retry."}{" "}
+          <Link
+            className="button secondary"
+            href={`/${locale}/admin/passports/prestige?page=${page}`}
+          >
+            {es ? "Reintentar" : "Retry"}
+          </Link>
         </p>
       ) : (
         <>

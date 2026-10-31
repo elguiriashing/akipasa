@@ -8,6 +8,7 @@ import { isLocale } from "@/lib/config";
 import { StaffQueue, type StaffQueueItem } from "../StaffQueue";
 import { setAutomaticModeration } from "../../moderation/actions";
 import { RentalReviewQueue } from "../RentalReviewQueue";
+import { StoryModeration } from "@/components/community/StoryModeration";
 
 import {
   STAFF_MODERATION_QUEUES as queues,
@@ -89,7 +90,9 @@ export default async function StaffModerationPage({
   const queue = parseStaffQueue(query.queue);
   const { supabase, user } = await requireUser(
     locale,
-    `/${locale}/staff/moderation`,
+    query.queue === "stories"
+      ? `/${locale}/staff/moderation?queue=stories`
+      : `/${locale}/staff/moderation`,
   );
   const { data: profile } = await supabase
     .from("profiles")
@@ -97,6 +100,26 @@ export default async function StaffModerationPage({
     .eq("id", user.id)
     .maybeSingle();
   if (!profile || !canModerate(profile.app_role)) notFound();
+  if (query.queue === "stories")
+    return (
+      <>
+        <WorkspacePageHeader
+          level={1}
+          eyebrow={locale === "es" ? "Confianza" : "Trust"}
+          title={locale === "es" ? "Fotos de la comunidad" : "Community photos"}
+          description={
+            locale === "es"
+              ? "Revisa cada foto antes de su publicación. Una foto no verifica asistencia ni concede XP."
+              : "Review each photo before publication. A photo does not verify attendance or award XP."
+          }
+        />
+        <Link className="button secondary" href={`/${locale}/staff/moderation`}>
+          {locale === "es" ? "Otras colas" : "Other queues"}
+        </Link>
+        <StoryModeration locale={locale} />
+      </>
+    );
+
   const claimPage = parseStaffQueuePage(query.page);
   const [
     { data, error: queueError, count: queueCount },
@@ -201,6 +224,12 @@ export default async function StaffModerationPage({
             : "Select a queue. Only that task's content is loaded."
         }
       />
+      <Link
+        className="button secondary"
+        href={`/${locale}/staff/moderation?queue=stories`}
+      >
+        {es ? "Revisar fotos de check-ins" : "Review check-in photos"}
+      </Link>
       {(query.updated || query.error) && (
         <p className="notice">
           {query.updated

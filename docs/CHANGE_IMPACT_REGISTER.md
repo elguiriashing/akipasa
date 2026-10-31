@@ -5173,3 +5173,50 @@ is inferred from the local fixtures.
 game rows. Old source does not understand new explicit model IDs; preserve those
 rows for restoration instead of rewriting or deleting them. No schema, role,
 customer-row, billing or provider rollback is required.
+
+## 2026-10-31 | City Stories: explicit sharing after a verified visit
+
+- **Product:** Replace link-only city circles with a real viewer and a compact
+  story strip. Camera/file composer, owned eligible visit selector, manual Staff
+  review, reporting and explicit owner removal are integrated. Existing creator,
+  contribution, following and Map destinations remain useful. No fake activity.
+- **Authority/dependencies:** New Stories RPC/private bucket, existing canonical
+  profile eligibility/platform roles/check-in credential/venue/city metadata,
+  authenticated Supabase clients and existing same-origin request guard. Neither
+  photos nor feed views mutate attendance/XP. Precise nearby location stays local.
+  The production base and private World/model source remain preserved.
+- **Actual defects repaired:** Upload exceptions left reserved attempts; cleanup
+  is now tracked. Anonymous NULL ownership, ineligible-owner withdrawal, profile
+  deletion FKs and staff review-text export leakage have executable before/after
+  regressions. Final owner export remains available when collection is disabled.
+  Browser tests caught WebP encoder metadata interoperability, stale-viewer/swipe
+  state, inherited light Staff contrast and nested story-control styling; scope
+  their repairs to the actual owned component rather than alter shared policies.
+- **Camera:** Exact EN/ES live scanner responses denied camera through global
+  Permissions-Policy. Add a scanner-only same-origin allowance, retaining global
+  denial, microphone/payment denial, user action and browser permission. Native
+  fake-device tests must prove start/stop and denial on unrelated pages.
+- **Existing recovery delta:** Referrals/Operations independent read errors,
+  canonical Check-in UUID syntax, Venue Relevance unknown counts, localized
+  Admin application labels, Prestige native GET retry and Owner floating-toolbox
+  clearance preserve successful forms, auth/actions, billing and private state.
+  Current Operations reconciliation retains the already published owned-location
+  recovery and only adds missing RPC recovery. No older route inventory reversion.
+- **Gates:** SQL20261031230204 is source-only and mirrored; collection/schema
+  readiness defaults off. Local PGlite and disposable identity/storage adapters
+  do not establish real hosted Auth/storage/device evidence. Do not apply this
+  migration, enable collection, or purchase a QA branch without actual approval.
+  Obtain fresh exact-head full checks, browser/review evidence and safe rollout.
+- **Rollback:** Stop collection while retaining schema readiness and current
+  owner deletion/export APIs. Additive schema/data must not be dropped as a UI
+  rollback.24-hour access expiry is not physical purge; queued cleanup and backup
+  limitations remain explicit in the UI/privacy notice. No cron is fabricated.
+
+The first fullcheck correctly rejected the two new unclassified migration paths.
+Both are now explicitly inventoried by their actual hash: one unresolved source
+and one byte-identical transport mirror, neither in the execution prefix. The
+inventory grows341→343, unresolved152→153; all97 prior candidate entries, STOPs,
+non-execution flags and existing assertions remain. Sixteen inventory safety
+tests pass with additional assertions protecting the new source-only status.
+This is classification of the new feature delta, not historical reconstruction
+or permission to execute any migration.

@@ -2547,3 +2547,35 @@ before claiming source/evidence access, preserve all local changes, coordinate
 one integration owner and keep every release gate. The task service confirms
 the update and enabled hourly schedule, but returned no next-run timestamp;
 no currently running background engineering session is claimed.
+
+## 31 October23:45UTC — New Community Stories follow-up candidate
+
+The old ninety-route overhaul is already merged; do not restart its49/90
+historical backlog. This worktree is work/community-stories-inline-search-20261031
+on current production80ec55b. Six nonoverlapping workers completed the new city
+viewer, photo composer, moderation, ownership/export/deletion controls and composed
+QA, with one integration owner. Home-only PR345 at638915f is separately published
+so its finished inline search need not wait for the new Stories SQL.
+
+New feature tests cover actual executable policies and negative cases; source
+receipts distinguish local/mock/PGlite from real hosted Auth/storage and physical
+Android. Current new-feature unit count was160 before the added narrow camera
+policy case; fresh frozen fullcheck must provide the final count. Community
+leading-row/Staff composition and camera native checks have independent evidence
+folders; never promote fixture results to production acceptance. Public Privacy
+now explains explicit photo publication, manual review, location boundaries and
+access expiry versus physical cleanup without changing required consent values.
+
+SQL20261031230204 remains UNAPPLIED, collection defaults OFF, and the nonpublic
+AKIPASA_COMMUNITY_STORIES_SCHEMA_READY flag defaults OFF.31October23:45read-only
+Supabase branch discovery finds only live main vhpbvcfkcteswlsdjrfl; no disposable
+hosted test target exists. No paid branch, AI service, production customer write
+or schema application has been performed by this follow-up. Existing production
+Staff/preview forwards already applied by the completed332 release must not repeat.
+
+Next: finish exact frozen fullcheck/build/native camera and composed evidence,
+independent review and commit/publish this one candidate; obtain genuine isolated
+hosted Auth/storage/role evidence using an authorized target and reviewed schema
+activation before any Stories release. Preserve the private bucket, retained
+record exports and deletion controls even when collection is disabled. No claim
+that a background engineer survives an ended execution session.

@@ -82,6 +82,26 @@ export default async function OperationsSubscriptionPage({
         effective_at: string;
         state: string;
       } | null);
+  const readsUnavailable = Boolean(
+    error ||
+      initialResult.error ||
+      scheduledResult.error ||
+      migrationResult.error,
+  );
+  const retryHref = returnPath;
+  const readFailure = (label: string) => (
+    <section role="alert" className="stack">
+      <strong>{label}</strong>
+      <p>
+        {es
+          ? "Los datos no están disponibles. Reintenta antes de continuar."
+          : "These records are not available. Retry before continuing."}
+      </p>
+      <a className="button secondary" href={retryHref}>
+        {es ? "Reintentar" : "Retry"}
+      </a>
+    </section>
+  );
   const ready =
     process.env.AKIBUSINESS_OPERATIONS_CHECKOUT_READY === "true" &&
     process.env.AKIBUSINESS_OPERATIONS_BILLING_READY === "true" &&
@@ -107,6 +127,24 @@ export default async function OperationsSubscriptionPage({
               : "Unable to continue. Check your selection or retry; no payment has been confirmed."}
           </p>
         )}
+        {initialResult.error &&
+          readFailure(
+            es
+              ? "No se ha podido cargar la selección inicial."
+              : "The initial selection could not be loaded.",
+          )}
+        {scheduledResult.error &&
+          readFailure(
+            es
+              ? "No se han podido consultar los cambios de paquete."
+              : "Scheduled package changes could not be loaded.",
+          )}
+        {migrationResult.error &&
+          readFailure(
+            es
+              ? "No se ha podido consultar la migración."
+              : "Migration status could not be loaded.",
+          )}
         {scheduled?.state === "scheduled" && (
           <p role="status">
             {es
@@ -263,7 +301,7 @@ export default async function OperationsSubscriptionPage({
             </p>
             <button
               className="button primary"
-              disabled={!ready || Boolean(error)}
+              disabled={!ready || readsUnavailable}
             >
               {es
                 ? "Confirmar paquete y continuar"

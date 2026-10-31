@@ -1,3 +1,11 @@
+import { z } from "zod";
+
+const venueCheckInToken = z.string().uuid();
+
+export function isVenueCheckInToken(value: string): boolean {
+  return venueCheckInToken.safeParse(value).success;
+}
+
 /**
  * Scan navigation only. The server-owned venue token page remains responsible
  * for authentication, current venue proof and idempotent reward grants.
@@ -10,8 +18,10 @@ export function verifiedVenueQrPath(
   try {
     const url = new URL(raw, origin);
     if (url.origin !== origin || url.search || url.hash) return null;
+    const prefix = `/${locale}/check-in/`;
     if (
-      !new RegExp(`^/${locale}/check-in/[0-9a-f-]{36}$`, "i").test(url.pathname)
+      !url.pathname.startsWith(prefix) ||
+      !isVenueCheckInToken(url.pathname.slice(prefix.length))
     ) {
       return null;
     }

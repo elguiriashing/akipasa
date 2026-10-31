@@ -4,7 +4,7 @@ import type { Locale } from "@/lib/config";
 import { planShortcutHref, type PlanShortcut } from "@/lib/plans-first";
 import { discoveryViewHref } from "@/lib/discovery-navigation";
 import { tonightEnabled } from "@/lib/aki-tonight-release";
-import { DiscoverySearchTrigger } from "./DiscoverySearchTrigger";
+import { VenueQuickSearch } from "./VenueQuickSearch";
 import styles from "./PlansFirstHero.module.css";
 
 /** Social-plans hero: short ES/EN promise, existing search routes unchanged. */
@@ -49,7 +49,7 @@ export function PlansFirstHero({
           sizes="(max-width: 640px) 100vw, 1100px"
         />
       </div>
-      <DiscoverySearchTrigger locale={locale} />
+      <VenueQuickSearch locale={locale} variant="hero" />
       <p className={styles.kicker}>{location.name}</p>
       <h1 id="plans-first-title">
         {es ? "¿Qué hacemos hoy?" : "What are we doing today?"}

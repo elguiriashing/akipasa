@@ -1,0 +1,197 @@
+.section {
+  --review-panel: #161310;
+  --review-raised: #221c17;
+  --review-ink: #faf5ee;
+  --review-muted: #c9bdb0;
+  --review-line: #67523e;
+  color: var(--review-ink);
+  width: 100%;
+  min-width: 0;
+  padding: 20px 0;
+}
+:global(html[data-theme="light"]) .section {
+  --review-panel: #fffaf4;
+  --review-raised: #f0e8dd;
+  --review-ink: #272019;
+  --review-muted: #675744;
+  --review-line: #9f8569;
+  background: #f6eee4;
+  border-radius: 24px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+/* Keep local heading ink authoritative inside the darker Staff workspace. */
+:global(html[data-theme] body .app-shell .consumer-workspace.staff-workspace)
+  .section
+  :is(h2, h3) {
+  color: var(--review-ink);
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+.section h2 {
+  margin: 8px 0;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  letter-spacing: -0.04em;
+}
+.section h3 {
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+.section p {
+  color: var(--review-muted);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.eyebrow {
+  color: #ffa368;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+:global(html[data-theme="light"]) .eyebrow {
+  color: #93400a;
+}
+.section button {
+  min-height: 46px;
+  border: 1px solid var(--review-line);
+  border-radius: 24px;
+  background: var(--review-raised);
+  color: var(--review-ink);
+  padding: 10px 18px;
+  font: inherit;
+  cursor: pointer;
+}
+.section button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.section :is(button, textarea):focus-visible {
+  outline: 3px solid #f9802b;
+  outline-offset: 4px;
+}
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+}
+.section .tabs button[aria-pressed="true"],
+.actions button:first-child {
+  background: #ff8125;
+  color: #1e1107;
+  border-color: #ff8125;
+  font-weight: 750;
+}
+.list {
+  display: grid;
+  gap: 20px;
+}
+.card {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.7fr) minmax(0, 1.3fr);
+  gap: 24px;
+  border: 1px solid var(--review-line);
+  border-radius: 24px;
+  padding: 20px;
+  background: var(--review-panel);
+}
+.preview {
+  background: var(--review-raised);
+  border-radius: 16px;
+  overflow: hidden;
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  align-self: start;
+}
+.preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 480px;
+  object-fit: contain;
+}
+.preview p {
+  padding: 16px;
+}
+.details {
+  min-width: 0;
+}
+.badge {
+  display: inline-block;
+  padding: 6px 10px;
+  border: 1px solid var(--review-line);
+  border-radius: 20px;
+  font-size: 0.75rem;
+}
+.caption {
+  white-space: pre-wrap;
+}
+.section label {
+  display: block;
+  font-weight: 700;
+  margin: 20px 0 10px;
+}
+.section textarea {
+  width: 100%;
+  min-height: 100px;
+  box-sizing: border-box;
+  border: 1px solid var(--review-line);
+  border-radius: 16px;
+  padding: 14px;
+  background: var(--review-raised);
+  color: var(--review-ink);
+  font: inherit;
+  resize: vertical;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+.section .actions .danger {
+  background: #842d27;
+  border-color: #b87a72;
+  color: #fff9f5;
+}
+.empty,
+.error {
+  padding: 20px;
+  border: 1px solid var(--review-line);
+  border-radius: 20px;
+  background: var(--review-panel);
+}
+.footnote {
+  margin-top: 24px;
+  font-size: 0.85rem;
+}
+@media (max-width: 650px) {
+  .header {
+    flex-direction: column;
+  }
+  .card {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 16px;
+    gap: 16px;
+  }
+  .preview img {
+    max-height: 340px;
+  }
+  .actions {
+    flex-direction: column;
+  }
+  .actions button {
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .section * {
+    scroll-behavior: auto;
+  }
+}

@@ -40,9 +40,9 @@ test("current repository inventory validates only as a blocked partial plan", ()
   assert.equal(result.fullCanonicalParity, false);
   assert.equal(result.executable, false);
   assert.equal(result.databaseExecutionSupported, false);
-  assert.equal(result.inventoryCount, 341);
+  assert.equal(result.inventoryCount, 343);
   assert.equal(result.candidateSourceCount, 97);
-  assert.equal(result.unresolvedSourceCount, 152);
+  assert.equal(result.unresolvedSourceCount, 153);
   const preview = frozen.entries.find(
     (entry) =>
       entry.path ===
@@ -50,6 +50,21 @@ test("current repository inventory validates only as a blocked partial plan", ()
   );
   assert.equal(preview.classification, "unresolved");
   assert(!frozen.candidateOrder.includes(preview.path));
+  const stories = frozen.entries.find(
+    (entry) =>
+      entry.path === "database/migrations/20261031230204_community_stories.sql",
+  );
+  const mirror = frozen.entries.find(
+    (entry) =>
+      entry.path === "supabase/migrations/20261031230204_community_stories.sql",
+  );
+  assert.equal(stories.classification, "unresolved");
+  assert(!frozen.candidateOrder.includes(stories.path));
+  assert.equal(mirror.classification, "byte-identical-transport");
+  assert.equal(mirror.aliasOf, stories.path);
+  assert.equal(mirror.sha256, stories.sha256);
+  assert(!frozen.candidateOrder.includes(mirror.path));
+
   assert.equal(frozen.evidence.scopedCreatorCounts.applicationSql, 78);
   assert.equal(frozen.evidence.scopedCreatorCounts.officialStorageSql, 17);
   assert.equal(frozen.evidence.scopedCreatorCounts.selectedTotal, 95);

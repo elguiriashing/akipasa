@@ -4351,3 +4351,73 @@ and deployed source/asset readback remain release gates. These fixtures do not
 claim physical Android/GPS or live authenticated acceptance. Source rollback
 preserves appearance and legacy game rows; restoring this version recovers any
 explicit newer-model selection retained in those rows.
+
+## 2026-10-31 | Verified-visit city stories and camera permission repair
+
+This new follow-up preserves production80ec55b/#332's90 accepted screens and
+#343's restricted authored models. Community city circles now open a real city
+story viewer with keyboard, native dialogs, explicit swipe/previous/next/pause,
+reporting and truthful empty/error states. A compact horizontal strip combines
+Add Story, Creators and city landmark circles; Suggest a Plan remains a working
+contribution action. The initial nearby cities derive from a public selected area;
+precise location is opt-in, calculated on-device and not sent to Stories APIs.
+Three nearest available cities plus three most active by approved24-hour photo
+counts are deduplicated. These counts are not crowd levels or occupancy.
+
+Add Story fetches the authenticated owner's actual recent eligible check-ins,
+requires explicit public opt-in and a chosen photo, and re-encodes/canonicalizes
+an opaque WebP before upload. The server independently validates bounded static
+WebP structure and rejects metadata, animation, unexpected fields and duplicate
+multipart values. The server derives the published verified venue and canonical
+city from an owned, accepted, credential-backed recent visit. Client coordinates,
+selfie labels and photographs do not prove attendance or award XP. No AI/AR,
+notification provider, payment or new reward behavior is introduced.
+
+New private Stories tables and a restrictive private-bucket policy protect photo
+objects even against unrelated permissive legacy storage policies. Source-only
+migration20261031230204 and its mirror have NOT been applied. Collection starts
+OFF and the server schema-readiness flag defaults OFF until the installed schema,
+private storage, export and role boundaries are verified. Only existing eligible
+moderator/administrator roles can review pending photos and approve/reject/remove
+with an explicit reason. Public reads project no private profile/owner IDs,
+precise visitor location, storage path or report details; media is authorized on
+each request and served directly as no-store WebP. Photos await manual review.
+
+Owner read/removal/export remains possible after publication eligibility changes.
+Expiry revokes public access24 hours after reservation; it is not a claim of
+physical image/backup deletion. Failed cleanup is reported and tracked privately.
+Account/check-in/venue cascades remove linked metadata without blocking existing
+account deletion; an opaque cleanup outbox survives. Account JSON export adds
+bounded, cursor-validated own retained story/report/cleanup records, fails honestly
+on missing required RPCs, and excludes staff review reasons/third-party text.
+Schema readiness must remain enabled once records exist even when collection is
+turned off. Rollback must preserve these privacy controls; stop collection first
+and keep a Stories-compatible API/export deployment rather than silently return
+an older incomplete export. Stronger physical-retention promises or an automated
+cleanup schedule are not implemented by this change.
+
+The live scanner's global camera=() header was independently confirmed to deny
+camera on both actual HTTPS language routes. Only the exact bilingual Check-in
+scanner page now permits same-origin camera. Microphone/payment remain denied;
+other pages retain camera denial and existing one-time geolocation permission.
+The scanner still requires a user action and device permission. Native file
+capture in Stories is a separate mechanism and is not falsely described as
+blocked by the scanner-policy observation. Physical Android/camera/GPS acceptance
+is separate from Chromium fake-device or synthetic-coordinate testing.
+
+Targeted units, executable PGlite policies/lifecycles and real component/browser
+fixtures cover publication gates, private/owner/staff scope, opt-in, moderation,
+withdrawal, metadata rejection, deletion cascades, export redaction and native
+controls. Fixtures are not actual hosted Supabase Auth/storage or device proof.
+Fresh full checks, exact-source browser results and independent review must gate
+publication. New paid QA resources and production SQL still require actual owner
+authorization; no customer data or production schema has been changed here.
+
+The first fullcheck correctly rejected the two new unclassified migration paths.
+Both are now explicitly inventoried by their actual hash: one unresolved source
+and one byte-identical transport mirror, neither in the execution prefix. The
+inventory grows341→343, unresolved152→153; all97 prior candidate entries, STOPs,
+non-execution flags and existing assertions remain. Sixteen inventory safety
+tests pass with additional assertions protecting the new source-only status.
+This is classification of the new feature delta, not historical reconstruction
+or permission to execute any migration.
