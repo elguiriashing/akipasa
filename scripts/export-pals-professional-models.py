@@ -87,12 +87,16 @@ def restore_snow_materials() -> list[dict]:
 def standing_pose(rig) -> dict:
     """Use the authored FK controls; retain the source facial expression."""
     properties = []
+    diagnostic_properties = []
     for bone in rig.pose.bones:
         for key in bone.keys():
-            lowered = key.lower()
-            if "ik" in lowered and "fk" in lowered and ("arm" in lowered or "hand" in lowered):
-                if isinstance(bone[key], (int, float)):
+            lowered = (bone.name + " " + key).lower()
+            if isinstance(bone[key], (int, float)):
+                if "propert" in bone.name.lower() or "ik" in key.lower():
+                    diagnostic_properties.append({"bone": bone.name, "key": key, "value": bone[key]})
+                if "ik" in lowered and ("arm" in lowered or "hand" in lowered) and not any(word in key.lower() for word in ("stretch", "parent", "pole", "follow")):
                     properties.append((bone, key, bone[key]))
+    print("PALS_RIG_NUMERIC_PROPERTIES " + json.dumps(diagnostic_properties), flush=True)
     print("PALS_POSE_PROPERTIES " + json.dumps([
         {"bone": bone.name, "key": key, "value": value} for bone, key, value in properties
     ]), flush=True)
@@ -107,6 +111,7 @@ def standing_pose(rig) -> dict:
     for mode in (0, 1):
         for bone, key, _ in properties:
             bone[key] = mode
+        rig.update_tag()
         bpy.context.view_layer.update()
         for side, name in names.items():
             control = rig.pose.bones[name]
@@ -128,6 +133,7 @@ def standing_pose(rig) -> dict:
     selected = min(trials)[1]
     for bone, key, _ in properties:
         bone[key] = selected
+    rig.update_tag()
     bpy.context.view_layer.update()
     # Reapply the selected pose, since the last trial may have used the other mode.
     for side, name in names.items():
@@ -164,7 +170,7 @@ def image_for_tile(image, tile: int, folder: Path):
         stem = re.sub(r"(?<!\d)1001(?!\d)", str(tile), stem)
         choices = list(folder.rglob(stem))
     if not choices:
-        raise RuntimeError(f"Authored texture tile {tile} is missing for {image.name}")
+        raise RuntimeError(f"Authored texture tile {tile} is missing for {image.name}; available={[part.number for part in image.tiles]}; filepath={image.filepath}; searched={basename}")
     return bpy.data.images.load(str(choices[0]), check_existing=True)
 
 
@@ -224,7 +230,26 @@ def replace_materials(mesh, originals: list, folder: Path, cache: dict):
         u = v = 0
         if tiled and uv:
             center = sum((uv[i].uv for i in polygon.loop_indices), Vector((0, 0))) / len(polygon.loop_indices)
-            u, v = math.floor(center.x), math.floor(center.y)
+            # Subdivision may turn an authored seam at U=0 into -0.00000001.
+            # Resolve only float noise at a boundary; never substitute an
+            # unrelated tile for genuinely missing authored texture data.
+            u, v = math.floor(center.x + 1e-5), math.floor(center.y + 1e-5)
+            tile_images = [node.image for node in source.node_tree.nodes if node.type == "TEX_IMAGE" and node.image and node.image.source == "TILED"]
+            available = {part.number for image in tile_images for part in image.tiles}
+            candidate = 1001 + u + 10 * v
+            if candidate not in available:
+                adjacent = []
+                for tile_u in (math.floor(center.x - 1e-5), math.floor(center.x + 1e-5)):
+                    for tile_v in (math.floor(center.y - 1e-5), math.floor(center.y + 1e-5)):
+                        if 1001 + tile_u + 10 * tile_v in available:
+                            adjacent.append((tile_u, tile_v))
+                if len(set(adjacent)) == 1:
+                    u, v = adjacent[0]
+                else:
+                    print("PALS_UNRESOLVED_UV " + json.dumps({"mesh": mesh.name, "material": source.name,
+                          "polygon": polygon.index, "center": list(center), "tile": candidate, "available": sorted(available),
+                          "uvLayers": [layer.name for layer in mesh.uv_layers], "activeUV": mesh.uv_layers.active.name,
+                          "corners": [list(uv[index].uv) for index in polygon.loop_indices]}), flush=True)
         tile = 1001 + u + 10 * v
         material = mobile_material(source, tile, folder, cache)
         if material.name not in indexes:
@@ -302,6 +327,8 @@ def export_character(record: dict) -> dict:
         raise RuntimeError(f"Unexpected authored character height {height}")
     center = Vector(((minimum.x + maximum.x) / 2, (minimum.y + maximum.y) / 2, minimum.z))
     scale = 1.8 / height
+    if (maximum.x - minimum.x) * scale > 1.1:
+        raise RuntimeError(f"Authored FK standing pose did not lower the arms: normalized width={(maximum.x - minimum.x) * scale}; pose={pose}")
     # glTF converts Blender Z-up to Y-up. The authored front (-Y) becomes +Z.
     transform = Matrix.Diagonal(Vector((scale, scale, scale, 1))) @ Matrix.Translation(-center)
     for obj in mobile:
