@@ -1,5 +1,28 @@
 # Change Impact Register
 
+## 2026-10-31 | Restricted AkiPals world and Wardrobe entry point
+
+Owner-requested private gameplay prototype: the existing 3D character
+creator is renamed Wardrobe; /pals/world reuses the same saved avatar in
+a lightweight Three.js map-marker view. Only restricted /pals/** files,
+the Three.js renderer, isolated world components/styles and relevant tests
+are changed. There are no public navigation, public map, billing, rewards,
+venue mutation, auth policy, role, database, push, email, other product or
+Android native changes. New venue read endpoint uses the existing
+public_nearby_venue_page RPC with a coarse two-decimal map cell, bounded
+normalization, previewAccess and no-store. Sensitive coordinates stay in
+the browser and location only starts on direct permission request; location
+watch is stopped in the background. Attribution remains visible.
+No AR capture, social presence, user scan storage or check-ins are activated.
+
+Validation: unit/helper and auth boundary tests added; full check and
+physical browser/GPS/Android tests pending. New branch is not merged or
+deployed, and is 3D avatar branch-based, so it must reconcile with master
+and independent #332 overhaul first. Revert only these isolated files to
+roll back; legacy game state and avatar profile remain intact. See
+docs/AKIPALS_WORLD_EXPLORER_20261031.md.
+
+
 ## 2026-10-29 | AkiPals actual 3D creator replacing flat avatar preview
 
 - **Changed:** Build imports pinned Three.js from local npm, exports a self-hosted
