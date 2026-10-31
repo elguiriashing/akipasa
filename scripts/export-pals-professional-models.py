@@ -218,7 +218,11 @@ def mobile_material(source, tile: int, folder: Path, cache: dict):
 
 
 def replace_materials(mesh, originals: list, folder: Path, cache: dict):
-    uv = mesh.uv_layers.active.data if mesh.uv_layers.active else None
+    # The UV editor's selected layer need not be the one used by rendering.
+    render_uv = next((layer for layer in mesh.uv_layers if layer.active_render), mesh.uv_layers.active)
+    if render_uv:
+        mesh.uv_layers.active_index = list(mesh.uv_layers).index(render_uv)
+    uv = render_uv.data if render_uv else None
     slots = []
     indexes = {}
     assignments = []
