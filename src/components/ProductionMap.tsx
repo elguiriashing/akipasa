@@ -526,6 +526,7 @@ export function ProductionMap({
               "icon-allow-overlap": true,
               "icon-ignore-placement": true,
               "text-field": ["get", "point_count_abbreviated"],
+              "text-font": ["Noto Sans Regular"],
               "text-size": 13,
               "text-allow-overlap": true,
               "text-ignore-placement": true,

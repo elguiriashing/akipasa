@@ -1,15 +1,51 @@
 # AkiPasa Radar × After Dark: single-release acceptance
 
-**Scope:** All 103 source page routes. The 13 separate-product routes are deliberately excluded; 90 other consumer, operational and cross-product pages require review. The definitive source of route state is `docs/AKIPASA_UI_ROUTE_MATRIX_20261028.json`.
+**Scope:** All 104 source page routes. The 14 separate-product routes are
+excluded; all 90 in-scope consumer, operational and cross-product pages and all
+six fallback reviews are accepted, with zero outstanding in-scope reviews. The
+thirteen original exclusions remain; the independently released private World
+page from #341 supplies the fourteenth. The definitive route state is
+`docs/AKIPASA_UI_ROUTE_MATRIX_20261028.json`.
 
-**Current status — 31 October 2026:** all **90/90 in-scope page reviews and six fallback reviews are accepted**, with zero outstanding pages and thirteen separate-product exclusions. The final41 were individually reviewed and source-bound; see `docs/receipts/AKIPASA_ROUTE_REVIEW_COMPLETION_20261031.json` and the route matrix. This current count supersedes historical counts below. Coordinated release remains pending fresh exact-head CI, real isolated protected/provider evidence, full-candidate physical Android and final Alex review. Ordinary green workflows or bounded screen acceptance do not replace those integrated gates.
+**Current status — 31 October 2026:** the completed page reviews, integrated local
+check sequence and genuine Map-provider checks have passed. Real isolated QA
+backend acceptance passed **93/93 checks with 167 actual network requests and no
+omitted cases**, including genuine Auth/JWT, named role/eligibility denials,
+consumer isolation, booking concurrency/idempotency and explicitly simulated
+Check-in/XP. The two reviewed production Staff/preview forwards are **applied and
+postflight verified**, as managed versions `20261031153153` and `20261031153156`.
+The genuine protected Next-page browser flow also passed: one maintained test
+completed all 24 route audits plus Admin, Account, event and media controls. Both
+disposable QA branches were deleted after acceptance, with their evidence
+preserved. Fresh checks for the published integrated head, PR #332 merge and
+application deployment remain pending. See the
+[current release checkpoint](AKIPASA_PR332_RELEASE_20261031.md) and its linked
+full receipts for evidence and exact limits.
 
-The final review source is `09d20f03aeec9db99216fdc4ee03ef06c5b26895`. Actual inspection
-resolved Passport text contrast, Operations failed-read recovery and Map light List
-title contrast. New full-page fixtures supplement existing hosted evidence; their
-synthetic read/auth/GPS/basemap boundaries are explicit. Redirect-only pages use
-actual Next HTTP evidence and do not claim nonexistent screenshots or accept their
-destinations. The strict route gate is unchanged and must now pass normally.
+**Current release authority:** Alex instructed: “So 332 is done? If so, let's work
+on getting it to live, if anything's remaining, get it done, checked, then live.”
+This authorizes completing the coordinated release and its necessary reviewed
+forwards; it does not turn an unperformed check into a pass. The integrated source
+preserves independently released #341 at
+`6047abc2186e2bab0eacae5ffcb800d73b66d64a` alongside reviewed #332 at
+`a48e2c32c6eb1072f0608dae331b35ea5c9e4879`.
+
+**Physical-device evidence:** the full integrated candidate has not been checked
+on a physical Android device. The 30 October Home/Login/Passport device report
+applies to the earlier live batch only. Browser/mobile emulation and simulated
+GPS do not establish physical-device acceptance or a waiver.
+
+The completed route-review source is
+`09d20f03aeec9db99216fdc4ee03ef06c5b26895`. Actual inspection resolved Passport
+text contrast, Operations failed-read recovery and Map light List title
+contrast. Full-page fixtures supplement hosted evidence with explicit synthetic
+read/auth/GPS/basemap limits. Redirect-only routes use actual Next HTTP evidence
+and do not claim screenshots or accept their destination pages. The strict route
+gate remains unchanged and passes with zero outstanding in-scope routes.
+
+The dated narratives and intermediate pending counts below are preserved as
+historical context. They do not supersede this current status or the linked
+release checkpoint; the evidence requirements still apply to their stated scope.
 
 ## Current release precedence — 29 October 2026
 

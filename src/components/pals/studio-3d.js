@@ -995,7 +995,8 @@ function clearGroup(group) {
   });
   for (const skeleton of skeletons) skeleton.dispose();
 }
-function create(container) {
+function create(container, { mode = "studio" } = {}) {
+  const isWorld = mode === "world";
   if (!container || !container.isConnected)
     throw new Error("3D stage not mounted");
   const prefersReducedMotion = window.matchMedia(
@@ -1004,12 +1005,14 @@ function create(container) {
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
     alpha: true,
-    powerPreference: "default",
+    powerPreference: isWorld ? "low-power" : "default",
   });
-  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  renderer.setPixelRatio(
+    Math.min(isWorld ? 1.25 : 2, window.devicePixelRatio || 1),
+  );
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.12;
+  renderer.toneMappingExposure = isWorld ? 1.42 : 1.12;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.setClearColor(0x000000, 0);
@@ -1024,20 +1027,27 @@ function create(container) {
     "width:100%;height:100%;display:block;touch-action:none;";
   container.replaceChildren(renderer.domElement);
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(33, 1, 0.05, 90);
+  const camera = new THREE.PerspectiveCamera(isWorld ? 39 : 33, 1, 0.05, 90);
   // Reserve breathing room for the stage badge and bottom touch controls.
-  camera.position.set(0, 1.34, 4.5);
+  camera.position.set(0, isWorld ? 1.23 : 1.34, isWorld ? 2.62 : 4.5);
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.set(0, 1.04, 0);
+  controls.target.set(0, isWorld ? 0.99 : 1.04, 0);
+  controls.enabled = !isWorld;
   controls.enablePan = false;
-  controls.enableDamping = !prefersReducedMotion;
+  controls.enableDamping = !prefersReducedMotion && !isWorld;
   controls.dampingFactor = 0.07;
   controls.minDistance = 2.05;
   controls.maxDistance = 4.8;
   controls.minPolarAngle = 0.67;
   controls.maxPolarAngle = 2.07;
   controls.update();
-  scene.add(new THREE.HemisphereLight("#f1f5ff", "#504b57", 1.65));
+  scene.add(
+    new THREE.HemisphereLight(
+      isWorld ? "#eaf5ff" : "#f1f5ff",
+      isWorld ? "#725146" : "#504b57",
+      isWorld ? 2.3 : 1.65,
+    ),
+  );
   const light = (color, intensity, x, y, z, shadow = false) => {
     const l = new THREE.DirectionalLight(color, intensity);
     l.position.set(x, y, z);
@@ -1052,9 +1062,15 @@ function create(container) {
     }
     scene.add(l);
   };
-  light("#fff0e5", 2.65, -2.5, 4, 3, true);
-  light("#ffab7e", 1.65, 2, 3, -3, false);
-  light("#c4d8ff", 1.2, 3, 2, 2, false);
+  if (isWorld) {
+    light("#ffe1c7", 3.2, -2.5, 4, 3, true);
+    light("#ff8c58", 2.4, 2, 3, -3, false);
+    light("#afc9ff", 0.86, -3, 1, -1, false);
+  } else {
+    light("#fff0e5", 2.65, -2.5, 4, 3, true);
+    light("#ffab7e", 1.65, 2, 3, -3, false);
+    light("#c4d8ff", 1.2, 3, 2, 2, false);
+  }
   const stageMat = new THREE.MeshStandardMaterial({
     color: "#1a1c27",
     roughness: 0.43,
@@ -1066,7 +1082,7 @@ function create(container) {
   );
   floor.position.y = -0.1;
   floor.receiveShadow = true;
-  scene.add(floor);
+  if (!isWorld) scene.add(floor);
   const ringMat = new THREE.MeshBasicMaterial({
     color: "#da835b",
     transparent: true,
@@ -1078,7 +1094,7 @@ function create(container) {
   );
   ring.rotation.x = -Math.PI / 2;
   ring.position.y = -0.058;
-  scene.add(ring);
+  if (!isWorld) scene.add(ring);
   const root = new THREE.Group();
   scene.add(root);
   // A friendly six-head silhouette. Hair, facial details and accessories use
@@ -1098,6 +1114,11 @@ function create(container) {
   let faceType = null,
     previousStyle = null,
     requestedStyle = null;
+  let worldWalking = false,
+    worldHeading = 0,
+    worldTurn = 0,
+    worldBaseY = 0,
+    worldFrame = 0;
   const resize = () => {
     if (!active) return;
     const w = Math.max(container.clientWidth, 1),
@@ -1114,10 +1135,36 @@ function create(container) {
   const tick = () => {
     raf = 0;
     if (!active || contextLost || document.hidden) return;
+    let worldAnimating = false;
+    if (isWorld) {
+      const difference = Math.atan2(
+        Math.sin(worldHeading - worldTurn),
+        Math.cos(worldHeading - worldTurn),
+      );
+      const turning = Math.abs(difference) > 0.001;
+      worldTurn =
+        prefersReducedMotion || !turning
+          ? worldHeading
+          : worldTurn + difference * 0.09;
+      root.rotation.y = worldTurn;
+      worldAnimating = !prefersReducedMotion && (worldWalking || turning);
+      if (worldWalking && !prefersReducedMotion) {
+        worldFrame += 0.016;
+        root.position.y =
+          worldBaseY + Math.abs(Math.sin(worldFrame * 11)) * 0.025;
+        root.rotation.z = Math.sin(worldFrame * 5.5) * 0.025;
+      } else {
+        root.position.y = worldBaseY;
+        root.rotation.z = 0;
+      }
+    }
     controls.update();
     renderer.render(scene, camera);
     // OrbitControls emits change while damping settles. An idle portrait needs
     // no perpetual animation loop, especially inside an Android WebView.
+    // World GPS animates only walking or a settling heading; an idle/off/hidden
+    // world character keeps the same demand-driven lifetime as the Wardrobe.
+    if (worldAnimating) requestRender();
   };
   const visibility = () => {
     if (document.hidden) {
@@ -1201,7 +1248,8 @@ function create(container) {
         a.height === "tall" ? 1.055 : a.height === "short" ? 0.94 : 1,
         frameWidth * 0.96,
       );
-      root.position.y = a.height === "short" ? 0.01 : 0;
+      worldBaseY = a.height === "short" ? 0.01 : 0;
+      root.position.y = worldBaseY;
       previousStyle = JSON.stringify(a);
       renderer.render(scene, camera);
       requestRender();
@@ -1224,6 +1272,13 @@ function create(container) {
   }
   return {
     setAppearance,
+    setMotion({ walking = false, headingDegrees } = {}) {
+      if (!isWorld) return;
+      worldWalking = Boolean(walking);
+      if (Number.isFinite(headingDegrees))
+        worldHeading = (headingDegrees * Math.PI) / 180;
+      requestRender();
+    },
     rotate(angle = Math.PI / 4) {
       camera.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
       controls.update();

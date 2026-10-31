@@ -1,5 +1,18 @@
 import { APPEARANCE_OPTIONS } from "@/lib/pals/avatar-v2";
 const SPANISH: Record<string, string> = {
+  "AkiPals | Wardrobe": "AkiPals | Armario",
+  "AkiPals / Wardrobe": "AkiPals / Armario",
+  "Your Wardrobe.": "Tu armario.",
+  "Enter the private AkiPals World prototype":
+    "Entrar en el prototipo privado de AkiPals World",
+  "Enter AkiWorld": "Entrar en AkiWorld",
+  "This is your Wardrobe. Create the character who explores AkiWorld, customise every detail and save your look to carry into the game.":
+    "Este es tu armario. Crea el personaje con el que explorarás AkiWorld, personaliza cada detalle y guarda tu aspecto para llevarlo al juego.",
+  "Make this 3D character yours. Your saved appearance is reused on the AkiWorld map.":
+    "Personaliza tu personaje 3D. Tu aspecto guardado se reutiliza en el mapa de AkiWorld.",
+  "Your look goes exploring": "Tu estilo sale a explorar",
+  "Private AkiPals Wardrobe · CC0 character bases · No payments · No location sharing from this screen":
+    "Armario privado de AkiPals · Bases de personaje CC0 · Sin pagos · Esta pantalla no comparte tu ubicación",
   Face: "Rostro",
   Hair: "Pelo",
   Body: "Cuerpo",
@@ -171,6 +184,7 @@ button,select{font:inherit}button{cursor:pointer}:focus-visible{outline:3px soli
 a{color:inherit}header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:19px clamp(17px,5vw,55px);border-bottom:1px solid #ffffff25}
 .brand{text-decoration:none;font-weight:900;font-size:22px;letter-spacing:-.045em}.brand em{font-style:normal;color:#ff9d71}
 .pill{border:1px solid #ffffff34;padding:8px 12px;border-radius:30px;font-size:12px;color:#cecbd4}
+header a.pill{display:inline-flex;align-items:center;min-height:44px}
 main{max-width:1370px;margin:0 auto;padding:35px clamp(17px,4vw,55px) 60px}.eyebrow{font-size:11px;font-weight:800;letter-spacing:.21em;text-transform:uppercase;color:#ff9d71}
 h1{font-size:clamp(38px,6vw,76px);letter-spacing:-.07em;line-height:1.03;margin:12px 0 15px}h1 em{color:#ff9863;font-style:normal}
 .lede{color:#c3c5d0;max-width:800px;line-height:1.65;font-size:16px}
@@ -369,13 +383,13 @@ export function identityPreviewHtml(
 ): string {
   const t = (text: string) => (locale === "es" ? SPANISH[text] || text : text);
   return `<!doctype html>
-<html lang="${locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><meta name="theme-color" content="#080c17"><title>${t("AkiPals | Your 3D character creator")}</title><link rel="icon" href="/icon.svg"><style nonce="${nonce}">${STYLE}</style></head>
-<body><header><a class="brand" href="/${locale}" aria-label="${t("Return to AkiPasa")}">Aki<em>Pals</em></a><span class="pill">✦ ${t("Private 3D studio")}</span></header>
-<main><p class="eyebrow">${t("AkiPals / Your digital self")}</p><h1>${t("Looking like")} <em>${t("yourself.")}</em></h1>
-<p class="lede">${t("Your very own 3D character for AkiPasa. Rotate your look, customize your features and mix streetwear pieces.")}</p>
+<html lang="${locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><meta name="theme-color" content="#080c17"><title>${t("AkiPals | Wardrobe")}</title><link rel="icon" href="/icon.svg"><style nonce="${nonce}">${STYLE}</style></head>
+<body><header><a class="brand" href="/${locale}" aria-label="${t("Return to AkiPasa")}">Aki<em>Pals</em></a><a class="pill" href="/pals/world" style="text-decoration:none" aria-label="${t("Enter the private AkiPals World prototype")}">◉ ${t("Enter AkiWorld")} ↗</a></header>
+<main><p class="eyebrow">${t("AkiPals / Wardrobe")}</p><h1>${t("Looking like")} <em>${t("yourself.")}</em></h1>
+<p class="lede">${t("This is your Wardrobe. Create the character who explores AkiWorld, customise every detail and save your look to carry into the game.")}</p>
 <div class="grid"><section class="panel stage" aria-label="${t("Your avatar preview")}"><h2>✦ ${t("Real 3D preview")}</h2><div id="avatar-stage" aria-label="${t("Rotatable 3D avatar")}"></div><div id="stage-error" hidden></div><div class="stage-caption"><div><strong>${t("One of one. Yours.")}</strong><small>${t("Drag to rotate, pinch to zoom")}</small></div><button class="rotate" id="rotate" type="button">⤾ 360°</button></div></section>
-<section class="panel editor"><h2>${t("Make it yours.")}</h2><p>${t("Edit your real 3D character, then save your outfit and look to your account.")}</p><p>${t("Save before leaving this page. Unsaved edits are discarded when you return.")}</p><div class="tabstrip" role="tablist" aria-label="${t("Avatar customization")}"><button class="tab" type="button" data-tab="Face" role="tab">${t("Face")}</button><button class="tab" type="button" data-tab="Hair" role="tab" aria-selected="true">${t("Hair")}</button><button class="tab" type="button" data-tab="Body" role="tab">${t("Body")}</button><button class="tab" type="button" data-tab="Outfit" role="tab">${t("Outfit")}</button><button class="tab" type="button" data-tab="Extras" role="tab">${t("Extras")}</button></div><div id="fields" tabindex="-1" aria-label="${t("Avatar editor controls")}"></div><div class="actions"><button id="save" type="button" class="primary" disabled>${t("Save my look")}</button><button id="reset" type="button" disabled>${t("Restore saved look")}</button><button id="download" type="button">↓ ${t("Export a 3D preview image")}</button><span id="status" role="status" aria-live="polite">${t("Loading your 3D character\u2026")}</span></div></section></div>
-<div class="notes"><div class="note"><strong>✧ ${t("Personal wardrobe")}</strong><p>${t("Free starter clothes now. Earned city drops and optional individually priced branded collections later. No paid randomness.")}</p></div><div class="note"><strong>◎ ${t("Places become memories")}</strong><p>${t("Future verified check-ins can unlock profile keepsakes and cosmetics, without combat stats or RPG mechanics.")}</p></div><div class="note"><strong>◉ ${t("Where's Poppin'?")}</strong><p>${t("Aggregate venue activity and separate optional social presence are future features. No location-sharing in this preview.")}</p></div></div>
-</main><footer>${t("Private AkiPals 3D studio \u00b7 CC0 character bases \u00b7 No payments \u00b7 No location sharing")}</footer>
+<section class="panel editor"><h2>${t("Your Wardrobe.")}</h2><p>${t("Make this 3D character yours. Your saved appearance is reused on the AkiWorld map.")}</p><p>${t("Save before leaving this page. Unsaved edits are discarded when you return.")}</p><div class="tabstrip" role="tablist" aria-label="${t("Avatar customization")}"><button class="tab" type="button" data-tab="Face" role="tab">${t("Face")}</button><button class="tab" type="button" data-tab="Hair" role="tab" aria-selected="true">${t("Hair")}</button><button class="tab" type="button" data-tab="Body" role="tab">${t("Body")}</button><button class="tab" type="button" data-tab="Outfit" role="tab">${t("Outfit")}</button><button class="tab" type="button" data-tab="Extras" role="tab">${t("Extras")}</button></div><div id="fields" tabindex="-1" aria-label="${t("Avatar editor controls")}"></div><div class="actions"><button id="save" type="button" class="primary" disabled>${t("Save my look")}</button><button id="reset" type="button" disabled>${t("Restore saved look")}</button><button id="download" type="button">↓ ${t("Export a 3D preview image")}</button><span id="status" role="status" aria-live="polite">${t("Loading your 3D character\u2026")}</span></div></section></div>
+<div class="notes"><div class="note"><strong>✧ ${t("Personal wardrobe")}</strong><p>${t("Free starter clothes now. Earned city drops and optional individually priced branded collections later. No paid randomness.")}</p></div><div class="note"><strong>◎ ${t("Your look goes exploring")}</strong><p>${t("Future verified check-ins can unlock profile keepsakes and cosmetics, without combat stats or RPG mechanics.")}</p></div><div class="note"><strong>◉ ${t("Where's Poppin'?")}</strong><p>${t("Aggregate venue activity and separate optional social presence are future features. No location-sharing in this preview.")}</p></div></div>
+</main><footer>${t("Private AkiPals Wardrobe · CC0 character bases · No payments · No location sharing from this screen")}</footer>
 <script nonce="${nonce}" src="/pals/runtime/creator.min.js"></script><script nonce="${nonce}">window.AKI_AVATAR_TEXT=${JSON.stringify(locale === "es" ? SPANISH : {})};window.AKI_AVATAR_OPTIONS=${JSON.stringify(APPEARANCE_OPTIONS)};${CLIENT}</script></body></html>`;
 }

@@ -58,6 +58,10 @@ describe("AkiPals identity entrance and localization", () => {
     expect(result).toContain('data-tab="Face" role="tab">Rostro</button>');
     expect(result).toContain('"bodyStyle":["feminine","masculine"]');
     expect(result).not.toContain('data-tab="Rostro"');
+    expect(result).toContain('href="/pals/world"');
+    expect(result).toContain("Tu armario.");
+    expect(result).toContain("Entrar en el prototipo privado de AkiPals World");
     expect(identityPreviewHtml("testnonce")).toContain("Save my look");
+    expect(identityPreviewHtml("testnonce")).toContain("Your Wardrobe.");
   });
 });

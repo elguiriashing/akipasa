@@ -227,6 +227,16 @@ try {
       });
   });
   await page.goto("http://127.0.0.1:" + port + "/pals");
+  await expect(
+    page.getByRole("link", {
+      name: "Enter the private AkiPals World prototype",
+    }),
+  ).toHaveAttribute("href", "/pals/world");
+  const englishWorldLink = await page
+    .getByRole("link", { name: "Enter the private AkiPals World prototype" })
+    .boundingBox();
+  expect(englishWorldLink?.height).toBeGreaterThanOrEqual(44);
+  expect(englishWorldLink?.width).toBeGreaterThanOrEqual(44);
   await expect(page.locator("#avatar-stage canvas")).toBeVisible();
   await expect(page.locator("#avatar-stage")).toHaveAttribute(
     "data-ready",
@@ -371,6 +381,18 @@ try {
   );
   await page.goto("http://127.0.0.1:" + port + "/pals?lang=es");
   await expect(page.locator("html")).toHaveAttribute("lang", "es");
+  await expect(
+    page.getByRole("link", {
+      name: "Entrar en el prototipo privado de AkiPals World",
+    }),
+  ).toHaveAttribute("href", "/pals/world");
+  const spanishWorldLink = await page
+    .getByRole("link", {
+      name: "Entrar en el prototipo privado de AkiPals World",
+    })
+    .boundingBox();
+  expect(spanishWorldLink?.height).toBeGreaterThanOrEqual(44);
+  expect(spanishWorldLink?.width).toBeGreaterThanOrEqual(44);
   await expect(page.locator("#avatar-stage")).toHaveAttribute(
     "data-ready",
     "true",

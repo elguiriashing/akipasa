@@ -1,5 +1,45 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-31 | Owner-authorized coordinated release completion
+
+Alex has now instructed that #332's remaining work be completed, checked and
+released live. The 90 route and six fallback acceptances are complete; previous
+49/90 counts and missing owner-authorization statements are historical. The
+current release record is AKIPASA_PR332_RELEASE_20261031.md; it separates actual
+checks from unexecuted or physical-device evidence.
+
+The candidate reconciles independently released #341 (6047abc), preserving
+restricted World/Wardrobe and #332's locale/recovery safeguards. Map's added
+discovery-clusters layer explicitly selects the provider's Noto Sans Regular:
+real HTTPS observation found the former implicit default glyph stack returned 404. Sixteen actual-MapLibre recovery/layout cases verify the native font value.
+The authenticated Next suite corrects its legacy Staff Audit expectation to the
+real authorized307 Admin redirect without weakening access or transport guards.
+
+Production SQL scope is only the missing reviewed Staff eligibility and Check-in
+preview forwards, with their atomic catalog preconditions/postconditions. An
+isolated data-less QA branch is used for genuine Auth/RLS/transaction verification;
+its absent foundational schema is reconstructed with explicit QA provenance.
+No production historical replay, Tonight activation, public Pals opening or
+customer/provider transaction is authorized by that QA setup.
+
+## 2026-10-31 | Owner-authorized restricted AkiPals World playtest
+
+Alex explicitly requested live testing of AkiPals World and Wardrobe. This
+release is assembled on production 76cb96df21bf9404d50db373cf57bb0287fd9a80, importing only
+the reviewed avatar/World source from 125a38db785ce8bbb5ad228e8e5e3c63c850c599; it does not
+merge the separate consumer overhaul #332 or restore older public application files.
+The existing server-side administrator/invitation gate, owner-only avatar RLS,
+public-only venue RPC, and legacy saves are preserved. No migrations are executed.
+Precise GPS is opt-in and in-memory; callbacks after Stop/background/unmount are
+invalidated, stale/inaccurate fixes cannot reposition the avatar, and the Stop
+control remains visible while inspecting a venue. World HTTP headers are private,
+no-store and noindex. Venue lookups use rounded map centres; map providers receive
+tile-area requests. No AR recording, rewards, public location sharing or payments.
+Full source check, real WebGL browser fixtures and exact-source Cloudflare packaging
+are mandatory before merge. Fixture tests are not physical Android/GPS or real
+authenticated production acceptance. Read docs/AKIPALS_PRIVATE_RELEASE_20261031.md.
+Rollback reverts this scoped release without deleting avatar or legacy saves.
+
 ## 2026-10-31 | Finish remaining screen reviews and repair demonstrated failures
 
 The remaining route review uses the existing source-bound screenshot evidence

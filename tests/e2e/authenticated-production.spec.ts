@@ -14,8 +14,9 @@ test.afterEach(({ context }) => transportChecks.get(context)?.());
 // terms accepted and owner membership of a non-accommodation QA venue. Seed
 // at least one event/occurrence and enable community_submissions and
 // promotion_requests in that staging environment. This read-only suite never
-// submits business/admin/media forms;
-// only the explicit password sign-in creates a session. Never supply customer
+// submits business/admin/media forms. The native privacy Close control dismisses
+// its panel without changing saved choices; only password sign-in creates a session.
+// Never supply customer
 // credentials or use this suite as proof of consumer/staff-only role isolation.
 test.describe("disposable authenticated production acceptance", () => {
   test.skip(
@@ -43,6 +44,34 @@ test.describe("disposable authenticated production acceptance", () => {
     });
     const goto = (path: string, options?: Parameters<typeof page.goto>[1]) =>
       page.goto(new URL(path, transport.origin).href, options);
+    const closePrivacyWithoutChangingChoices = async () => {
+      const panel = page.getByRole("complementary", {
+        name: "Privacy choices",
+        exact: true,
+      });
+      await expect(panel).toBeVisible();
+      const persistedChoices = () =>
+        page.evaluate(() => ({
+          privacy: document.cookie
+            .split("; ")
+            .filter((cookie) =>
+              /^(ak_analytics|ak_personalisation|ak_marketing|ak_consent_version)=/.test(
+                cookie,
+              ),
+            )
+            .sort(),
+          motion: localStorage.getItem("akipasa:passport-motion"),
+        }));
+      const before = await persistedChoices();
+      await panel
+        .getByRole("button", { name: "Close privacy choices", exact: true })
+        .click();
+      await expect(panel).toBeHidden();
+      await expect(
+        page.getByRole("button", { name: "Privacy choices", exact: true }),
+      ).toHaveAttribute("aria-expanded", "false");
+      expect(await persistedChoices()).toEqual(before);
+    };
     await page.setViewportSize({ width: 1280, height: 900 });
     await goto("/en/auth?mode=signin&next=/en/account");
     await expect(
@@ -61,9 +90,12 @@ test.describe("disposable authenticated production acceptance", () => {
         exact: true,
       }),
     ).toBeVisible();
-    await expect(
-      page.locator('a[href="/en/passports"]').filter({ hasText: "Passport" }),
-    ).toBeVisible();
+    const passportLink = page.getByRole("main").getByRole("link", {
+      name: "Passport Stamps, achievements and rewards",
+      exact: true,
+    });
+    await expect(passportLink).toHaveAttribute("href", "/en/passports");
+    await expect(passportLink).toBeVisible();
 
     await goto("/en/community?view=suggest");
     await expect(
@@ -110,11 +142,27 @@ test.describe("disposable authenticated production acceptance", () => {
       });
       expect(response?.status(), route).toBe(200);
       // A redirect to auth/onboarding/access-denied can also return HTTP 200.
-      // The legacy rewards bookmark deliberately redirects to Passport.
+      // The legacy rewards bookmark redirects to Passport; the administrator's
+      // Staff audit bookmark redirects to the protected Admin audit page.
       expect(new URL(page.url()).pathname, route).toBe(
-        route === "/en/account/rewards" ? "/en/passports" : route,
+        route === "/en/account/rewards"
+          ? "/en/passports"
+          : route === "/en/staff/audit"
+            ? "/en/admin/audit"
+            : route,
       );
-      await expect(page.locator("main"), route).toBeVisible();
+      if (route === "/en/staff/audit") {
+        const redirect = response?.request().redirectedFrom();
+        expect(
+          redirect,
+          "Staff audit must use its authorized redirect",
+        ).not.toBeNull();
+        expect(new URL(redirect!.url()).pathname).toBe(route);
+        expect((await redirect!.response())?.status()).toBe(307);
+      }
+      const main = page.getByRole("main");
+      await expect(main, route).toHaveCount(1);
+      await expect(main, route).toBeVisible();
       const audit = await page.evaluate(() => {
         const visible = (element: HTMLElement) =>
           Boolean(element.offsetWidth || element.offsetHeight);
@@ -215,6 +263,7 @@ test.describe("disposable authenticated production acceptance", () => {
     await page.setViewportSize({ width: 1280, height: 900 });
 
     await goto(`/en/business/venue/${venueId}?section=events`);
+    await closePrivacyWithoutChangingChoices();
     const event = page
       .locator("details[data-event-card]")
       .filter({
@@ -248,6 +297,7 @@ test.describe("disposable authenticated production acceptance", () => {
     // legacy per-language alt/order forms. Opening/closing the picker is read-only;
     // choosing a library item would persist a placement and is intentionally absent.
     await goto(`/en/business/venue/${venueId}?section=profile`);
+    await closePrivacyWithoutChangingChoices();
     await expect(
       page.getByRole("heading", {
         name: "Five surfaces, one media library.",

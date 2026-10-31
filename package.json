@@ -30,7 +30,7 @@
     "test:passport-db": "node scripts/test-passport-database.mjs",
     "test:booking:browser": "node scripts/test-booking-browser.mjs",
     "test:pals": "vitest run --config vitest.pals.config.ts",
-    "test:pals:browser": "npm run pals:3d:bundle && node scripts/test-pals-browser.mjs && node scripts/test-pals-identity-browser.mjs",
+    "test:pals:browser": "npm run pals:3d:bundle && node scripts/test-pals-browser.mjs && node scripts/test-pals-identity-browser.mjs && node scripts/test-pals-world-browser.mjs",
     "test:spotlight:browser": "node scripts/test-spotlight-browser.mjs",
     "test:akisuite": "vitest run --config vitest.akisuite.config.ts",
     "postinstall": "node scripts/maplibre-attribution-patch.mjs",

@@ -77,6 +77,15 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        source: "/pals/world/:path*",
+        headers: [
+          { key: "Cache-Control", value: "private, no-store, max-age=0" },
+          { key: "CDN-Cache-Control", value: "no-store" },
+          { key: "Referrer-Policy", value: "no-referrer" },
+          { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" },
+        ],
+      },
       // Place token-bearing confirmation override LAST: Next.js uses the last
       // matching header key, so the global Referrer-Policy must not win.
       // Confirmation URLs contain single-use verification tokens.

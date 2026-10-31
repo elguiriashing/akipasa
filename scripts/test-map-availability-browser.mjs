@@ -272,6 +272,14 @@ try {
             page.evaluate(() => window.__fixtureMaps.at(-1).isStyleLoaded()),
           )
           .toBe(true);
+        await expect
+          .poll(() =>
+            page.evaluate(
+              () =>
+                window.__fixtureMaps.at(-1).getLayer("discovery-clusters")?.id,
+            ),
+          )
+          .toBe("discovery-clusters");
         await expect(
           page.getByRole("button", {
             name: locale === "es" ? "Alojamientos" : "Accommodation",
@@ -289,6 +297,10 @@ try {
             telemetry: window.__fixtureTelemetry.length,
             canvas: document.querySelectorAll("canvas.maplibregl-canvas")
               .length,
+            clusterTextFont: m.getLayoutProperty(
+              "discovery-clusters",
+              "text-font",
+            ),
           };
         });
         expect(state.latitude).toBeCloseTo(36.6, 5);
@@ -297,6 +309,7 @@ try {
         expect(state.search).toContain("category=music&radius=15");
         expect(state.telemetry).toBe(1);
         expect(state.canvas).toBe(1);
+        expect(state.clusterTextFont).toEqual(["Noto Sans Regular"]);
         expect(errors).toEqual([]);
         await page.screenshot({
           path: resolve(output, `${locale}-${theme}-${width}-recovered.png`),

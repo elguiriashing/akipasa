@@ -1198,6 +1198,21 @@
         "scope": "Public static presentation and route-specific safe functionality; no full-release, legal-professional, real email/provider, private Account workflow or physical-device acceptance inferred."
       }
     },
+    "src/app/[locale]/tonight/page.tsx": {
+      "scope": "consumer",
+      "status": "accepted",
+      "notes": "Default-off gate retained. Tonight explicitly uses live discovery with no hybrid/fixture fallback; localized retry preserves sanitized preferences, empty states link to moderated suggestions and roadmap. Source-selection/outage tests pass; production supply alias mapping, final integrated browser and reviewer acceptance remain outstanding.",
+      "acceptance": {
+        "reviewer": "Codex discovery_screens (independent responsible tester)",
+        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
+        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610",
+        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254636",
+        "sourceSha256": "f581bb1c87ce75f47259c4969e78bf831aac44e0ce1a8c09b53520ae966750c3",
+        "evidenceType": "Preserve production default-off gate; truthful zero-verified-event preview/retry/planning filters only. This does not authorize broad Tonight activation or invent event supply.",
+        "realProviderOrPhysicalDeviceAcceptance": false
+      },
+      "note": " Individual current hosted source-bound public UI/function review recorded; see AKIPASA_PUBLIC_DISCOVERY_ACCEPTANCE_20261030.json. Tonight remains default off. Booking subroutes, authenticated transactions, GPS/provider/device and final release remain separate."
+    },
     "src/app/[locale]/venues/[slug]/book/page.tsx": {
       "scope": "consumer",
       "status": "accepted",
@@ -1324,6 +1339,11 @@
         "fullReleaseAccepted": false
       }
     },
+    "src/app/pals/world/page.tsx": {
+      "scope": "other-product",
+      "status": "excluded",
+      "note": "Restricted AkiPals World page independently authorized and deployed through PR341 as6047abc2186e2bab0eacae5ffcb800d73b66d64a. Added to inventory while reconciling that current live release; outside the90-route consumer overhaul review scope. Preserve its server-side invitation/administrator gate and its own World regression coverage. This exclusion does not claim physical GPS or authenticated provider acceptance."
+    },
     "src/app/roadmap/page.tsx": {
       "scope": "cross-product",
       "status": "accepted",
@@ -1352,21 +1372,6 @@
         "evidenceType": "actual-next-public-static-ui",
         "scope": "Public static presentation and route-specific safe functionality; no full-release, legal-professional, real email/provider, private Account workflow or physical-device acceptance inferred."
       }
-    },
-    "src/app/[locale]/tonight/page.tsx": {
-      "scope": "consumer",
-      "status": "accepted",
-      "notes": "Default-off gate retained. Tonight explicitly uses live discovery with no hybrid/fixture fallback; localized retry preserves sanitized preferences, empty states link to moderated suggestions and roadmap. Source-selection/outage tests pass; production supply alias mapping, final integrated browser and reviewer acceptance remain outstanding.",
-      "acceptance": {
-        "reviewer": "Codex discovery_screens (independent responsible tester)",
-        "reviewedCommit": "1e7b71f845ec506ba846b4c112b32ac80a4a3da6",
-        "screenshots": "https://github.com/elguiriashing/akipasa/actions/runs/41121254610",
-        "functionalTests": "https://github.com/elguiriashing/akipasa/actions/runs/41121254636",
-        "sourceSha256": "f581bb1c87ce75f47259c4969e78bf831aac44e0ce1a8c09b53520ae966750c3",
-        "evidenceType": "Preserve production default-off gate; truthful zero-verified-event preview/retry/planning filters only. This does not authorize broad Tonight activation or invent event supply.",
-        "realProviderOrPhysicalDeviceAcceptance": false
-      },
-      "note": " Individual current hosted source-bound public UI/function review recorded; see AKIPASA_PUBLIC_DISCOVERY_ACCEPTANCE_20261030.json. Tonight remains default off. Booking subroutes, authenticated transactions, GPS/provider/device and final release remain separate."
     }
   },
   "releaseStatus": "page-review-complete-pending-integrated-release-gates",
@@ -1388,5 +1393,15 @@
     "pendingSqlApplied": false,
     "paidQaResourceCreated": false,
     "productionChanged": false
+  },
+  "integrationCheckpoint": {
+    "date": "2026-10-31",
+    "preservedLiveSourceCommit": "6047abc2186e2bab0eacae5ffcb800d73b66d64a",
+    "inventoriedRoutes": 104,
+    "acceptedInScopeRoutes": 90,
+    "outstandingInScopeRoutes": 0,
+    "excludedSeparateProductRoutes": 14,
+    "addedSeparateProductRoute": "src/app/pals/world/page.tsx",
+    "releaseRecord": "docs/AKIPASA_PR332_RELEASE_20261031.md"
   }
 }
