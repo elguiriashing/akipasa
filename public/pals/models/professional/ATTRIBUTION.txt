@@ -1,0 +1,14 @@
+AkiPals professional character assets
+
+Rain Rig (CC) Blender Foundation | studio.blender.org
+Snow Rig (CC) Blender Foundation | studio.blender.org
+
+Licensed under Creative Commons Attribution 4.0 International (CC-BY-4.0).
+https://creativecommons.org/licenses/by/4.0/
+Sources: https://studio.blender.org/characters/rain/ and https://studio.blender.org/characters/snow/
+
+Modified for AkiPals: baked standing poses and production modifiers, removed helper/control geometry,
+reduced geometry and textures for mobile, adapted authored materials to glTF PBR, and normalized scale.
+These models use the shared Three.js GLB renderer; the full M3 CharacterStudio engine is not included.
+Source archive, Blender source and GLB SHA-256 hashes are recorded in manifest.json.
+

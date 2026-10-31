@@ -3,6 +3,20 @@ const SPANISH: Record<string, string> = {
   "AkiPals | Wardrobe": "AkiPals | Armario",
   "AkiPals / Wardrobe": "AkiPals / Armario",
   "Your Wardrobe.": "Tu armario.",
+  Character: "Personaje",
+  "Character model": "Modelo de personaje",
+  "Classic saved look": "Aspecto clásico guardado",
+  "Choose your character and save the look you want to take into AkiWorld.":
+    "Elige tu personaje y guarda el aspecto que quieres llevar a AkiWorld.",
+  "Rain and Snow include their original hairstyle and outfit. You can choose a character and adjust its height.":
+    "Rain y Snow incluyen su peinado y ropa originales. Puedes elegir un personaje y ajustar su altura.",
+  "These character previews use a standing pose.":
+    "Estas vistas del personaje usan una pose de pie.",
+  "Your classic styling choices stay available when you switch back to Classic saved look.":
+    "Tus opciones de estilo clásicas siguen disponibles al volver a Aspecto clásico guardado.",
+  "Character credits": "Créditos de personajes",
+  "Private AkiPals Wardrobe · Free starter characters · No payments · No location sharing from this screen":
+    "Armario privado de AkiPals · Personajes iniciales gratis · Sin pagos · Esta pantalla no comparte tu ubicación",
   "Enter the private AkiPals World prototype":
     "Entrar en el prototipo privado de AkiPals World",
   "Enter AkiWorld": "Entrar en AkiWorld",
@@ -67,6 +81,8 @@ const SPANISH: Record<string, string> = {
   "Could not load the character studio.":
     "No se ha podido cargar el estudio de personajes.",
   "3D model failed to load.": "No se ha podido cargar el modelo 3D.",
+  "The 3D model could not load. Please retry.":
+    "No se ha podido cargar el modelo 3D. Vuelve a intentarlo.",
   "3D preview paused. Waiting for graphics to recover. Your saved look is unchanged.":
     "Vista 3D en pausa. Esperando a que se recuperen los gráficos. Tu estilo guardado no ha cambiado.",
   Feminine: "Femenina",
@@ -245,6 +261,7 @@ const CLIENT = String.raw`
 const options=window.AKI_AVATAR_OPTIONS;
 const t = text => window.AKI_AVATAR_TEXT[text] || text;
 const tabs={
+Character:[["model","Character model"],["height","Height"]],
 Hair:[["hair","Hairstyle"],["hairColor","Hair colour"]],
 Face:[["bodyStyle","Body frame"],["skin","Skin tone"],["face","Face shape"],["eyes","Eye shape"],["eyeColor","Eye colour"],["brows","Eyebrows"],["nose","Nose"],["mouth","Mouth"],["ears","Ears"],["chin","Chin"]],
 Body:[["neck","Neck"],["shoulders","Shoulders"],["height","Height"],["build","Body build"]],
@@ -265,12 +282,16 @@ topColor:{orange:"#ff834b",ink:"#2a2e3a",cream:"#ede2d5",mint:"#78bcae",purple:"
 };
 const fields=document.querySelector("#fields"),area=document.querySelector("#avatar-stage"),status=document.querySelector("#status");
 const save=document.querySelector("#save"),reset=document.querySelector("#reset"),failure=document.querySelector("#stage-error");
-let current=null,saved=null,saving=false,rendering=true,tab="Hair",stage=null;
+let current=null,saved=null,hasSaved=false,saving=false,rendering=true,tab="Character",stage=null;
 const pretty=s=>s.charAt(0).toUpperCase()+s.slice(1).replaceAll("-"," ");
+const modelNames={"classic-v2":"Classic saved look","rain-v3":"Rain","snow-v4":"Snow"};
+const isProfessional=()=>current?.model==="rain-v3"||current?.model==="snow-v4";
 function message(s){status.textContent=t(s)}
-function dirty(){return JSON.stringify(current)!==JSON.stringify(saved)}
-function buttons(){save.disabled=!current||!dirty()||saving||rendering;reset.disabled=!current||!dirty()||saving;document.querySelector("#download").disabled=rendering}
+function changed(){return JSON.stringify(current)!==JSON.stringify(saved)}
+function dirty(){return !hasSaved||changed()}
+function buttons(){save.disabled=!current||!dirty()||saving||rendering;reset.disabled=!current||!changed()||saving;document.querySelector("#download").disabled=rendering}
 function draw(){
+ if(isProfessional()&&tab!=="Character")tab="Character";
  const previous = document.activeElement;
  const focusName = previous?.tagName === "SELECT" ? previous.name : null;
  const focusField = previous?.dataset?.field;
@@ -303,12 +324,19 @@ function draw(){
    const label=document.createElement("label");label.textContent=t(text);
    const select=document.createElement("select");select.name=key;select.setAttribute("aria-label",t(text));
    for(const choice of options[key]){
-    const opt=document.createElement("option");opt.value=choice;opt.textContent=t(pretty(choice));select.append(opt);
+    const opt=document.createElement("option");opt.value=choice;opt.textContent=t(key==="model"?modelNames[choice]:pretty(choice));select.append(opt);
    }select.value=current[key];label.append(select);grid.append(label);
   }
  }
- section.append(grid);fields.append(section);
+ section.append(grid);
+ if(tab==="Character"&&isProfessional()){
+  const note=document.createElement("p");note.textContent=t("Rain and Snow include their original hairstyle and outfit. You can choose a character and adjust its height.");section.append(note);
+  const pose=document.createElement("p");pose.textContent=t("These character previews use a standing pose.");section.append(pose);
+  const preserved=document.createElement("p");preserved.textContent=t("Your classic styling choices stay available when you switch back to Classic saved look.");section.append(preserved);
+ }
+ fields.append(section);
  document.querySelectorAll("[data-tab]").forEach(x=>{
+  x.hidden=isProfessional()&&x.dataset.tab!=="Character";
   x.setAttribute("aria-selected",String(x.dataset.tab===tab));
   x.tabIndex=x.dataset.tab===tab?0:-1;
   x.id="tab-"+x.dataset.tab;x.setAttribute("aria-controls","fields");
@@ -325,7 +353,7 @@ document.querySelectorAll("[data-tab]").forEach(btn=>btn.addEventListener("click
 document.querySelector(".tabstrip").addEventListener("keydown",event=>{
  if(!current||!["ArrowLeft","ArrowRight","Home","End"].includes(event.key))return;
  event.preventDefault();
- const buttons=Array.from(document.querySelectorAll("[data-tab]"));
+ const buttons=Array.from(document.querySelectorAll("[data-tab]")).filter(button=>!button.hidden);
  const index=buttons.findIndex(button=>button.dataset.tab===tab);
  const next=event.key==="Home"?0:event.key==="End"?buttons.length-1:(index+(event.key==="ArrowRight"?1:-1)+buttons.length)%buttons.length;
  tab=buttons[next].dataset.tab;draw();buttons[next].focus({preventScroll:true});
@@ -352,7 +380,7 @@ save.addEventListener("click",async()=>{
   const copy={...current};
   const response=await fetch("/pals/identity",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({appearance:copy,save:true})});
   const result=await response.json();if(!response.ok)throw new Error(result.error||"Save failed");
-  saved={...result.appearance};message("Saved to your AkiPasa account.");
+  saved={...result.appearance};hasSaved=true;message("Saved to your AkiPasa account.");
  }catch(err){message(err.message||"Previous saved look unchanged.")}
  finally{saving=false;buttons()}
 });
@@ -365,7 +393,7 @@ area.addEventListener("akipals:error",event=>showError(event.detail?.message||"3
   if(!window.AkiPals3D)throw new Error("3D runtime not loaded. Refresh to retry.");
   const response=await fetch("/pals/identity",{credentials:"same-origin",cache:"no-store"});
   const data=await response.json();if(!response.ok)throw new Error(data.error||"Cannot load saved avatar.");
-  current={...data.appearance};saved={...data.appearance};
+  current={model:"classic-v2",...data.appearance};saved={...current};hasSaved=Boolean(data.saved);tab=current.model==="classic-v2"?"Hair":"Character";
   stage=window.AkiPals3D.mount(area);draw();buttons();void stage.setAppearance(current);
   message(data.saved?"Saved character loaded.":"Free starter character ready. Customise and save!");
  }catch(error){showError(error.message||"Could not load the character studio.")}
@@ -386,10 +414,10 @@ export function identityPreviewHtml(
 <html lang="${locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><meta name="theme-color" content="#080c17"><title>${t("AkiPals | Wardrobe")}</title><link rel="icon" href="/icon.svg"><style nonce="${nonce}">${STYLE}</style></head>
 <body><header><a class="brand" href="/${locale}" aria-label="${t("Return to AkiPasa")}">Aki<em>Pals</em></a><a class="pill" href="/pals/world" style="text-decoration:none" aria-label="${t("Enter the private AkiPals World prototype")}">◉ ${t("Enter AkiWorld")} ↗</a></header>
 <main><p class="eyebrow">${t("AkiPals / Wardrobe")}</p><h1>${t("Looking like")} <em>${t("yourself.")}</em></h1>
-<p class="lede">${t("This is your Wardrobe. Create the character who explores AkiWorld, customise every detail and save your look to carry into the game.")}</p>
+<p class="lede">${t("Choose your character and save the look you want to take into AkiWorld.")}</p>
 <div class="grid"><section class="panel stage" aria-label="${t("Your avatar preview")}"><h2>✦ ${t("Real 3D preview")}</h2><div id="avatar-stage" aria-label="${t("Rotatable 3D avatar")}"></div><div id="stage-error" hidden></div><div class="stage-caption"><div><strong>${t("One of one. Yours.")}</strong><small>${t("Drag to rotate, pinch to zoom")}</small></div><button class="rotate" id="rotate" type="button">⤾ 360°</button></div></section>
-<section class="panel editor"><h2>${t("Your Wardrobe.")}</h2><p>${t("Make this 3D character yours. Your saved appearance is reused on the AkiWorld map.")}</p><p>${t("Save before leaving this page. Unsaved edits are discarded when you return.")}</p><div class="tabstrip" role="tablist" aria-label="${t("Avatar customization")}"><button class="tab" type="button" data-tab="Face" role="tab">${t("Face")}</button><button class="tab" type="button" data-tab="Hair" role="tab" aria-selected="true">${t("Hair")}</button><button class="tab" type="button" data-tab="Body" role="tab">${t("Body")}</button><button class="tab" type="button" data-tab="Outfit" role="tab">${t("Outfit")}</button><button class="tab" type="button" data-tab="Extras" role="tab">${t("Extras")}</button></div><div id="fields" tabindex="-1" aria-label="${t("Avatar editor controls")}"></div><div class="actions"><button id="save" type="button" class="primary" disabled>${t("Save my look")}</button><button id="reset" type="button" disabled>${t("Restore saved look")}</button><button id="download" type="button">↓ ${t("Export a 3D preview image")}</button><span id="status" role="status" aria-live="polite">${t("Loading your 3D character\u2026")}</span></div></section></div>
+<section class="panel editor"><h2>${t("Your Wardrobe.")}</h2><p>${t("Make this 3D character yours. Your saved appearance is reused on the AkiWorld map.")}</p><p>${t("Save before leaving this page. Unsaved edits are discarded when you return.")}</p><div class="tabstrip" role="tablist" aria-label="${t("Avatar customization")}"><button class="tab" type="button" data-tab="Character" role="tab" aria-selected="true">${t("Character")}</button><button class="tab" type="button" data-tab="Face" role="tab">${t("Face")}</button><button class="tab" type="button" data-tab="Hair" role="tab">${t("Hair")}</button><button class="tab" type="button" data-tab="Body" role="tab">${t("Body")}</button><button class="tab" type="button" data-tab="Outfit" role="tab">${t("Outfit")}</button><button class="tab" type="button" data-tab="Extras" role="tab">${t("Extras")}</button></div><div id="fields" tabindex="-1" aria-label="${t("Avatar editor controls")}"></div><div class="actions"><button id="save" type="button" class="primary" disabled>${t("Save my look")}</button><button id="reset" type="button" disabled>${t("Restore saved look")}</button><button id="download" type="button">↓ ${t("Export a 3D preview image")}</button><span id="status" role="status" aria-live="polite">${t("Loading your 3D character\u2026")}</span></div></section></div>
 <div class="notes"><div class="note"><strong>✧ ${t("Personal wardrobe")}</strong><p>${t("Free starter clothes now. Earned city drops and optional individually priced branded collections later. No paid randomness.")}</p></div><div class="note"><strong>◎ ${t("Your look goes exploring")}</strong><p>${t("Future verified check-ins can unlock profile keepsakes and cosmetics, without combat stats or RPG mechanics.")}</p></div><div class="note"><strong>◉ ${t("Where's Poppin'?")}</strong><p>${t("Aggregate venue activity and separate optional social presence are future features. No location-sharing in this preview.")}</p></div></div>
-</main><footer>${t("Private AkiPals Wardrobe · CC0 character bases · No payments · No location sharing from this screen")}</footer>
-<script nonce="${nonce}" src="/pals/runtime/creator.min.js"></script><script nonce="${nonce}">window.AKI_AVATAR_TEXT=${JSON.stringify(locale === "es" ? SPANISH : {})};window.AKI_AVATAR_OPTIONS=${JSON.stringify(APPEARANCE_OPTIONS)};${CLIENT}</script></body></html>`;
+</main><footer>${t("Private AkiPals Wardrobe · Free starter characters · No payments · No location sharing from this screen")} · <a href="/pals/models/professional/ATTRIBUTION.txt" target="_blank" rel="noopener">${t("Character credits")}</a></footer>
+<script nonce="${nonce}" src="/pals/runtime/creator.min.js?v=20261031-professional-1"></script><script nonce="${nonce}">window.AKI_AVATAR_TEXT=${JSON.stringify(locale === "es" ? SPANISH : {})};window.AKI_AVATAR_OPTIONS=${JSON.stringify(APPEARANCE_OPTIONS)};${CLIENT}</script></body></html>`;
 }

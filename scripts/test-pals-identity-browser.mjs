@@ -35,6 +35,7 @@ const avatarMeshes = Object.fromEntries(
   ]),
 );
 let saved = null;
+let starter = studio.DEFAULT_APPEARANCE;
 let browser;
 const server = createServer(async (request, response) => {
   try {
@@ -50,6 +51,18 @@ const server = createServer(async (request, response) => {
         "Cache-Control": "private, no-store",
       });
       response.end(creatorBundle);
+      return;
+    }
+    const professionalMatch =
+      /^\/pals\/models\/professional\/(rain-v3|snow-v4)-20261031\.glb$/.exec(
+        path,
+      );
+    if (professionalMatch) {
+      response.writeHead(200, {
+        "Content-Type": "model/gltf-binary",
+        "Cache-Control": "private, no-store",
+      });
+      response.end(readFileSync("public" + path));
       return;
     }
     const modelMatch = /^\/pals\/models\/akipals-base-(male|female)\.glb$/.exec(
@@ -73,7 +86,7 @@ const server = createServer(async (request, response) => {
           nonce +
           "'; style-src 'nonce-" +
           nonce +
-          "'; style-src-attr 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+          "'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' blob:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
       });
       response.end(
         studio.identityPreviewHtml(
@@ -99,7 +112,7 @@ const server = createServer(async (request, response) => {
       response.end(JSON.stringify(payload));
     };
     if (request.method === "GET") {
-      const appearance = saved ?? studio.DEFAULT_APPEARANCE;
+      const appearance = saved ?? starter;
       json(200, {
         appearance,
         saved: Boolean(saved),
@@ -255,6 +268,111 @@ try {
   const idleFrames = await page.evaluate(() => window.__palsFrames);
   await page.waitForTimeout(250);
   expect(await page.evaluate(() => window.__palsFrames)).toBe(idleFrames);
+  // A new profile uses the licensed authored character in the actual WebGL
+  // renderer. Legacy sliders must not pretend to modify its fixed outfit.
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-model-id",
+    "rain-v3",
+  );
+  await expect(page.getByLabel("Character model")).toHaveValue("rain-v3");
+  await expect(
+    page.getByRole("tab", { name: "Hair", exact: true }),
+  ).toHaveCount(0);
+  await expect(page.locator("#save")).toBeEnabled();
+  await expect(
+    page.getByRole("link", { name: "Character credits" }),
+  ).toHaveAttribute("href", "/pals/models/professional/ATTRIBUTION.txt");
+  await page.locator("#avatar-stage canvas").screenshot({
+    path: resolve(outputDir, "professional-rain-stage-390.png"),
+  });
+  const rainImage = await page.locator("#avatar-stage canvas").screenshot();
+  await page.getByLabel("Character model").selectOption("snow-v4");
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-model-id",
+    "snow-v4",
+  );
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-ready",
+    "true",
+  );
+  const snowImage = await page.locator("#avatar-stage canvas").screenshot();
+  expect(snowImage.equals(rainImage)).toBe(false);
+  await page.locator("#avatar-stage canvas").screenshot({
+    path: resolve(outputDir, "professional-snow-stage-390.png"),
+  });
+  await page.getByLabel("Height", { exact: true }).selectOption("short");
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-ready",
+    "true",
+  );
+  await page.locator("#save").click();
+  await expect(page.locator("#status")).toContainText(
+    "Saved to your AkiPasa account",
+  );
+  expect(saved).toMatchObject({
+    model: "snow-v4",
+    height: "short",
+    hair: "quiff",
+  });
+  await page.reload();
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-model-id",
+    "snow-v4",
+  );
+  await expect(page.getByLabel("Height", { exact: true })).toHaveValue("short");
+  await expect(page.locator("#save")).toBeDisabled();
+  // Failed assets remain visibly failed and unsaveable. A retry must not reuse
+  // a permanently rejected cached Promise, nor mutate the saved model choice.
+  const rainAsset = "**/pals/models/professional/rain-v3-20261031.glb";
+  await page.route(rainAsset, (route) => route.abort());
+  await page.getByLabel("Character model").selectOption("rain-v3");
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-ready",
+    "error",
+  );
+  await expect(page.locator("#save")).toBeDisabled();
+  await expect(page.locator("#download")).toBeDisabled();
+  expect(saved.model).toBe("snow-v4");
+  await page.unroute(rainAsset);
+  await page.getByLabel("Character model").selectOption("snow-v4");
+  await page.getByLabel("Character model").selectOption("rain-v3");
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-model-id",
+    "rain-v3",
+  );
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-ready",
+    "true",
+  );
+  await page.locator("#reset").click();
+  await expect(page.getByLabel("Character model")).toHaveValue("snow-v4");
+  // A rapid model switch must settle on the last request, including a cached
+  // authored model after a classic model request started in the meantime.
+  await page.getByLabel("Character model").selectOption("classic-v2");
+  await page.getByLabel("Character model").selectOption("rain-v3");
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-model-id",
+    "rain-v3",
+  );
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-ready",
+    "true",
+  );
+
+  // Run the established saved classic appearance regression in a separate
+  // unsaved fixture; professional choices do not overwrite those old fields.
+  saved = null;
+  starter = { ...studio.DEFAULT_APPEARANCE, model: "classic-v2" };
+  await page.reload();
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-ready",
+    "true",
+  );
+  await page.getByRole("tab", { name: "Hair", exact: true }).click();
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-model-id",
+    "classic-v2",
+  );
   await page.getByLabel("Hairstyle").selectOption("crop");
   await expect(page.locator("#save")).toBeEnabled();
   // Exercise real WebGL loss/restoration, not a synthetic DOM-only event. A

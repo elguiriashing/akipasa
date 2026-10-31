@@ -6,6 +6,7 @@ on:
       - "src/app/pals/**"
       - "src/components/pals/**"
       - "src/lib/pals/**"
+      - "public/pals/models/**"
       - ".github/workflows/pals-world-live-smoke.yml"
 permissions:
   contents: read
@@ -23,6 +24,7 @@ jobs:
         run: |
           node --input-type=module <<'NODE'
           import assert from 'node:assert/strict';
+          import {createHash} from 'node:crypto';
           const origin = 'https://akipasa.com';
           const request = path => fetch(origin + path, {redirect:'manual',cache:'no-store',signal:AbortSignal.timeout(20000)});
           let ready = false;
@@ -48,6 +50,7 @@ jobs:
           assert.equal(target.pathname,'/en/auth');
           assert.equal(target.searchParams.get('next'),'/pals/world');
           assert.match(world.headers.get('x-robots-tag')||'',/noindex/i);
+          assert.match(world.headers.get('content-security-policy')||'',/(?:^|;)\s*connect-src 'self' blob:/,'World must permit its embedded GLB textures');
           const runtime=await request('/pals/runtime/creator.min.js');
           assert.equal(runtime.status,200);
           assert.ok((await runtime.text()).length>100000,'Real 3D runtime required');
@@ -57,11 +60,31 @@ jobs:
             const bytes=new Uint8Array(await response.arrayBuffer());
             assert.equal(new TextDecoder().decode(bytes.slice(0,4)),'glTF');
           }
+          const manifestResponse=await request('/pals/models/professional/manifest.json');
+          assert.equal(manifestResponse.status,200);
+          const manifest=await manifestResponse.json();
+          assert.deepEqual(manifest.models.map(model=>model.id).sort(),['rain-v3','snow-v4']);
+          for (const model of manifest.models) {
+            assert.match(model.url,/^\/pals\/models\/professional\/[a-z0-9-]+\.glb$/);
+            assert.equal(model.license,'CC-BY-4.0');
+            const response=await request(model.url);
+            assert.equal(response.status,200,model.id+' must be available');
+            const bytes=new Uint8Array(await response.arrayBuffer());
+            assert.equal(new TextDecoder().decode(bytes.slice(0,4)),'glTF');
+            assert.equal(bytes.length,model.bytes);
+            assert.equal(createHash('sha256').update(bytes).digest('hex'),model.sha256);
+          }
+          const attribution=await request('/pals/models/professional/ATTRIBUTION.txt');
+          assert.equal(attribution.status,200);
+          assert.match(await attribution.text(),/Rain Rig[\s\S]*Snow Rig[\s\S]*Blender Foundation/);
           for (const path of ['/en','/es']) {
             const response=await request(path);
             assert.equal(response.status,200);
+            const connectPolicy=(response.headers.get('content-security-policy')||'').match(/(?:^|;)\s*connect-src([^;]*)/);
+            assert.ok(connectPolicy,'Public homepage CSP required');
+            assert.ok(!connectPolicy[1].includes('blob:'),'Blob fetch allowance must remain scoped to World');
             const text=await response.text();
             assert.ok(!/href=["'](?:https:\/\/akipasa\.com)?\/pals(?:["'/?#])/i.test(text),'Preview must stay out of public navigation');
           }
-          console.log(JSON.stringify({source:process.env.EXPECTED_SOURCE,privateWorld:true,privateAvatar:true,realModels:true,publicHomepages:true,authenticatedOrPhysicalDeviceAcceptance:false}));
+          console.log(JSON.stringify({source:process.env.EXPECTED_SOURCE,privateWorld:true,privateAvatar:true,realModels:true,professionalModels:['rain-v3','snow-v4'],modelHashesVerified:true,publicHomepages:true,authenticatedOrPhysicalDeviceAcceptance:false}));
           NODE

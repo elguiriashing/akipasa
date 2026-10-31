@@ -65,7 +65,70 @@ describe("private Wardrobe account boundary", () => {
       appearance: DEFAULT_APPEARANCE,
       saved: false,
     });
+    expect(DEFAULT_APPEARANCE.model).toBe("rain-v3");
+    expect(query.upsert).not.toHaveBeenCalled();
   });
+
+  it("restores an existing model-less saved look as classic without rewriting it", async () => {
+    const legacy: Record<string, unknown> = {
+      ...DEFAULT_APPEARANCE,
+      hair: "bun",
+      hairColor: "blue",
+      top: "jacket",
+      bag: "backpack",
+    };
+    delete legacy.model;
+    query.maybeSingle.mockResolvedValue({
+      data: { appearance: legacy },
+      error: null,
+    });
+    const response = await GET();
+    expect(await response.json()).toEqual({
+      appearance: { ...legacy, model: "classic-v2" },
+      saved: true,
+    });
+    expect(query.upsert).not.toHaveBeenCalled();
+  });
+
+  it.each(["classic-v2", "rain-v3", "snow-v4"])(
+    "saves the allowed %s model while preserving hidden wardrobe choices",
+    async (model) => {
+      const appearance = {
+        ...DEFAULT_APPEARANCE,
+        model,
+        hair: "bun",
+        top: "jacket",
+        topColor: "purple",
+        bag: "backpack",
+      };
+      const response = await POST(request({ appearance, save: true }));
+      expect(response.status).toBe(200);
+      expect(query.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({ user_id: "caller-only", appearance }),
+        { onConflict: "user_id" },
+      );
+      expect(await response.json()).toEqual({ appearance, saved: true });
+    },
+  );
+
+  it.each([
+    { model: "unknown-model" },
+    { model: "https://example.invalid/model.glb" },
+    { model: "/pals/models/unapproved.glb" },
+    { assetUrl: "https://example.invalid/model.glb" },
+  ])(
+    "rejects unapproved model or asset input %j before saving",
+    async (extra) => {
+      const response = await POST(
+        request({
+          appearance: { ...DEFAULT_APPEARANCE, ...extra },
+          save: true,
+        }),
+      );
+      expect(response.status).toBe(400);
+      expect(query.upsert).not.toHaveBeenCalled();
+    },
+  );
 
   it("uses the session owner rather than a client-selected owner on Save", async () => {
     const response = await POST(

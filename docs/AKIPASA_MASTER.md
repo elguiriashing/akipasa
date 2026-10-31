@@ -4299,3 +4299,55 @@ initial missing-local-environment500 was corrected by using the existing CI
 configuration; no application guard or assertion was weakened.
 Full hosted CI and live public-link readback gate release. Revert these source
 changes to roll back; no data rollback is needed.
+
+## 2026-10-31 | Authored AkiPals models and exact World marker placement
+
+Alex requested the newer character direction, compact mobile World controls,
+and pins at the same venue coordinates as Explore. This bounded candidate
+preserves the already released #341/#332/#342 application and does not reopen
+the completed ninety-page review. It adds official Blender Foundation Rain v3
+and Snow v4 characters, with CC-BY-4.0 attribution, source/archive/output hashes,
+and repeatable offline export. The self-hosted GLBs contain complete authored
+standing meshes, outfits and embedded colour textures. They use the shared
+Three.js World/Wardrobe renderer; the full M3 CharacterStudio engine, skeletal
+animation and arbitrary wardrobe fitting are not implemented by this change.
+Rain/Snow expose character selection and bounded uniform height only. Classic
+styling controls remain available for the preserved original model.
+
+Appearance adds only the allowlisted model IDs classic-v2/rain-v3/snow-v4.
+An existing saved appearance with no model field resolves to classic-v2 without
+a write; a genuinely unsaved profile starts with Rain. Switching models retains
+all existing appearance fields and requires the existing explicit Save action.
+No asset URL, ownership claim or arbitrary model is accepted from the client.
+The existing JSON-object/4096-byte storage constraint accepts this additive
+field; no SQL, migration, account grant or customer-data backfill is required.
+Actual renderer readiness and embedded texture success still gate Save/export,
+with per-stage GPU resources and existing lifecycle/context-loss recovery.
+
+World now opens directly on the map with compact Follow/Stop controls and the
+two working navigation destinations. Help, venue details and nearby places open
+on request and are dismissible; Stop remains visible while a venue is open.
+The pin displacement came from position:relative overriding MapLibre's absolute
+marker placement. The marker root now leaves projection/transform ownership to
+MapLibre, with decorative styling inside its geographic anchor. Venue IDs and
+raw longitude/latitude remain unchanged; nearby pagination and its truthful
+truncation indicator are retained. No invented points or separating offsets.
+
+Embedded GLB images require local blob decoding/fetching. Only private Wardrobe
+and World gain the required blob CSP sources; other routes retain their existing
+policy. Existing preview authorization, owner RLS, no-store/noindex, coarse venue
+query centres and opt-in foreground-only GPS remain. There is no new public
+presence, reward, camera, payment or provider activation.
+
+Focused schema/API/executable-storage compatibility checks passed 32/32;
+typecheck and four model-structure/resource-isolation cases passed, and actual
+Rain/Snow browser images were visually inspected. The independently reviewed
+eight-context World layout run, before final model/CSP
+integration, measured at most 0.498px pin projection error across pan, zoom,
+pitch/bearing and resize; restoring the old CSS produced 290.553px error. Short
+phone default and venue-open captures were inspected. Final integrated real-GLB
+browser acceptance, full check, clean-source Cloudflare packaging, exact PR CI
+and deployed source/asset readback remain release gates. These fixtures do not
+claim physical Android/GPS or live authenticated acceptance. Source rollback
+preserves appearance and legacy game rows; restoring this version recovers any
+explicit newer-model selection retained in those rows.
