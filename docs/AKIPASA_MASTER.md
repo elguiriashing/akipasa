@@ -1,5 +1,28 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-10-31 | Private AkiPals World and Wardrobe prototype (not a release)
+
+AkiPals now uses the human 3D creator as the **Wardrobe**, and a separate
+server-restricted /pals/world prototype explores real venues on a tilted
+MapLibre map with a self-only moving 3D character. It reuses the existing
+pals_avatar_profiles RLS identity, /pals/identity auth read and self-hosted
+Three.js models; no second account or character model is introduced.
+Existing previewAccess is mandatory on the page and the coarse-location
+public-venue-only read API. The user's precise GPS stays in-browser,
+permission is requested only after an explicit tap, and tracking stops
+when the tab is hidden. Map tiles continue to use the configured provider
+and must show attribution. No filming, AR scans, XP, rewards, check-in
+verification, social location, paid assets or database changes are active.
+No main-site navigation, public discovery map, other AkiSuite product,
+Cloudflare deployment or merge is included. Separate from ongoing #332.
+
+See docs/AKIPALS_WORLD_EXPLORER_20261031.md. The branch is based on
+feature/akipals-human-avatar-studio-20261028 and MUST be reconciled with
+current master and #332 before any rollout. Test files do not constitute
+CI/browser/Android acceptance. The public GitHub repository does not
+provide branch secrecy.
+
+
 ## 2026-10-29 | Private AkiPals 3D character engine (no public launch)
 
 The approved AkiPals reset now has a self-hosted Three.js WebGL studio with two
