@@ -4,7 +4,7 @@
 
 Owner-requested private gameplay prototype: the existing 3D character
 creator is renamed Wardrobe; /pals/world reuses the same saved avatar in
-a lightweight Three.js map-marker view. Only restricted /pals/** files,
+a lightweight Three.js map-marker view. Only restricted /pals/\*\* files,
 the Three.js renderer, isolated world components/styles and relevant tests
 are changed. There are no public navigation, public map, billing, rewards,
 venue mutation, auth policy, role, database, push, email, other product or
@@ -21,7 +21,6 @@ deployed, and is 3D avatar branch-based, so it must reconcile with master
 and independent #332 overhaul first. Revert only these isolated files to
 roll back; legacy game state and avatar profile remain intact. See
 docs/AKIPALS_WORLD_EXPLORER_20261031.md.
-
 
 ## 2026-10-29 | AkiPals actual 3D creator replacing flat avatar preview
 

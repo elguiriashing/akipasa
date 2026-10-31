@@ -20,7 +20,8 @@ export function coarseWorldCell(latitude: number, longitude: number) {
     !Number.isFinite(longitude) ||
     Math.abs(latitude) > 90 ||
     Math.abs(longitude) > 180
-  ) return null;
+  )
+    return null;
   // Only coarse map cells are transmitted to the venue discovery endpoint.
   // Precise coordinates stay in the browser for the moving avatar.
   return {
@@ -31,18 +32,25 @@ export function coarseWorldCell(latitude: number, longitude: number) {
 
 export function parseWorldCell(url: string) {
   let query: URLSearchParams;
-  try { query = new URL(url).searchParams; } catch { return null; }
+  try {
+    query = new URL(url).searchParams;
+  } catch {
+    return null;
+  }
   const lat = query.get("lat");
   const lng = query.get("lng");
   if (
-    !lat || !lng ||
+    !lat ||
+    !lng ||
     !/^-?\d{1,3}(?:\.\d{1,2})?$/.test(lat) ||
     !/^-?\d{1,3}(?:\.\d{1,2})?$/.test(lng)
-  ) return null;
+  )
+    return null;
   const cell = coarseWorldCell(Number(lat), Number(lng));
   if (!cell) return null;
   // Reject unnecessarily precise input; no raw location query is accepted.
-  if (cell.latitude !== Number(lat) || cell.longitude !== Number(lng)) return null;
+  if (cell.latitude !== Number(lat) || cell.longitude !== Number(lng))
+    return null;
   return cell;
 }
 
@@ -54,15 +62,18 @@ export function normalizeWorldVenues(input: unknown): WorldVenue[] {
     if (!raw || typeof raw !== "object") continue;
     const row = raw as Record<string, unknown>;
     if (
-      typeof row.id !== "string" || row.id.length > 120 ||
+      typeof row.id !== "string" ||
+      row.id.length > 120 ||
       typeof row.slug !== "string" ||
       !/^[a-z0-9][a-z0-9-]{0,119}$/i.test(row.slug) ||
-      typeof row.name !== "string" || !row.name.trim() ||
+      typeof row.name !== "string" ||
+      !row.name.trim() ||
       typeof row.latitude !== "number" ||
       typeof row.longitude !== "number" ||
       !coarseWorldCell(row.latitude, row.longitude) ||
       found.has(row.id)
-    ) continue;
+    )
+      continue;
     found.add(row.id);
     result.push({
       id: row.id,

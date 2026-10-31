@@ -8,7 +8,7 @@
 
 AkiPals 3D character creator becomes **Wardrobe**; the same user's saved avatar
 is reusable as their visible walking character inside **World**. Around that core,
-build a city-adventure system inspired by the *interaction pattern* of
+build a city-adventure system inspired by the _interaction pattern_ of
 location-based exploration games, **without copying protected assets or game UI**.
 
 The real-world loop:
@@ -70,6 +70,7 @@ popularity, fake live crowd activity, strangers' exact locations, or loot boxes.
 ## Future build sequence (not implemented)
 
 ### P1: real-world map v2
+
 Game-art world styling; performant marker clustering and emphasis based on actual
 venue categories/real events; real event data, live/soon distinctions based on
 published schedules and timezone; accessible venue cards and intent filters.
@@ -77,6 +78,7 @@ True rigged walk cycles, quality tiers for low-end Android phones, WebGL fallbac
 AkiCrews planning UI with private membership and no default presence.
 
 ### P2: proof-of-experience and collectibles
+
 Venue permission and location-accuracy heuristics; verified check-ins via an
 additional strong proof for commercial rewards, no GPS-only payout.
 Server-owned idempotent reward ledger and fraud checks; soft progression for
@@ -85,6 +87,7 @@ venue perks. AkiMoments with in-app capture, moderation, bystander protections,
 short expiry and independently controlled sharing consent.
 
 ### P3: AR Hunts, then AkiWorld mapping
+
 ARCore/platform-capability abstraction with image/feature/anchor tracking,
 venue-approved safe and accessible item placements, offline fallback.
 Separate explicit **spatial-contribution opt-in**, apart from T&C acceptance,

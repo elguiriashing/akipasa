@@ -3,7 +3,12 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Appearance } from "@/lib/pals/avatar-v2";
-import { coarseWorldCell, normalizeWorldVenues, WORLD_START, type WorldVenue } from "@/lib/pals/world";
+import {
+  coarseWorldCell,
+  normalizeWorldVenues,
+  WORLD_START,
+  type WorldVenue,
+} from "@/lib/pals/world";
 import styles from "./WorldExplorer.module.css";
 
 type Coordinates = { latitude: number; longitude: number };
@@ -15,22 +20,30 @@ type WorldStage = {
   setMotion?(motion: { walking: boolean; headingDegrees?: number }): void;
   dispose(): void;
 };
-type AvatarRuntime = { mount(element: HTMLElement, options?: { mode?: "world" }): WorldStage };
+type AvatarRuntime = {
+  mount(element: HTMLElement, options?: { mode?: "world" }): WorldStage;
+};
 
 function distanceMetres(a: Coordinates, b: Coordinates): number {
   const radians = Math.PI / 180;
   const dLat = (b.latitude - a.latitude) * radians;
   const dLng = (b.longitude - a.longitude) * radians;
-  const x = Math.sin(dLat / 2) ** 2 +
-    Math.cos(a.latitude * radians) * Math.cos(b.latitude * radians) *
-    Math.sin(dLng / 2) ** 2;
+  const x =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(a.latitude * radians) *
+      Math.cos(b.latitude * radians) *
+      Math.sin(dLng / 2) ** 2;
   return 12742000 * Math.asin(Math.min(1, Math.sqrt(x)));
 }
 function distanceLabel(metres: number) {
-  return metres < 950 ? Math.max(0, Math.round(metres / 10) * 10) + " m" :
-    (metres / 1000).toFixed(1) + " km";
+  return metres < 950
+    ? Math.max(0, Math.round(metres / 10) * 10) + " m"
+    : (metres / 1000).toFixed(1) + " km";
 }
-function makeMarker(venue: WorldVenue, onSelect: () => void): HTMLButtonElement {
+function makeMarker(
+  venue: WorldVenue,
+  onSelect: () => void,
+): HTMLButtonElement {
   const button = document.createElement("button");
   button.type = "button";
   button.className = styles.venuePin;
@@ -63,15 +76,25 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
   const fetchSerial = useRef(0);
   const tracking = useRef(false);
   const [gpsActive, setGpsActive] = useState(false);
-  const [gpsStatus, setGpsStatus] = useState("Preview mode · no location access");
+  const [gpsStatus, setGpsStatus] = useState(
+    "Preview mode · no location access",
+  );
   const [venues, setVenues] = useState<WorldVenue[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [worldStatus, setWorldStatus] = useState("Loading real places…");
   const [mapError, setMapError] = useState(false);
 
-  const center = useMemo(() => position.current || WORLD_START, [gpsActive, gpsStatus, venues]);
-  const orderedVenues = useMemo(() => [...venues].sort((a, b) =>
-    distanceMetres(center, a) - distanceMetres(center, b)), [center, venues]);
+  const center = useMemo(
+    () => position.current || WORLD_START,
+    [gpsActive, gpsStatus, venues],
+  );
+  const orderedVenues = useMemo(
+    () =>
+      [...venues].sort(
+        (a, b) => distanceMetres(center, a) - distanceMetres(center, b),
+      ),
+    [center, venues],
+  );
   const selected = venues.find((v) => v.id === selectedId) || null;
 
   const requestVenues = useCallback(async (at: Coordinates) => {
@@ -83,22 +106,37 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
     const seq = ++fetchSerial.current;
     setWorldStatus("Looking for real venues nearby…");
     try {
-      const url = "/pals/world/venues?lat=" + cell.latitude + "&lng=" + cell.longitude;
-      const response = await fetch(url, { credentials: "same-origin", cache: "no-store" });
+      const url =
+        "/pals/world/venues?lat=" + cell.latitude + "&lng=" + cell.longitude;
+      const response = await fetch(url, {
+        credentials: "same-origin",
+        cache: "no-store",
+      });
       if (!response.ok) throw new Error("Unavailable");
       const result: unknown = await response.json();
-      const data = result && typeof result === "object" ? result as { venues?: unknown; truncated?: boolean } : {};
+      const data =
+        result && typeof result === "object"
+          ? (result as { venues?: unknown; truncated?: boolean })
+          : {};
       const next = normalizeWorldVenues(data.venues);
       if (seq !== fetchSerial.current) return;
       setVenues(next);
-      setSelectedId((current) => next.some((venue) => venue.id === current) ? current : null);
-      setWorldStatus(next.length ?
-        (data.truncated ? "Showing the first nearby places. More are available on the ordinary map." : "Tap a glowing venue to explore.") :
-        "No published venues returned for this area. Move the map to explore.");
+      setSelectedId((current) =>
+        next.some((venue) => venue.id === current) ? current : null,
+      );
+      setWorldStatus(
+        next.length
+          ? data.truncated
+            ? "Showing the first nearby places. More are available on the ordinary map."
+            : "Tap a glowing venue to explore."
+          : "No published venues returned for this area. Move the map to explore.",
+      );
     } catch {
       if (seq === fetchSerial.current) {
         lastCell.current = null;
-        setWorldStatus("Venue feed unavailable. The map still works; try moving it.");
+        setWorldStatus(
+          "Venue feed unavailable. The map still works; try moving it.",
+        );
       }
     }
   }, []);
@@ -109,12 +147,17 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
     let cancelled = false;
     let script: HTMLScriptElement | null = null;
     const start = async () => {
-      const target = document.querySelector<HTMLElement>("[data-pals-world-avatar]");
+      const target = document.querySelector<HTMLElement>(
+        "[data-pals-world-avatar]",
+      );
       if (!target) return;
       try {
-        const response = await fetch("/pals/identity", { cache: "no-store", credentials: "same-origin" });
+        const response = await fetch("/pals/identity", {
+          cache: "no-store",
+          credentials: "same-origin",
+        });
         if (!response.ok) return;
-        const json = await response.json() as { appearance?: Appearance };
+        const json = (await response.json()) as { appearance?: Appearance };
         if (!json.appearance || cancelled) return;
         const win = window as Window & { AkiPals3D?: AvatarRuntime };
         if (!win.AkiPals3D) {
@@ -124,7 +167,11 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
           const loading = new Promise<void>((resolve, reject) => {
             if (!script) return reject(new Error("No script"));
             script.addEventListener("load", () => resolve(), { once: true });
-            script.addEventListener("error", () => reject(new Error("3D runtime unavailable")), { once: true });
+            script.addEventListener(
+              "error",
+              () => reject(new Error("3D runtime unavailable")),
+              { once: true },
+            );
           });
           document.head.appendChild(script);
           await loading;
@@ -137,7 +184,9 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
         // Show the explicit avatar fallback; the map must not fail due to WebGL.
       }
     };
-    const onMapReady = () => { void start(); };
+    const onMapReady = () => {
+      void start();
+    };
     window.addEventListener("akipals:world-map-ready", onMapReady);
     void start();
     return () => {
@@ -153,77 +202,98 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
     if (!mapNode.current) return;
     let removed = false;
     let localMap: MapInstance | null = null;
-    void import("maplibre-gl").then((maplibre) => {
-      if (removed || !mapNode.current) return;
-      lib.current = maplibre;
-      const nextMap = new maplibre.Map({
-        container: mapNode.current,
-        style: styleUrl,
-        center: [WORLD_START.longitude, WORLD_START.latitude],
-        zoom: 16.1,
-        pitch: 55,
-        bearing: -14,
-        maxPitch: 70,
-        minZoom: 11,
-        attributionControl: false,
-        cooperativeGestures: false,
-        renderWorldCopies: false,
+    void import("maplibre-gl")
+      .then((maplibre) => {
+        if (removed || !mapNode.current) return;
+        lib.current = maplibre;
+        const nextMap = new maplibre.Map({
+          container: mapNode.current,
+          style: styleUrl,
+          center: [WORLD_START.longitude, WORLD_START.latitude],
+          zoom: 16.1,
+          pitch: 55,
+          bearing: -14,
+          maxPitch: 70,
+          minZoom: 11,
+          attributionControl: false,
+          cooperativeGestures: false,
+          renderWorldCopies: false,
+        });
+        localMap = nextMap;
+        map.current = nextMap;
+        nextMap.addControl(
+          new maplibre.AttributionControl({ compact: true }),
+          "bottom-right",
+        );
+        nextMap.on("error", (event) => {
+          if (event.error && !nextMap.isStyleLoaded()) setMapError(true);
+        });
+        nextMap.on("load", () => {
+          if (removed) return;
+          setMapError(false);
+          // Optional visual extrusion. Actual building data depends on the
+          // configured map style; missing sources must not break the game.
+          if (nextMap.getSource("openmaptiles")) {
+            try {
+              nextMap.addLayer({
+                id: "akipals-world-buildings",
+                type: "fill-extrusion",
+                source: "openmaptiles",
+                "source-layer": "building",
+                minzoom: 15,
+                paint: {
+                  "fill-extrusion-color": "#e4b8a1",
+                  "fill-extrusion-height": [
+                    "coalesce",
+                    ["get", "render_height"],
+                    ["get", "height"],
+                    8,
+                  ],
+                  "fill-extrusion-base": [
+                    "coalesce",
+                    ["get", "render_min_height"],
+                    0,
+                  ],
+                  "fill-extrusion-opacity": 0.73,
+                },
+              });
+            } catch {
+              /* Source layer not available in this tile configuration. */
+            }
+          }
+          void requestVenues(WORLD_START);
+        });
+        nextMap.on("moveend", () => {
+          if (removed) return;
+          const at = nextMap.getCenter();
+          void requestVenues({ latitude: at.lat, longitude: at.lng });
+        });
+        const pal = document.createElement("div");
+        pal.className = styles.avatarPin;
+        pal.setAttribute("aria-label", "Your AkiPal game character");
+        const canvas = document.createElement("div");
+        canvas.className = styles.avatarCanvas;
+        canvas.dataset.palsWorldAvatar = "true";
+        const fallback = document.createElement("div");
+        fallback.className = styles.avatarFallback;
+        fallback.textContent = "🧍";
+        canvas.append(fallback);
+        const label = document.createElement("span");
+        label.textContent = "Preview avatar";
+        avatarLabel.current = label;
+        pal.append(canvas, label);
+        avatarMarker.current = new maplibre.Marker({
+          element: pal,
+          anchor: "bottom",
+        })
+          .setLngLat([WORLD_START.longitude, WORLD_START.latitude])
+          .addTo(nextMap);
+        // Wake avatar loading after the marker is connected to the document.
+        window.dispatchEvent(new Event("akipals:world-map-ready"));
+      })
+      .catch(() => {
+        if (!removed) setMapError(true);
       });
-      localMap = nextMap;
-      map.current = nextMap;
-      nextMap.addControl(new maplibre.AttributionControl({ compact: true }), "bottom-right");
-      nextMap.on("error", (event) => {
-        if (event.error && !nextMap.isStyleLoaded()) setMapError(true);
-      });
-      nextMap.on("load", () => {
-        if (removed) return;
-        setMapError(false);
-        // Optional visual extrusion. Actual building data depends on the
-        // configured map style; missing sources must not break the game.
-        if (nextMap.getSource("openmaptiles")) {
-          try {
-            nextMap.addLayer({
-              id: "akipals-world-buildings",
-              type: "fill-extrusion",
-              source: "openmaptiles",
-              "source-layer": "building",
-              minzoom: 15,
-              paint: {
-                "fill-extrusion-color": "#e4b8a1",
-                "fill-extrusion-height": ["coalesce", ["get", "render_height"], ["get", "height"], 8],
-                "fill-extrusion-base": ["coalesce", ["get", "render_min_height"], 0],
-                "fill-extrusion-opacity": 0.73,
-              },
-            });
-          } catch { /* Source layer not available in this tile configuration. */ }
-        }
-        void requestVenues(WORLD_START);
-      });
-      nextMap.on("moveend", () => {
-        if (removed) return;
-        const at = nextMap.getCenter();
-        void requestVenues({ latitude: at.lat, longitude: at.lng });
-      });
-      const pal = document.createElement("div");
-      pal.className = styles.avatarPin;
-      pal.setAttribute("aria-label", "Your AkiPal game character");
-      const canvas = document.createElement("div");
-      canvas.className = styles.avatarCanvas;
-      canvas.dataset.palsWorldAvatar = "true";
-      const fallback = document.createElement("div");
-      fallback.className = styles.avatarFallback;
-      fallback.textContent = "🧍";
-      canvas.append(fallback);
-      const label = document.createElement("span");
-      label.textContent = "Preview avatar";
-      avatarLabel.current = label;
-      pal.append(canvas, label);
-      avatarMarker.current = new maplibre.Marker({ element: pal, anchor: "bottom" })
-        .setLngLat([WORLD_START.longitude, WORLD_START.latitude])
-        .addTo(nextMap);
-      // Wake avatar loading after the marker is connected to the document.
-      window.dispatchEvent(new Event("akipals:world-map-ready"));
-    }).catch(() => { if (!removed) setMapError(true); });
     return () => {
       removed = true;
       fetchSerial.current += 1;
@@ -246,9 +316,12 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
     for (const venue of venues) {
       const element = makeMarker(venue, () => setSelectedId(venue.id));
       if (venue.id === selectedId) element.classList.add(styles.venuePinActive);
-      markers.current.set(venue.id, new lib.current.Marker({ element, anchor: "bottom" })
-        .setLngLat([venue.longitude, venue.latitude])
-        .addTo(map.current));
+      markers.current.set(
+        venue.id,
+        new lib.current.Marker({ element, anchor: "bottom" })
+          .setLngLat([venue.longitude, venue.latitude])
+          .addTo(map.current),
+      );
     }
     return () => {
       markers.current.forEach((marker) => marker.remove());
@@ -257,7 +330,8 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
   }, [venues, selectedId]);
 
   const stopGPS = useCallback(() => {
-    if (gpsWatch.current !== null) navigator.geolocation.clearWatch(gpsWatch.current);
+    if (gpsWatch.current !== null)
+      navigator.geolocation.clearWatch(gpsWatch.current);
     gpsWatch.current = null;
     tracking.current = false;
     lastGPS.current = null;
@@ -283,34 +357,57 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
       (sample) => {
         if (!tracking.current && gpsWatch.current === null) return;
         const { latitude, longitude, accuracy, heading, speed } = sample.coords;
-        if (!Number.isFinite(latitude) || !Number.isFinite(longitude) || !coarseWorldCell(latitude, longitude)) return;
+        if (
+          !Number.isFinite(latitude) ||
+          !Number.isFinite(longitude) ||
+          !coarseWorldCell(latitude, longitude)
+        )
+          return;
         const next = { latitude, longitude };
         const previous = lastGPS.current;
         lastGPS.current = next;
         position.current = next;
         tracking.current = true;
         setGpsActive(true);
-        setGpsStatus(accuracy > 100 ?
-          "GPS weak (±" + Math.round(accuracy) + " m). Avatar position is approximate." :
-          "Following you · ±" + Math.round(accuracy) + " m accuracy · private to this screen");
+        setGpsStatus(
+          accuracy > 100
+            ? "GPS weak (±" +
+                Math.round(accuracy) +
+                " m). Avatar position is approximate."
+            : "Following you · ±" +
+                Math.round(accuracy) +
+                " m accuracy · private to this screen",
+        );
         avatarMarker.current?.setLngLat([longitude, latitude]);
-        if (avatarLabel.current) avatarLabel.current.textContent = "You · private";
+        if (avatarLabel.current)
+          avatarLabel.current.textContent = "You · private";
         if (map.current) {
-          map.current.easeTo({ center: [longitude, latitude], zoom: Math.max(16.4, map.current.getZoom()), duration: 650 });
+          map.current.easeTo({
+            center: [longitude, latitude],
+            zoom: Math.max(16.4, map.current.getZoom()),
+            duration: 650,
+          });
         }
-        const walking = typeof speed === "number" && Number.isFinite(speed) ?
-          speed > 0.45 && speed < 4 :
-          previous ? distanceMetres(previous, next) > Math.max(accuracy, 6) : false;
+        const walking =
+          typeof speed === "number" && Number.isFinite(speed)
+            ? speed > 0.45 && speed < 4
+            : previous
+              ? distanceMetres(previous, next) > Math.max(accuracy, 6)
+              : false;
         avatarStage.current?.setMotion?.({
           walking,
-          headingDegrees: Number.isFinite(heading) && heading !== null ? heading : undefined,
+          headingDegrees:
+            Number.isFinite(heading) && heading !== null ? heading : undefined,
         });
         void requestVenues(next);
       },
       (error) => {
         stopGPS();
-        setGpsStatus(error.code === 1 ? "Location denied. Preview still works." :
-          "Could not get a reliable position. Try again when you have signal.");
+        setGpsStatus(
+          error.code === 1
+            ? "Location denied. Preview still works."
+            : "Could not get a reliable position. Try again when you have signal.",
+        );
       },
       { enableHighAccuracy: true, maximumAge: 10000, timeout: 18000 },
     );
@@ -318,63 +415,138 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
   }, [requestVenues, stopGPS]);
 
   useEffect(() => {
-    const onHidden = () => { if (document.hidden && gpsWatch.current !== null) stopGPS(); };
+    const onHidden = () => {
+      if (document.hidden && gpsWatch.current !== null) stopGPS();
+    };
     document.addEventListener("visibilitychange", onHidden);
     return () => {
       document.removeEventListener("visibilitychange", onHidden);
-      if (gpsWatch.current !== null) navigator.geolocation.clearWatch(gpsWatch.current);
+      if (gpsWatch.current !== null)
+        navigator.geolocation.clearWatch(gpsWatch.current);
       gpsWatch.current = null;
     };
   }, [stopGPS]);
 
   const focusVenue = useCallback((venue: WorldVenue) => {
     setSelectedId(venue.id);
-    map.current?.flyTo({ center: [venue.longitude, venue.latitude], zoom: Math.max(16.2, map.current.getZoom()), duration: 550 });
+    map.current?.flyTo({
+      center: [venue.longitude, venue.latitude],
+      zoom: Math.max(16.2, map.current.getZoom()),
+      duration: 550,
+    });
   }, []);
 
-  const zoom = (amount: number) => { map.current?.zoomTo((map.current?.getZoom() || 15) + amount, { duration: 300 }); };
-  const selectedDistance = selected ? distanceMetres(position.current || WORLD_START, selected) : null;
+  const zoom = (amount: number) => {
+    map.current?.zoomTo((map.current?.getZoom() || 15) + amount, {
+      duration: 300,
+    });
+  };
+  const selectedDistance = selected
+    ? distanceMetres(position.current || WORLD_START, selected)
+    : null;
 
   return (
     <main className={styles.root}>
       <header className={styles.header}>
-        <a className={styles.brand} href="/pals/world">Aki<span>Pals.</span></a>
-        <span className={styles.topTag}><i aria-hidden="true" /> Private game prototype</span>
+        <a className={styles.brand} href="/pals/world">
+          Aki<span>Pals.</span>
+        </a>
+        <span className={styles.topTag}>
+          <i aria-hidden="true" /> Private game prototype
+        </span>
       </header>
       <div className={styles.layout}>
-        <section className={styles.world} aria-label="AkiPals interactive exploration map">
-          <div className={styles.map} ref={mapNode} aria-label="Tilted map with real nearby AkiPasa venues" />
+        <section
+          className={styles.world}
+          aria-label="AkiPals interactive exploration map"
+        >
+          <div
+            className={styles.map}
+            ref={mapNode}
+            aria-label="Tilted map with real nearby AkiPasa venues"
+          />
           <div className={styles.topbar}>
-            <span className={styles.tag}>✦ <strong>AkiWorld</strong> · Explore the real world</span>
+            <span className={styles.tag}>
+              ✦ <strong>AkiWorld</strong> · Explore the real world
+            </span>
             <div className={styles.mapTools}>
-              <button type="button" className={styles.iconButton} onClick={() => zoom(1)} aria-label="Zoom in">+</button>
-              <button type="button" className={styles.iconButton} onClick={() => zoom(-1)} aria-label="Zoom out">−</button>
+              <button
+                type="button"
+                className={styles.iconButton}
+                onClick={() => zoom(1)}
+                aria-label="Zoom in"
+              >
+                +
+              </button>
+              <button
+                type="button"
+                className={styles.iconButton}
+                onClick={() => zoom(-1)}
+                aria-label="Zoom out"
+              >
+                −
+              </button>
             </div>
           </div>
           <div className={styles.tourCard}>
             {selected ? (
               <>
-                <span className={styles.eyebrow}>✦ Nearby discovery · real listing</span>
+                <span className={styles.eyebrow}>
+                  ✦ Nearby discovery · real listing
+                </span>
                 <h2>{selected.name}</h2>
-                <p>{selectedDistance === null ? "Explore this location on the map." :
-                  (gpsActive ? "About " : "From preview center: ") + distanceLabel(selectedDistance)}
-                  {" · "}{selected.claimStatus === "claimed" ? "Claimed listing" : "Unclaimed listing"}
+                <p>
+                  {selectedDistance === null
+                    ? "Explore this location on the map."
+                    : (gpsActive ? "About " : "From preview center: ") +
+                      distanceLabel(selectedDistance)}
+                  {" · "}
+                  {selected.claimStatus === "claimed"
+                    ? "Claimed listing"
+                    : "Unclaimed listing"}
                 </p>
                 <div className={styles.ctas}>
-                  <button type="button" className={styles.primary} onClick={() => setSelectedId(null)}>Back to AkiWorld</button>
-                  <button type="button" className={styles.secondary} onClick={() => focusVenue(selected)}>Show on map</button>
+                  <button
+                    type="button"
+                    className={styles.primary}
+                    onClick={() => setSelectedId(null)}
+                  >
+                    Back to AkiWorld
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.secondary}
+                    onClick={() => focusVenue(selected)}
+                  >
+                    Show on map
+                  </button>
                 </div>
               </>
             ) : (
               <>
-                <span className={styles.eyebrow}>{gpsActive ? "✦ Your live position" : "✦ Demo start · Fuengirola"}</span>
+                <span className={styles.eyebrow}>
+                  {gpsActive
+                    ? "✦ Your live position"
+                    : "✦ Demo start · Fuengirola"}
+                </span>
                 <h2>Your city. Your adventure.</h2>
-                <p>Explore nearby venues with your own 3D AkiPal. AR hunts, crew quests and real-world stamps are upcoming features.</p>
+                <p>
+                  Explore nearby venues with your own 3D AkiPal. AR hunts, crew
+                  quests and real-world stamps are upcoming features.
+                </p>
                 <div className={styles.ctas}>
-                  <button type="button" className={styles.primary} onClick={gpsActive ? stopGPS : startGPS}>
-                    {gpsActive ? "Stop following me" : "Make my Pal follow me ↗"}
+                  <button
+                    type="button"
+                    className={styles.primary}
+                    onClick={gpsActive ? stopGPS : startGPS}
+                  >
+                    {gpsActive
+                      ? "Stop following me"
+                      : "Make my Pal follow me ↗"}
                   </button>
-                  <a className={styles.secondary} href="/pals">Open Wardrobe ↗</a>
+                  <a className={styles.secondary} href="/pals">
+                    Open Wardrobe ↗
+                  </a>
                 </div>
               </>
             )}
@@ -383,50 +555,110 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
         <aside className={styles.side}>
           <div className={styles.intro}>
             <span className={styles.eyebrow}>BE YOU. GO PLACES.</span>
-            <h1>Go out.<br />Level up life.</h1>
-            <p className={styles.muted}>The start of a game where exploring actual places will eventually unlock experiences, stamps and avatar styles.</p>
+            <h1>
+              Go out.
+              <br />
+              Level up life.
+            </h1>
+            <p className={styles.muted}>
+              The start of a game where exploring actual places will eventually
+              unlock experiences, stamps and avatar styles.
+            </p>
           </div>
           <nav className={styles.nav} aria-label="AkiPals areas">
-            <a href="/pals/world" className={styles.active} aria-current="page">◉ World</a>
+            <a href="/pals/world" className={styles.active} aria-current="page">
+              ◉ World
+            </a>
             <a href="/pals">♧ Wardrobe</a>
-            <button type="button" disabled title="Passport quests are not connected yet">◎ Passport · Soon</button>
-            <button type="button" disabled title="Crew gameplay is planned">♧ Crews · Soon</button>
+            <button
+              type="button"
+              disabled
+              title="Passport quests are not connected yet"
+            >
+              ◎ Passport · Soon
+            </button>
+            <button type="button" disabled title="Crew gameplay is planned">
+              ♧ Crews · Soon
+            </button>
           </nav>
           <section className={styles.panel} aria-label="Private map controls">
             <span className={styles.eyebrow}>YOUR ADVENTURE</span>
             <h2>{gpsActive ? "Walking the world" : "Explore before you go"}</h2>
             <p>{gpsStatus}</p>
-            <div className={styles.stat}><span>Real venue listings</span><strong>{venues.length}</strong></div>
-            <div className={styles.stat}><span>AR stamps</span><strong>Not live</strong></div>
-            <div className={styles.stat}><span>Check-ins and rewards</span><strong>Not live</strong></div>
+            <div className={styles.stat}>
+              <span>Real venue listings</span>
+              <strong>{venues.length}</strong>
+            </div>
+            <div className={styles.stat}>
+              <span>AR stamps</span>
+              <strong>Not live</strong>
+            </div>
+            <div className={styles.stat}>
+              <span>Check-ins and rewards</span>
+              <strong>Not live</strong>
+            </div>
           </section>
           <section className={styles.panel} aria-label="Nearby venue list">
-            <span className={styles.eyebrow}>REAL PLACES, NO FAKE ACTIVITY</span>
+            <span className={styles.eyebrow}>
+              REAL PLACES, NO FAKE ACTIVITY
+            </span>
             <h2>Places to discover</h2>
-            <p className={styles.status} role="status">{worldStatus}</p>
+            <p className={styles.status} role="status">
+              {worldStatus}
+            </p>
             <div className={styles.venueList}>
               {orderedVenues.slice(0, 12).map((venue) => (
-                <button key={venue.id} type="button" onClick={() => focusVenue(venue)}
-                  className={styles.venueRow + (venue.id === selectedId ? " " + styles.venueRowActive : "")}>
+                <button
+                  key={venue.id}
+                  type="button"
+                  onClick={() => focusVenue(venue)}
+                  className={
+                    styles.venueRow +
+                    (venue.id === selectedId ? " " + styles.venueRowActive : "")
+                  }
+                >
                   <span className={styles.venueRowIcon}>✦</span>
                   <span style={{ minWidth: 0 }}>
                     <span className={styles.venueRowName}>{venue.name}</span>
-                    <span className={styles.venueRowMeta}>{distanceLabel(distanceMetres(center, venue))} · {venue.claimStatus === "claimed" ? "Claimed" : "Unclaimed"}</span>
+                    <span className={styles.venueRowMeta}>
+                      {distanceLabel(distanceMetres(center, venue))} ·{" "}
+                      {venue.claimStatus === "claimed"
+                        ? "Claimed"
+                        : "Unclaimed"}
+                    </span>
                   </span>
                 </button>
               ))}
             </div>
           </section>
-          <p className={styles.tip}>Your position stays in this browser session. GPS only starts when you tap the button, and automatically stops in the background. Nearby venue queries use a coarse map cell; there is no public location sharing, automatic filming, spatial capture, earned XP or verification yet.</p>
+          <p className={styles.tip}>
+            Your position stays in this browser session. GPS only starts when
+            you tap the button, and automatically stops in the background.
+            Nearby venue queries use a coarse map cell; there is no public
+            location sharing, automatic filming, spatial capture, earned XP or
+            verification yet.
+          </p>
         </aside>
       </div>
       <nav className={styles.bottomNav} aria-label="AkiPals mobile tabs">
-        <a href="/pals/world" className={styles.active} aria-current="page">◉<span>World</span></a>
-        <a href="/pals">♧<span>Wardrobe</span></a>
-        <button type="button" disabled>◎<span>Passport soon</span></button>
-        <button type="button" disabled>✧<span>Hunts soon</span></button>
+        <a href="/pals/world" className={styles.active} aria-current="page">
+          ◉<span>World</span>
+        </a>
+        <a href="/pals">
+          ♧<span>Wardrobe</span>
+        </a>
+        <button type="button" disabled>
+          ◎<span>Passport soon</span>
+        </button>
+        <button type="button" disabled>
+          ✧<span>Hunts soon</span>
+        </button>
       </nav>
-      {mapError && <span role="status" className={styles.status}>Map tiles could not load on this device. Please retry when connected.</span>}
+      {mapError && (
+        <span role="status" className={styles.status}>
+          Map tiles could not load on this device. Please retry when connected.
+        </span>
+      )}
     </main>
   );
 }

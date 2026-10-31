@@ -23,7 +23,10 @@ export async function GET(request: Request) {
       radiusKm: 8,
       page: 1,
     });
-    return reply({ venues: normalizeWorldVenues(page.rows), truncated: page.total > page.rows.length });
+    return reply({
+      venues: normalizeWorldVenues(page.rows),
+      truncated: page.total > page.rows.length,
+    });
   } catch {
     return reply({ error: "Venue discovery is temporarily unavailable." }, 503);
   }

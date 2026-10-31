@@ -708,7 +708,9 @@ function create(container, { mode = "studio" } = {}) {
     powerPreference: isWorld ? "low-power" : "high-performance",
     preserveDrawingBuffer: !isWorld,
   });
-  renderer.setPixelRatio(Math.min(isWorld ? 1.25 : 2, window.devicePixelRatio || 1));
+  renderer.setPixelRatio(
+    Math.min(isWorld ? 1.25 : 2, window.devicePixelRatio || 1),
+  );
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.42;
@@ -789,7 +791,9 @@ function create(container, { mode = "studio" } = {}) {
     loadNumber = 0,
     active = true,
     raf = 0;
-  let worldWalking = false, worldHeading = 0, worldTurn = 0;
+  let worldWalking = false,
+    worldHeading = 0,
+    worldTurn = 0;
   let faceType = null,
     previousStyle = null;
   const resize = () => {
@@ -810,13 +814,19 @@ function create(container, { mode = "studio" } = {}) {
     frame += 0.016;
     if (!prefersReducedMotion) {
       root.position.y = isWorld
-        ? (worldWalking ? Math.abs(Math.sin(frame * 11)) * 0.025 : Math.sin(frame * 0.8) * 0.007)
+        ? worldWalking
+          ? Math.abs(Math.sin(frame * 11)) * 0.025
+          : Math.sin(frame * 0.8) * 0.007
         : Math.sin(frame * 0.8) * 0.007;
-      if (isWorld && worldWalking) root.rotation.z = Math.sin(frame * 5.5) * 0.025;
+      if (isWorld && worldWalking)
+        root.rotation.z = Math.sin(frame * 5.5) * 0.025;
       else root.rotation.z *= 0.85;
     }
     if (isWorld) {
-      const difference = Math.atan2(Math.sin(worldHeading - worldTurn), Math.cos(worldHeading - worldTurn));
+      const difference = Math.atan2(
+        Math.sin(worldHeading - worldTurn),
+        Math.cos(worldHeading - worldTurn),
+      );
       worldTurn += difference * 0.09;
       root.rotation.y = worldTurn;
     }
@@ -882,7 +892,8 @@ function create(container, { mode = "studio" } = {}) {
     setMotion({ walking = false, headingDegrees } = {}) {
       if (!isWorld) return;
       worldWalking = Boolean(walking);
-      if (Number.isFinite(headingDegrees)) worldHeading = (headingDegrees * Math.PI) / 180;
+      if (Number.isFinite(headingDegrees))
+        worldHeading = (headingDegrees * Math.PI) / 180;
     },
     rotate(angle = Math.PI / 4) {
       camera.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);

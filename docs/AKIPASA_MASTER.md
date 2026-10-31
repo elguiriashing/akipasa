@@ -22,7 +22,6 @@ current master and #332 before any rollout. Test files do not constitute
 CI/browser/Android acceptance. The public GitHub repository does not
 provide branch secrecy.
 
-
 ## 2026-10-29 | Private AkiPals 3D character engine (no public launch)
 
 The approved AkiPals reset now has a self-hosted Three.js WebGL studio with two
