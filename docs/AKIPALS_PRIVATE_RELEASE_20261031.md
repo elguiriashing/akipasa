@@ -35,3 +35,18 @@ Merge only a validated exact candidate after inspection, observe the existing
 automatic Cloudflare master build, then verify exact release SHA and private
 route/asset responses over HTTPS. Do not run a competing manual deployment.
 Rollback uses the previous Worker version/source, retaining all user data.
+
+## Mobile map clearance correction
+
+Real Chromium testing exposed the mobile information card intercepting
+nearby venue-pin clicks. The map now keeps its own viewport height,
+reserves camera padding above the card and prevents its decorative
+avatar from intercepting map input. Touch actions retain 44px targets.
+These are real source fixes; the click assertions are not bypassed.
+
+The standalone browser harness now uses the same compile-time browser
+environment definitions as the existing Next component harnesses.
+Generated, ignored Three.js bundle output is excluded from source lint
+and source formatting; the authored renderer and build script remain
+checked. No authentication, database, data-retention or reward changes.
+Exact-source checks and deployment verification remain mandatory.

@@ -234,6 +234,8 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
         });
         localMap = nextMap;
         map.current = nextMap;
+        // Keep the player and nearby pins above the information card.
+        nextMap.setPadding({ top: 72, bottom: 256, left: 16, right: 16 });
         nextMap.addControl(
           new maplibre.AttributionControl({ compact: true }),
           "bottom-right",

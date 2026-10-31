@@ -284,7 +284,9 @@ try {
     await page
       .getByRole("button", { name: "Locate my AkiPal", exact: true })
       .click();
-    await page.evaluate(() => window.palsGPS.emit(36.54311, -4.62312, 6, 60000));
+    await page.evaluate(() =>
+      window.palsGPS.emit(36.54311, -4.62312, 6, 60000),
+    );
     await expect(page.locator("[data-pals-gps-status]")).toContainText(
       "fresh GPS",
     );
@@ -312,7 +314,9 @@ try {
     await page
       .getByRole("button", { name: "Locate my AkiPal", exact: true })
       .click();
-    const clears = await page.evaluate(() => window.palsGPS.state.clears.length);
+    const clears = await page.evaluate(
+      () => window.palsGPS.state.clears.length,
+    );
     await page.evaluate(() => window.unmountWorld());
     assert.equal(
       await page.evaluate(() => window.palsGPS.state.clears.length),
@@ -411,7 +415,10 @@ try {
       path: resolve(output, `failure-${index}.png`),
       fullPage: true,
     });
-    writeFileSync(resolve(output, `failure-${index}.html`), await page.content());
+    writeFileSync(
+      resolve(output, `failure-${index}.html`),
+      await page.content(),
+    );
   }
   throw error;
 } finally {

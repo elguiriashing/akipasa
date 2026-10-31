@@ -559,3 +559,36 @@
     bottom: 255px;
   }
 }
+
+/* World playtest viewport clearance: the map must not shrink behind its list. */
+.root,
+.root *,
+.root *::before,
+.root *::after {
+  box-sizing: border-box;
+}
+.avatarPin {
+  pointer-events: none;
+}
+@media (max-width: 880px) {
+  .layout {
+    display: block;
+    min-height: 0;
+  }
+  .world {
+    height: calc(100dvh - 132px);
+    min-height: 480px;
+    flex: none;
+  }
+  .tourCard .ctas {
+    flex-wrap: nowrap;
+  }
+  .tourCard .primary,
+  .tourCard .secondary {
+    flex: 1;
+    min-width: 0;
+    min-height: 44px;
+    padding: 10px 9px;
+    font-size: 12px !important;
+  }
+}

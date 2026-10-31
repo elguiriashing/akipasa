@@ -26,5 +26,6 @@ export default defineConfig([
     "coverage/**",
     "playwright-report/**",
     "test-results/**",
+    "public/pals/runtime/**",
   ]),
 ]);
