@@ -16,61 +16,9 @@ permissions:
   contents: read
 concurrency:
   group: pals-private-world-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
-  assemble:
-    if: github.event_name == 'push'
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    outputs:
-      source: ${{ steps.source.outputs.sha }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-      - name: Prepare scoped source once
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path('scripts/prepare-pals-world-private.mjs')
-          s = p.read_text()
-          start = s.index('const change = ')
-          end = s.index('const pkg = ', start)
-          s = s[:start] + r'''const change = (p, before, after) => {
-            const text = read(p);
-            const escaped = before.trim().split("\n").map(line => line.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("[ \\t]*\\n[ \\t]*");
-            const pattern = new RegExp(escaped, "m");
-            assert.ok(pattern.test(text), `Expected pinned source insertion: ${p}: ${before.slice(0, 70)}`);
-            save(p, text.replace(pattern, () => after.trim()));
-          };
-          ''' + s[end:]
-          p.write_text(s)
-          PY
-          node scripts/prepare-pals-world-private.mjs
-      - run: npm ci --no-audit --no-fund
-      - name: Format only scoped candidate changes
-        run: |
-          git diff --name-only 76cb96df21bf9404d50db373cf57bb0287fd9a80 | grep -E '\.(ts|tsx|js|mjs|css|md|yml|json)$' | xargs -r npx prettier --write
-      - name: Save prepared source with a fast-forward-only push
-        run: |
-          git add src/app/pals src/components/pals src/lib/pals public/pals/models scripts/*pals* tests/pals* package.json package-lock.json next.config.ts .gitignore docs .github/workflows/pals-world-private-release.yml database/migrations/20261028235830_pals_human_avatar_profiles.sql
-          if ! git diff --cached --quiet; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git commit -m "feat(pals): integrate restricted World and Wardrobe with production baseline"
-            git push origin HEAD:release/akipals-world-private-20261031
-          fi
-      - id: source
-        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
   acceptance:
-    needs: [assemble]
-    if: always() && (github.event_name == 'pull_request' || needs.assemble.result == 'success')
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
@@ -79,22 +27,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ needs.assemble.outputs.source || github.sha }}
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
-      - run: npm ci --no-audit --no-fund
-      - run: npm ci --prefix automation --no-audit --no-fund
+      - name: Locked dependencies
+        run: |
+          mkdir -p test-results/pals-release
+          npm ci --no-audit --no-fund >/tmp/install.log 2>&1 || { tail -80 /tmp/install.log; exit 1; }
+          npm ci --prefix automation --no-audit --no-fund >/tmp/automation.log 2>&1 || { tail -80 /tmp/automation.log; exit 1; }
+          npx playwright install --with-deps chromium >/tmp/chromium.log 2>&1 || { tail -80 /tmp/chromium.log; exit 1; }
+      - name: Bundle the actual character runtime
+        run: npm run pals:3d:bundle
+      - name: World browser gate before broad tests
+        run: |
+          node scripts/test-pals-world-browser.mjs >test-results/pals-release/world-browser.log 2>&1 || { tail -100 test-results/pals-release/world-browser.log; exit 1; }
+      - name: Wardrobe and legacy save compatibility browser gates
+        run: |
+          node scripts/test-pals-identity-browser.mjs >test-results/pals-release/wardrobe-browser.log 2>&1 || { tail -100 test-results/pals-release/wardrobe-browser.log; exit 1; }
+          node scripts/test-pals-browser.mjs >test-results/pals-release/legacy-browser.log 2>&1 || { tail -100 test-results/pals-release/legacy-browser.log; exit 1; }
       - name: Complete source checks and production build
-        run: npm run check
-      - run: npx playwright install --with-deps chromium
-      - name: Real Wardrobe and World WebGL browser acceptance
-        run: npm run test:pals:browser
+        run: |
+          npm run check >test-results/pals-release/source-check.log 2>&1 || { tail -120 test-results/pals-release/source-check.log; exit 1; }
       - name: Cloudflare exact-source packaging
-        run: npm run build:cloudflare
+        run: |
+          npm run build:cloudflare >test-results/pals-release/cloudflare.log 2>&1 || { tail -120 test-results/pals-release/cloudflare.log; exit 1; }
       - name: Export source-bound review evidence
         if: always()
         run: |
