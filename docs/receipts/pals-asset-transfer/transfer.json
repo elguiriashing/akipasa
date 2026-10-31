@@ -1,0 +1,36 @@
+[
+  {
+    "id": "rain-v3",
+    "url": "/pals/models/professional/rain-v3-20261031.glb",
+    "sha256": "b16df7b7804f5df80b6887ffce5fc5723c2bc6b289c7f7ab8f2b1006307c1256",
+    "bytes": 5391220,
+    "parts": [
+      "rain-v3.000.b64",
+      "rain-v3.001.b64",
+      "rain-v3.002.b64",
+      "rain-v3.003.b64",
+      "rain-v3.004.b64",
+      "rain-v3.005.b64",
+      "rain-v3.006.b64",
+      "rain-v3.007.b64"
+    ]
+  },
+  {
+    "id": "snow-v4",
+    "url": "/pals/models/professional/snow-v4-20261031.glb",
+    "sha256": "054a902706b7c46332a838f6807131a88980c6c7f795c3f2ae5b192448aaec3a",
+    "bytes": 7079264,
+    "parts": [
+      "snow-v4.000.b64",
+      "snow-v4.001.b64",
+      "snow-v4.002.b64",
+      "snow-v4.003.b64",
+      "snow-v4.004.b64",
+      "snow-v4.005.b64",
+      "snow-v4.006.b64",
+      "snow-v4.007.b64",
+      "snow-v4.008.b64",
+      "snow-v4.009.b64"
+    ]
+  }
+]
