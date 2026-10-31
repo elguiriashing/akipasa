@@ -4352,6 +4352,44 @@ claim physical Android/GPS or live authenticated acceptance. Source rollback
 preserves appearance and legacy game rows; restoring this version recovers any
 explicit newer-model selection retained in those rows.
 
+## 2026-10-31 | Home inline search and independent advanced filters
+
+The Home hero now renders the existing public venue search as an inline text
+field, rather than opening the extended filter popover. After two characters,
+the debounced public search shows at most five matching venues, with localized
+links, loading, truthful empty/error states and native Retry. Query changes abort
+older responses; Escape hides results and focus reopens them. Each mounted search
+instance has unique labels and result IDs. The header search retains the full
+filter/pagination experience and its hydration readiness. No query/RPC, schema,
+auth, provider, location, consent, reward or billing behavior changes.
+
+The photographic hero keeps its dark local search palette in both page themes.
+Actual AppShell testing exposed a small native Retry and dark-on-dark native
+clear icon: hero-only 44px recovery styling and a matching native dark color
+scheme repair both, leaving the extended search unchanged. Existing full-search
+pagination and stale-response tests remain; new tests exercise the five-result
+limit, separate instances and truthful retry. Disposable browser fixture counts
+and real-shell evidence are qualified in the release receipt. They do not prove
+physical Android or new real-provider authentication.
+
+This bounded follow-up is based on production80ec55b and preserves the merged
+#332 redesign, all90 prior route reviews, public deletion instructions and #343
+private authored models/World. City Stories source and its unapplied migration
+are excluded from this independent Home release. Existing deployment authority
+applies; exact-head checks, reviewed source identity and automatic Cloudflare
+publication verification remain mandatory. Roll back source without data changes.
+
+Final bounded verification:32 actual Next EN/ES/dark/light/360/390/820/1440
+Home cases passed, with32 captures and retained advanced-header/image/roadmap/
+Escape/focus/overflow assertions. Eight independent final actual-AppShell
+contexts verify44px native Retry and visible/clickable native clear. Strict route
+audit passes against the completed332 inventory. The initial fullcheck passed
+all prerequisites but hit a local whole-.next/tmp symlink module-resolution
+failure during page collection; restoring a real.next with only cache linked
+fixed the unchanged-source production build. The original failure is preserved;
+fresh complete published-head CI remains mandatory. See
+receipts/AKIPASA_HOME_INLINE_SEARCH_20261031.json.
+
 ## 2026-10-31 | Verified-visit city stories and camera permission repair
 
 This new follow-up preserves production80ec55b/#332's90 accepted screens and
