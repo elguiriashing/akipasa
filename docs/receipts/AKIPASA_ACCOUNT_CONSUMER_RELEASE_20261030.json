@@ -1,0 +1,1125 @@
+{
+  "base": "c51cba991292eb8759e0bcea73f03b2d0408cb64",
+  "branch": "work/pasa-account-ui-release-20261030",
+  "boundariesAndLocalTests": {
+    "base": "c51cba991292eb8759e0bcea73f03b2d0408cb64",
+    "appliedManifest11Exact": true,
+    "approvedAdditionalFile": {
+      "path": "src/components/WorkspaceShell.tsx",
+      "sha256": "a48978c34c3b184dfe82c1f7ef8dd7607a575afee3e402a9268431c27a69b3a2",
+      "matchesPreviouslyTestedMain": "b7dda61e31546cc0dcc89e9b01ba0a8fefd6f7ba",
+      "scope": "10 added lines only: routeIdentity/useRef and close-on-location-change effect; no auth/role/items/returns changes"
+    },
+    "protected14Unchanged": [
+      {
+        "path": "src/lib/auth.ts",
+        "sha256": "5e9db531a2c1040c912dcd000f4e8e0afdc196bdd0df1f75adc8e197813edd9a",
+        "unchanged": true
+      },
+      {
+        "path": "src/middleware.ts",
+        "sha256": "6e3dfa1cea9f1bde61e18b1e2ff86bff9f1cc9e83aa13898a44ae64f5a709f61",
+        "unchanged": true
+      },
+      {
+        "path": "src/app/[locale]/account/actions.ts",
+        "sha256": "047883f0341af34d2524b141bd08bd86bb735b37477641bcf2d81200f7b79ccc",
+        "unchanged": true
+      },
+      {
+        "path": "src/app/[locale]/account/collection-actions.ts",
+        "sha256": "dcc3b727e8cd946e8480dca597e2f5348a012dd33759ea9b0eb3baa4499c6d96",
+        "unchanged": true
+      },
+      {
+        "path": "src/app/[locale]/account/saved/actions.ts",
+        "sha256": "8cdea44ee062c4f6a42f9fc05a554dd7749867526108ee13f8bc03139686cdbc",
+        "unchanged": true
+      },
+      {
+        "path": "src/app/[locale]/account/subscription/actions.ts",
+        "sha256": "048b5686ace44430657c0fd8b8d622ebbf719c5447829bd8317fbd7a478d86df",
+        "unchanged": true
+      },
+      {
+        "path": "src/app/[locale]/account/subscription/akisuite-actions.ts",
+        "sha256": "a98d4880bb482ce3d8da557ffca3f94a475cda57a4cbaba03deb5622365705d7",
+        "unchanged": true
+      },
+      {
+        "path": "src/app/[locale]/account/activity/page.tsx",
+        "sha256": "1a2c79e3f23eac1bcf3c1d1e66c4b6629b430283498e241aaba93fb9808c5b7d",
+        "unchanged": true
+      },
+      {
+        "path": "src/app/[locale]/account/bookings/page.tsx",
+        "sha256": "3c9717ab2a3db821befc7934ef5578fc16d4db23ddfb14ccbe9606db4e31e421",
+        "unchanged": true
+      },
+      {
+        "path": "src/app/[locale]/account/following/page.tsx",
+        "sha256": "d5b11a8e0f49b1975e23c07c44d81c7cfd08d3da038ec367815f5381460b5e83",
+        "unchanged": true
+      },
+      {
+        "path": "src/app/[locale]/account/saved/page.tsx",
+        "sha256": "9d8608da13d2d4f81ed31919baed15068f107c706fef2745458aee3721f465ea",
+        "unchanged": true
+      },
+      {
+        "path": "src/app/[locale]/account/premium/page.tsx",
+        "sha256": "de31e9e5c5e65ed05baadf89ed79f5fc2d2c09ec2ebb52cb7fa2e867ad0b2f23",
+        "unchanged": true
+      },
+      {
+        "path": "src/app/[locale]/account/privacy/page.tsx",
+        "sha256": "3f3a2401f5c8a18f430f6c6d572b3be1f844d92501bdcd99784be1c3c240e029",
+        "unchanged": true
+      },
+      {
+        "path": "src/app/[locale]/account/subscription/page.tsx",
+        "sha256": "275914add854da1728913f697eb3a2d71a4addbac3286a8f66e69e7f30c0a811",
+        "unchanged": true
+      }
+    ],
+    "priorBoundaryVerifierExpectedException": "Original15 protected verifier now flagsONLYWorkspaceShell, explicitly authorized by root as12thUIfile. No weakening of15-boundary verifier.",
+    "rootOwnedAppearanceHash": "015e00b8a0e0e2f475c7d2cf83c6112e7cc00485de969eca07c79dc37fb248a8",
+    "rootOwnedHubGlyphOnly": {
+      "path": "src/components/AkiSuiteMembershipHub.tsx",
+      "sha256": "dc678eb6ea86516a0a46280b933c78649c9aae0cc98136fd630066e8c72846d5",
+      "diff": "diff --git a/src/components/AkiSuiteMembershipHub.tsx b/src/components/AkiSuiteMembershipHub.tsx\nindex 653bc2d..c9f518b 100644\n--- a/src/components/AkiSuiteMembershipHub.tsx\n+++ b/src/components/AkiSuiteMembershipHub.tsx\n@@ -1,5 +1,6 @@\n import Link from \"next/link\";\n import Image from \"next/image\";\n+import { Icon } from \"@/components/Icons\";\n import { changeAkiSuiteSubscription } from \"@/app/[locale]/account/subscription/akisuite-actions\";\n import { openBillingPortal } from \"@/app/[locale]/account/subscription/actions\";\n import { akisuitePlans, type AkiSuitePlan } from \"@/lib/akisuite-catalogue\";\n@@ -254,7 +255,12 @@ export function AkiSuiteMembershipHub({\n                         </span>\n                       )}\n                       <Link className={styles.appLink} href={copy.href}>\n-                        {copy.action} <span aria-hidden=\"true\">\u2197</span>\n+                        {copy.action}\n+                        <Icon\n+                          name=\"arrow-right\"\n+                          size={16}\n+                          style={{ transform: \"rotate(-45deg)\" }}\n+                        />\n                       </Link>\n                     </article>\n                   );\n"
+    },
+    "baselineMaster310RunnerUnchanged": true,
+    "validation": {
+      "masterExistingComponents": {
+        "passed": 40,
+        "suites": [
+          "account-controls12",
+          "account-collections23",
+          "account-workspaces5"
+        ]
+      },
+      "pureWebsiteNew": {
+        "passed": 18,
+        "test": "tests/account-release-website.test.ts"
+      },
+      "outsideFullBrowser": {
+        "passed": 504,
+        "scope": "actualcandidateAccount/AppShell before rootlegacyappearance/HubSVG; preservedunmodifiedmainassertions"
+      },
+      "finalMaintainedBrowser": {
+        "states": 90,
+        "nativeSearchMenuProbes": 160,
+        "sourceHashes": 93,
+        "sourceStable": true,
+        "file": "test-results/account-release-ui/results.json",
+        "sourceLabel": "c51base plus workingUIpatch+authorizedShell/appearance/HubSVG; dirtytrue"
+      },
+      "inapplicableMainContractFailures": {
+        "count": 11,
+        "log": "/tmp/account-slice-focused-20261030.log",
+        "reason": "Full332 tests demand explicit return-path API absent from byte-preservedmaster auth/actions; not claimed passed and no guard changes"
+      },
+      "observedOriginalHistoryFailure": "/tmp/account-slice-first-browser-20261030.log; fixedexactmainShell10lineeffectthen504+90historypass",
+      "reviewedScreens": "8Overview/Profile/Settings/Subscription ENdark390 ESlight1440; finalESlightSubscriptionSVGclear"
+    }
+  },
+  "runtimeScope": 15,
+  "originalMasterAccount310RunnerUnchanged": true,
+  "actualAuthRlsProviderOrDeviceProof": false,
+  "fullCheck": {
+    "exit": 0,
+    "vitestStagesIncludingAutomation": 15,
+    "vitestTestsIncludingAutomation": 2184,
+    "frozenHashesUnchanged": true,
+    "scope": "Completed before finaltwoCTA glyph-onlySVG fixes; exact-head CI must run fullcheck on allfinalsource.",
+    "logSha256": "89bd74ac97744d8b121b930d7282dfa77293bea2ce0a5e1a6703edf9629a4731",
+    "priorBuildId": "F_xDipxAcn3wivPxmWz1P"
+  },
+  "actualNext": {
+    "passed": 49,
+    "publicAndPrivacyCases": 47,
+    "guestBoundaryCases": 2,
+    "guestRoutes": 20,
+    "candidateOriginExplicitlyVerified": true,
+    "uncaughtPrivateWorkspaceRendered": false,
+    "privacySavedStateChanged": false,
+    "physicalAndroid": false,
+    "logs": {
+      "/tmp/akipasa-account-final-actual-next-20261030.log": "261496ab325502ce02092c7ddd2ebbcf85230a1542eb80f9f27b45d62af2b3c8",
+      "/tmp/akipasa-account-actual-guest-origin-fixed-20261031.log": "beac8bc4706d5407ea326b7b2c9a0a221fb9b8fb161f7e8113c3dbb7abc81b2a"
+    },
+    "sourceQualification": "49 tests passed before canonicalStudio restoration/account-fontfallback; finalparity-repairedcompiledbuild reran10relevantprivacy/guestcases plus8targetedSubscriptionstates. FreshallrequiredCI onnewpublishedhead mustrerunentirecollection."
+  },
+  "exactHeadCI": "Required after publication; existingfullchecks and additive90/160/18/realguest/privacy regressions mustpass onactualpublishedhead",
+  "merged": false,
+  "deployed": false,
+  "finalGlyphRepair": {
+    "files": [
+      "src/components/AkiSuiteMembershipGrid.tsx",
+      "src/components/AkiSuiteAudienceStudio.tsx"
+    ],
+    "scope": "ExistingSVGonly, no copy/href/price/action changes",
+    "firstFailure": "Missing AudienceStudio Icon import caught by ESLint and subscription test; corrected, both pass.",
+    "unitTestsPassed": 1,
+    "finalOptimizedBuild": {
+      "exit": 0,
+      "BUILD_ID": "RGKQIc1L5Cx73GRFwUswy",
+      "logSha256": "ff9cd5cafdb0f7471d3148de11d293d6100697ee4419c278565ec8bc3b3ff911"
+    },
+    "eightTargetedSubscriptionStates": {
+      "scope": "Actual async Account pages/AccountLayout/AppShell and candidate CSS; disposable identity/database/navigation. Actions throw. Not Next HTTP/liveAuth/RLS/billing/provider/device acceptance.",
+      "sourceHead": "c51cba991292eb8759e0bcea73f03b2d0408cb64",
+      "sourceDirty": true,
+      "actualNext": false,
+      "physicalDevice": false,
+      "initialSourceHashes": {
+        "src/lib/approved-pricing.ts": "28e742e3af97a56881868de93c37ebfbc9a24656334abb0695b82987ea9821dd",
+        "src/lib/akisuite-catalogue.ts": "a594bf0d25c9237191c51f722b2dabab959c8132c8e49197d10a643cd92a7578",
+        "src/components/BrandLogo.tsx": "cbafda3f3b75d7aea89157c373d12f3615e636c6f7026eff432c9d1ceaf15946",
+        "src/components/Icons.tsx": "0bb1dec5859ee9ca35cd3f4f298c7e6c398257bde038554dfbca226a802d9274",
+        "src/components/WorkspaceShell.tsx": "a48978c34c3b184dfe82c1f7ef8dd7607a575afee3e402a9268431c27a69b3a2",
+        "tests/fixtures/account-browser-data.mjs": "f1c71eabf6ce1fc189fac6aae4c6468056a65af4de23c850177cbf0a5dc02c34",
+        "src/lib/locations.ts": "5b501ceb4f3e980dfde9b64f6fb90dc0a59fb34d60d9564da9e8ad834f2afb85",
+        "src/lib/config.ts": "99bcd28eb21688269d1115aef445e529f5eb5bc7b2bcb09303e19a8fd845a5db",
+        "src/app/[locale]/account/account-suite.css": "311da3d9405060543b2e70744bf078584c9cf6f92c5bd0198f87694e64368672",
+        "src/app/[locale]/account/account-controls.css": "de98ffc40bf76a33a1377258496c6ae631dd972c83a263e0f3b47b78215ff592",
+        "src/app/[locale]/account/account-collections.css": "92a99bb2c3245109b9bde2857de1aad1b2a274898a044ff99ed01d85966c8b67",
+        "src/app/[locale]/account/account-consumer.css": "2c51e64d112df8b33fc9dc708ed2478eb1df7af3058bb9a8cb6cefbcd45ca253",
+        "src/app/[locale]/account/AccountSectionLinks.tsx": "05c4029e64958c80e63c4dfe6ac2ac59f0b01787c5d536f1a44a10947f6bfcc7",
+        "src/app/[locale]/account/layout.tsx": "592cbb7b775347e8569f325907b0d08a8e0013cb3bf2612775530ada29848639",
+        "src/components/SpainLocationPicker.tsx": "cf444cc8609d499eb6aa02cf795d31b772736e49cf728acc69fabf8c8be0ed17",
+        "src/lib/geo.ts": "b8100ba0b7973e801b5cb62eb71429f544bfb51d99b70cefb1fb864570e985aa",
+        "src/components/UseMyLocation.tsx": "a5292859389a1da01091f364bfd0fa5b826fa28a555a19d73480ff7b84ca87f1",
+        "src/components/VenueQuickSearch.module.css": "457e290f4636d87b8ea183dae433d17e718dc083f90f7e4daf316045151cc753",
+        "src/components/VenueQuickSearch.tsx": "815202272f371eb2c820534ce7bffd2594ee5e7825a1aaa56335473b357e2099",
+        "src/lib/discovery-location.ts": "e3f759f3e4bb8499b2fb505dd642b7feaab2d040dc7276889a54d00ee4da5c36",
+        "src/lib/messages.ts": "3df3aaf5608bcbd291ed897abf84b4b13b14e0ba564bff9edaa953c6c45e2c4f",
+        "src/lib/discovery-filter-validation.ts": "80c8f43c70e85dfc4e67c77f08e18b6d3d3ca8feb547b4d732e0fd998d8557cc",
+        "src/components/GlobalSearch.tsx": "43009af8842c7bbe248d5e35b9a8f8bb2f3883ba5f4865c33437dd4d50b42f43",
+        "src/components/LanguageLink.tsx": "223ec2a8ecd59a150d632b4e81a5d58a9524ed6b404d95b09f969d849ffd9fe5",
+        "src/components/PasaDiscoveryNavigation.css": "d926665f1f5fd95db51946e532658f8291b70860bc4d00cd266d4bf7050c0829",
+        "src/components/ThemeModeControls.tsx": "a4d3755ecf378624b2f05eb709d2b2352c7f2a5571bc943dbf3f162f37883d2a",
+        "src/components/useSuiteReferral.ts": "1becd06f429135bd89fe9cee1cbc39f54b22350211a263432422241a7e4d24a1",
+        "src/lib/suite-navigation.ts": "20841a17472e926949746d57b9c03f42ba0c45570fe96082f5fab4b1c96bac9a",
+        "src/components/DiscoveryNavigation.css": "01fe38a052504d652d8c146bd842322f45524c988691bb8df9c79f20698d30d6",
+        "src/components/DiscoveryNavigation.tsx": "803922b858552e11c31fc8359b4078ac401ce8243461361adbfc89debb399450",
+        "src/lib/account-task-resume.ts": "f68f42070cb29be96643436f75d05cda1522ccbf7b0db2f23f15c4b2f34c26fb",
+        "src/lib/akiduermo-routing.ts": "a6b91984454ba29405416f0c22829fa27d04246916c5d9af739f08068e10bbc3",
+        "src/lib/akiconduzco-routing.ts": "e12defa49408227516b112d3966e6b2c98ede59fef3eeea5e9241053ba6fae37",
+        "src/lib/auth-security.ts": "addad5274b3d8af9a7f4fa63727703affe0b8859eb1d7c86b0ebdbdb76b5c611",
+        "src/lib/account-onboarding.ts": "90c8a9d625f746e878c7f917f5c98f2835ed3a68f895d062c0df44950a689698",
+        "src/lib/account-onboarding-server.ts": "508d0ce21c9a3825aea4b1eb77c8865b99991f42aba6d529e80d63fd51e2c8a6",
+        "src/lib/supabase/server.ts": "9e8dde00629e5e1cd58f23deb0c178fe3341f64adca2b52ec1844983a9c805e7",
+        "src/lib/public-request-origin.ts": "dcfaac386a336ee7558d3644d28934c2f522cb1020324db8bf2425104fbac7be",
+        "src/app/[locale]/auth/actions.ts": "4921a9c6e3e199af08a16c8cb443303fff3eb95a254ee0dbbf3e4b2588d0bcd9",
+        "src/lib/roles.ts": "6e0bc650d1125662984c221f1cc07cd0a6bbf89bf6bd624f01d552d7b454332d",
+        "src/components/ConsoleSwitcher.tsx": "8921ab7985be62de2d4a031b4e1cbc80c31382eb72adfd85429dd5d3cd282386",
+        "src/lib/discovery-navigation.ts": "3b528c5ec8d99ac65f5b8b3a960f829e88b0da6d354920666b6ca6a8610c9ca8",
+        "src/components/AppShell.tsx": "d0c624257334b64c8c300505faff0baf3200300292b18dcb09954ee178e6a40f",
+        "src/app/[locale]/account/rewards/page.tsx": "2b25107e9a79a58a2c4ea488d03f6e84f29ea1035c702cd716caca7d4f6e7d0d",
+        "src/components/AkiSuiteAudienceStudio.module.css": "450ae9de832eaa6c459883f3503ef5d4091ee76bb740ab70f78ca894c96d87c1",
+        "src/components/AkiSuiteAudienceStudio.tsx": "eabb8b9b86de613ed5d2c77377bd3bb88a239381d242ff865c1cc3525400a243",
+        "src/components/AkiSuiteMembershipGrid.module.css": "49390c01bc525d19be3710c25d917808d95f422820e33e8b2c68c94db1ba00ea",
+        "src/components/AkiSuiteMembershipGrid.tsx": "e5717f5b7269c2f1d5cd1197db84381a9b30358fdb4d0f74c5884dd70a56c430",
+        "src/app/[locale]/account/account-personal.module.css": "43eb698ea51fd4ca60493cbe0714b56076dd1bcfbb4ebd38a052bcfc0086f2a2",
+        "src/components/AccountWorkspacePortals.tsx": "1ae33cd9ba162a2fb49f0c6e98762c0193b5c1bdbbab7ddf9e96258125be2d39",
+        "src/app/[locale]/account/page.tsx": "23660af1a18e3df03e1954ca3e9692b79b40b72dae41928dcceaa504e4f87ec6",
+        "src/app/[locale]/account/AccountPageHeader.tsx": "656d312be215ab7a29ed291d48d94425d62df64b3aaefaa999feccc4ef668e9f",
+        "src/lib/collection-links.ts": "6bed1249519ccf492a8e554e32309d6ebdfadb22bbe79dbccab439aa78166e49",
+        "src/app/[locale]/account/AccountCollectionRefresh.tsx": "656c88f159df94fd85b4979142e19dfeed56805b3d4a7a7669d9b297c4138ccd",
+        "src/app/[locale]/account/AccountCollectionState.tsx": "91e32df4cf57a810ecd25ad41a10cc758afec234fc60ad7884e64f1e6b689524",
+        "src/app/[locale]/account/AccountCollectionRemoveButton.tsx": "575e5e8b06494bcf82e2e300e094d95db40d9c146dda0225a0bf3136af4dfc23",
+        "src/lib/account-collection-query.ts": "17aa933f26f5ce71b2cb08b94faa025864bbc77443940265f0658cc8ea2979d0",
+        "src/app/[locale]/account/AccountItems.tsx": "72551d35753299c0fe754559b8a76c13037762da15344fe3b7668c31e7928184",
+        "src/lib/account-collection-catalogue.ts": "7fd9f34e1cc2621602aad59ff1cadcbee7f494f5db2d41ba8ca4db0d78dd6be1",
+        "src/app/[locale]/account/saved/page.tsx": "9d8608da13d2d4f81ed31919baed15068f107c706fef2745458aee3721f465ea",
+        "src/app/[locale]/account/following/page.tsx": "d5b11a8e0f49b1975e23c07c44d81c7cfd08d3da038ec367815f5381460b5e83",
+        "src/components/MyBookings.tsx": "725264d70f6717f343e2570bf06208920043b201775ec80783da71ef7cef35e8",
+        "src/components/BookingLiveRefresh.tsx": "8df41e5b695bc78e5709fbc68e1454765bd4c666045d1c3fee262f977c12c519",
+        "src/app/[locale]/account/AccountStayBookings.tsx": "643ca14acfef45dfb22960cb64be15fee6205ecf8666bdfe60d3270fe159fce9",
+        "src/app/[locale]/account/bookings/page.tsx": "3c9717ab2a3db821befc7934ef5578fc16d4db23ddfb14ccbe9606db4e31e421",
+        "src/app/[locale]/account/activity/page.tsx": "1a2c79e3f23eac1bcf3c1d1e66c4b6629b430283498e241aaba93fb9808c5b7d",
+        "src/app/[locale]/account/premium/page.tsx": "de31e9e5c5e65ed05baadf89ed79f5fc2d2c09ec2ebb52cb7fa2e867ad0b2f23",
+        "src/lib/account-profile-website.ts": "0b8e15142b2180c6dadfed2c8de9fb4ead6706ccfb311d7332583b7e0353953a",
+        "src/app/[locale]/account/profile/page.tsx": "32fbb2e833cbe43d715dbe6d4eea71f4a25de0c7daa216fa84e90dbf91218377",
+        "src/app/[locale]/account/settings/page.tsx": "f8ca8b6f78531cc26a15ccf5f14aa569ab0b1f4135a8d164a5ee085cc82fc71e",
+        "src/lib/privacy-consent.ts": "01e8cec760bf6d9ca5499f3c71f50a9f1a7b90c78df0aa3e6c2437069fe0de6a",
+        "src/components/PersonalisationSettings.tsx": "d6aceff920b0a34c35a82915b594acd88cde8928ffbaf33e16dbf3d6e0c93881",
+        "src/app/[locale]/account/privacy/page.tsx": "3f3a2401f5c8a18f430f6c6d572b3be1f844d92501bdcd99784be1c3c240e029",
+        "src/lib/akisuite-premium-launch.ts": "3088b1d7d9bf41746feef1c1d42b8d7cd94dbf7fed97b6bda06f64dc5587455a",
+        "src/components/SubscriptionRefresh.tsx": "26bd05d62b923d88d4d57ef32a0c08b02eaa3570d193cb8f85cb9db9f6207d2d",
+        "src/components/PremiumAdsConversion.tsx": "b7fec8a798ce26e752d90ea46229f1c64e779f2ea16e24a3f666b6b5251a8d5b",
+        "src/components/AkiSuiteMembershipHub.module.css": "273565eb8ce0c50d0761a8c3f745e41da85ae91a689952c46980bad11c4e934a",
+        "src/lib/akisuite-membership.ts": "2fed4faff352242245cf1aabdb238cbb0d348e78962c83663abac30bae93c778",
+        "src/components/AkiSuiteMembershipHub.tsx": "dc678eb6ea86516a0a46280b933c78649c9aae0cc98136fd630066e8c72846d5",
+        "src/lib/akisuite-readiness.ts": "f286fa77cbfc9c716252ac0d379f50e19ec3024644c27a9fad27c17c9a12d8fc",
+        "src/app/[locale]/account/subscription/page.tsx": "275914add854da1728913f697eb3a2d71a4addbac3286a8f66e69e7f30c0a811",
+        "package.json": "27d7a8273f97d20cb4f469008edff9784d8d7c2ba553a2f8d4a05d24d4ed0a4d",
+        "package-lock.json": "7e62f52e0aa8354473eff83bd1004f9e416bbf8e17f69583c57b3ad4c23d97c2",
+        "src/app/globals.css": "783a040f0db03c0ac7f4750acd396acf6f38c4aef10a708e94cfc80df6f6e4a1",
+        "src/app/compact-app.css": "27a788fe1172acd6ff1e9f764a2790e63c345fb3090008ab46e12e372dca892c",
+        "src/app/brand.css": "ef68eb546410c4af273e06e6f5ed80c456c6507599f710273efaf2671268dd24",
+        "src/app/appearance.css": "015e00b8a0e0e2f475c7d2cf83c6112e7cc00485de969eca07c79dc37fb248a8",
+        "src/app/tablet-responsive.css": "60f09d70e2c4b53d0d8dd8f6aca9b6b33a8841bfcc87405ebb74214272308737",
+        "src/app/portal-unity.css": "df7f53c297febb2b2c6c2f959654c3736120be41ed7f745a9b1c750439be6e2c",
+        "src/lib/auth.ts": "5e9db531a2c1040c912dcd000f4e8e0afdc196bdd0df1f75adc8e197813edd9a",
+        "src/middleware.ts": "6e3dfa1cea9f1bde61e18b1e2ff86bff9f1cc9e83aa13898a44ae64f5a709f61",
+        "src/app/[locale]/account/actions.ts": "047883f0341af34d2524b141bd08bd86bb735b37477641bcf2d81200f7b79ccc",
+        "scripts/test-account-release-ui-browser.mjs": "f806e3a2a80b1b0ee7d73db9cfbb7edfd8bf9a68a487d13bad633788a76a6aae",
+        "test-results/account-slice-validation/subscription-only-final.mjs": "9c677f7fbaa3ce411f2b84c6d3f8c0a2dca1d93a7f367e54c5f18abb58355763"
+      },
+      "finalSourceHashes": {
+        "src/lib/approved-pricing.ts": "28e742e3af97a56881868de93c37ebfbc9a24656334abb0695b82987ea9821dd",
+        "src/lib/akisuite-catalogue.ts": "a594bf0d25c9237191c51f722b2dabab959c8132c8e49197d10a643cd92a7578",
+        "src/components/BrandLogo.tsx": "cbafda3f3b75d7aea89157c373d12f3615e636c6f7026eff432c9d1ceaf15946",
+        "src/components/Icons.tsx": "0bb1dec5859ee9ca35cd3f4f298c7e6c398257bde038554dfbca226a802d9274",
+        "src/components/WorkspaceShell.tsx": "a48978c34c3b184dfe82c1f7ef8dd7607a575afee3e402a9268431c27a69b3a2",
+        "tests/fixtures/account-browser-data.mjs": "f1c71eabf6ce1fc189fac6aae4c6468056a65af4de23c850177cbf0a5dc02c34",
+        "src/lib/locations.ts": "5b501ceb4f3e980dfde9b64f6fb90dc0a59fb34d60d9564da9e8ad834f2afb85",
+        "src/lib/config.ts": "99bcd28eb21688269d1115aef445e529f5eb5bc7b2bcb09303e19a8fd845a5db",
+        "src/app/[locale]/account/account-suite.css": "311da3d9405060543b2e70744bf078584c9cf6f92c5bd0198f87694e64368672",
+        "src/app/[locale]/account/account-controls.css": "de98ffc40bf76a33a1377258496c6ae631dd972c83a263e0f3b47b78215ff592",
+        "src/app/[locale]/account/account-collections.css": "92a99bb2c3245109b9bde2857de1aad1b2a274898a044ff99ed01d85966c8b67",
+        "src/app/[locale]/account/account-consumer.css": "2c51e64d112df8b33fc9dc708ed2478eb1df7af3058bb9a8cb6cefbcd45ca253",
+        "src/app/[locale]/account/AccountSectionLinks.tsx": "05c4029e64958c80e63c4dfe6ac2ac59f0b01787c5d536f1a44a10947f6bfcc7",
+        "src/app/[locale]/account/layout.tsx": "592cbb7b775347e8569f325907b0d08a8e0013cb3bf2612775530ada29848639",
+        "src/components/SpainLocationPicker.tsx": "cf444cc8609d499eb6aa02cf795d31b772736e49cf728acc69fabf8c8be0ed17",
+        "src/lib/geo.ts": "b8100ba0b7973e801b5cb62eb71429f544bfb51d99b70cefb1fb864570e985aa",
+        "src/components/UseMyLocation.tsx": "a5292859389a1da01091f364bfd0fa5b826fa28a555a19d73480ff7b84ca87f1",
+        "src/components/VenueQuickSearch.module.css": "457e290f4636d87b8ea183dae433d17e718dc083f90f7e4daf316045151cc753",
+        "src/components/VenueQuickSearch.tsx": "815202272f371eb2c820534ce7bffd2594ee5e7825a1aaa56335473b357e2099",
+        "src/lib/discovery-location.ts": "e3f759f3e4bb8499b2fb505dd642b7feaab2d040dc7276889a54d00ee4da5c36",
+        "src/lib/messages.ts": "3df3aaf5608bcbd291ed897abf84b4b13b14e0ba564bff9edaa953c6c45e2c4f",
+        "src/lib/discovery-filter-validation.ts": "80c8f43c70e85dfc4e67c77f08e18b6d3d3ca8feb547b4d732e0fd998d8557cc",
+        "src/components/GlobalSearch.tsx": "43009af8842c7bbe248d5e35b9a8f8bb2f3883ba5f4865c33437dd4d50b42f43",
+        "src/components/LanguageLink.tsx": "223ec2a8ecd59a150d632b4e81a5d58a9524ed6b404d95b09f969d849ffd9fe5",
+        "src/components/PasaDiscoveryNavigation.css": "d926665f1f5fd95db51946e532658f8291b70860bc4d00cd266d4bf7050c0829",
+        "src/components/ThemeModeControls.tsx": "a4d3755ecf378624b2f05eb709d2b2352c7f2a5571bc943dbf3f162f37883d2a",
+        "src/components/useSuiteReferral.ts": "1becd06f429135bd89fe9cee1cbc39f54b22350211a263432422241a7e4d24a1",
+        "src/lib/suite-navigation.ts": "20841a17472e926949746d57b9c03f42ba0c45570fe96082f5fab4b1c96bac9a",
+        "src/components/DiscoveryNavigation.css": "01fe38a052504d652d8c146bd842322f45524c988691bb8df9c79f20698d30d6",
+        "src/components/DiscoveryNavigation.tsx": "803922b858552e11c31fc8359b4078ac401ce8243461361adbfc89debb399450",
+        "src/lib/account-task-resume.ts": "f68f42070cb29be96643436f75d05cda1522ccbf7b0db2f23f15c4b2f34c26fb",
+        "src/lib/akiduermo-routing.ts": "a6b91984454ba29405416f0c22829fa27d04246916c5d9af739f08068e10bbc3",
+        "src/lib/akiconduzco-routing.ts": "e12defa49408227516b112d3966e6b2c98ede59fef3eeea5e9241053ba6fae37",
+        "src/lib/auth-security.ts": "addad5274b3d8af9a7f4fa63727703affe0b8859eb1d7c86b0ebdbdb76b5c611",
+        "src/lib/account-onboarding.ts": "90c8a9d625f746e878c7f917f5c98f2835ed3a68f895d062c0df44950a689698",
+        "src/lib/account-onboarding-server.ts": "508d0ce21c9a3825aea4b1eb77c8865b99991f42aba6d529e80d63fd51e2c8a6",
+        "src/lib/supabase/server.ts": "9e8dde00629e5e1cd58f23deb0c178fe3341f64adca2b52ec1844983a9c805e7",
+        "src/lib/public-request-origin.ts": "dcfaac386a336ee7558d3644d28934c2f522cb1020324db8bf2425104fbac7be",
+        "src/app/[locale]/auth/actions.ts": "4921a9c6e3e199af08a16c8cb443303fff3eb95a254ee0dbbf3e4b2588d0bcd9",
+        "src/lib/roles.ts": "6e0bc650d1125662984c221f1cc07cd0a6bbf89bf6bd624f01d552d7b454332d",
+        "src/components/ConsoleSwitcher.tsx": "8921ab7985be62de2d4a031b4e1cbc80c31382eb72adfd85429dd5d3cd282386",
+        "src/lib/discovery-navigation.ts": "3b528c5ec8d99ac65f5b8b3a960f829e88b0da6d354920666b6ca6a8610c9ca8",
+        "src/components/AppShell.tsx": "d0c624257334b64c8c300505faff0baf3200300292b18dcb09954ee178e6a40f",
+        "src/app/[locale]/account/rewards/page.tsx": "2b25107e9a79a58a2c4ea488d03f6e84f29ea1035c702cd716caca7d4f6e7d0d",
+        "src/components/AkiSuiteAudienceStudio.module.css": "450ae9de832eaa6c459883f3503ef5d4091ee76bb740ab70f78ca894c96d87c1",
+        "src/components/AkiSuiteAudienceStudio.tsx": "eabb8b9b86de613ed5d2c77377bd3bb88a239381d242ff865c1cc3525400a243",
+        "src/components/AkiSuiteMembershipGrid.module.css": "49390c01bc525d19be3710c25d917808d95f422820e33e8b2c68c94db1ba00ea",
+        "src/components/AkiSuiteMembershipGrid.tsx": "e5717f5b7269c2f1d5cd1197db84381a9b30358fdb4d0f74c5884dd70a56c430",
+        "src/app/[locale]/account/account-personal.module.css": "43eb698ea51fd4ca60493cbe0714b56076dd1bcfbb4ebd38a052bcfc0086f2a2",
+        "src/components/AccountWorkspacePortals.tsx": "1ae33cd9ba162a2fb49f0c6e98762c0193b5c1bdbbab7ddf9e96258125be2d39",
+        "src/app/[locale]/account/page.tsx": "23660af1a18e3df03e1954ca3e9692b79b40b72dae41928dcceaa504e4f87ec6",
+        "src/app/[locale]/account/AccountPageHeader.tsx": "656d312be215ab7a29ed291d48d94425d62df64b3aaefaa999feccc4ef668e9f",
+        "src/lib/collection-links.ts": "6bed1249519ccf492a8e554e32309d6ebdfadb22bbe79dbccab439aa78166e49",
+        "src/app/[locale]/account/AccountCollectionRefresh.tsx": "656c88f159df94fd85b4979142e19dfeed56805b3d4a7a7669d9b297c4138ccd",
+        "src/app/[locale]/account/AccountCollectionState.tsx": "91e32df4cf57a810ecd25ad41a10cc758afec234fc60ad7884e64f1e6b689524",
+        "src/app/[locale]/account/AccountCollectionRemoveButton.tsx": "575e5e8b06494bcf82e2e300e094d95db40d9c146dda0225a0bf3136af4dfc23",
+        "src/lib/account-collection-query.ts": "17aa933f26f5ce71b2cb08b94faa025864bbc77443940265f0658cc8ea2979d0",
+        "src/app/[locale]/account/AccountItems.tsx": "72551d35753299c0fe754559b8a76c13037762da15344fe3b7668c31e7928184",
+        "src/lib/account-collection-catalogue.ts": "7fd9f34e1cc2621602aad59ff1cadcbee7f494f5db2d41ba8ca4db0d78dd6be1",
+        "src/app/[locale]/account/saved/page.tsx": "9d8608da13d2d4f81ed31919baed15068f107c706fef2745458aee3721f465ea",
+        "src/app/[locale]/account/following/page.tsx": "d5b11a8e0f49b1975e23c07c44d81c7cfd08d3da038ec367815f5381460b5e83",
+        "src/components/MyBookings.tsx": "725264d70f6717f343e2570bf06208920043b201775ec80783da71ef7cef35e8",
+        "src/components/BookingLiveRefresh.tsx": "8df41e5b695bc78e5709fbc68e1454765bd4c666045d1c3fee262f977c12c519",
+        "src/app/[locale]/account/AccountStayBookings.tsx": "643ca14acfef45dfb22960cb64be15fee6205ecf8666bdfe60d3270fe159fce9",
+        "src/app/[locale]/account/bookings/page.tsx": "3c9717ab2a3db821befc7934ef5578fc16d4db23ddfb14ccbe9606db4e31e421",
+        "src/app/[locale]/account/activity/page.tsx": "1a2c79e3f23eac1bcf3c1d1e66c4b6629b430283498e241aaba93fb9808c5b7d",
+        "src/app/[locale]/account/premium/page.tsx": "de31e9e5c5e65ed05baadf89ed79f5fc2d2c09ec2ebb52cb7fa2e867ad0b2f23",
+        "src/lib/account-profile-website.ts": "0b8e15142b2180c6dadfed2c8de9fb4ead6706ccfb311d7332583b7e0353953a",
+        "src/app/[locale]/account/profile/page.tsx": "32fbb2e833cbe43d715dbe6d4eea71f4a25de0c7daa216fa84e90dbf91218377",
+        "src/app/[locale]/account/settings/page.tsx": "f8ca8b6f78531cc26a15ccf5f14aa569ab0b1f4135a8d164a5ee085cc82fc71e",
+        "src/lib/privacy-consent.ts": "01e8cec760bf6d9ca5499f3c71f50a9f1a7b90c78df0aa3e6c2437069fe0de6a",
+        "src/components/PersonalisationSettings.tsx": "d6aceff920b0a34c35a82915b594acd88cde8928ffbaf33e16dbf3d6e0c93881",
+        "src/app/[locale]/account/privacy/page.tsx": "3f3a2401f5c8a18f430f6c6d572b3be1f844d92501bdcd99784be1c3c240e029",
+        "src/lib/akisuite-premium-launch.ts": "3088b1d7d9bf41746feef1c1d42b8d7cd94dbf7fed97b6bda06f64dc5587455a",
+        "src/components/SubscriptionRefresh.tsx": "26bd05d62b923d88d4d57ef32a0c08b02eaa3570d193cb8f85cb9db9f6207d2d",
+        "src/components/PremiumAdsConversion.tsx": "b7fec8a798ce26e752d90ea46229f1c64e779f2ea16e24a3f666b6b5251a8d5b",
+        "src/components/AkiSuiteMembershipHub.module.css": "273565eb8ce0c50d0761a8c3f745e41da85ae91a689952c46980bad11c4e934a",
+        "src/lib/akisuite-membership.ts": "2fed4faff352242245cf1aabdb238cbb0d348e78962c83663abac30bae93c778",
+        "src/components/AkiSuiteMembershipHub.tsx": "dc678eb6ea86516a0a46280b933c78649c9aae0cc98136fd630066e8c72846d5",
+        "src/lib/akisuite-readiness.ts": "f286fa77cbfc9c716252ac0d379f50e19ec3024644c27a9fad27c17c9a12d8fc",
+        "src/app/[locale]/account/subscription/page.tsx": "275914add854da1728913f697eb3a2d71a4addbac3286a8f66e69e7f30c0a811",
+        "package.json": "27d7a8273f97d20cb4f469008edff9784d8d7c2ba553a2f8d4a05d24d4ed0a4d",
+        "package-lock.json": "7e62f52e0aa8354473eff83bd1004f9e416bbf8e17f69583c57b3ad4c23d97c2",
+        "src/app/globals.css": "783a040f0db03c0ac7f4750acd396acf6f38c4aef10a708e94cfc80df6f6e4a1",
+        "src/app/compact-app.css": "27a788fe1172acd6ff1e9f764a2790e63c345fb3090008ab46e12e372dca892c",
+        "src/app/brand.css": "ef68eb546410c4af273e06e6f5ed80c456c6507599f710273efaf2671268dd24",
+        "src/app/appearance.css": "015e00b8a0e0e2f475c7d2cf83c6112e7cc00485de969eca07c79dc37fb248a8",
+        "src/app/tablet-responsive.css": "60f09d70e2c4b53d0d8dd8f6aca9b6b33a8841bfcc87405ebb74214272308737",
+        "src/app/portal-unity.css": "df7f53c297febb2b2c6c2f959654c3736120be41ed7f745a9b1c750439be6e2c",
+        "src/lib/auth.ts": "5e9db531a2c1040c912dcd000f4e8e0afdc196bdd0df1f75adc8e197813edd9a",
+        "src/middleware.ts": "6e3dfa1cea9f1bde61e18b1e2ff86bff9f1cc9e83aa13898a44ae64f5a709f61",
+        "src/app/[locale]/account/actions.ts": "047883f0341af34d2524b141bd08bd86bb735b37477641bcf2d81200f7b79ccc",
+        "scripts/test-account-release-ui-browser.mjs": "f806e3a2a80b1b0ee7d73db9cfbb7edfd8bf9a68a487d13bad633788a76a6aae",
+        "test-results/account-slice-validation/subscription-only-final.mjs": "9c677f7fbaa3ce411f2b84c6d3f8c0a2dca1d93a7f367e54c5f18abb58355763"
+      },
+      "sourceStable": true,
+      "results": [
+        {
+          "route": "subscription",
+          "locale": "en",
+          "theme": "dark",
+          "width": 390,
+          "upper": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-en-dark-390-upper.png",
+            "imageSha256": "0b2b87f2ea35dff8f954934a1ed0c8a0fefafc7878bb7703f72978f3fe55a279"
+          },
+          "lower": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-en-dark-390-lower.png",
+            "imageSha256": "46ea186dbf12c13c384f15615ee3b2d244bc698298d1d214e6d1e6d25732654c"
+          },
+          "freeImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-en-dark-390-free-cta-upper.png",
+            "imageSha256": "46ea186dbf12c13c384f15615ee3b2d244bc698298d1d214e6d1e6d25732654c"
+          },
+          "businessImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-en-dark-390-business-cta-upper.png",
+            "imageSha256": "aeb879aa0f48a2392f5e85fe0786a46906b26a6069d14004bfd760d592992625"
+          },
+          "pass": true
+        },
+        {
+          "route": "subscription",
+          "locale": "en",
+          "theme": "dark",
+          "width": 1440,
+          "upper": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-en-dark-1440-upper.png",
+            "imageSha256": "57740cd9bbc7a1d14043ec9e0e27b520e0b8fae91eda7db4dbc6fc0b6993e564"
+          },
+          "lower": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-en-dark-1440-lower.png",
+            "imageSha256": "30ae1c2e7b8c45acb0e341c5bc15c25dadd13a7720de4ea820d3a85ce2a9359a"
+          },
+          "freeImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-en-dark-1440-free-cta-upper.png",
+            "imageSha256": "30ae1c2e7b8c45acb0e341c5bc15c25dadd13a7720de4ea820d3a85ce2a9359a"
+          },
+          "businessImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-en-dark-1440-business-cta-upper.png",
+            "imageSha256": "9e8dfe71af83d866351cbf9f1d1fbbaa7867dfa3575e37d3186f16e4a7548dac"
+          },
+          "pass": true
+        },
+        {
+          "route": "subscription",
+          "locale": "en",
+          "theme": "light",
+          "width": 390,
+          "upper": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-en-light-390-upper.png",
+            "imageSha256": "d2e62369952407b4048e0860cd3267cd11108bfd99ff2e52d0fc230c95fcfbb3"
+          },
+          "lower": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-en-light-390-lower.png",
+            "imageSha256": "95765ea93403c66edce7f5ff7543e567645c547c1677011bb1269578cbd9111b"
+          },
+          "freeImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-en-light-390-free-cta-upper.png",
+            "imageSha256": "95765ea93403c66edce7f5ff7543e567645c547c1677011bb1269578cbd9111b"
+          },
+          "businessImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-en-light-390-business-cta-upper.png",
+            "imageSha256": "8249f14c60678534788b5687ade4244ccc51d5afff81e8fdf81635d40677973d"
+          },
+          "pass": true
+        },
+        {
+          "route": "subscription",
+          "locale": "en",
+          "theme": "light",
+          "width": 1440,
+          "upper": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-en-light-1440-upper.png",
+            "imageSha256": "efcb2a272f0500d211aeaec406bd72552a6b1acf278945fd9a49bb37cf3ec005"
+          },
+          "lower": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-en-light-1440-lower.png",
+            "imageSha256": "4d2a48bb00f68f9f47b9e16780128c7291ffb04be8d4f05a853da543a29b9236"
+          },
+          "freeImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-en-light-1440-free-cta-upper.png",
+            "imageSha256": "4d2a48bb00f68f9f47b9e16780128c7291ffb04be8d4f05a853da543a29b9236"
+          },
+          "businessImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-en-light-1440-business-cta-upper.png",
+            "imageSha256": "948c203c16ba1565935d4d8ab13e12cceefb1eae5985c86ada53479208cf5751"
+          },
+          "pass": true
+        },
+        {
+          "route": "subscription",
+          "locale": "es",
+          "theme": "dark",
+          "width": 390,
+          "upper": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-es-dark-390-upper.png",
+            "imageSha256": "e1ad8c6c3cfe3d2aa77b6bd158a1f1d12c9ee13d9075ca366823e2e943770441"
+          },
+          "lower": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-es-dark-390-lower.png",
+            "imageSha256": "62eef026cbbcccc6c93cceaf2bab1c70ddaf4c72551afd7a07e2cb9000512d16"
+          },
+          "freeImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-es-dark-390-free-cta-upper.png",
+            "imageSha256": "62eef026cbbcccc6c93cceaf2bab1c70ddaf4c72551afd7a07e2cb9000512d16"
+          },
+          "businessImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-es-dark-390-business-cta-upper.png",
+            "imageSha256": "9c2353d317da9d4e14b99c07ee75f262b72cba8f36de81028882d04d01fc78f5"
+          },
+          "pass": true
+        },
+        {
+          "route": "subscription",
+          "locale": "es",
+          "theme": "dark",
+          "width": 1440,
+          "upper": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-es-dark-1440-upper.png",
+            "imageSha256": "791bb9b9a79b06b6f85652919b944c0135771390f665d76208eb8af813c2f77d"
+          },
+          "lower": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-es-dark-1440-lower.png",
+            "imageSha256": "97087c8587cfc2a1d78d0e8cca35510d1eede9e3a5b14da290e3c55fa4bc60e6"
+          },
+          "freeImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-es-dark-1440-free-cta-upper.png",
+            "imageSha256": "97087c8587cfc2a1d78d0e8cca35510d1eede9e3a5b14da290e3c55fa4bc60e6"
+          },
+          "businessImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-es-dark-1440-business-cta-upper.png",
+            "imageSha256": "1d1f91be36a5c1c05fadb20ff8d49419566c16d60a1851533aed007098e0d205"
+          },
+          "pass": true
+        },
+        {
+          "route": "subscription",
+          "locale": "es",
+          "theme": "light",
+          "width": 390,
+          "upper": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-es-light-390-upper.png",
+            "imageSha256": "53271df139002447abbc73627ef9a46d4dfe6a4e8a5da46ddc8dd325a43819d3"
+          },
+          "lower": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-es-light-390-lower.png",
+            "imageSha256": "b60161e65a462c8dd2446f894d94c083f9695ac7dde35e727ea2886f56b9031d"
+          },
+          "freeImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-es-light-390-free-cta-upper.png",
+            "imageSha256": "b60161e65a462c8dd2446f894d94c083f9695ac7dde35e727ea2886f56b9031d"
+          },
+          "businessImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-es-light-390-business-cta-upper.png",
+            "imageSha256": "a3514e84779e3446f63bd95bc2fa1e0246c3456f1ec89ba11ec7566f4cea8b05"
+          },
+          "pass": true
+        },
+        {
+          "route": "subscription",
+          "locale": "es",
+          "theme": "light",
+          "width": 1440,
+          "upper": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-es-light-1440-upper.png",
+            "imageSha256": "1702785c717a78d6809c7c3954824240b0c60256a88a3d4050aef2d362c16686"
+          },
+          "lower": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-es-light-1440-lower.png",
+            "imageSha256": "9a8bef0b97847ffaf5585efd9bd9682f12e2114ccb6c429c3bd5b6ac5a56926c"
+          },
+          "freeImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-es-light-1440-free-cta-upper.png",
+            "imageSha256": "9a8bef0b97847ffaf5585efd9bd9682f12e2114ccb6c429c3bd5b6ac5a56926c"
+          },
+          "businessImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-final-svg-20261030/subscription-es-light-1440-business-cta-upper.png",
+            "imageSha256": "74f0a94784be76583d565c91a2f2e9b93c7a444ebd9d87a145d151d89f19c756"
+          },
+          "pass": true
+        }
+      ],
+      "controlProbes": [
+        {
+          "route": "subscription",
+          "locale": "en",
+          "theme": "dark",
+          "width": 1440,
+          "overlap": 0,
+          "searchHits": [true, true, true],
+          "menuHits": [true, true, true]
+        },
+        {
+          "route": "subscription",
+          "locale": "en",
+          "theme": "light",
+          "width": 1440,
+          "overlap": 0,
+          "searchHits": [true, true, true],
+          "menuHits": [true, true, true]
+        },
+        {
+          "route": "subscription",
+          "locale": "es",
+          "theme": "dark",
+          "width": 1440,
+          "overlap": 0,
+          "searchHits": [true, true, true],
+          "menuHits": [true, true, true]
+        },
+        {
+          "route": "subscription",
+          "locale": "es",
+          "theme": "light",
+          "width": 1440,
+          "overlap": 0,
+          "searchHits": [true, true, true],
+          "menuHits": [true, true, true]
+        }
+      ],
+      "complete": true
+    }
+  },
+  "independentReviews": {
+    "account-ui-independent-source-visual-review-20261030.json": "5295371541d71a0aacd58016fff36ba40275d3a7368afe7da1c3b88a28c81292",
+    "account-ui-svg-supplementary-source-review-20261030.json": "621f35f925964e0c7716d9b8dae8e5ea0442872e92a1d558808eca7df0cf9c31",
+    "account-ui-canonical-arrow-final-independent-review-20261031.json": "347fb6586631c7705f350af620f77f2fe3ed8d2f6e6a163794ad6c79d9285d87"
+  },
+  "finalRuntimeHashes": {
+    "src/app/[locale]/account/AccountSectionLinks.tsx": "05c4029e64958c80e63c4dfe6ac2ac59f0b01787c5d536f1a44a10947f6bfcc7",
+    "src/app/[locale]/account/account-consumer.css": "c0ba7cbebeba492ea838805a6b7a7d460fcb6caa17c42aaa61a840cbb0f90821",
+    "src/app/[locale]/account/account-controls.css": "de98ffc40bf76a33a1377258496c6ae631dd972c83a263e0f3b47b78215ff592",
+    "src/app/[locale]/account/account-personal.module.css": "43eb698ea51fd4ca60493cbe0714b56076dd1bcfbb4ebd38a052bcfc0086f2a2",
+    "src/app/[locale]/account/account-suite.css": "311da3d9405060543b2e70744bf078584c9cf6f92c5bd0198f87694e64368672",
+    "src/app/[locale]/account/layout.tsx": "592cbb7b775347e8569f325907b0d08a8e0013cb3bf2612775530ada29848639",
+    "src/app/[locale]/account/page.tsx": "23660af1a18e3df03e1954ca3e9692b79b40b72dae41928dcceaa504e4f87ec6",
+    "src/app/[locale]/account/profile/page.tsx": "32fbb2e833cbe43d715dbe6d4eea71f4a25de0c7daa216fa84e90dbf91218377",
+    "src/app/[locale]/account/settings/page.tsx": "f8ca8b6f78531cc26a15ccf5f14aa569ab0b1f4135a8d164a5ee085cc82fc71e",
+    "src/app/appearance.css": "015e00b8a0e0e2f475c7d2cf83c6112e7cc00485de969eca07c79dc37fb248a8",
+    "src/components/AkiSuiteMembershipGrid.module.css": "49390c01bc525d19be3710c25d917808d95f422820e33e8b2c68c94db1ba00ea",
+    "src/components/AkiSuiteMembershipGrid.tsx": "e5717f5b7269c2f1d5cd1197db84381a9b30358fdb4d0f74c5884dd70a56c430",
+    "src/components/AkiSuiteMembershipHub.tsx": "dc678eb6ea86516a0a46280b933c78649c9aae0cc98136fd630066e8c72846d5",
+    "src/components/WorkspaceShell.tsx": "a48978c34c3b184dfe82c1f7ef8dd7607a575afee3e402a9268431c27a69b3a2",
+    "src/lib/account-profile-website.ts": "0b8e15142b2180c6dadfed2c8de9fb4ead6706ccfb311d7332583b7e0353953a"
+  },
+  "finalTypecheck": {
+    "exit": 0,
+    "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "finalIndependentGlyphVisualReview": "Qualified independentfinalsource+actualENdark390/ESlight1440canonicalarrowPNGs reviewed; glyphdefectclosed. FreshheadCI required.",
+  "publishedInitialHeadFailure": {
+    "source": "30c21fc54dcc484b65138192cb5b286f40ee19ff",
+    "workflow": "https://github.com/elguiriashing/akipasa/actions/runs/41149023740",
+    "failedJob": 124380834135,
+    "cause": "SharedAudienceStudio Gitblob parity withthreeapps violated by decorativeSVGmarkup. Existingassertion preserved; sharedcanonicalsource restored.",
+    "retainedLog": "/workspace/akipasa-main-checkpoints/account338-30c21fc-job-124380834135-FAILED.log"
+  },
+  "sharedStudioRepair": {
+    "canonicalGitBlob": "949828873ce35fd5768d497c9ea86084bc732f3d",
+    "canonicalSourceRestored": true,
+    "sharedStudioCssUnchanged": true,
+    "accountOnlyGlyphFontFallback": true,
+    "sharedContractTestsPassed": 4,
+    "targetedSubscription": {
+      "scope": "Actual async Account pages/AccountLayout/AppShell and candidate CSS; disposable identity/database/navigation. Actions throw. Not Next HTTP/liveAuth/RLS/billing/provider/device acceptance.",
+      "sourceHead": "30c21fc54dcc484b65138192cb5b286f40ee19ff",
+      "sourceDirty": true,
+      "actualNext": false,
+      "physicalDevice": false,
+      "initialSourceHashes": {
+        "src/lib/approved-pricing.ts": "28e742e3af97a56881868de93c37ebfbc9a24656334abb0695b82987ea9821dd",
+        "src/lib/akisuite-catalogue.ts": "a594bf0d25c9237191c51f722b2dabab959c8132c8e49197d10a643cd92a7578",
+        "src/components/BrandLogo.tsx": "cbafda3f3b75d7aea89157c373d12f3615e636c6f7026eff432c9d1ceaf15946",
+        "src/components/Icons.tsx": "0bb1dec5859ee9ca35cd3f4f298c7e6c398257bde038554dfbca226a802d9274",
+        "src/components/WorkspaceShell.tsx": "a48978c34c3b184dfe82c1f7ef8dd7607a575afee3e402a9268431c27a69b3a2",
+        "tests/fixtures/account-browser-data.mjs": "f1c71eabf6ce1fc189fac6aae4c6468056a65af4de23c850177cbf0a5dc02c34",
+        "src/lib/locations.ts": "5b501ceb4f3e980dfde9b64f6fb90dc0a59fb34d60d9564da9e8ad834f2afb85",
+        "src/lib/config.ts": "99bcd28eb21688269d1115aef445e529f5eb5bc7b2bcb09303e19a8fd845a5db",
+        "src/app/[locale]/account/account-suite.css": "311da3d9405060543b2e70744bf078584c9cf6f92c5bd0198f87694e64368672",
+        "src/app/[locale]/account/account-controls.css": "de98ffc40bf76a33a1377258496c6ae631dd972c83a263e0f3b47b78215ff592",
+        "src/app/[locale]/account/account-collections.css": "92a99bb2c3245109b9bde2857de1aad1b2a274898a044ff99ed01d85966c8b67",
+        "src/app/[locale]/account/account-consumer.css": "c0ba7cbebeba492ea838805a6b7a7d460fcb6caa17c42aaa61a840cbb0f90821",
+        "src/app/[locale]/account/AccountSectionLinks.tsx": "05c4029e64958c80e63c4dfe6ac2ac59f0b01787c5d536f1a44a10947f6bfcc7",
+        "src/app/[locale]/account/layout.tsx": "592cbb7b775347e8569f325907b0d08a8e0013cb3bf2612775530ada29848639",
+        "src/components/SpainLocationPicker.tsx": "cf444cc8609d499eb6aa02cf795d31b772736e49cf728acc69fabf8c8be0ed17",
+        "src/lib/geo.ts": "b8100ba0b7973e801b5cb62eb71429f544bfb51d99b70cefb1fb864570e985aa",
+        "src/components/UseMyLocation.tsx": "a5292859389a1da01091f364bfd0fa5b826fa28a555a19d73480ff7b84ca87f1",
+        "src/components/VenueQuickSearch.module.css": "457e290f4636d87b8ea183dae433d17e718dc083f90f7e4daf316045151cc753",
+        "src/components/VenueQuickSearch.tsx": "815202272f371eb2c820534ce7bffd2594ee5e7825a1aaa56335473b357e2099",
+        "src/lib/discovery-location.ts": "e3f759f3e4bb8499b2fb505dd642b7feaab2d040dc7276889a54d00ee4da5c36",
+        "src/lib/messages.ts": "3df3aaf5608bcbd291ed897abf84b4b13b14e0ba564bff9edaa953c6c45e2c4f",
+        "src/lib/discovery-filter-validation.ts": "80c8f43c70e85dfc4e67c77f08e18b6d3d3ca8feb547b4d732e0fd998d8557cc",
+        "src/components/GlobalSearch.tsx": "43009af8842c7bbe248d5e35b9a8f8bb2f3883ba5f4865c33437dd4d50b42f43",
+        "src/components/LanguageLink.tsx": "223ec2a8ecd59a150d632b4e81a5d58a9524ed6b404d95b09f969d849ffd9fe5",
+        "src/components/PasaDiscoveryNavigation.css": "d926665f1f5fd95db51946e532658f8291b70860bc4d00cd266d4bf7050c0829",
+        "src/components/ThemeModeControls.tsx": "a4d3755ecf378624b2f05eb709d2b2352c7f2a5571bc943dbf3f162f37883d2a",
+        "src/components/useSuiteReferral.ts": "1becd06f429135bd89fe9cee1cbc39f54b22350211a263432422241a7e4d24a1",
+        "src/lib/suite-navigation.ts": "20841a17472e926949746d57b9c03f42ba0c45570fe96082f5fab4b1c96bac9a",
+        "src/components/DiscoveryNavigation.css": "01fe38a052504d652d8c146bd842322f45524c988691bb8df9c79f20698d30d6",
+        "src/components/DiscoveryNavigation.tsx": "803922b858552e11c31fc8359b4078ac401ce8243461361adbfc89debb399450",
+        "src/lib/account-task-resume.ts": "f68f42070cb29be96643436f75d05cda1522ccbf7b0db2f23f15c4b2f34c26fb",
+        "src/lib/akiduermo-routing.ts": "a6b91984454ba29405416f0c22829fa27d04246916c5d9af739f08068e10bbc3",
+        "src/lib/akiconduzco-routing.ts": "e12defa49408227516b112d3966e6b2c98ede59fef3eeea5e9241053ba6fae37",
+        "src/lib/auth-security.ts": "addad5274b3d8af9a7f4fa63727703affe0b8859eb1d7c86b0ebdbdb76b5c611",
+        "src/lib/account-onboarding.ts": "90c8a9d625f746e878c7f917f5c98f2835ed3a68f895d062c0df44950a689698",
+        "src/lib/account-onboarding-server.ts": "508d0ce21c9a3825aea4b1eb77c8865b99991f42aba6d529e80d63fd51e2c8a6",
+        "src/lib/supabase/server.ts": "9e8dde00629e5e1cd58f23deb0c178fe3341f64adca2b52ec1844983a9c805e7",
+        "src/lib/public-request-origin.ts": "dcfaac386a336ee7558d3644d28934c2f522cb1020324db8bf2425104fbac7be",
+        "src/app/[locale]/auth/actions.ts": "4921a9c6e3e199af08a16c8cb443303fff3eb95a254ee0dbbf3e4b2588d0bcd9",
+        "src/lib/roles.ts": "6e0bc650d1125662984c221f1cc07cd0a6bbf89bf6bd624f01d552d7b454332d",
+        "src/components/ConsoleSwitcher.tsx": "8921ab7985be62de2d4a031b4e1cbc80c31382eb72adfd85429dd5d3cd282386",
+        "src/lib/discovery-navigation.ts": "3b528c5ec8d99ac65f5b8b3a960f829e88b0da6d354920666b6ca6a8610c9ca8",
+        "src/components/AppShell.tsx": "d0c624257334b64c8c300505faff0baf3200300292b18dcb09954ee178e6a40f",
+        "src/app/[locale]/account/rewards/page.tsx": "2b25107e9a79a58a2c4ea488d03f6e84f29ea1035c702cd716caca7d4f6e7d0d",
+        "src/components/AkiSuiteAudienceStudio.module.css": "450ae9de832eaa6c459883f3503ef5d4091ee76bb740ab70f78ca894c96d87c1",
+        "src/components/AkiSuiteAudienceStudio.tsx": "2a232739bd9744e23878470bdba1eda289d4883677ab69283e7cc6158c804cdd",
+        "src/components/AkiSuiteMembershipGrid.module.css": "49390c01bc525d19be3710c25d917808d95f422820e33e8b2c68c94db1ba00ea",
+        "src/components/AkiSuiteMembershipGrid.tsx": "e5717f5b7269c2f1d5cd1197db84381a9b30358fdb4d0f74c5884dd70a56c430",
+        "src/app/[locale]/account/account-personal.module.css": "43eb698ea51fd4ca60493cbe0714b56076dd1bcfbb4ebd38a052bcfc0086f2a2",
+        "src/components/AccountWorkspacePortals.tsx": "1ae33cd9ba162a2fb49f0c6e98762c0193b5c1bdbbab7ddf9e96258125be2d39",
+        "src/app/[locale]/account/page.tsx": "23660af1a18e3df03e1954ca3e9692b79b40b72dae41928dcceaa504e4f87ec6",
+        "src/app/[locale]/account/AccountPageHeader.tsx": "656d312be215ab7a29ed291d48d94425d62df64b3aaefaa999feccc4ef668e9f",
+        "src/lib/collection-links.ts": "6bed1249519ccf492a8e554e32309d6ebdfadb22bbe79dbccab439aa78166e49",
+        "src/app/[locale]/account/AccountCollectionRefresh.tsx": "656c88f159df94fd85b4979142e19dfeed56805b3d4a7a7669d9b297c4138ccd",
+        "src/app/[locale]/account/AccountCollectionState.tsx": "91e32df4cf57a810ecd25ad41a10cc758afec234fc60ad7884e64f1e6b689524",
+        "src/app/[locale]/account/AccountCollectionRemoveButton.tsx": "575e5e8b06494bcf82e2e300e094d95db40d9c146dda0225a0bf3136af4dfc23",
+        "src/lib/account-collection-query.ts": "17aa933f26f5ce71b2cb08b94faa025864bbc77443940265f0658cc8ea2979d0",
+        "src/app/[locale]/account/AccountItems.tsx": "72551d35753299c0fe754559b8a76c13037762da15344fe3b7668c31e7928184",
+        "src/lib/account-collection-catalogue.ts": "7fd9f34e1cc2621602aad59ff1cadcbee7f494f5db2d41ba8ca4db0d78dd6be1",
+        "src/app/[locale]/account/saved/page.tsx": "9d8608da13d2d4f81ed31919baed15068f107c706fef2745458aee3721f465ea",
+        "src/app/[locale]/account/following/page.tsx": "d5b11a8e0f49b1975e23c07c44d81c7cfd08d3da038ec367815f5381460b5e83",
+        "src/components/MyBookings.tsx": "725264d70f6717f343e2570bf06208920043b201775ec80783da71ef7cef35e8",
+        "src/components/BookingLiveRefresh.tsx": "8df41e5b695bc78e5709fbc68e1454765bd4c666045d1c3fee262f977c12c519",
+        "src/app/[locale]/account/AccountStayBookings.tsx": "643ca14acfef45dfb22960cb64be15fee6205ecf8666bdfe60d3270fe159fce9",
+        "src/app/[locale]/account/bookings/page.tsx": "3c9717ab2a3db821befc7934ef5578fc16d4db23ddfb14ccbe9606db4e31e421",
+        "src/app/[locale]/account/activity/page.tsx": "1a2c79e3f23eac1bcf3c1d1e66c4b6629b430283498e241aaba93fb9808c5b7d",
+        "src/app/[locale]/account/premium/page.tsx": "de31e9e5c5e65ed05baadf89ed79f5fc2d2c09ec2ebb52cb7fa2e867ad0b2f23",
+        "src/lib/account-profile-website.ts": "0b8e15142b2180c6dadfed2c8de9fb4ead6706ccfb311d7332583b7e0353953a",
+        "src/app/[locale]/account/profile/page.tsx": "32fbb2e833cbe43d715dbe6d4eea71f4a25de0c7daa216fa84e90dbf91218377",
+        "src/app/[locale]/account/settings/page.tsx": "f8ca8b6f78531cc26a15ccf5f14aa569ab0b1f4135a8d164a5ee085cc82fc71e",
+        "src/lib/privacy-consent.ts": "01e8cec760bf6d9ca5499f3c71f50a9f1a7b90c78df0aa3e6c2437069fe0de6a",
+        "src/components/PersonalisationSettings.tsx": "d6aceff920b0a34c35a82915b594acd88cde8928ffbaf33e16dbf3d6e0c93881",
+        "src/app/[locale]/account/privacy/page.tsx": "3f3a2401f5c8a18f430f6c6d572b3be1f844d92501bdcd99784be1c3c240e029",
+        "src/lib/akisuite-premium-launch.ts": "3088b1d7d9bf41746feef1c1d42b8d7cd94dbf7fed97b6bda06f64dc5587455a",
+        "src/components/SubscriptionRefresh.tsx": "26bd05d62b923d88d4d57ef32a0c08b02eaa3570d193cb8f85cb9db9f6207d2d",
+        "src/components/PremiumAdsConversion.tsx": "b7fec8a798ce26e752d90ea46229f1c64e779f2ea16e24a3f666b6b5251a8d5b",
+        "src/components/AkiSuiteMembershipHub.module.css": "273565eb8ce0c50d0761a8c3f745e41da85ae91a689952c46980bad11c4e934a",
+        "src/lib/akisuite-membership.ts": "2fed4faff352242245cf1aabdb238cbb0d348e78962c83663abac30bae93c778",
+        "src/components/AkiSuiteMembershipHub.tsx": "dc678eb6ea86516a0a46280b933c78649c9aae0cc98136fd630066e8c72846d5",
+        "src/lib/akisuite-readiness.ts": "f286fa77cbfc9c716252ac0d379f50e19ec3024644c27a9fad27c17c9a12d8fc",
+        "src/app/[locale]/account/subscription/page.tsx": "275914add854da1728913f697eb3a2d71a4addbac3286a8f66e69e7f30c0a811",
+        "package.json": "27d7a8273f97d20cb4f469008edff9784d8d7c2ba553a2f8d4a05d24d4ed0a4d",
+        "package-lock.json": "7e62f52e0aa8354473eff83bd1004f9e416bbf8e17f69583c57b3ad4c23d97c2",
+        "src/app/globals.css": "783a040f0db03c0ac7f4750acd396acf6f38c4aef10a708e94cfc80df6f6e4a1",
+        "src/app/compact-app.css": "27a788fe1172acd6ff1e9f764a2790e63c345fb3090008ab46e12e372dca892c",
+        "src/app/brand.css": "ef68eb546410c4af273e06e6f5ed80c456c6507599f710273efaf2671268dd24",
+        "src/app/appearance.css": "015e00b8a0e0e2f475c7d2cf83c6112e7cc00485de969eca07c79dc37fb248a8",
+        "src/app/tablet-responsive.css": "60f09d70e2c4b53d0d8dd8f6aca9b6b33a8841bfcc87405ebb74214272308737",
+        "src/app/portal-unity.css": "df7f53c297febb2b2c6c2f959654c3736120be41ed7f745a9b1c750439be6e2c",
+        "src/lib/auth.ts": "5e9db531a2c1040c912dcd000f4e8e0afdc196bdd0df1f75adc8e197813edd9a",
+        "src/middleware.ts": "6e3dfa1cea9f1bde61e18b1e2ff86bff9f1cc9e83aa13898a44ae64f5a709f61",
+        "src/app/[locale]/account/actions.ts": "047883f0341af34d2524b141bd08bd86bb735b37477641bcf2d81200f7b79ccc",
+        "scripts/test-account-release-ui-browser.mjs": "f806e3a2a80b1b0ee7d73db9cfbb7edfd8bf9a68a487d13bad633788a76a6aae",
+        "test-results/account-slice-validation/subscription-only-final.mjs": "c6f1478d671b41eed24d70359a2e6bcc99e99dde40f2199e46af9e186b37691e"
+      },
+      "finalSourceHashes": {
+        "src/lib/approved-pricing.ts": "28e742e3af97a56881868de93c37ebfbc9a24656334abb0695b82987ea9821dd",
+        "src/lib/akisuite-catalogue.ts": "a594bf0d25c9237191c51f722b2dabab959c8132c8e49197d10a643cd92a7578",
+        "src/components/BrandLogo.tsx": "cbafda3f3b75d7aea89157c373d12f3615e636c6f7026eff432c9d1ceaf15946",
+        "src/components/Icons.tsx": "0bb1dec5859ee9ca35cd3f4f298c7e6c398257bde038554dfbca226a802d9274",
+        "src/components/WorkspaceShell.tsx": "a48978c34c3b184dfe82c1f7ef8dd7607a575afee3e402a9268431c27a69b3a2",
+        "tests/fixtures/account-browser-data.mjs": "f1c71eabf6ce1fc189fac6aae4c6468056a65af4de23c850177cbf0a5dc02c34",
+        "src/lib/locations.ts": "5b501ceb4f3e980dfde9b64f6fb90dc0a59fb34d60d9564da9e8ad834f2afb85",
+        "src/lib/config.ts": "99bcd28eb21688269d1115aef445e529f5eb5bc7b2bcb09303e19a8fd845a5db",
+        "src/app/[locale]/account/account-suite.css": "311da3d9405060543b2e70744bf078584c9cf6f92c5bd0198f87694e64368672",
+        "src/app/[locale]/account/account-controls.css": "de98ffc40bf76a33a1377258496c6ae631dd972c83a263e0f3b47b78215ff592",
+        "src/app/[locale]/account/account-collections.css": "92a99bb2c3245109b9bde2857de1aad1b2a274898a044ff99ed01d85966c8b67",
+        "src/app/[locale]/account/account-consumer.css": "c0ba7cbebeba492ea838805a6b7a7d460fcb6caa17c42aaa61a840cbb0f90821",
+        "src/app/[locale]/account/AccountSectionLinks.tsx": "05c4029e64958c80e63c4dfe6ac2ac59f0b01787c5d536f1a44a10947f6bfcc7",
+        "src/app/[locale]/account/layout.tsx": "592cbb7b775347e8569f325907b0d08a8e0013cb3bf2612775530ada29848639",
+        "src/components/SpainLocationPicker.tsx": "cf444cc8609d499eb6aa02cf795d31b772736e49cf728acc69fabf8c8be0ed17",
+        "src/lib/geo.ts": "b8100ba0b7973e801b5cb62eb71429f544bfb51d99b70cefb1fb864570e985aa",
+        "src/components/UseMyLocation.tsx": "a5292859389a1da01091f364bfd0fa5b826fa28a555a19d73480ff7b84ca87f1",
+        "src/components/VenueQuickSearch.module.css": "457e290f4636d87b8ea183dae433d17e718dc083f90f7e4daf316045151cc753",
+        "src/components/VenueQuickSearch.tsx": "815202272f371eb2c820534ce7bffd2594ee5e7825a1aaa56335473b357e2099",
+        "src/lib/discovery-location.ts": "e3f759f3e4bb8499b2fb505dd642b7feaab2d040dc7276889a54d00ee4da5c36",
+        "src/lib/messages.ts": "3df3aaf5608bcbd291ed897abf84b4b13b14e0ba564bff9edaa953c6c45e2c4f",
+        "src/lib/discovery-filter-validation.ts": "80c8f43c70e85dfc4e67c77f08e18b6d3d3ca8feb547b4d732e0fd998d8557cc",
+        "src/components/GlobalSearch.tsx": "43009af8842c7bbe248d5e35b9a8f8bb2f3883ba5f4865c33437dd4d50b42f43",
+        "src/components/LanguageLink.tsx": "223ec2a8ecd59a150d632b4e81a5d58a9524ed6b404d95b09f969d849ffd9fe5",
+        "src/components/PasaDiscoveryNavigation.css": "d926665f1f5fd95db51946e532658f8291b70860bc4d00cd266d4bf7050c0829",
+        "src/components/ThemeModeControls.tsx": "a4d3755ecf378624b2f05eb709d2b2352c7f2a5571bc943dbf3f162f37883d2a",
+        "src/components/useSuiteReferral.ts": "1becd06f429135bd89fe9cee1cbc39f54b22350211a263432422241a7e4d24a1",
+        "src/lib/suite-navigation.ts": "20841a17472e926949746d57b9c03f42ba0c45570fe96082f5fab4b1c96bac9a",
+        "src/components/DiscoveryNavigation.css": "01fe38a052504d652d8c146bd842322f45524c988691bb8df9c79f20698d30d6",
+        "src/components/DiscoveryNavigation.tsx": "803922b858552e11c31fc8359b4078ac401ce8243461361adbfc89debb399450",
+        "src/lib/account-task-resume.ts": "f68f42070cb29be96643436f75d05cda1522ccbf7b0db2f23f15c4b2f34c26fb",
+        "src/lib/akiduermo-routing.ts": "a6b91984454ba29405416f0c22829fa27d04246916c5d9af739f08068e10bbc3",
+        "src/lib/akiconduzco-routing.ts": "e12defa49408227516b112d3966e6b2c98ede59fef3eeea5e9241053ba6fae37",
+        "src/lib/auth-security.ts": "addad5274b3d8af9a7f4fa63727703affe0b8859eb1d7c86b0ebdbdb76b5c611",
+        "src/lib/account-onboarding.ts": "90c8a9d625f746e878c7f917f5c98f2835ed3a68f895d062c0df44950a689698",
+        "src/lib/account-onboarding-server.ts": "508d0ce21c9a3825aea4b1eb77c8865b99991f42aba6d529e80d63fd51e2c8a6",
+        "src/lib/supabase/server.ts": "9e8dde00629e5e1cd58f23deb0c178fe3341f64adca2b52ec1844983a9c805e7",
+        "src/lib/public-request-origin.ts": "dcfaac386a336ee7558d3644d28934c2f522cb1020324db8bf2425104fbac7be",
+        "src/app/[locale]/auth/actions.ts": "4921a9c6e3e199af08a16c8cb443303fff3eb95a254ee0dbbf3e4b2588d0bcd9",
+        "src/lib/roles.ts": "6e0bc650d1125662984c221f1cc07cd0a6bbf89bf6bd624f01d552d7b454332d",
+        "src/components/ConsoleSwitcher.tsx": "8921ab7985be62de2d4a031b4e1cbc80c31382eb72adfd85429dd5d3cd282386",
+        "src/lib/discovery-navigation.ts": "3b528c5ec8d99ac65f5b8b3a960f829e88b0da6d354920666b6ca6a8610c9ca8",
+        "src/components/AppShell.tsx": "d0c624257334b64c8c300505faff0baf3200300292b18dcb09954ee178e6a40f",
+        "src/app/[locale]/account/rewards/page.tsx": "2b25107e9a79a58a2c4ea488d03f6e84f29ea1035c702cd716caca7d4f6e7d0d",
+        "src/components/AkiSuiteAudienceStudio.module.css": "450ae9de832eaa6c459883f3503ef5d4091ee76bb740ab70f78ca894c96d87c1",
+        "src/components/AkiSuiteAudienceStudio.tsx": "2a232739bd9744e23878470bdba1eda289d4883677ab69283e7cc6158c804cdd",
+        "src/components/AkiSuiteMembershipGrid.module.css": "49390c01bc525d19be3710c25d917808d95f422820e33e8b2c68c94db1ba00ea",
+        "src/components/AkiSuiteMembershipGrid.tsx": "e5717f5b7269c2f1d5cd1197db84381a9b30358fdb4d0f74c5884dd70a56c430",
+        "src/app/[locale]/account/account-personal.module.css": "43eb698ea51fd4ca60493cbe0714b56076dd1bcfbb4ebd38a052bcfc0086f2a2",
+        "src/components/AccountWorkspacePortals.tsx": "1ae33cd9ba162a2fb49f0c6e98762c0193b5c1bdbbab7ddf9e96258125be2d39",
+        "src/app/[locale]/account/page.tsx": "23660af1a18e3df03e1954ca3e9692b79b40b72dae41928dcceaa504e4f87ec6",
+        "src/app/[locale]/account/AccountPageHeader.tsx": "656d312be215ab7a29ed291d48d94425d62df64b3aaefaa999feccc4ef668e9f",
+        "src/lib/collection-links.ts": "6bed1249519ccf492a8e554e32309d6ebdfadb22bbe79dbccab439aa78166e49",
+        "src/app/[locale]/account/AccountCollectionRefresh.tsx": "656c88f159df94fd85b4979142e19dfeed56805b3d4a7a7669d9b297c4138ccd",
+        "src/app/[locale]/account/AccountCollectionState.tsx": "91e32df4cf57a810ecd25ad41a10cc758afec234fc60ad7884e64f1e6b689524",
+        "src/app/[locale]/account/AccountCollectionRemoveButton.tsx": "575e5e8b06494bcf82e2e300e094d95db40d9c146dda0225a0bf3136af4dfc23",
+        "src/lib/account-collection-query.ts": "17aa933f26f5ce71b2cb08b94faa025864bbc77443940265f0658cc8ea2979d0",
+        "src/app/[locale]/account/AccountItems.tsx": "72551d35753299c0fe754559b8a76c13037762da15344fe3b7668c31e7928184",
+        "src/lib/account-collection-catalogue.ts": "7fd9f34e1cc2621602aad59ff1cadcbee7f494f5db2d41ba8ca4db0d78dd6be1",
+        "src/app/[locale]/account/saved/page.tsx": "9d8608da13d2d4f81ed31919baed15068f107c706fef2745458aee3721f465ea",
+        "src/app/[locale]/account/following/page.tsx": "d5b11a8e0f49b1975e23c07c44d81c7cfd08d3da038ec367815f5381460b5e83",
+        "src/components/MyBookings.tsx": "725264d70f6717f343e2570bf06208920043b201775ec80783da71ef7cef35e8",
+        "src/components/BookingLiveRefresh.tsx": "8df41e5b695bc78e5709fbc68e1454765bd4c666045d1c3fee262f977c12c519",
+        "src/app/[locale]/account/AccountStayBookings.tsx": "643ca14acfef45dfb22960cb64be15fee6205ecf8666bdfe60d3270fe159fce9",
+        "src/app/[locale]/account/bookings/page.tsx": "3c9717ab2a3db821befc7934ef5578fc16d4db23ddfb14ccbe9606db4e31e421",
+        "src/app/[locale]/account/activity/page.tsx": "1a2c79e3f23eac1bcf3c1d1e66c4b6629b430283498e241aaba93fb9808c5b7d",
+        "src/app/[locale]/account/premium/page.tsx": "de31e9e5c5e65ed05baadf89ed79f5fc2d2c09ec2ebb52cb7fa2e867ad0b2f23",
+        "src/lib/account-profile-website.ts": "0b8e15142b2180c6dadfed2c8de9fb4ead6706ccfb311d7332583b7e0353953a",
+        "src/app/[locale]/account/profile/page.tsx": "32fbb2e833cbe43d715dbe6d4eea71f4a25de0c7daa216fa84e90dbf91218377",
+        "src/app/[locale]/account/settings/page.tsx": "f8ca8b6f78531cc26a15ccf5f14aa569ab0b1f4135a8d164a5ee085cc82fc71e",
+        "src/lib/privacy-consent.ts": "01e8cec760bf6d9ca5499f3c71f50a9f1a7b90c78df0aa3e6c2437069fe0de6a",
+        "src/components/PersonalisationSettings.tsx": "d6aceff920b0a34c35a82915b594acd88cde8928ffbaf33e16dbf3d6e0c93881",
+        "src/app/[locale]/account/privacy/page.tsx": "3f3a2401f5c8a18f430f6c6d572b3be1f844d92501bdcd99784be1c3c240e029",
+        "src/lib/akisuite-premium-launch.ts": "3088b1d7d9bf41746feef1c1d42b8d7cd94dbf7fed97b6bda06f64dc5587455a",
+        "src/components/SubscriptionRefresh.tsx": "26bd05d62b923d88d4d57ef32a0c08b02eaa3570d193cb8f85cb9db9f6207d2d",
+        "src/components/PremiumAdsConversion.tsx": "b7fec8a798ce26e752d90ea46229f1c64e779f2ea16e24a3f666b6b5251a8d5b",
+        "src/components/AkiSuiteMembershipHub.module.css": "273565eb8ce0c50d0761a8c3f745e41da85ae91a689952c46980bad11c4e934a",
+        "src/lib/akisuite-membership.ts": "2fed4faff352242245cf1aabdb238cbb0d348e78962c83663abac30bae93c778",
+        "src/components/AkiSuiteMembershipHub.tsx": "dc678eb6ea86516a0a46280b933c78649c9aae0cc98136fd630066e8c72846d5",
+        "src/lib/akisuite-readiness.ts": "f286fa77cbfc9c716252ac0d379f50e19ec3024644c27a9fad27c17c9a12d8fc",
+        "src/app/[locale]/account/subscription/page.tsx": "275914add854da1728913f697eb3a2d71a4addbac3286a8f66e69e7f30c0a811",
+        "package.json": "27d7a8273f97d20cb4f469008edff9784d8d7c2ba553a2f8d4a05d24d4ed0a4d",
+        "package-lock.json": "7e62f52e0aa8354473eff83bd1004f9e416bbf8e17f69583c57b3ad4c23d97c2",
+        "src/app/globals.css": "783a040f0db03c0ac7f4750acd396acf6f38c4aef10a708e94cfc80df6f6e4a1",
+        "src/app/compact-app.css": "27a788fe1172acd6ff1e9f764a2790e63c345fb3090008ab46e12e372dca892c",
+        "src/app/brand.css": "ef68eb546410c4af273e06e6f5ed80c456c6507599f710273efaf2671268dd24",
+        "src/app/appearance.css": "015e00b8a0e0e2f475c7d2cf83c6112e7cc00485de969eca07c79dc37fb248a8",
+        "src/app/tablet-responsive.css": "60f09d70e2c4b53d0d8dd8f6aca9b6b33a8841bfcc87405ebb74214272308737",
+        "src/app/portal-unity.css": "df7f53c297febb2b2c6c2f959654c3736120be41ed7f745a9b1c750439be6e2c",
+        "src/lib/auth.ts": "5e9db531a2c1040c912dcd000f4e8e0afdc196bdd0df1f75adc8e197813edd9a",
+        "src/middleware.ts": "6e3dfa1cea9f1bde61e18b1e2ff86bff9f1cc9e83aa13898a44ae64f5a709f61",
+        "src/app/[locale]/account/actions.ts": "047883f0341af34d2524b141bd08bd86bb735b37477641bcf2d81200f7b79ccc",
+        "scripts/test-account-release-ui-browser.mjs": "f806e3a2a80b1b0ee7d73db9cfbb7edfd8bf9a68a487d13bad633788a76a6aae",
+        "test-results/account-slice-validation/subscription-only-final.mjs": "c6f1478d671b41eed24d70359a2e6bcc99e99dde40f2199e46af9e186b37691e"
+      },
+      "sourceStable": true,
+      "results": [
+        {
+          "route": "subscription",
+          "locale": "en",
+          "theme": "dark",
+          "width": 390,
+          "upper": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-en-dark-390-upper.png",
+            "imageSha256": "0b2b87f2ea35dff8f954934a1ed0c8a0fefafc7878bb7703f72978f3fe55a279"
+          },
+          "lower": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-en-dark-390-lower.png",
+            "imageSha256": "46ea186dbf12c13c384f15615ee3b2d244bc698298d1d214e6d1e6d25732654c"
+          },
+          "freeImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-en-dark-390-free-cta-upper.png",
+            "imageSha256": "46ea186dbf12c13c384f15615ee3b2d244bc698298d1d214e6d1e6d25732654c"
+          },
+          "businessImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-en-dark-390-business-cta-upper.png",
+            "imageSha256": "aeb879aa0f48a2392f5e85fe0786a46906b26a6069d14004bfd760d592992625"
+          },
+          "literalArrowFallback": {
+            "fontFamily": "\"DejaVu Sans\", \"Segoe UI Symbol\", \"Apple Symbols\", Arial, sans-serif",
+            "width": 10.0625,
+            "height": 18,
+            "text": "\u2197"
+          },
+          "pass": true
+        },
+        {
+          "route": "subscription",
+          "locale": "en",
+          "theme": "dark",
+          "width": 1440,
+          "upper": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-en-dark-1440-upper.png",
+            "imageSha256": "57740cd9bbc7a1d14043ec9e0e27b520e0b8fae91eda7db4dbc6fc0b6993e564"
+          },
+          "lower": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-en-dark-1440-lower.png",
+            "imageSha256": "30ae1c2e7b8c45acb0e341c5bc15c25dadd13a7720de4ea820d3a85ce2a9359a"
+          },
+          "freeImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-en-dark-1440-free-cta-upper.png",
+            "imageSha256": "30ae1c2e7b8c45acb0e341c5bc15c25dadd13a7720de4ea820d3a85ce2a9359a"
+          },
+          "businessImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-en-dark-1440-business-cta-upper.png",
+            "imageSha256": "c3d0f903ae314fc5f615b28fbbccbb5465ccee470e539f43fea6706f05e50506"
+          },
+          "literalArrowFallback": {
+            "fontFamily": "\"DejaVu Sans\", \"Segoe UI Symbol\", \"Apple Symbols\", Arial, sans-serif",
+            "width": 10.0625,
+            "height": 18,
+            "text": "\u2197"
+          },
+          "pass": true
+        },
+        {
+          "route": "subscription",
+          "locale": "en",
+          "theme": "light",
+          "width": 390,
+          "upper": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-en-light-390-upper.png",
+            "imageSha256": "d2e62369952407b4048e0860cd3267cd11108bfd99ff2e52d0fc230c95fcfbb3"
+          },
+          "lower": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-en-light-390-lower.png",
+            "imageSha256": "95765ea93403c66edce7f5ff7543e567645c547c1677011bb1269578cbd9111b"
+          },
+          "freeImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-en-light-390-free-cta-upper.png",
+            "imageSha256": "95765ea93403c66edce7f5ff7543e567645c547c1677011bb1269578cbd9111b"
+          },
+          "businessImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-en-light-390-business-cta-upper.png",
+            "imageSha256": "8249f14c60678534788b5687ade4244ccc51d5afff81e8fdf81635d40677973d"
+          },
+          "literalArrowFallback": {
+            "fontFamily": "\"DejaVu Sans\", \"Segoe UI Symbol\", \"Apple Symbols\", Arial, sans-serif",
+            "width": 10.0625,
+            "height": 18,
+            "text": "\u2197"
+          },
+          "pass": true
+        },
+        {
+          "route": "subscription",
+          "locale": "en",
+          "theme": "light",
+          "width": 1440,
+          "upper": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-en-light-1440-upper.png",
+            "imageSha256": "efcb2a272f0500d211aeaec406bd72552a6b1acf278945fd9a49bb37cf3ec005"
+          },
+          "lower": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-en-light-1440-lower.png",
+            "imageSha256": "4d2a48bb00f68f9f47b9e16780128c7291ffb04be8d4f05a853da543a29b9236"
+          },
+          "freeImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-en-light-1440-free-cta-upper.png",
+            "imageSha256": "4d2a48bb00f68f9f47b9e16780128c7291ffb04be8d4f05a853da543a29b9236"
+          },
+          "businessImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-en-light-1440-business-cta-upper.png",
+            "imageSha256": "79d3c9773f0e3d2ca77009b078b337ab54da9fe1e92ce38f1fd896773aae33fd"
+          },
+          "literalArrowFallback": {
+            "fontFamily": "\"DejaVu Sans\", \"Segoe UI Symbol\", \"Apple Symbols\", Arial, sans-serif",
+            "width": 10.0625,
+            "height": 18,
+            "text": "\u2197"
+          },
+          "pass": true
+        },
+        {
+          "route": "subscription",
+          "locale": "es",
+          "theme": "dark",
+          "width": 390,
+          "upper": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-es-dark-390-upper.png",
+            "imageSha256": "e1ad8c6c3cfe3d2aa77b6bd158a1f1d12c9ee13d9075ca366823e2e943770441"
+          },
+          "lower": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-es-dark-390-lower.png",
+            "imageSha256": "62eef026cbbcccc6c93cceaf2bab1c70ddaf4c72551afd7a07e2cb9000512d16"
+          },
+          "freeImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-es-dark-390-free-cta-upper.png",
+            "imageSha256": "62eef026cbbcccc6c93cceaf2bab1c70ddaf4c72551afd7a07e2cb9000512d16"
+          },
+          "businessImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-es-dark-390-business-cta-upper.png",
+            "imageSha256": "9c2353d317da9d4e14b99c07ee75f262b72cba8f36de81028882d04d01fc78f5"
+          },
+          "literalArrowFallback": {
+            "fontFamily": "\"DejaVu Sans\", \"Segoe UI Symbol\", \"Apple Symbols\", Arial, sans-serif",
+            "width": 10.0625,
+            "height": 18,
+            "text": "\u2197"
+          },
+          "pass": true
+        },
+        {
+          "route": "subscription",
+          "locale": "es",
+          "theme": "dark",
+          "width": 1440,
+          "upper": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-es-dark-1440-upper.png",
+            "imageSha256": "791bb9b9a79b06b6f85652919b944c0135771390f665d76208eb8af813c2f77d"
+          },
+          "lower": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-es-dark-1440-lower.png",
+            "imageSha256": "97087c8587cfc2a1d78d0e8cca35510d1eede9e3a5b14da290e3c55fa4bc60e6"
+          },
+          "freeImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-es-dark-1440-free-cta-upper.png",
+            "imageSha256": "97087c8587cfc2a1d78d0e8cca35510d1eede9e3a5b14da290e3c55fa4bc60e6"
+          },
+          "businessImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-es-dark-1440-business-cta-upper.png",
+            "imageSha256": "060e34b7c0543d29b72dc874da6cfde28520b84fdaef652912e31594a2ba09da"
+          },
+          "literalArrowFallback": {
+            "fontFamily": "\"DejaVu Sans\", \"Segoe UI Symbol\", \"Apple Symbols\", Arial, sans-serif",
+            "width": 10.0625,
+            "height": 18,
+            "text": "\u2197"
+          },
+          "pass": true
+        },
+        {
+          "route": "subscription",
+          "locale": "es",
+          "theme": "light",
+          "width": 390,
+          "upper": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-es-light-390-upper.png",
+            "imageSha256": "53271df139002447abbc73627ef9a46d4dfe6a4e8a5da46ddc8dd325a43819d3"
+          },
+          "lower": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-es-light-390-lower.png",
+            "imageSha256": "b60161e65a462c8dd2446f894d94c083f9695ac7dde35e727ea2886f56b9031d"
+          },
+          "freeImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-es-light-390-free-cta-upper.png",
+            "imageSha256": "b60161e65a462c8dd2446f894d94c083f9695ac7dde35e727ea2886f56b9031d"
+          },
+          "businessImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-es-light-390-business-cta-upper.png",
+            "imageSha256": "a3514e84779e3446f63bd95bc2fa1e0246c3456f1ec89ba11ec7566f4cea8b05"
+          },
+          "literalArrowFallback": {
+            "fontFamily": "\"DejaVu Sans\", \"Segoe UI Symbol\", \"Apple Symbols\", Arial, sans-serif",
+            "width": 10.0625,
+            "height": 18,
+            "text": "\u2197"
+          },
+          "pass": true
+        },
+        {
+          "route": "subscription",
+          "locale": "es",
+          "theme": "light",
+          "width": 1440,
+          "upper": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-es-light-1440-upper.png",
+            "imageSha256": "1702785c717a78d6809c7c3954824240b0c60256a88a3d4050aef2d362c16686"
+          },
+          "lower": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-es-light-1440-lower.png",
+            "imageSha256": "9a8bef0b97847ffaf5585efd9bd9682f12e2114ccb6c429c3bd5b6ac5a56926c"
+          },
+          "freeImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-es-light-1440-free-cta-upper.png",
+            "imageSha256": "9a8bef0b97847ffaf5585efd9bd9682f12e2114ccb6c429c3bd5b6ac5a56926c"
+          },
+          "businessImage": {
+            "image": "/workspace/akipasa-main-checkpoints/account-subscription-canonical-arrow-20261031/subscription-es-light-1440-business-cta-upper.png",
+            "imageSha256": "61a66eff0e05f91ca717acb745e343a25e988b6fb7d5de7e02e05d5b92345888"
+          },
+          "literalArrowFallback": {
+            "fontFamily": "\"DejaVu Sans\", \"Segoe UI Symbol\", \"Apple Symbols\", Arial, sans-serif",
+            "width": 10.0625,
+            "height": 18,
+            "text": "\u2197"
+          },
+          "pass": true
+        }
+      ],
+      "controlProbes": [
+        {
+          "route": "subscription",
+          "locale": "en",
+          "theme": "dark",
+          "width": 1440,
+          "overlap": 0,
+          "searchHits": [true, true, true],
+          "menuHits": [true, true, true]
+        },
+        {
+          "route": "subscription",
+          "locale": "en",
+          "theme": "light",
+          "width": 1440,
+          "overlap": 0,
+          "searchHits": [true, true, true],
+          "menuHits": [true, true, true]
+        },
+        {
+          "route": "subscription",
+          "locale": "es",
+          "theme": "dark",
+          "width": 1440,
+          "overlap": 0,
+          "searchHits": [true, true, true],
+          "menuHits": [true, true, true]
+        },
+        {
+          "route": "subscription",
+          "locale": "es",
+          "theme": "light",
+          "width": 1440,
+          "overlap": 0,
+          "searchHits": [true, true, true],
+          "menuHits": [true, true, true]
+        }
+      ],
+      "complete": true
+    },
+    "newOptimizedBuild": {
+      "exit": 0,
+      "BUILD_ID": "-qDfHHwmBBJq--rO9cVhW",
+      "logSha256": "56359d54fc13d025fdaaf93362bd7e0347cf3234b4080907b5e57d223cf369aa"
+    },
+    "freshExactHeadCI": "required",
+    "newCompiledNext": {
+      "passed": 10,
+      "nativePrivacyCases": 8,
+      "guestBoundaryCases": 2,
+      "guestRoutes": 20,
+      "consentStorageUnchanged": true,
+      "candidateOriginVerified": true,
+      "logSha256": "9b0e8f4d2962ff6f71c21b4cd5181d81787e6a9f4e18105ae1954d53926346db"
+    }
+  }
+}

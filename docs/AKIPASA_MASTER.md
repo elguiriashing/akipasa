@@ -423,6 +423,29 @@ AkiTonight adds localized read-only `/[locale]/tonight` guided intent and social
 
 Source: `src/lib/aki-tonight.ts`, `src/app/[locale]/tonight`, existing `PlansFirstHero`. Test: `tests/aki-tonight.test.ts`, new isolated CI plus full `npm run check`. The source overlaps PR #326's homepage/route-matrix work, and **must be explicitly reconciled with #326** and have bilingual mobile, Android, empty/error, sponsor/consent and real-inventory acceptance before merge/release. No migration or configuration change. Roll back by removing the hero CTA and route; retained existing events and customer records are unaffected. Track `docs/AKIPASA_RETENTION_IMPLEMENTATION_20261029.md`.
 
+## 2026-10-30 | Isolated Account consumer presentation candidate
+
+Following authorizedlive337c51, this candidate applies11surgicalAccountfiles
+(including pureHTTP(S)-website display helper), 10lineWorkspaceShell menu-close
+on actualhistory/routechange, existingSVGhandoff/CTAarrows inHub/Grid; sharedStudio stayscanonical and legacydockprivacy
+spacing.15runtimefiles only;14protectedauth/actions/data-leaves staybyteidentical
+to c51. Accountlayout retains existing trustedmembership-header returnresolver/
+requireUser and profile writes/exports/deletion/billing/permissions/7leafqueries
+areunchanged. Overviewreads existingusername/bio/avatar foronlycallerID; profile
+maxlength2000 matchesalready-existingservervalidator. No SQL/newdependency/Pals
+wardrobe/provider/consentchoice/event/XP/customer mutation or productboundary change.
+
+MaintainedMaster310Accountbrowserrunner unchanged; additive90actualcomponentstates
++160nativecontrols and pure18websitevectors runinexistingrequiredCIjob/config,
+withboundedreviewartifact.58focusedtests,504prefinalfixturecontexts and final90/160
+with93stablecompileddependencyhashes pass. Original11portedfull332auth-contract
+failures are preserved/notpassed: they demand a different requireUserreturnAPI,
+which this isolatedcandidate intentionallydoesnotcopy. AlloriginalMasterchecks
+remainrequired. Localfullcheck2184tests/15stages passed before the finaltwoSVG-only repairs;
+finaloptimizedbuild and49actualNext cases pass, including20guest routeguards
+on the candidate origin and8nativeprivacy cases. Exact-head fullCI/CF and final
+independentreview remain required; no newAccountmerge/deployment claimed.
+
 ## 2026-10-30 | Finished public-screen release, isolated from the full overhaul
 
 Alex explicitly authorizes shipping finished independent public screens ahead of

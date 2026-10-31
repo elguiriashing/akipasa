@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Icon } from "@/components/Icons";
 import { startAkiSuiteCheckout } from "@/app/[locale]/account/subscription/akisuite-actions";
 import {
   akiSuiteApp,
@@ -145,7 +146,17 @@ export function AkiSuiteMembershipGrid({
           ],
       action: (
         <Link href={isStay ? suiteHref("duermo", locale) : `/${locale}`}>
-          {es ? "Empezar gratis" : "Explore for free"} ↗
+          {es ? "Empezar gratis" : "Explore for free"}{" "}
+          <Icon
+            name="arrow-right"
+            size={16}
+            style={{
+              transform: "rotate(-45deg)",
+              display: "inline-block",
+              verticalAlign: "middle",
+              flexShrink: 0,
+            }}
+          />
         </Link>
       ),
     },
@@ -205,7 +216,17 @@ export function AkiSuiteMembershipGrid({
           ],
       action: (
         <Link href={suiteHref("hq", locale)}>
-          {es ? "Abrir AkiHQ gratis" : "Open free AkiHQ"} ↗
+          {es ? "Abrir AkiHQ gratis" : "Open free AkiHQ"}{" "}
+          <Icon
+            name="arrow-right"
+            size={16}
+            style={{
+              transform: "rotate(-45deg)",
+              display: "inline-block",
+              verticalAlign: "middle",
+              flexShrink: 0,
+            }}
+          />
         </Link>
       ),
       note: es ? "Siempre disponible" : "Always available",
@@ -237,7 +258,17 @@ export function AkiSuiteMembershipGrid({
         <Link
           href={`${suiteHref("duermo", locale, { path: "/membership" })}&audience=business`}
         >
-          {es ? "Explorar Premium" : "Explore listing Premium"} ↗
+          {es ? "Explorar Premium" : "Explore listing Premium"}{" "}
+          <Icon
+            name="arrow-right"
+            size={16}
+            style={{
+              transform: "rotate(-45deg)",
+              display: "inline-block",
+              verticalAlign: "middle",
+              flexShrink: 0,
+            }}
+          />
         </Link>
       ) : (
         planAction("akibusiness_premium")

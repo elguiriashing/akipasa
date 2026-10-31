@@ -29,6 +29,15 @@ jobs:
         run: node scripts/test-recovery-browser.mjs
       - name: Verify terms confirmation and consent control presentation
         run: node scripts/test-terms-accept-browser.mjs
+
+      - name: Verify released consumer Account screens and native navigation
+        run: node scripts/test-account-release-ui-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: account-release-ui-evidence
+          path: test-results/account-release-ui
+          retention-days: 7
       - name: AkiSelector login acceptance
         env:
           SELECTOR_EVIDENCE_DIR: test-results/account/workspace-selector

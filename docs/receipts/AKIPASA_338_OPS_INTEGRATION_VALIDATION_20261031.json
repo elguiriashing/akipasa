@@ -1,0 +1,51 @@
+{
+  "parents": [
+    "994a975313f0d4b6d81630606a4d9fca7fd69044",
+    "9e7da60fae3c24037a076e2998761a25eb8d436c"
+  ],
+  "frozenIntegrationHashesUnchanged": {
+    "docs/AKIPASA_AUTONOMOUS_EXECUTION_LEDGER.md": "4dd004345e677691f7fe20dfa0f18b377256d67f997e0dc872b7f04ba87d544c",
+    "docs/receipts/AKIPASA_PRODUCTION_338_20261031.json": "6603880d225659ec881452bc85276142a6a23ce0515de27ded6d4645b02b557c",
+    "docs/AKIPASA_REDESIGN_RELEASE_ACCEPTANCE.md": "d7f7f13df9d4273c25553531788dc1df44a1f35ed946f4ff1419e02fef4d78db",
+    "src/components/AkiSuiteMembershipHub.tsx": "dc678eb6ea86516a0a46280b933c78649c9aae0cc98136fd630066e8c72846d5",
+    "src/components/AkiSuiteMembershipGrid.tsx": "e5717f5b7269c2f1d5cd1197db84381a9b30358fdb4d0f74c5884dd70a56c430",
+    "docs/CHANGE_IMPACT_REGISTER.md": "ffedede5aa5d3e13d2f248c9f96e2f850a7fbe649f7f5ff017c5f1cc8dbf08fb",
+    "vitest.spotlight.config.ts": "e9a80c9e804aa87bac05900a8976cb7c217b5081edced746f0046bce4756a77c",
+    "docs/receipts/AKIPASA_ACCOUNT_CONSUMER_RELEASE_20261030.json": "b82015514854d01891dde1c404b340dce64b886591463955cb7b9bcf22dcd37f",
+    ".github/workflows/account-browser.yml": "685d2a709b073a1fd30fcb30168a7ad6a7631da457ed2b4fb7e084bde4ce56a3",
+    "docs/AKIPASA_MASTER.md": "1ac1955070ce750adf751e7b43021352b8f414e8362c59330ee0189169f3d92f",
+    "tests/e2e/account-release-guest-boundaries.spec.ts": "ae6cfc0f542f7a7a6504697fb66b486a91e4bbbcc93d3e63cc46ecb14df41744",
+    "tests/account-release-website.test.ts": "1bd9f29698b1a0e408a8b497cf5b9fc43e9142d20977ae83b543a7ae71230a73",
+    "scripts/test-account-release-ui-browser.mjs": "f806e3a2a80b1b0ee7d73db9cfbb7edfd8bf9a68a487d13bad633788a76a6aae",
+    "src/app/[locale]/account/account-consumer.css": "c0ba7cbebeba492ea838805a6b7a7d460fcb6caa17c42aaa61a840cbb0f90821"
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "exit": 0,
+    "vitestStages": 17,
+    "vitestTestsIncludingAutomation": 2926,
+    "logSha256": "8660366a1e5b9f3f654addcae5c5fc76d684df7afa101d466a60fb1e85d7c290",
+    "BUILD_ID": "2jN7UexXfa-Hr3NmqDFGO"
+  },
+  "integratedAccountFixture": {
+    "uiStates": 90,
+    "nativeProbes": 160,
+    "exit": 0,
+    "actualMainGuardsAndPageExports": true,
+    "actionCalls": 0
+  },
+  "actualCompiledNext": {
+    "passed": 10,
+    "privacyCases": 8,
+    "guestBoundaryCases": 2,
+    "guestPaths": 20,
+    "savedPrivacyUnchanged": true,
+    "actualAuthProviderOrPhysicalDevice": false
+  },
+  "operationsCaseProof": "832geometry +final64contrast/24editor/104audit+portableOwner69; finalcommitted832innewparallelCI remainsrequired",
+  "routeAccepted": 49,
+  "routePending": 41,
+  "fallbackAccepted": 6,
+  "full332ReadyOrMerged": false,
+  "postCheckChanges": "Receipt/ledger verification facts only; finalpublishedheadmustfreshlypassallrequiredCI."
+}

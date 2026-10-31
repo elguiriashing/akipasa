@@ -10,6 +10,7 @@ export default defineConfig({
       "tests/event-spotlight.test.tsx",
       "tests/share-button.test.tsx",
       "tests/public-ui-upgrades.test.tsx",
+      "tests/account-release-website.test.ts",
       "tests/community-public-release.test.tsx",
       "tests/public-creators-release.test.tsx",
       "tests/contribution-draft.test.tsx",

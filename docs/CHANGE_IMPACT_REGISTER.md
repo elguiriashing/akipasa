@@ -4873,3 +4873,39 @@ AKIPASA_THEME_FALLBACK_ACCEPTANCE_20261030.json.
   workflow20min run832+69andboundedartifacts; alloldjobs/assertionsremain. No new
   product/DB/schema/permission/billing/consent/customer mutation. Mainfullgate
   holds41routes. Normalproduction338reconciliation/frozenfullcheck/freshCI next.
+
+## 2026-10-30 | Independent Account/Profile/Settings UI release candidate
+
+- **Scope:**15runtimefiles on approvedpublic337Masterc51;11preparedAccountfiles
+  +WorkspaceShell10linehistoryclose +display-onlySVGcomponents +legacydockclearance.
+  ScopedAccountCSS/layout/navigation covers10existingroutes, keepsrealdata/default
+  empty/error/loading states and EN/ES dark/light360/390/820/1440 plusdesktopgutter.
+- **Protected dependencies:**14guard/action/data-leaffiles byteidentical; trusted
+  membership-header redirect/requireUser retained. No role/tenant/auth/provider/
+  billing/deletion/export/privatewardrobe or SQL behavior change. Profilemax2000
+  matchesexistingserver; pureURLdisplayguardneverfetches/writes. Overviewselects
+  existingprofilefields withsamecaller-ID filter. AkiHQ/AkiBusiness distinct.
+- **Demonstrated UI repairs:** ExistingMasterdrawer stayedopenafterBack; portonly
+  mainhistorycloseeffect, preservesinitial/sameroutestate. Legacyprivacytrigger
+  coveredbydock; scopedpadding/scrollmargin excludescanonical/Map/Auth/Passport/
+  ownerfocus, no savedconsentchoice changed. ExistingFontarrowrenderedtofu; reused
+  existingSVG, no labels/hrefs/actions changed.
+- **Evidence:**58focusedtests;504prefinalAccountcases; final90maintainedstates+160
+  nativeSearch/Menu controls,93initial/finalcompileddependencyhashesstable. Actual
+  Account/AppShell syntheticreadonlyadapters/actionsforbidden; not actualAuth/RLS/
+  provider/device proof. Master310runnerunchanged; additiverunner+18purevectors
+  registeredinexistingCIwithoutweakeningtests/policies. Preserve11inapplicable
+  full332authAPItestfailures, do not countthem aspasses or changeMasterguards.
+- **Release:** Ownerauthorizesfinishedindependentbatches, full332strictgateunchanged.
+  Localfullcheck passed beforefinaltwoSVG-onlyrepairs; finalbuild/49Nextcases
+  pass. Freshpublishedexactheadfullchecks/independentreview/CF stillrequired.
+  NoAccountPRmerge/deploy/customer/payment/consentchoice/resource operation yet.
+
+- **Actual published30c CI repair:** The sharedAudienceStudio source is pinned
+  byte-identical across three discovery apps. Its decorativeSVG edit violated
+  this real contract (537tests passed/1failed in thatgroup); no hash/assertion
+  was loosened. RestorecanonicalStudio gitblob949828873ce35fd5768d497c9ea86084bc732f3d
+  and keepStudioCSS unchanged. A narrowlyAccount-scoped native symbolfont fallback
+  fixesonlyits existingaria-hiddenarrow. All4sharedmembershipcontracts pass;
+  eightfreshSubscriptionstates/4nativeprobes/94sourcepins pass and actualmobile/
+  desktopglyphs reviewedclear. Newhead mustfreshly passall6CI beforemerge.

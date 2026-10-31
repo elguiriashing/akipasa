@@ -57,6 +57,24 @@ reviews and6fallbacks do not waive remaining Auth/RLS/provider/privatewrite/XP/
 device/final-owner requirements or strict audit. No pending Staff/previewSQL, paid
 resource, billing or customer mutation is authorized by the public release.
 
+## Owner-authorized consumer Account release — 31 October 2026
+
+Finishedindependent338 exact454bcd7a145052b089a073d7daf35ddfcd6b49ba passedall6fresh
+workflows/CF plusqualifiedindependentreview. CanonicalsharedStudio source/CSS
+remainbyte-identical; initialfailedparityhead30c retainedandfixedwithoutweakening
+tests. Expected-headmerged9e7da60fae3c24037a076e2998761a25eb8d436c, automaticWorker
+0c2e5166-d82d-49b5-befc-a57b15f92fd3at100%, exactreviewedtree/sourceverified.
+Production34anonymousHTTPSreads and8nativeprivacytests pass (20Accountguest
+redirects/no privateworkspace, allsavedprivacy unchanged). Realcustomeredits and
+physicalAndroidareNOTclaimed. 980f/26e retainedrollback; no manualduplicatedeploy
+or productionSQL/customer/payment/consentchoice mutation. See production338receipt.
+
+This partialauthorization coversAccountpresentation/unchangedprotectedMaster
+workflows+display/navigation/legacyprivacyspacing only. Full332 staysdraft,41
+routes plusoverallprivateprovider/role/RLS/XP/device/finalownerrequirements remain.
+NewOwnerreadrecovery/Admincontrastchanges arenot deployed by338. No pendingSQL
+or paidQAbranch authorization inferred.
+
 ## Shared visual contract
 
 All AkiPasa consumer pages use `AppShell` and its canonical `PasaBottomDock` (Home / Map / Check-in / Community / Profile), `LaunchRibbon` and global visual tokens. Authenticated Account, Admin and Staff subpages reuse the existing `WorkspaceShell` and `PasaSharedSurfaces.css` rather than copying new menus, navbars or cards per page. Event and venue details use the existing Spotlight templates and tracked actions. No change is allowed to check-in proof, rewards ledger, permission logic, billing, RLS, consent or age gates without separate verification.
