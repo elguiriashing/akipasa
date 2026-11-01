@@ -405,26 +405,33 @@ try {
   await page.reload();
   await ready(page);
   await choose(page, "starterOutfit", "crew");
-  const returned = page.waitForResponse(
-    (response) =>
-      new URL(response.url()).pathname === "/pals" &&
-      response.request().isNavigationRequest(),
-  );
-  await page.evaluate(() => {
+  const disposedState = await page.evaluate(() => {
     window.dispatchEvent(
       new PageTransitionEvent("pagehide", { persisted: true }),
     );
-    if (
-      !document.querySelector("#save").disabled ||
-      !document.querySelector("#download").disabled ||
-      document.querySelector("#avatar-stage canvas")
-    )
-      throw new Error("Disposed preview still active");
-    window.dispatchEvent(
-      new PageTransitionEvent("pageshow", { persisted: true }),
-    );
+    return {
+      saveDisabled: document.querySelector("#save").disabled,
+      exportDisabled: document.querySelector("#download").disabled,
+      canvasCount: document.querySelectorAll("#avatar-stage canvas").length,
+    };
   });
-  await returned;
+  expect(disposedState).toEqual({
+    saveDisabled: true,
+    exportDisabled: true,
+    canvasCount: 0,
+  });
+  await Promise.all([
+    page.waitForResponse(
+      (response) =>
+        new URL(response.url()).pathname === "/pals" &&
+        response.request().isNavigationRequest(),
+    ),
+    page.evaluate(() =>
+      window.dispatchEvent(
+        new PageTransitionEvent("pageshow", { persisted: true }),
+      ),
+    ),
+  ]);
   await ready(page, "snow-v4");
   await expect(page.locator("#avatar-stage")).toHaveAttribute(
     "data-starter-style",
@@ -515,11 +522,9 @@ try {
       for (const hair of ["original", "swept", "cropped"]) {
         await tab(page, "Hair");
         await choose(page, "starterHair", hair);
-        await page
-          .locator("#avatar-stage canvas")
-          .screenshot({
-            path: resolve(outputDir, `art-${model}-${outfit}-${hair}.png`),
-          });
+        await page.locator("#avatar-stage canvas").screenshot({
+          path: resolve(outputDir, `art-${model}-${outfit}-${hair}.png`),
+        });
         evidence.rendering.push({ model, outfit, hair });
       }
     }
@@ -601,6 +606,21 @@ try {
   console.log(
     "Authored-only starter editor: real textured Rain/Snow, styles, save/restore, retry, context recovery, both locales and touch emulation passed. Physical Android not exercised.",
   );
+} catch (error) {
+  console.error("Starter browser failure:", error);
+  for (const [index, page] of browser
+    ?.contexts()
+    .flatMap((context) => context.pages())
+    .entries() ?? []) {
+    if (!page.isClosed())
+      await page
+        .screenshot({
+          path: resolve(outputDir, "failure-" + index + ".png"),
+          fullPage: true,
+        })
+        .catch(() => {});
+  }
+  throw error;
 } finally {
   if (browser) await browser.close();
   await new Promise((done) => server.close(done));

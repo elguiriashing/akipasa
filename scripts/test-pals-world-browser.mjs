@@ -462,7 +462,14 @@ try {
         route.fulfill({
           contentType: "application/json",
           body: JSON.stringify({
-            appearance: { ...DEFAULT_APPEARANCE, model: "snow-v4" },
+            appearance: {
+              ...DEFAULT_APPEARANCE,
+              model: "snow-v4",
+              starterOutfit: "explorer",
+              starterHair: "cropped",
+              starterPalette: "coast",
+              starterHairColor: "silver",
+            },
             saved: true,
           }),
         }),
@@ -799,9 +806,30 @@ try {
         }),
       ).toBeVisible();
     } else {
-      await expect(page.locator("[data-pals-world-avatar]")).toHaveText(
-        "3D unavailable",
+      await expect(page.locator("[data-avatar-recovery]")).toHaveAttribute(
+        "data-avatar-recovery",
+        "error",
       );
+      await expect(
+        page.getByText("Avatar unavailable", { exact: true }),
+      ).toBeVisible();
+      await expect(page.locator("[data-pals-world-avatar] canvas")).toHaveCount(
+        0,
+      );
+      await page.unroute(match);
+      await page
+        .getByRole("button", { name: "Retry avatar", exact: true })
+        .click();
+      await expect(page.locator("[data-pals-world-avatar]")).toHaveAttribute(
+        "data-rendered",
+        "true",
+        { timeout: 45000 },
+      );
+      await expect(page.locator("[data-pals-world-avatar]")).toHaveAttribute(
+        "data-model-id",
+        "rain-v3",
+      );
+      await expect(page.locator("[data-avatar-recovery]")).toBeHidden();
       await expect(
         page.getByRole("button", {
           name: "Explore TEST ONLY Music Room",
