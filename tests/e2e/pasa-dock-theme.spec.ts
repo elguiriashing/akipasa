@@ -28,11 +28,14 @@ for (const locale of ["en", "es"] as const) {
             : "rgba(7, 9, 11, 0.97)",
         );
         await expect(dock.getByRole("link")).toHaveCount(5);
-        const activeHref =
-          destination === "" ? `/${locale}` : `/${locale}${destination}`;
-        await expect(dock.locator('a[aria-current="page"]')).toHaveAttribute(
-          "href",
-          activeHref,
+        const activeKey =
+          destination === ""
+            ? "home"
+            : destination === "/check-in"
+              ? "checkin"
+              : destination.slice(1);
+        await expect(dock.locator('a[aria-current="page"]')).toHaveClass(
+          new RegExp(`pasa-dock__item--${activeKey}`),
         );
         await expect(
           dock.getByRole("link", { name: "Check-in" }).locator("svg"),
