@@ -40,6 +40,32 @@ for (const locale of ["en", "es"] as const)
             "data-theme",
             theme,
           );
+          if (width <= 850) {
+            const header = page.locator(".app-shell .app-topbar-mobile");
+            const expectedHeader = theme === "light"
+              ? "rgb(250, 247, 242)"
+              : "rgb(9, 11, 13)";
+            const expectedHeaderInk = theme === "light"
+              ? "rgb(23, 34, 56)"
+              : "rgb(247, 249, 253)";
+            await expect(header).toHaveCSS("background-color", expectedHeader);
+            await expect(header.locator(".brand-wordmark")).toHaveCSS(
+              "color",
+              expectedHeaderInk,
+            );
+            for (const control of [
+              header.locator(".app-suite-mobile-trigger"),
+              header.locator(".app-more-mobile-trigger"),
+              page.locator(".app-shell .global-search-trigger"),
+            ]) {
+              await expect(control).toHaveCSS(
+                "color",
+                theme === "light"
+                  ? "rgb(23, 34, 56)"
+                  : "rgb(247, 249, 253)",
+              );
+            }
+          }
           const roadmap = page
             .getByRole("complementary", {
               name: locale === "es" ? "Aviso de lanzamiento" : "Launch update",
@@ -63,6 +89,14 @@ for (const locale of ["en", "es"] as const)
           const ribbon = page.getByRole("complementary", {
             name: locale === "es" ? "Aviso de lanzamiento" : "Launch update",
           });
+          await expect(ribbon).toHaveCSS(
+            "background-color",
+            theme === "light" ? "rgb(250, 247, 242)" : "rgb(16, 17, 18)",
+          );
+          await expect(ribbon.locator('[class*="message"]').first()).toHaveCSS(
+            "color",
+            theme === "light" ? "rgb(40, 51, 69)" : "rgb(225, 220, 216)",
+          );
           await expect(ribbon.locator("p")).toContainText("COSTA DEL SOL");
           await expect(ribbon.locator('[class*="track"] > span')).toHaveCount(
             2,
