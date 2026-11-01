@@ -416,15 +416,27 @@ html[data-theme="light"]
   html[data-theme="light"] .app-shell .app-topbar-mobile .brand-wordmark {
     color: #172238;
   }
-  html[data-theme="light"] .app-shell .app-topbar-mobile .app-suite-mobile-trigger,
-  html[data-theme="light"] .app-shell .app-topbar-mobile .app-more-mobile-trigger,
+  html[data-theme="light"]
+    .app-shell
+    .app-topbar-mobile
+    .app-suite-mobile-trigger,
+  html[data-theme="light"]
+    .app-shell
+    .app-topbar-mobile
+    .app-more-mobile-trigger,
   html[data-theme="light"] .app-shell .global-search-trigger {
     background: #fffdfa;
     color: #172238;
     border-color: #bbc2cb;
   }
-  html[data-theme="light"] .app-shell .app-topbar-mobile .app-suite-mobile-trigger:hover,
-  html[data-theme="light"] .app-shell .app-topbar-mobile .app-more-mobile-trigger:hover,
+  html[data-theme="light"]
+    .app-shell
+    .app-topbar-mobile
+    .app-suite-mobile-trigger:hover,
+  html[data-theme="light"]
+    .app-shell
+    .app-topbar-mobile
+    .app-more-mobile-trigger:hover,
   html[data-theme="light"] .app-shell .global-search-trigger:hover {
     border-color: #b5531f;
   }
