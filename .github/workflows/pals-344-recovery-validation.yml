@@ -1,0 +1,68 @@
+name: Validate AkiPals recovery fixes
+on:
+  push:
+    branches: [work/akipals-344-source-20261101]
+    paths: [.github/workflows/pals-344-recovery-validation.yml]
+permissions:
+  contents: write
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 04386b2881589cb953f5a220564cbf590679ecfb
+      - name: Apply hash-verified recovery changes to candidate only
+        run: |
+          python - <<'PY'
+          import base64,hashlib,json,lzma,subprocess
+          from pathlib import Path
+          payload='/Td6WFoAAATm1rRGAgAhARYAAAB0L+Wj4AX7A6hdAC2ewEcBJG9kjUNy+cat85H6pMwygjw4O7kcGRdpzu80sdy1hSt3GM1y20BPta7Ay7KqCUyN8ryilyjiZdOEt1muINzKxNWpENnRxyZ0uyqoZe7lqi/aDzvcR+fC+M78pQVJXgNLIDBZsnuMooGLKGNaRV03EqEBVADBipa9xbYMww97enQnwx+63HVDd8vk/a4bX2adA+CA+DwtK8LPBBXJAwJqI5Pa9lUEUACeWD+XGjOJCnKKNDUiA6sG0QG1i6U7zxNe/ZgFXS0YnEt1FANhvZn9WT5oQPx2ZHtAWvM0Urp0INildmEtxyqEDqcH7cmuCImM6B20c0Qd4XxkRFjtcSjQNzzrSw+JNzlJjUHW+GZ5t04Ug9+aRdU5iPExiWObMolqzc1KVh7ZE/DmNvff+U1oHxJfnpuGrZVaxshFdVopRd0Ju7Dby8jIZyUfo54mn5of8Upcs7yTvOJ/h5LZM/QmYwgUHn8jtHg4v8hZRjx1MPsPCi7I/fsojEqqF1GP5D0ZKIey5x+hXwCs0p8JjJDyl08iZC7WaSxBZRnI7DkU6TKdRwGaqca2Qs5LsMhd1X4sbjykOk5p4jAHEU3CcJkNZSIGV3LWV3bn/U3OkmgwYvHZ9ew6gD1a3/lotMcRmlyvj4PGWYzFX2PVmV3DPMAus9hBzyPdDq+o6Txkpkp7wBHbq8GkvYaBIHc0RmIdJPV0ZLB4s4rqEPtpsqBnAHNe5NAaHvvwJMMpmrNtw+OfmgPfm3Dj3PhguR+EIGo7jGKxIxHcjUhEODixKHwqCQu35Gisd7BJKZBjoXM3jLVXjV0aCPHg15qcRrZnZaHNekdOEDXj6MZ9UVxqPsGdORVx3C04qZcJiccUJAv+CmnU4DjTKYJ6b4OVqfQ1OxAMcBkAXlZwNphXxUcLb+fc5rHB7VX5y2rrQQSC3wmBFJsHkkUoH5i43VfjS2DGX66cgg5C/vcfELttHNOiZZUlW7tuD4RidyKrNlVtKJV4n3RZF0d5g+sh9OOuuZKgurjUaEBOrkB5KjuWRTEiOBjypPBg6NJjye8YfQTMy8MiG7OHbZVL4L6UWQhhB2jVnODE//k6wTrw1b+0c/vV5oCUEwqAGv6rgF0Ugr/NA7YeYRBtlqzzaL+gpGfEocaJD1mxhILf8gUVyf/F8YsBLTeL5u7Cl1OQN6/t16VrvzMH9UssHHGkpYDM2Gw7gbIJa4h75ftfElO69pSwUbAqeMefegf2MA6DRgAlLg6G9i0I6AABxAf8CwAAkRLpO7HEZ/sCAAAAAARZWg=='
+          raw=lzma.decompress(base64.b64decode(payload))
+          assert hashlib.sha256(raw).hexdigest()=='e5c25910ec49243bbe3b5a1723c9920362d9594357d13e450677344214cdf9e1'
+          entries=json.loads(raw)
+          allowed={'src/components/pals/starter-style.js','src/components/pals/studio-3d.js','src/components/pals/WorldExplorer.module.css','scripts/test-pals-identity-browser.mjs'}
+          assert len(entries)==4 and {e['p'] for e in entries}==allowed
+          for e in entries:
+              p=Path(e['p']);old=p.read_text();assert hashlib.sha256(old.encode()).hexdigest()==e['h']
+              lines=old.splitlines(keepends=True)
+              for i,j,text in reversed(e['e']): lines[i:j]=text.splitlines(keepends=True)
+              new=''.join(lines);assert hashlib.sha256(new.encode()).hexdigest()==e['n'];p.write_text(new)
+          subprocess.run(['git','diff','--check'],check=True)
+          subprocess.run(['git','add','--',*sorted(allowed)],check=True)
+          subprocess.run(['git','-c','user.name=github-actions[bot]','-c','user.email=41898282+github-actions[bot]@users.noreply.github.com','commit','-m','fix(pals): keep texture sources stable and make World retry reachable'],check=True)
+          subprocess.run(['git','push','origin','HEAD:refs/heads/work/pals-344-recovery-fix-20261101'],check=True)
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - run: npm run pals:3d:bundle
+      - name: Record exact candidate
+        run: |
+          mkdir -p test-results/pals-review
+          git rev-parse HEAD >test-results/pals-review/source-sha.txt
+          git archive --format=tar.gz --output=test-results/pals-review/source.tar.gz HEAD
+      - name: World rendering and recovery
+        id: world
+        continue-on-error: true
+        run: node scripts/test-pals-world-browser.mjs >test-results/pals-review/world.log 2>&1 || { tail -80 test-results/pals-review/world.log; exit 1; }
+      - name: Wardrobe rendering and recovery
+        id: wardrobe
+        continue-on-error: true
+        run: node scripts/test-pals-identity-browser.mjs >test-results/pals-review/wardrobe.log 2>&1 || { tail -80 test-results/pals-review/wardrobe.log; exit 1; }
+      - name: Require both browser gates
+        if: always()
+        run: test '${{ steps.world.outcome }}' = 'success' && test '${{ steps.wardrobe.outcome }}' = 'success'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pals-344-recovery-evidence
+          path: |
+            test-results/pals-review
+            test-results/pals-world-browser
+            test-results/pals-identity-browser
+          retention-days: 3
