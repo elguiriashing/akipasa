@@ -12,6 +12,20 @@ import {
   storyModerationSchema,
 } from "./contracts";
 import { storyImageDimensions, STORY_IMAGE_MAX_BYTES } from "./image";
+import { verifyStoryPhotoLocation } from "./photo-location";
+const photoLocationSchema = z.object({
+  latitude: z.number().finite().min(-90).max(90),
+  longitude: z.number().finite().min(-180).max(180),
+  accuracy: z.number().finite().min(0).max(500),
+  locatedAt: z.number().finite().positive(),
+});
+function locationFailureStatus(code: string) {
+  return code === "unavailable"
+    ? 503
+    : code === "outside_geofence" || code === "not_eligible"
+      ? 403
+      : 400;
+}
 const bucket = "community-stories";
 const failure = (code: string, status: number) =>
   NextResponse.json(
@@ -65,12 +79,42 @@ export async function handleStoryRequest(
     )
       return failure("collection_paused", 503);
     const db = await createSupabaseServerClient();
+    let profileId: string | undefined;
     if (
       mutating ||
       ["mine", "moderation", "check-ins"].includes(segments[0] || "")
     ) {
       const { data, error } = await db.auth.getUser();
       if (error || !data.user) return failure("authentication_required", 401);
+      profileId = data.user.id;
+    }
+    if (
+      request.method === "POST" &&
+      segments.length === 1 &&
+      segments[0] === "capture-location"
+    ) {
+      let body: unknown;
+      try {
+        body = JSON.parse(
+          new TextDecoder().decode(await boundedBody(request, 2048)),
+        );
+      } catch {
+        return failure("invalid_input", 400);
+      }
+      const parsed = photoLocationSchema
+        .extend({ checkInId: storyIdSchema })
+        .strict()
+        .safeParse(body);
+      if (!parsed.success) return failure("invalid_input", 400);
+      const issue = await verifyStoryPhotoLocation(
+        db,
+        profileId!,
+        parsed.data.checkInId,
+        parsed.data,
+      );
+      return issue
+        ? failure(issue, locationFailureStatus(issue))
+        : response({ ready: true });
     }
     const rpc = async (
       action: string,
@@ -221,13 +265,29 @@ export async function handleStoryRequest(
       if (
         [...form.keys()].some(
           (key) =>
-            !["checkInId", "kind", "caption", "publicOptIn", "file"].includes(
-              key,
-            ),
+            ![
+              "checkInId",
+              "kind",
+              "caption",
+              "publicOptIn",
+              "file",
+              "latitude",
+              "longitude",
+              "accuracy",
+              "locatedAt",
+            ].includes(key),
         ) ||
-        ["checkInId", "kind", "caption", "publicOptIn", "file"].some(
-          (key) => form.getAll(key).length !== 1,
-        )
+        [
+          "checkInId",
+          "kind",
+          "caption",
+          "publicOptIn",
+          "file",
+          "latitude",
+          "longitude",
+          "accuracy",
+          "locatedAt",
+        ].some((key) => form.getAll(key).length !== 1)
       )
         return failure("invalid_input", 400);
       if (form.get("publicOptIn") !== "true")
@@ -241,6 +301,18 @@ export async function handleStoryRequest(
         ),
       );
       if (!input.success) return failure("invalid_input", 400);
+      const location = photoLocationSchema.safeParse(
+        Object.fromEntries(
+          ["latitude", "longitude", "accuracy", "locatedAt"].map((key) => {
+            const value = form.get(key);
+            return [
+              key,
+              typeof value === "string" && value.trim() ? Number(value) : NaN,
+            ];
+          }),
+        ),
+      );
+      if (!location.success) return failure("location_required", 400);
       const file = form.get("file");
       if (
         !(file instanceof File) ||
@@ -250,6 +322,14 @@ export async function handleStoryRequest(
         return failure("invalid_image", 400);
       const image = new Uint8Array(await file.arrayBuffer());
       if (!storyImageDimensions(image)) return failure("invalid_image", 400);
+      const locationIssue = await verifyStoryPhotoLocation(
+        db,
+        profileId!,
+        input.data.checkInId,
+        location.data,
+      );
+      if (locationIssue)
+        return failure(locationIssue, locationFailureStatus(locationIssue));
       const service = createSupabaseServiceClient();
       const reserved = await rpc("reserve", input.data);
       if (!reserved?.id || !storyIdSchema.safeParse(reserved.id).success)

@@ -11,6 +11,7 @@ export default defineConfig({
       "tests/city-stories.test.tsx",
       "tests/story-moderation.test.tsx",
       "src/components/community/CheckinStoryComposer.test.tsx",
+      "src/components/community/StoryCamera.test.tsx",
       "src/components/community/CheckinStories.test.tsx",
     ],
     environment: "node",

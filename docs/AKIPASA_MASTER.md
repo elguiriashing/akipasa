@@ -4709,3 +4709,59 @@ credits/licenses preserved. No historical city reconstruction or customer-row
 change occurs. Original90-route overhaul and live QR/celebration fixes remain
 intact; private347 stays excluded. Fresh exact-head checks, actual PostGIS/provider
 proof, rendered coastal rings and reviewed forward installation gate this repair.
+
+## 2026-11-01 | Clear check-in outcomes and camera-only nearby Story photos
+
+Owner's real AkiPasa venue attempts reached the server and were rejected with
+outside_geofence at435–438m; their measured device accuracy14m allowed114m under
+the existing check-in formula. Generic Passport copy hid the actual result.
+The server action now preserves failed receipt IDs and translates known errors
+without exposing provider diagnostics. Passport reads only the authenticated
+owner's exact failed receipt through normal RLS, validates state/risk flags, and
+shows persisted distance and a safe venue link. Missing or mismatched receipts
+stay uncertain. Cooldown, limits, account, invalid QR, location and connection
+problems have distinct recovery paths. An uncertain transport result must never
+claim no reward was recorded; users check Progress before retrying. Existing
+accepted receipt/celebration, transactional XP and server geofence remain intact.
+
+Stories never receive the QR scanner's frames. The owner now explicitly requests
+fresh in-app capture near the venue and a one-action permission experience.
+One user gesture starts the camera and fresh GPS concurrently; there is no extra
+application location-consent button. Browsers retain or expire grants themselves;
+the application neither fakes persistent grants nor opens the camera on page
+arrival. Permission failures offer specific retry/settings/skip-photo recovery.
+No gallery alternative bypasses capture. Tracks stop on capture/close/background,
+unmount and venue/facing changes; stale callbacks cannot publish a photo.
+
+A normal authenticated same-origin capture-location preflight checks the owner's
+accepted recent visit and the server-read published verified venue pin. GPS must
+be finite, accuracy<=50m, age<=60s and not>5s in the future. Story distance is a
+fixed100m Haversine check, independent of the unchanged QR/XP check-in radius.
+The shutter captures a new frame and automatically repeats GPS/server preflight;
+upload automatically refreshes GPS and the server independently repeats its
+check before any reservation or storage upload. Coordinates/timestamp are used
+transiently, not retained in Story rows, forwarded to lifecycle RPCs or logged.
+Normal caller RLS is used; no new service-key location reads or database migration.
+The old lifecycle API and restrictive private bucket remain unchanged: direct
+reservation RPCs cannot upload media or obtain a signed write capability.
+
+The original accepted credential-backed visit remains an eligibility condition;
+this change does not create photo-only check-ins or award XP for photographs.
+Explicit per-photo public consent, sanitizing opaque WebP reencoding, limits,
+manual moderation, cleanup, account export and deletion remain authoritative.
+The camera preview allows remove/retake and resets public consent on replacement.
+Local bounded pixel checks reject nearly uniform blank frames and decoded QR
+codes occupying>=15% of a photo, permitting detailed low-light scenes and small
+background codes. Decoder failure is unavailable, never a quality pass.
+These checks are client guidance, not an anti-bypass or provenance guarantee.
+No AI call, external photo processor, face recognition or automated approval is
+introduced. Hands, screen rephotographs and venue authenticity still need review;
+browser GPS/capture timestamps can be spoofed and are not camera attestation.
+
+Validation must cover both locales/themes, native fake-camera pixels through
+preview and submission, retained-permission behavior without extra controls,
+permission/GPS failures, outside/stale fixes at shutter and upload, track cleanup,
+retake consent and exact private-store denial before failed geofences. Fixtures
+are not physical Android proof. Full check, strict audit, exact-head CI and normal
+automatic deployment remain required. Rollback pauses SQL collection before a
+compatible UI-off version; retain readiness, exports and withdrawal rights.

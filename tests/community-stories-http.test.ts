@@ -7,6 +7,10 @@ const fixture = vi.hoisted(() => ({
   download: vi.fn(),
   remove: vi.fn(),
   service: vi.fn(),
+  location: vi.fn(),
+}));
+vi.mock("@/lib/community-stories/photo-location", () => ({
+  verifyStoryPhotoLocation: fixture.location,
 }));
 vi.mock("@/lib/supabase/server", () => ({
   createSupabaseServerClient: async () => ({
@@ -38,6 +42,7 @@ beforeEach(() => {
   fixture.rpc.mockResolvedValue({ data: null, error: null });
   fixture.upload.mockResolvedValue({ error: null });
   fixture.remove.mockResolvedValue({ error: null });
+  fixture.location.mockResolvedValue(null);
 });
 it("rejects cross-origin writes before authentication or database calls", async () => {
   const result = await handleStoryRequest(
@@ -160,6 +165,10 @@ function uploadRequest(publicOptIn = "true", extra = false) {
     kind: "venue",
     caption: "Actual visit",
     publicOptIn,
+    latitude: "36.72",
+    longitude: "-4.42",
+    accuracy: "5",
+    locatedAt: "1800000000000",
   }))
     form.set(key, value);
   form.set("file", new File([bytes], "photo.webp", { type: "image/webp" }));
@@ -489,4 +498,198 @@ it.each([
     ).status,
   ).toBe(400);
   expect(fixture.rpc).not.toHaveBeenCalled();
+});
+
+const photoFix = {
+  latitude: 36.72,
+  longitude: -4.42,
+  accuracy: 5,
+  locatedAt: 1800000000000,
+};
+function captureRequest(
+  body: unknown = { checkInId: id, ...photoFix },
+  origin = "https://app.test",
+) {
+  return new Request(
+    "https://app.test/api/community/stories/capture-location",
+    {
+      method: "POST",
+      headers: { origin, "content-type": "application/json" },
+      body: JSON.stringify(body),
+    },
+  );
+}
+async function alteredUpload(change: (form: FormData) => void) {
+  const form = await uploadRequest().formData();
+  change(form);
+  return new Request("https://app.test/api/community/stories", {
+    method: "POST",
+    headers: { origin: "https://app.test" },
+    body: form,
+  });
+}
+it("preflights capture with the authenticated caller and numeric fix without reserving or touching storage", async () => {
+  const caller = "123e4567-e89b-12d3-a456-426614174001";
+  fixture.getUser.mockResolvedValue({
+    data: { user: { id: caller } },
+    error: null,
+  });
+  const result = await handleStoryRequest(captureRequest(), [
+    "capture-location",
+  ]);
+  expect(result.status).toBe(200);
+  expect(await result.json()).toEqual({ ready: true });
+  expect(fixture.location).toHaveBeenCalledWith(
+    expect.objectContaining({ rpc: fixture.rpc }),
+    caller,
+    id,
+    { checkInId: id, ...photoFix },
+  );
+  expect(fixture.rpc).not.toHaveBeenCalled();
+  expect(fixture.service).not.toHaveBeenCalled();
+});
+it("rejects foreign capture and guests before location verification", async () => {
+  expect(
+    (
+      await handleStoryRequest(captureRequest(undefined, "https://evil.test"), [
+        "capture-location",
+      ])
+    ).status,
+  ).toBe(403);
+  expect(fixture.getUser).not.toHaveBeenCalled();
+  fixture.getUser.mockResolvedValue({ data: { user: null }, error: null });
+  expect(
+    (await handleStoryRequest(captureRequest(), ["capture-location"])).status,
+  ).toBe(401);
+  expect(fixture.location).not.toHaveBeenCalled();
+  expect(fixture.service).not.toHaveBeenCalled();
+});
+it.each([
+  {},
+  { checkInId: id, ...photoFix, ownerId: id },
+  { checkInId: id, ...photoFix, latitude: "36.72" },
+  { checkInId: "not-a-uuid", ...photoFix },
+  { checkInId: id, ...photoFix, accuracy: null },
+])(
+  "rejects malformed capture payload %# before any location/database access",
+  async (body) => {
+    expect(
+      (await handleStoryRequest(captureRequest(body), ["capture-location"]))
+        .status,
+    ).toBe(400);
+    expect(fixture.location).not.toHaveBeenCalled();
+    expect(fixture.rpc).not.toHaveBeenCalled();
+    expect(fixture.service).not.toHaveBeenCalled();
+  },
+);
+it("bounds capture JSON to2KB and rejects malformed JSON", async () => {
+  for (const body of [
+    "{",
+    JSON.stringify({ checkInId: id, ...photoFix, padding: "x".repeat(2048) }),
+  ]) {
+    const request = new Request(
+      "https://app.test/api/community/stories/capture-location",
+      {
+        method: "POST",
+        headers: {
+          origin: "https://app.test",
+          "content-type": "application/json",
+        },
+        body,
+      },
+    );
+    expect(
+      (await handleStoryRequest(request, ["capture-location"])).status,
+    ).toBe(400);
+  }
+  expect(fixture.location).not.toHaveBeenCalled();
+  expect(fixture.rpc).not.toHaveBeenCalled();
+});
+it.each([
+  ["outside_geofence", 403],
+  ["not_eligible", 403],
+  ["unavailable", 503],
+  ["location_required", 400],
+  ["location_inaccurate", 400],
+  ["location_expired", 400],
+] as const)(
+  "fails capture and upload closed for %s before reserve/storage",
+  async (code, status) => {
+    fixture.location.mockResolvedValue(code);
+    for (const [request, segments] of [
+      [captureRequest(), ["capture-location"]],
+      [uploadRequest(), []],
+    ] as const) {
+      const result = await handleStoryRequest(request, [...segments]);
+      expect(result.status).toBe(status);
+      expect(await result.json()).toMatchObject({ error: { code } });
+    }
+    expect(fixture.rpc).not.toHaveBeenCalled();
+    expect(fixture.service).not.toHaveBeenCalled();
+    expect(fixture.upload).not.toHaveBeenCalled();
+  },
+);
+it.each(["latitude", "longitude", "accuracy", "locatedAt"])(
+  "rejects missing or duplicated multipart %s before verification",
+  async (key) => {
+    for (const change of [
+      (form: FormData) => form.delete(key),
+      (form: FormData) => form.append(key, "5"),
+    ]) {
+      expect(
+        (await handleStoryRequest(await alteredUpload(change))).status,
+      ).toBe(400);
+    }
+    expect(fixture.location).not.toHaveBeenCalled();
+    expect(fixture.rpc).not.toHaveBeenCalled();
+    expect(fixture.service).not.toHaveBeenCalled();
+  },
+);
+it.each(["", "not-numeric", "Infinity"])(
+  "rejects invalid multipart coordinates %j before verification",
+  async (value) => {
+    expect(
+      (
+        await handleStoryRequest(
+          await alteredUpload((form) => form.set("latitude", value)),
+        )
+      ).status,
+    ).toBe(400);
+    expect(fixture.location).not.toHaveBeenCalled();
+    expect(fixture.rpc).not.toHaveBeenCalled();
+    expect(fixture.service).not.toHaveBeenCalled();
+  },
+);
+it("verifies the fresh multipart fix using the authenticated identity without forwarding GPS to reservation", async () => {
+  const caller = "123e4567-e89b-12d3-a456-426614174001";
+  fixture.getUser.mockResolvedValue({
+    data: { user: { id: caller } },
+    error: null,
+  });
+  fixture.rpc.mockResolvedValue({ data: { id }, error: null });
+  await handleStoryRequest(uploadRequest());
+  expect(fixture.location).toHaveBeenCalledWith(
+    expect.objectContaining({ rpc: fixture.rpc }),
+    caller,
+    id,
+    photoFix,
+  );
+  const reserve = fixture.rpc.mock.calls.find(
+    (call) => call[1].p_action === "reserve",
+  );
+  expect(reserve?.[1].p_payload).toEqual({
+    checkInId: id,
+    kind: "venue",
+    caption: "Actual visit",
+    publicOptIn: "true",
+  });
+});
+
+it("does not reserve or touch storage when fresh-location verification unexpectedly throws", async () => {
+  fixture.location.mockRejectedValue(new Error("caller read unavailable"));
+  const result = await handleStoryRequest(uploadRequest());
+  expect(result.status).toBe(503);
+  expect(fixture.rpc).not.toHaveBeenCalled();
+  expect(fixture.service).not.toHaveBeenCalled();
+  expect(fixture.upload).not.toHaveBeenCalled();
 });

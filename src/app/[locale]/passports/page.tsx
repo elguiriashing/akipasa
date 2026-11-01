@@ -9,6 +9,11 @@ import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/config";
 import { optionalUser } from "@/lib/auth";
 import { CheckInSuccess } from "@/components/CheckInSuccess";
+import { CheckInFailure } from "@/components/CheckInFailure";
+import {
+  checkInFailureReason,
+  loadCheckInFailureReceipt,
+} from "@/lib/checkin-feedback";
 import checkInStyles from "@/components/CheckInSuccess.module.css";
 import { AchievementCelebration } from "@/components/AchievementCelebration";
 import { BadgeProgress } from "@/components/BadgeProgress";
@@ -73,6 +78,16 @@ export default async function PassportsPage({
     ? query.view!
     : "progress";
   const { supabase, user } = await optionalUser();
+  const requestedFailure = checkInFailureReason(query.checkin);
+  const failureReceiptPromise =
+    user && query.checkin && query.checkin !== "accepted"
+      ? loadCheckInFailureReceipt(
+          supabase,
+          user.id,
+          query.visit,
+          requestedFailure,
+        )
+      : Promise.resolve(null);
   const weeklyQuestNow = new Date();
   const weeklyQuestWindow = currentMadridQuestWeek(weeklyQuestNow);
   const passportResult = user
@@ -182,6 +197,7 @@ export default async function PassportsPage({
   const completedSteps = new Set(
     (progress || []).map((entry: any) => entry.step_id),
   );
+  const failureReceipt = await failureReceiptPromise;
   return (
     <PassportBook
       key={
@@ -237,15 +253,23 @@ export default async function PassportsPage({
       progress={
         <>
           {query.checkin && query.checkin !== "accepted" && (
-            <p className="notice">
-              {query.checkin === "cooldown"
-                ? es
-                  ? "Ya hiciste check-in aquí en las últimas seis horas."
-                  : "You already checked in here within six hours."
-                : es
-                  ? "No se pudo aceptar el check-in."
-                  : "The check-in could not be accepted."}
-            </p>
+            <CheckInFailure
+              locale={locale}
+              reason={
+                failureReceipt?.reason ||
+                (["outside_geofence", "cooldown", "rate_limited"].includes(
+                  query.checkin,
+                )
+                  ? "unknown"
+                  : requestedFailure)
+              }
+              verifiedDistanceMeters={failureReceipt?.distance}
+              venuePath={
+                failureReceipt?.venueSlug
+                  ? `/${locale}/venues/${failureReceipt.venueSlug}`
+                  : undefined
+              }
+            />
           )}
           {user && query.checkin === "accepted" && (
             <div className={checkInStyles.receipt}>

@@ -2907,3 +2907,28 @@ for actual viewer tests. HTTP/client50 and PGlite8contract cases pass; the latte
 use a declared geometry adapter and do not replace real PostGIS evidence.
 Fresh native/rendered evidence, final-head CI, independent review and exact
 production forward remain required. No production customer-record writes.
+
+## 2026-11-01 | Owner-directed check-in feedback and camera/GPS Story capture
+
+- Original33290/90+6 acceptance remains intact. Latest production358/fbc9c61 and
+  private347 exclusions preserved; no historical replay or database write begun.
+- Owner's three actual AkiPasa scans reached the server and were rejected as
+  outside_geofence at435–438m. New rejection cards read only owned RLS receipts,
+  preserve genuine distance/reason, and distinguish uncertain connection results.
+- Owner explicitly selected fresh in-app Story photos near the venue pin and
+  rejected separate repeated application permission/location steps. Implemented
+  one camera+GPS action, shutter freshness checks, preview/retake/explicit share,
+  automatic upload GPS refresh and server-side pre-storage geofence rejection.
+- Browser retains grants according to its own policy; no stored coordinates,
+  forced persistent permission, gallery bypass, QR frame reuse or AI claim.
+  Original credential-backed visit/XP, consent, moderation and export retained.
+- Parallel disjoint work: failure-card UI; live camera/composer; local quality
+  helper; server RLS/location helper; HTTP/native-browser evidence. Root alone
+  handles action/page/HTTP integration, documentation, final source and release.
+- Focused tests cover known error mapping/failed receipts, actual QR/blank pixel
+  analysis, venue geometry/location freshness and guard-before-storage behavior.
+  Maintained browser suites are adapting to actual live fake-camera frames,
+  replacing file-picker fixtures while preserving prior assertions. No physical
+  Android acceptance or production photo/check-in/XP test mutation is inferred.
+- Current batch is implemented and under source-bound browser/full-check/CI
+  verification; not yet claimed deployed. No new database or paid AI resource.

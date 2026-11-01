@@ -1,13 +1,13 @@
 "use client";
 
-import {
-  useEffect,
-  useRef,
-  useState,
-  type ChangeEvent,
-  type FormEvent,
-} from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import NextImage from "next/image";
+import {
+  StoryCamera,
+  freshStoryLocation,
+  storyLocationMessage,
+} from "./StoryCamera";
+import { checkPhotoQuality } from "@/lib/community-stories/photo-quality";
 import styles from "./CheckinStoryComposer.module.css";
 
 const INPUT_LIMIT = 10 * 1024 * 1024;
@@ -134,6 +134,39 @@ export async function prepareCheckinStoryPhoto(file: File): Promise<File> {
     context.fillStyle = "#ffffff";
     context.fillRect(0, 0, canvas.width, canvas.height);
     context.drawImage(source, 0, 0, canvas.width, canvas.height);
+    const qualityCanvas = document.createElement("canvas");
+    const qualityScale = Math.min(
+      1,
+      640 / Math.max(canvas.width, canvas.height),
+    );
+    qualityCanvas.width = Math.max(1, Math.round(canvas.width * qualityScale));
+    qualityCanvas.height = Math.max(
+      1,
+      Math.round(canvas.height * qualityScale),
+    );
+    const qualityContext = qualityCanvas.getContext("2d", {
+      willReadFrequently: true,
+    });
+    if (!qualityContext) throw new Error("photo_check_unavailable");
+    qualityContext.drawImage(
+      canvas,
+      0,
+      0,
+      qualityCanvas.width,
+      qualityCanvas.height,
+    );
+    const pixels = qualityContext.getImageData(
+      0,
+      0,
+      qualityCanvas.width,
+      qualityCanvas.height,
+    );
+    const qualityError = await checkPhotoQuality(
+      pixels.data,
+      pixels.width,
+      pixels.height,
+    );
+    if (qualityError) throw new Error(qualityError);
     const blob = await new Promise<Blob>((resolve, reject) =>
       canvas.toBlob(
         (value) =>
@@ -205,10 +238,8 @@ export function CheckinStoryComposer({
     };
   }, [checkInId, existingStory]);
   const busy = phase === "preparing" || phase === "submitting";
-  const choosePhoto = async (event: ChangeEvent<HTMLInputElement>) => {
-    const selected = event.currentTarget.files?.[0];
-    event.currentTarget.value = "";
-    if (!selected || busy || receipt) return;
+  const choosePhoto = async (selected: File) => {
+    if (busy || receipt) return;
     const request = ++sequence.current.generation;
     setFile(null);
     setPublicOptIn(false);
@@ -225,12 +256,23 @@ export function CheckinStoryComposer({
       setPreview(url);
       setFile(sanitized);
       setPhase("idle");
-    } catch {
+    } catch (error) {
       if (request === sequence.current.generation) {
-        setErrorCode("invalid_image");
+        setErrorCode(error instanceof Error ? error.message : "invalid_image");
         setPhase("error");
       }
     }
+  };
+  const removePhoto = () => {
+    if (busy || receipt) return;
+    sequence.current.generation++;
+    if (previewRef.current) URL.revokeObjectURL(previewRef.current);
+    previewRef.current = "";
+    setPreview("");
+    setFile(null);
+    setPublicOptIn(false);
+    setErrorCode("");
+    setPhase("idle");
   };
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -256,6 +298,11 @@ export function CheckinStoryComposer({
     body.set("publicOptIn", "true");
     body.set("file", file);
     try {
+      const location = await freshStoryLocation();
+      if (request !== sequence.current.generation || controller.signal.aborted)
+        return;
+      for (const [key, value] of Object.entries(location))
+        body.set(key, String(value));
       const response = await fetch("/api/community/stories", {
         method: "POST",
         credentials: "same-origin",
@@ -299,30 +346,50 @@ export function CheckinStoryComposer({
       if (request === sequence.current.generation) submitting.current = false;
     }
   };
-  const errorText =
-    errorCode === "invalid_image"
+  const errorText = [
+    "location_required",
+    "location_unavailable",
+    "location_timeout",
+    "location_inaccurate",
+    "location_expired",
+    "outside_geofence",
+  ].includes(errorCode)
+    ? storyLocationMessage(errorCode, es)
+    : errorCode === "blank_photo"
       ? es
-        ? "Elige una foto JPEG, PNG o WebP de hasta 10 MB. Si no se puede preparar, prueba con otra foto."
-        : "Choose a JPEG, PNG or WebP photo up to 10 MB. If it cannot be prepared, try another photo."
-      : errorCode === "already_shared"
+        ? "La foto está demasiado oscura o uniforme. Haz otra con luz y detalles del local."
+        : "This photo is too dark or plain. Take another with light and venue detail."
+      : errorCode === "qr_photo"
         ? es
-          ? "Este check-in ya tiene una historia. No se ha creado otra."
-          : "This check-in already has a story. Another was not created."
-        : errorCode === "rate_limited"
+          ? "La foto contiene un código QR. Haz una foto del local, el ambiente o la comida."
+          : "This photo contains a QR code. Photograph the venue, atmosphere or food instead."
+        : errorCode === "photo_check_unavailable"
           ? es
-            ? "Has enviado varias historias. Espera antes de volver a intentarlo."
-            : "You have sent several stories. Wait before trying again."
-          : errorCode === "authentication_required"
+            ? "No se pudo comprobar la foto. Vuelve a hacerla antes de compartir."
+            : "The photo could not be checked. Take another before sharing."
+          : errorCode === "invalid_image"
             ? es
-              ? "Tu sesión ha caducado. Inicia sesión de nuevo antes de compartir."
-              : "Your session has expired. Sign in again before sharing."
-            : errorCode === "not_eligible"
+              ? "No se pudo preparar la foto de la cámara. Haz otra e inténtalo de nuevo."
+              : "The camera photo could not be prepared. Take another and try again."
+            : errorCode === "already_shared"
               ? es
-                ? "Este check-in no está disponible para compartir. Necesitas un check-in verificado propio de las últimas 24 horas."
-                : "This check-in is not eligible to share. You need your own verified check-in from the last 24 hours."
-              : es
-                ? "No se ha podido enviar la historia. Tu foto sigue aquí; puedes reintentar."
-                : "Your story could not be sent. Your photo is still here; you can retry.";
+                ? "Este check-in ya tiene una historia. No se ha creado otra."
+                : "This check-in already has a story. Another was not created."
+              : errorCode === "rate_limited"
+                ? es
+                  ? "Has enviado varias historias. Espera antes de volver a intentarlo."
+                  : "You have sent several stories. Wait before trying again."
+                : errorCode === "authentication_required"
+                  ? es
+                    ? "Tu sesión ha caducado. Inicia sesión de nuevo antes de compartir."
+                    : "Your session has expired. Sign in again before sharing."
+                  : errorCode === "not_eligible"
+                    ? es
+                      ? "Este check-in no está disponible para compartir. Necesitas un check-in verificado propio de las últimas 24 horas."
+                      : "This check-in is not eligible to share. You need your own verified check-in from the last 24 hours."
+                    : es
+                      ? "No se ha podido enviar la historia. Tu foto sigue aquí; puedes reintentar."
+                      : "Your story could not be sent. Your photo is still here; you can retry.";
   return (
     <section
       className={styles.composer}
@@ -342,6 +409,13 @@ export function CheckinStoryComposer({
           ? "Opcional: añade una foto de este check-in verificado. Hacer o compartir una foto no añade XP ni confirma otra visita."
           : "Optional: add a photo from this verified check-in. Taking or sharing a photo adds no XP and does not verify another visit."}
       </p>
+      {!receipt && (
+        <p className={styles.hint}>
+          {es
+            ? "El escáner QR no guarda ni adjunta imágenes a tu historia. Haz una foto nueva del local, su ambiente o la comida; evita códigos QR y pantallas. Si aparecen otras personas, pide su permiso. Una foto no demuestra que hayas visitado el local."
+            : "The QR scanner does not save or attach images to your story. Take a fresh photo of the venue, atmosphere or food; avoid QR codes and screens. Ask permission from other people shown. A photo does not prove you visited the venue."}
+        </p>
+      )}
       {receipt ? (
         <div className={styles.receipt} role="status">
           <strong>
@@ -394,27 +468,18 @@ export function CheckinStoryComposer({
               ))}
             </div>
           </fieldset>
-          <div className={styles.pickers}>
-            <label className={styles.picker}>
-              {es ? "Hacer foto" : "Take photo"}
-              <input
-                type="file"
-                accept={ACCEPT}
-                capture={kind === "selfie" ? "user" : "environment"}
-                disabled={busy}
-                onChange={choosePhoto}
-              />
-            </label>
-            <label className={styles.picker}>
-              {es ? "Elegir foto" : "Choose photo"}
-              <input
-                type="file"
-                accept={ACCEPT}
-                disabled={busy}
-                onChange={choosePhoto}
-              />
-            </label>
-          </div>
+          <StoryCamera
+            locale={locale}
+            checkInId={checkInId}
+            facing={kind === "selfie" ? "user" : "environment"}
+            disabled={busy}
+            onCapture={(photo) => void choosePhoto(photo)}
+          />
+          <p className={styles.hint}>
+            {es
+              ? "Nada se envía hasta que revises la vista previa, marques tu permiso y pulses Enviar a revisión. Volvemos a comprobar tu ubicación al enviar. Puedes continuar sin compartir una historia."
+              : "Nothing is sent until you review the preview, give permission and select Submit for review. We check your location again when you submit. You can continue without sharing a story."}
+          </p>
           {phase === "preparing" && (
             <p role="status">
               {es
@@ -423,18 +488,29 @@ export function CheckinStoryComposer({
             </p>
           )}
           {preview && (
-            <NextImage
-              unoptimized
-              width={1280}
-              height={1280}
-              className={styles.preview}
-              src={preview}
-              alt={
-                es
-                  ? "Vista previa de la foto que has elegido"
-                  : "Preview of your chosen photo"
-              }
-            />
+            <>
+              <h3>{es ? "Revisa tu foto" : "Review your photo"}</h3>
+              <NextImage
+                unoptimized
+                width={1280}
+                height={1280}
+                className={styles.preview}
+                src={preview}
+                alt={
+                  es
+                    ? "Vista previa de la foto que has elegido"
+                    : "Preview of your chosen photo"
+                }
+              />
+              <p className={styles.hint}>
+                {es
+                  ? "¿Quieres cambiarla? Abre la cámara de nuevo. La nueva foto necesitará tu permiso para compartir."
+                  : "Want to change it? Open the camera again. A replacement photo needs your permission to share."}
+              </p>
+              <button type="button" disabled={busy} onClick={removePhoto}>
+                {es ? "Quitar foto" : "Remove photo"}
+              </button>
+            </>
           )}
           <label className={styles.caption}>
             {es ? "Texto (opcional)" : "Caption (optional)"}
