@@ -1,0 +1,54 @@
+name: Focused AkiPals 344 candidate validation
+on:
+  push:
+    branches: [work/akipals-344-source-20261101]
+    paths: [.github/workflows/pals-344-focused-validation.yml]
+permissions:
+  contents: write
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 4b41d321ea6f2b55f112499e2b51ae80f44b9a06
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Format only changed source documentation and browser tests
+        run: |
+          npx prettier --write docs/AKIPASA_MASTER.md docs/CHANGE_IMPACT_REGISTER.md scripts/test-pals-identity-browser.mjs scripts/test-pals-world-browser.mjs
+          git diff --check
+          git add docs/AKIPASA_MASTER.md docs/CHANGE_IMPACT_REGISTER.md scripts/test-pals-identity-browser.mjs scripts/test-pals-world-browser.mjs
+          if ! git diff --cached --quiet; then
+            git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'style(pals): format starter studio source and acceptance records'
+          fi
+          git push origin HEAD:refs/heads/work/pals-344-reviewed-20261101
+          mkdir -p test-results/pals-review
+          git rev-parse HEAD > test-results/pals-review/source-sha.txt
+          git archive --format=tar.gz --output=test-results/pals-review/source.tar.gz HEAD
+      - run: npx playwright install --with-deps chromium
+      - run: npm run pals:3d:bundle
+      - name: World rendering and recovery
+        id: world
+        continue-on-error: true
+        run: node scripts/test-pals-world-browser.mjs >test-results/pals-review/world.log 2>&1 || { tail -100 test-results/pals-review/world.log; exit 1; }
+      - name: Wardrobe rendering and recovery
+        id: wardrobe
+        continue-on-error: true
+        run: node scripts/test-pals-identity-browser.mjs >test-results/pals-review/wardrobe.log 2>&1 || { tail -100 test-results/pals-review/wardrobe.log; exit 1; }
+      - name: Require both browser gates
+        if: always()
+        run: test '${{ steps.world.outcome }}' = 'success' && test '${{ steps.wardrobe.outcome }}' = 'success'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pals-344-focused-evidence
+          path: |
+            test-results/pals-review
+            test-results/pals-world-browser
+            test-results/pals-identity-browser
+          retention-days: 3
