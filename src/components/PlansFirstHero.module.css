@@ -145,3 +145,29 @@
 .search:disabled {
   cursor: wait;
 }
+
+/* Keep the cinematic photo and white headline in both themes, but give the
+   date/plan controls the same warm, legible light treatment as the app shell. */
+:global(html[data-theme="light"]) .hero .shortcut,
+:global(html[data-theme="light"]) .hero .mapShortcut {
+  border-color: #d6c7bb;
+  background: #faf7f2;
+  color: #172238;
+  box-shadow: 0 4px 16px rgba(9, 11, 15, 0.18);
+}
+:global(html[data-theme="light"]) .hero .shortcut:first-child {
+  border-color: #f26b1d;
+  background: #f26b1d;
+  color: #21160f;
+}
+:global(html[data-theme="light"]) .hero .shortcut:hover,
+:global(html[data-theme="light"]) .hero .mapShortcut:hover {
+  border-color: #b5531f;
+  background: #ffffff;
+  color: #172238;
+}
+:global(html[data-theme="light"]) .hero .shortcut:first-child:hover {
+  border-color: #da5c12;
+  background: #fa823e;
+  color: #21160f;
+}
