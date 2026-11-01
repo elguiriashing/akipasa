@@ -57,7 +57,9 @@ const server = createServer(async (req, res) => {
       return;
     }
     if (
-      /^\/brand\/v3\/(pasa|duermo|coches|hq|business)\.svg$/.test(url.pathname)
+      /^\/brand\/v3\/(pasa(?:-2026)?|duermo|coches|hq|business)\.svg$/.test(
+        url.pathname,
+      )
     ) {
       res.setHeader("Content-Type", "image/svg+xml");
       res.end(await readFile(path.join(process.cwd(), "public", url.pathname)));
