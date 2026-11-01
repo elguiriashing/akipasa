@@ -2869,3 +2869,11 @@ authorization changed. Removed the redundant accepted query notice. Thirty-eight
 focused tests pass, including two actual-page slot regressions retaining existing
 read-recovery cases. Fresh compiled success geometry and final-head CI remain
 required. Earlier camera evidence remains bound to unchanged scanner module bytes.
+
+The final relevant negative-state browser check also found legacy outside-geofence
+feedback overlapping the progress heading in both locales. All check-in status
+messages now use the same normal progress flow; unrelated notices are preserved.
+Four EN/ES outside-geofence/weak-location page-slot cases were added;20 Passport
+tests pass. Server geofence/rewards and accepted-receipt guard are unchanged.
+Fresh negative-state geometry and final-head CI are required; earlier4375 green
+CI is retained as historical evidence, not clearance for this repair.

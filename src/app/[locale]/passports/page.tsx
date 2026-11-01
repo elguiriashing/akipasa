@@ -209,17 +209,6 @@ export default async function PassportsPage({
               {es ? "Prestigio AkiPasa" : "AkiPasa Prestige"}
             </Link>
           )}
-          {query.checkin && query.checkin !== "accepted" && (
-            <p className="notice">
-              {query.checkin === "cooldown"
-                ? es
-                  ? "Ya hiciste check-in aquí en las últimas seis horas."
-                  : "You already checked in here within six hours."
-                : es
-                  ? "No se pudo aceptar el check-in."
-                  : "The check-in could not be accepted."}
-            </p>
-          )}
 
           {query.reward && (
             <p className="notice">
@@ -247,6 +236,17 @@ export default async function PassportsPage({
       }
       progress={
         <>
+          {query.checkin && query.checkin !== "accepted" && (
+            <p className="notice">
+              {query.checkin === "cooldown"
+                ? es
+                  ? "Ya hiciste check-in aquí en las últimas seis horas."
+                  : "You already checked in here within six hours."
+                : es
+                  ? "No se pudo aceptar el check-in."
+                  : "The check-in could not be accepted."}
+            </p>
+          )}
           {user && query.checkin === "accepted" && (
             <div className={checkInStyles.receipt}>
               <CheckInSuccess

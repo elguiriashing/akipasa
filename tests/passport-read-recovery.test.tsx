@@ -393,3 +393,44 @@ it.each(["en", "es"] as const)(
     }
   },
 );
+
+it.each([
+  ["en", "outside_geofence"],
+  ["es", "outside_geofence"],
+  ["en", "weak_location"],
+  ["es", "weak_location"],
+] as const)(
+  "keeps %s %s check-in feedback in the scrolling chapter",
+  async (locale, checkin) => {
+    await renderPage(locale, { checkin });
+    const text =
+      locale === "en"
+        ? "The check-in could not be accepted."
+        : "No se pudo aceptar el check-in.";
+    expect(
+      within(screen.getByTestId("absolute-notices")).queryByText(text),
+    ).not.toBeInTheDocument();
+    const progress = screen.getByTestId("scrollable-progress");
+    const feedback = within(progress).getByText(text);
+    const weekly = within(progress).getByRole("heading", {
+      name:
+        locale === "en" ? "Your week of exploring" : "Tu semana de exploración",
+    });
+    expect(
+      feedback.compareDocumentPosition(weekly) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      within(progress).queryByTestId("verified-receipt"),
+    ).not.toBeInTheDocument();
+    expect(
+      within(progress).queryByRole("link", {
+        name: /Share a photo|Compartir una foto/,
+      }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId("passport-book")).toHaveAttribute(
+      "data-view",
+      "progress",
+    );
+  },
+);
