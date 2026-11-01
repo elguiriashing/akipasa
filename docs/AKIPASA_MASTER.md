@@ -4569,3 +4569,24 @@ New targeted and exact-head validation is required before merging repaired sourc
 **Scope and dependencies.** Four runtime files only: DiscoveryArtwork component/styles, Home venue card styles and the storefront SVG. Existing AkiHQ Explore selection, claim metadata, public RLS/storage signing, URLs, pagination, locale handling, analytics and private AkiPals access are unchanged. No SQL, customer data, auth, secrets, billing or provider configuration changes. Rollback reverts these UI sources without touching stored media.
 
 **Verification gates.** The new maintained browser suite exercises actual compiled artwork with transparent, absent and HTTP-failed images, recovery and live theme switching; screenshots sample the rendered transparent corner pixels. Actual Next Home in EN/ES at phone/desktop widths verifies one image, physical text/artwork separation, solid theme colours, absent hover-overlay dependency and at least 4.5:1 label contrast. Existing responsive Home, Map, Event and cross-app CI remain required. Inspect rendered evidence before merging; verify the exact deployed source and live DOM/image loading afterwards. Browser emulation is not physical Android certification. No pass or live release is claimed by this contract entry alone.
+
+## 2026-11-01 | Full-width Home hero beside the navigation rail
+
+The owner requested that Home photography reach the side menu and scrollbar on
+all screen sizes, retaining the existing flush join below the launch banner.
+Home alone now uses a three-track grid: the hero spans the full app-content
+column while other direct children retain a centred 1240px maximum and 1rem
+side gutters. The hero has square outer corners and no negative mobile margin;
+its existing internal search/headline padding is preserved. The Home launch
+ribbon also fills the app column. Expanded/collapsed rail geometry is inherited
+from the existing shell, without viewport-width guesses or new layout state.
+
+Only presentation and a semantic hero marker change. Existing photo selection,
+search/filter destinations, EN/ES, themes, roles, AkiHQ, cards, data, consent,
+analytics, storage and other app routes are unchanged. No SQL or customer writes.
+The maintained Home browser suite adds edge/image bounds, no overflow, zero
+corner radius, rail toggles and rotation across 360/390/820/1440/1920 widths in
+both locales/themes, retaining existing controls and banner adjacency checks.
+Full local check, exact-head hosted browser/Cloudflare CI and live verification
+are required before release; physical-device acceptance is not inferred.
+Rollback reverts these UI sources only.
