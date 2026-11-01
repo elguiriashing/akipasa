@@ -9,6 +9,7 @@ import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/config";
 import { optionalUser } from "@/lib/auth";
 import { CheckInSuccess } from "@/components/CheckInSuccess";
+import checkInStyles from "@/components/CheckInSuccess.module.css";
 import { AchievementCelebration } from "@/components/AchievementCelebration";
 import { BadgeProgress } from "@/components/BadgeProgress";
 import { WeeklyQuestPanel } from "@/components/WeeklyQuestPanel";
@@ -208,42 +209,18 @@ export default async function PassportsPage({
               {es ? "Prestigio AkiPasa" : "AkiPasa Prestige"}
             </Link>
           )}
-          {query.checkin && (
+          {query.checkin && query.checkin !== "accepted" && (
             <p className="notice">
-              {query.checkin === "accepted"
+              {query.checkin === "cooldown"
                 ? es
-                  ? "Consulta abajo la confirmación de tu visita."
-                  : "Check below for confirmation of your visit."
-                : query.checkin === "cooldown"
-                  ? es
-                    ? "Ya hiciste check-in aquí en las últimas seis horas."
-                    : "You already checked in here within six hours."
-                  : es
-                    ? "No se pudo aceptar el check-in."
-                    : "The check-in could not be accepted."}
+                  ? "Ya hiciste check-in aquí en las últimas seis horas."
+                  : "You already checked in here within six hours."
+                : es
+                  ? "No se pudo aceptar el check-in."
+                  : "The check-in could not be accepted."}
             </p>
           )}
-          {user && query.checkin === "accepted" && (
-            <>
-              <CheckInSuccess
-                locale={locale}
-                checkInId={query.visit}
-                profileId={user.id}
-              />
-              <AchievementCelebration locale={locale} checkInId={query.visit} />
-              {process.env.AKIPASA_COMMUNITY_STORIES_SCHEMA_READY === "true" &&
-                process.env.AKIPASA_COMMUNITY_STORIES_ENABLED === "true" && (
-                  <Link
-                    className="button secondary"
-                    href={`/${locale}/community#city-stories`}
-                  >
-                    {es
-                      ? "Compartir una foto de mi visita (opcional)"
-                      : "Share a photo from my visit (optional)"}
-                  </Link>
-                )}
-            </>
-          )}
+
           {query.reward && (
             <p className="notice">
               {query.reward === "ready"
@@ -270,6 +247,27 @@ export default async function PassportsPage({
       }
       progress={
         <>
+          {user && query.checkin === "accepted" && (
+            <div className={checkInStyles.receipt}>
+              <CheckInSuccess
+                locale={locale}
+                checkInId={query.visit}
+                profileId={user.id}
+              />
+              <AchievementCelebration locale={locale} checkInId={query.visit} />
+              {process.env.AKIPASA_COMMUNITY_STORIES_SCHEMA_READY === "true" &&
+                process.env.AKIPASA_COMMUNITY_STORIES_ENABLED === "true" && (
+                  <Link
+                    className="button secondary"
+                    href={`/${locale}/community#city-stories`}
+                  >
+                    {es
+                      ? "Compartir una foto de mi visita (opcional)"
+                      : "Share a photo from my visit (optional)"}
+                  </Link>
+                )}
+            </div>
+          )}
           {
             <section
               className="metrics-grid"

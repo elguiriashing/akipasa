@@ -2858,3 +2858,14 @@ CSS/hero-marker/tests and all check-in/Stories code are retained. The earlier248
 local check remains bound to that tree; final integrated CI and compiled browser
 evidence must bind the resulting merge. No production feature flag is changed by
 this source integration.
+
+Actual compiled675 browser evidence passed35 functional cases/39 screenshots,
+including real QR camera pixels, fresh GPS opt-in without submission, actual RLS
+owned receipts and forged/cross-owner rejection. Visual inspection correctly
+blocked release: accepted receipt/photo content was in Passport's legacy absolute
+notices slot, overlapping headings. Moved the grouped content into the existing
+normal-flow progress/scroll slot with local spacing; no shared Passport CSS or
+authorization changed. Removed the redundant accepted query notice. Thirty-eight
+focused tests pass, including two actual-page slot regressions retaining existing
+read-recovery cases. Fresh compiled success geometry and final-head CI remain
+required. Earlier camera evidence remains bound to unchanged scanner module bytes.

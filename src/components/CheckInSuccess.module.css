@@ -1,9 +1,15 @@
+.receipt {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
 .success {
   display: flex;
   align-items: flex-start;
   gap: 1.25rem;
   padding: clamp(1.25rem, 4vw, 2rem);
-  margin-block: 1rem;
+  margin: 0;
   color: #fff6e9;
   background: radial-gradient(ellipse at top left, #6d3515, #241811 65%);
   border: 1px solid #b96229;
