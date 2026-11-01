@@ -288,7 +288,6 @@ export function CheckinStories({
       >
         <header className={styles.header}>
           <div>
-            <span>{es ? "TUS MOMENTOS REALES" : "YOUR REAL MOMENTS"}</span>
             <h2 id={`checkin-stories-title-${locale}`}>
               {publishingEnabled
                 ? es
@@ -305,15 +304,13 @@ export function CheckinStories({
         </header>
         {open && (
           <div className={styles.content}>
-            <p>
-              {publishingEnabled
-                ? es
-                  ? "Comparte una foto de un check-in verificado propio de las últimas 24 horas. Es opcional, requiere tu autorización pública y pasa por revisión antes de publicarse."
-                  : "Share a photo from your own verified check-in in the last 24 hours. It is optional, requires your public-sharing permission and is reviewed before publication."
-                : es
-                  ? "La publicación de nuevas historias no está disponible. Puedes consultar y retirar tus fotos existentes."
-                  : "New story publishing is unavailable. You can view and remove your existing photos."}
-            </p>
+            {!publishingEnabled && (
+              <p>
+                {es
+                  ? "La publicación de fotos está pausada."
+                  : "Photo sharing is paused."}
+              </p>
+            )}
             {authRequired ? (
               <div className={styles.notice} role="alert">
                 <p>
@@ -335,7 +332,6 @@ export function CheckinStories({
                     className={styles.section}
                     aria-label={es ? "Elegir check-in" : "Choose check-in"}
                   >
-                    <h3>{es ? "Elige tu check-in" : "Choose your check-in"}</h3>
                     {checkIns.phase === "loading" ? (
                       <p role="status">
                         {es

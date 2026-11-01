@@ -110,12 +110,14 @@ export function StoryCamera({
   checkInId,
   facing,
   disabled,
+  hasPhoto = false,
   onCapture,
 }: {
   locale: "en" | "es";
   checkInId: string;
   facing: "user" | "environment";
   disabled: boolean;
+  hasPhoto?: boolean;
   onCapture: (file: File) => void;
 }) {
   const es = locale === "es";
@@ -293,7 +295,7 @@ export function StoryCamera({
   }
   return (
     <section
-      className={styles.camera}
+      className={`${styles.camera} ${hasPhoto && phase === "idle" ? styles.compact : ""}`}
       aria-label={es ? "Cámara de historias" : "Story camera"}
     >
       <video
@@ -332,7 +334,13 @@ export function StoryCamera({
             disabled={disabled}
             onClick={() => void start()}
           >
-            {es ? "Abrir cámara" : "Open camera"}
+            {hasPhoto && phase === "idle"
+              ? es
+                ? "Volver a hacer foto"
+                : "Retake photo"
+              : es
+                ? "Abrir cámara"
+                : "Open camera"}
           </button>
         ) : (
           <>
@@ -355,14 +363,16 @@ export function StoryCamera({
           </>
         )}
       </div>
-      <details>
-        <summary>{es ? "Cámara y privacidad" : "Camera & privacy"}</summary>
-        <p>
-          {es
-            ? "Necesitamos la cámara y tu ubicación precisa para comprobar que estás cerca del local. Tu GPS exacto no se guarda. El navegador decide si recuerda tus permisos."
-            : "Camera and precise location are needed to check you are near the venue. Your exact GPS is not stored. Your browser controls whether permissions are remembered."}
-        </p>
-      </details>
+      {(!hasPhoto || phase !== "idle") && (
+        <details>
+          <summary>{es ? "Cámara y privacidad" : "Camera & privacy"}</summary>
+          <p>
+            {es
+              ? "Necesitamos la cámara y tu ubicación precisa para comprobar que estás cerca del local. Tu GPS exacto no se guarda. El navegador decide si recuerda tus permisos."
+              : "Camera and precise location are needed to check you are near the venue. Your exact GPS is not stored. Your browser controls whether permissions are remembered."}
+          </p>
+        </details>
+      )}
     </section>
   );
 }

@@ -432,3 +432,59 @@ it("keeps ordinary camera copy compact and privacy help collapsed", () => {
   expect(screen.queryByText(/Open the camera for a new photo/)).toBeNull();
   expect(screen.getByRole("button", { name: "Open camera" })).toBeVisible();
 });
+
+it.each(["en", "es"] as const)(
+  "%s reduces an existing photo to a flat retake action then reopens the full camera",
+  async (locale) => {
+    render(
+      <StoryCamera
+        locale={locale}
+        checkInId={id}
+        facing="environment"
+        disabled={false}
+        hasPhoto
+        onCapture={captured}
+      />,
+    );
+    const retake = screen.getByRole("button", {
+      name: locale === "en" ? "Retake photo" : "Volver a hacer foto",
+    });
+    expect(retake).toBeVisible();
+    expect(
+      screen.queryByText(
+        locale === "en" ? "Camera & privacy" : "Cámara y privacidad",
+      ),
+    ).toBeNull();
+    expect(media).not.toHaveBeenCalled();
+    expect(geo).not.toHaveBeenCalled();
+    fireEvent.click(retake);
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", {
+          name: locale === "en" ? "Take photo" : "Hacer foto",
+        }),
+      ).toBeEnabled(),
+    );
+    expect(
+      screen.getByText(
+        locale === "en" ? "Camera & privacy" : "Cámara y privacidad",
+      ),
+    ).toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: locale === "en" ? "Close camera" : "Cerrar cámara",
+      }),
+    );
+    expect(
+      screen.getByRole("button", {
+        name: locale === "en" ? "Retake photo" : "Volver a hacer foto",
+      }),
+    ).toBeVisible();
+    expect(
+      screen.queryByText(
+        locale === "en" ? "Camera & privacy" : "Cámara y privacidad",
+      ),
+    ).toBeNull();
+    expect(captured).not.toHaveBeenCalled();
+  },
+);

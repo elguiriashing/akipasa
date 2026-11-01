@@ -58,3 +58,15 @@
   min-height: 32px;
   display: list-item;
 }
+
+.compact {
+  padding: 0;
+  border: 0;
+  background: none;
+  gap: 0;
+}
+.compact .actions button:first-child {
+  background: transparent;
+  color: var(--story-ink, #faf7f3);
+  border-color: var(--story-line, #51443b);
+}

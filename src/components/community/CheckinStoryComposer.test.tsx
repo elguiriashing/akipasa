@@ -294,6 +294,9 @@ for (const locale of ["en", "es"] as const) {
       />,
     );
     await choose();
+    fireEvent.click(
+      screen.getByText(locale === "es" ? "Añadir texto" : "Add caption"),
+    );
     fireEvent.change(
       screen.getByLabelText(
         locale === "es" ? "Texto (opcional)" : "Caption (optional)",
@@ -622,6 +625,34 @@ it.each(["location_timeout", "location_unavailable"])(
         : "Your location could not be found",
     );
     expect(screen.getByAltText("Preview of your chosen photo")).toBeVisible();
+    expect(fetcher).not.toHaveBeenCalled();
+  },
+);
+
+it.each(["en", "es"] as const)(
+  "%s keeps the optional caption collapsed until requested",
+  (locale) => {
+    render(
+      <CheckinStoryComposer
+        locale={locale}
+        checkInId={checkInId}
+        venueName="Known venue"
+      />,
+    );
+    const add = screen.getByText(
+      locale === "en" ? "Add caption" : "Añadir texto",
+    );
+    const input = screen.getByLabelText(
+      locale === "en" ? "Caption (optional)" : "Texto (opcional)",
+    );
+    expect(add.closest("details")).not.toHaveAttribute("open");
+    expect(input).not.toBeVisible();
+    expect(input).toHaveValue("");
+    fireEvent.click(add);
+    expect(input).toBeVisible();
+    fireEvent.change(input, { target: { value: "A short caption" } });
+    expect(input).toHaveValue("A short caption");
+    expect(screen.getByRole("checkbox")).not.toBeChecked();
     expect(fetcher).not.toHaveBeenCalled();
   },
 );

@@ -151,7 +151,9 @@ async function prepareRealPhoto(page, locale, exerciseLifecycle = false) {
   });
   const preview = camera.locator("video");
   const start = camera.getByRole("button", {
-    name: es ? "Abrir cámara" : "Open camera",
+    name: es
+      ? /^(Abrir cámara|Volver a hacer foto)$/
+      : /^(Open camera|Retake photo)$/,
     exact: true,
   });
   const shutter = camera.getByRole("button", {
@@ -481,6 +483,7 @@ try {
               keys: [...parsed.keys()].sort(),
               publicOptIn: parsed.get("publicOptIn"),
               checkInId: parsed.get("checkInId"),
+              caption: parsed.get("caption"),
               latitude: Number(parsed.get("latitude")),
               longitude: Number(parsed.get("longitude")),
               accuracy: Number(parsed.get("accuracy")),
@@ -694,6 +697,39 @@ try {
         await prepareRealPhoto(page, locale, width === 390 && theme === "dark");
         await expect(dialog.getByRole("img")).toBeVisible();
         await expect(optIn).not.toBeChecked();
+        const flatCamera = dialog.getByRole("region", {
+          name: locale === "es" ? "Cámara de historias" : "Story camera",
+        });
+        await expect(
+          flatCamera.getByRole("button", {
+            name: locale === "es" ? "Volver a hacer foto" : "Retake photo",
+            exact: true,
+          }),
+        ).toBeVisible();
+        await expect(flatCamera.locator("details")).toHaveCount(0);
+        await expect(dialog.locator("details[open]")).toHaveCount(0);
+        if (width === 360 && theme === "dark") {
+          await dialog.evaluate((box) => {
+            box.scrollTop = 0;
+            for (const content of box.querySelectorAll(
+              '[class*="CheckinStories_content"]',
+            ))
+              content.scrollTop = 0;
+          });
+          await page.screenshot({
+            path: resolve(
+              out,
+              `${locale}-phone-photo-first-full-modal-head.png`,
+            ),
+          });
+          await dialog.getByRole("img").scrollIntoViewIfNeeded();
+          await page.screenshot({
+            path: resolve(
+              out,
+              `${locale}-phone-photo-first-full-modal-preview.png`,
+            ),
+          });
+        }
         if (width === 390 && theme === "dark") {
           await dialog.getByRole("img").screenshot({
             path: resolve(out, `${locale}-camera-processed-preview.png`),
@@ -703,6 +739,18 @@ try {
           await expect(dialog.getByRole("img")).toBeVisible();
           await expect(optIn).not.toBeChecked();
         }
+        const captionToggle = dialog.getByText(
+          locale === "es" ? "Añadir texto" : "Add caption",
+          { exact: true },
+        );
+        await captionToggle.click();
+        const captionInput = dialog.getByRole("textbox", {
+          name: locale === "es" ? "Texto (opcional)" : "Caption (optional)",
+          exact: true,
+        });
+        await captionInput.fill("Synthetic camera caption");
+        await expect(captionInput).toHaveValue("Synthetic camera caption");
+        await captionToggle.click();
         const submit = dialog.getByRole("button", {
           name: locale === "es" ? "Enviar a revisión" : "Submit for review",
         });
@@ -889,6 +937,7 @@ try {
             "publicOptIn",
           ]);
           expect(photo.checkInId).toBe(id);
+          expect(photo.caption).toBe("Synthetic camera caption");
           expect(photo.publicOptIn).toBe("true");
           expect(photo.latitude).toBe(36.72);
           expect(photo.longitude).toBe(-4.42);

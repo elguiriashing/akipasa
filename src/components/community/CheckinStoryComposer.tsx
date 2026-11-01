@@ -401,11 +401,6 @@ export function CheckinStoryComposer({
         <h2>{es ? "Añadir foto" : "Add a photo"}</h2>
         <p>{venueName}</p>
       </header>
-      <p>
-        {es
-          ? "Historia opcional · pública tras la revisión · hasta 24 h."
-          : "Optional story · public after review · up to 24 h."}
-      </p>
       {!receipt && (
         <details className={styles.hint}>
           <summary>
@@ -475,6 +470,7 @@ export function CheckinStoryComposer({
             checkInId={checkInId}
             facing={kind === "selfie" ? "user" : "environment"}
             disabled={busy}
+            hasPhoto={Boolean(preview)}
             onCapture={(photo) => void choosePhoto(photo)}
           />
           {phase === "preparing" && (
@@ -500,17 +496,20 @@ export function CheckinStoryComposer({
               </button>
             </>
           )}
-          <label className={styles.caption}>
-            {es ? "Texto (opcional)" : "Caption (optional)"}
-            <textarea
-              aria-label={es ? "Texto (opcional)" : "Caption (optional)"}
-              value={caption}
-              maxLength={240}
-              disabled={busy}
-              onChange={(event) => setCaption(event.target.value)}
-            />
-            <small>{caption.length}/240</small>
-          </label>
+          <details className={styles.caption}>
+            <summary>{es ? "Añadir texto" : "Add caption"}</summary>
+            <label className={styles.caption}>
+              {es ? "Texto (opcional)" : "Caption (optional)"}
+              <textarea
+                aria-label={es ? "Texto (opcional)" : "Caption (optional)"}
+                value={caption}
+                maxLength={240}
+                disabled={busy}
+                onChange={(event) => setCaption(event.target.value)}
+              />
+              <small>{caption.length}/240</small>
+            </label>
+          </details>
           <label className={styles.optIn}>
             <input
               type="checkbox"
@@ -520,8 +519,8 @@ export function CheckinStoryComposer({
             />
             <span>
               {es
-                ? "Quiero compartir esta foto públicamente en las historias de la ciudad durante un máximo de 24 horas, solo si se aprueba la revisión."
-                : "I want to share this photo publicly in city stories for up to 24 hours, only if review approves it."}
+                ? "Compartir públicamente hasta 24 horas, previa revisión."
+                : "Share publicly for up to 24 hours, subject to review."}
             </span>
           </label>
           {phase === "error" && (
