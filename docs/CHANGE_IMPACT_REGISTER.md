@@ -5330,3 +5330,28 @@ canonical scope,
 non-execution gates and STOPs remain intact. No hosted storage evidence, paid
 resource, production SQL, photo activation or physical Android proof is claimed.
 New targeted and exact-head validation is required before merging repaired source.
+
+## 2026-11-01 | City Stories activation: owned preparation
+
+- Scope: My Photos EN/ES helper copy only; existing owner withdrawal/cleanup,
+  eligibility, consent, tenant/RLS, XP and moderation behavior remain unchanged.
+- Verification: existing37 controller tests, scoped lint and formatting pass.
+  Real-provider evidence remains separate from component fixtures.
+- Approved QA target: zbfozgzlucdlutqgcwlc, no production data, USD0.01344/hour
+  within the owner's USD2 cap. ProductionSQL and sharing remain unapplied/off
+  until complete provider tests and scoped installation checks pass.
+- Initial credential retrieval was rejected; subsequent explicit owner approval
+  authorized a five-minute encrypted QA-only handoff. It completed, was replaced
+  with HTTP410 and exposed no credentials. Private configuration is now ready.
+- Rollout must preserve the actual deployed source and all other bindings.
+  Latest uploaded Cloudflare settings can belong to an unpublished branch and
+  must not be treated as the production version.
+
+The activation candidate adds source-controlled server bindings
+SCHEMA_READY="true" and ENABLED="false". It MUST NOT merge before complete real
+provider tests and installation of the reviewed production SQL with collection
+OFF. Automatic master deployment then creates a schema-compatible UI-off
+rollback version. A subsequent reviewed config release enables publishing only
+after the collection/privacy/export checks pass. Explicit config values override
+kept remote vars; other secret bindings are preserved. Do not patch latest
+uploaded settings, which may describe unrelated unpublished preview code.

@@ -2720,3 +2720,36 @@ those failures are preserved. Four component-native cleanup cases also passed
 through close/reopen and full reload with explicit-only deletion. These are
 browser test devices/synthetic photo adapters, not physical Android or real
 hosted Auth/storage proof. Fresh exact-head CI and cleared review remain required.
+
+## 2026-11-01 | Owner-approved City Stories activation started
+
+Current live source remains38578ecc, Workerbfc9cf21 at100%. Owner approved
+previously proposed capped database testing and requested enabling Stories.
+Created temporary branchfc06c148-cc42-4945-86bd-c6a833cc6ee3 /
+zbfozgzlucdlutqgcwlc with_data=false at09:41UTC, USD0.01344/hour.
+Automatic migration replay failed before profiles existed; no customer data
+was copied and no historical replay/reconstruction is undertaken. Scoped
+current-catalog fixture dependencies are being installed only on this target.
+
+My Photos copy cleanup37/37, lint and formatting pass; no behavior or assertion
+changes. Real Storage upload/provider UI testing remains blocked on a securely
+supplied branch service-role key. Automatic approval rejected a temporary
+encrypted key-bootstrap endpoint as credential extraction; no endpoint deployed
+and no credential workaround is authorized. Safe schema/Auth/RLS checks continue.
+ProductionSQL28bb and both server publication gates remain off/unapplied.
+A maximum-lifetime cleanup task was actually created for the disposable branch;
+root will normally remove it earlier after evidence capture.
+
+Subsequent explicit owner approval: "Approve temporary test-key access".
+The bounded encrypted handoff was approved, completed only for zbfo, and replaced
+immediately with HTTP410(version2). Closureverified10:23UTC; no credential
+values displayed. Modern sb_secret server keys are accepted by the provider;
+the local private configuration is chmod600. No production key was accessed.
+Ordinary SDK requests retain the managed proxy; Node24 uses --use-env-proxy.
+
+Preparation fullcheck passed3,278 Vitest/18 invocations and140 Node contracts,
+then correctly failed because the environment restart removed the temporary
+Next cache symlink target. The disposable target was restored; unchanged-code
+optimized build passed. Source-controlled phase-one binding contract tests also
+pass. No test/assertion/timeout was weakened. Fresh final-head CI is still
+required; no source or production activation is yet claimed accepted.

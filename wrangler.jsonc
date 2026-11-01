@@ -25,6 +25,8 @@
     { "pattern": "akiconduzco.akipasa.com", "custom_domain": true },
   ],
   "vars": {
+    "AKIPASA_COMMUNITY_STORIES_SCHEMA_READY": "true",
+    "AKIPASA_COMMUNITY_STORIES_ENABLED": "false",
     "NEXT_PUBLIC_PRODUCT_NAME": "AkiPasa",
     "NEXT_PUBLIC_DATA_PROVIDER": "hybrid",
     "NEXT_PUBLIC_MAP_STYLE_URL": "https://tiles.openfreemap.org/styles/liberty",

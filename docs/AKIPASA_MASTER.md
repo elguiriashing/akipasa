@@ -4533,3 +4533,28 @@ canonical scope,
 non-execution gates and STOPs remain intact. No hosted storage evidence, paid
 resource, production SQL, photo activation or physical Android proof is claimed.
 New targeted and exact-head validation is required before merging repaired source.
+
+## 2026-11-01 | City Stories activation preparation
+
+Alex approved isolated database testing within the previously proposed USD2 cap
+and requested City Stories activation after verification. Production remains
+38578ecc and dormant while real Auth/Storage checks are prepared. The temporary
+branch zbfozgzlucdlutqgcwlc has no production data; failed provider history replay
+is not schema parity. Only the current scoped dependencies are installed there.
+My Photos now explains refreshing review status and the24-hour visibility limit
+in EN/ES without internal verification language; labels, consent, ownership,
+cleanup and publication gates are unchanged. Existing37 controller tests pass.
+Initial private-key retrieval was rejected by automatic review. Alex then
+explicitly approved encrypted QA-only server-key access. The approved five-minute
+handoff completed without displaying credentials and was immediately replaced
+with HTTP410; the branch-only configuration remains private. Real-provider
+verification is in progress, not yet claimed complete.
+
+The activation candidate adds source-controlled server bindings
+SCHEMA_READY="true" and ENABLED="false". It MUST NOT merge before complete real
+provider tests and installation of the reviewed production SQL with collection
+OFF. Automatic master deployment then creates a schema-compatible UI-off
+rollback version. A subsequent reviewed config release enables publishing only
+after the collection/privacy/export checks pass. Explicit config values override
+kept remote vars; other secret bindings are preserved. Do not patch latest
+uploaded settings, which may describe unrelated unpublished preview code.
