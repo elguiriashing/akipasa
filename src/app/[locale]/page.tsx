@@ -226,7 +226,7 @@ export default async function DiscoverPage({
           </div>
           <div className="discovery-empty-actions">
             <Link className="button button-ghost" href={`/${locale}/roadmap`}>
-              {locale === "es" ? "Ver nuestro plan" : "See our rollout plan"}
+              {locale === "es" ? "Ver nuestra hoja de ruta" : "See Our Roadmap"}
             </Link>
             {radius < 100 ? (
               <Link
