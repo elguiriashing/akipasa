@@ -545,3 +545,10 @@ html[data-theme="light"]
   color: #17202a;
   border-color: #aab2bd;
 }
+
+/* Home's photo starts directly below the rollout ribbon at every viewport.
+   Keep the rest of the consumer shell's content gutters unchanged. */
+.app-shell .app-content:has(> .discover-page) > .discover-page {
+  margin-top: 0;
+  padding-top: 0;
+}
