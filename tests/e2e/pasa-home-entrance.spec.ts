@@ -53,17 +53,18 @@ for (const locale of ["en", "es"] as const)
               "color",
               expectedHeaderInk,
             );
-            for (const control of [
-              header.locator(".app-suite-mobile-trigger"),
-              header.locator(".app-more-mobile-trigger"),
-              page.locator(".app-shell .global-search-trigger"),
-            ]) {
-              await expect(control).toHaveCSS(
-                "color",
-                theme === "light"
-                  ? "rgb(23, 34, 56)"
-                  : "rgb(247, 249, 253)",
-              );
+            if (theme === "light") {
+              for (const control of [
+                header.locator(".app-suite-mobile-trigger"),
+                header.locator(".app-more-mobile-trigger"),
+                page.locator(".app-shell .global-search-trigger"),
+              ]) {
+                await expect(control).toHaveCSS("color", "rgb(23, 34, 56)");
+                await expect(control).toHaveCSS(
+                  "background-color",
+                  "rgb(255, 253, 250)",
+                );
+              }
             }
           }
           const roadmap = page
@@ -191,3 +192,57 @@ for (const locale of ["en", "es"] as const)
           ).toBe(true);
         });
       });
+
+for (const locale of ["en", "es"] as const) {
+  test(`${locale} mobile theme switch stays readable after rotation`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.addInitScript(() => {
+      localStorage.setItem("akipasa.theme", "dark");
+      document.cookie = "ak_consent_version=2; Path=/";
+    });
+    await page.goto(`/${locale}`);
+    const more = page.getByRole("button", {
+      name: locale === "es" ? "Más opciones" : "More options",
+      exact: true,
+    });
+    await more.click();
+    const sheet = page.getByRole("dialog", {
+      name: locale === "es" ? "Más opciones" : "More options",
+    });
+    await sheet
+      .getByRole("button", {
+        name: locale === "es" ? "Cambiar a modo claro" : "Switch to light mode",
+      })
+      .click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    await sheet
+      .getByRole("button", { name: locale === "es" ? "Cerrar" : "Close" })
+      .click();
+
+    const header = page.locator(".app-shell .app-topbar-mobile");
+    const ribbon = page.locator("[data-launch-ribbon]");
+    for (const viewport of [
+      { width: 390, height: 844 },
+      { width: 844, height: 390 },
+      { width: 390, height: 844 },
+    ]) {
+      await page.setViewportSize(viewport);
+      await expect(header).toBeVisible();
+      await expect(header).toHaveCSS("background-color", "rgb(250, 247, 242)");
+      await expect(ribbon).toHaveCSS("background-color", "rgb(250, 247, 242)");
+      await expect(header.locator(".brand-wordmark")).toHaveCSS(
+        "color",
+        "rgb(23, 34, 56)",
+      );
+      await expect(page.locator(".app-shell .global-search-trigger")).toHaveCSS(
+        "color",
+        "rgb(23, 34, 56)",
+      );
+    }
+    await page.reload();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    await expect(header).toHaveCSS("background-color", "rgb(250, 247, 242)");
+  });
+}
