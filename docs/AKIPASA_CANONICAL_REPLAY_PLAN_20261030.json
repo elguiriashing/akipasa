@@ -9,8 +9,8 @@
   "scope": "Hash inventory and candidate prefix only; not an approved migration executor, production chronology or complete eligibility list.",
   "inventoryRoots": ["database/migrations", "supabase/migrations"],
   "inventoryFingerprints": {
-    "database/migrations": "b907c1b880e3b04ed593817765829884f06f929f5e6f42b9283d5ca3c9ea42bb",
-    "supabase/migrations": "f6f60ee4b2d650623cd08464dd2878040867bc75a29c085bde32639303aad01e"
+    "database/migrations": "af26f90723135855af90d575cffee9a40e953621dd45dee2fb60f71262253b8b",
+    "supabase/migrations": "31d24c801eb092c3123dd210626b9d7fdc721b1f1b5443d68b1074d55d112fc5"
   },
   "evidence": {
     "checkpoint": "canonical-replay-next-20261030.md",
@@ -3280,6 +3280,26 @@
       "aliasOf": "database/migrations/20261101115853_suite_email_owner_export.sql",
       "filenameVersion": "20261101115853",
       "reason": "Exact byte mirror only; never apply twice or infer production application/canonical parity."
+    },
+    {
+      "path": "database/migrations/20261101165836_community_story_canonical_city_catalog.sql",
+      "sha256": "111bd82b48b3dc6f8e153a3ab2097179796e9b3b77e8e85e771bdb1ca8a37dbf",
+      "classification": "unresolved",
+      "requires": [
+        "database/migrations/0083_catalogue_venue_search.sql",
+        "database/migrations/20261031230204_community_stories.sql"
+      ],
+      "filenameVersion": "20261101165836",
+      "reason": "Scoped read-only canonical-city catalogue/feed forward, QA validated independently. Not yet installed in production and not admitted to the historical replay prefix."
+    },
+    {
+      "path": "supabase/migrations/20261101165836_community_story_canonical_city_catalog.sql",
+      "sha256": "111bd82b48b3dc6f8e153a3ab2097179796e9b3b77e8e85e771bdb1ca8a37dbf",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261101165836_community_story_canonical_city_catalog.sql",
+      "filenameVersion": "20261101165836",
+      "reason": "Exact transport mirror only; never execute twice or infer full canonical replay parity."
     }
   ]
 }

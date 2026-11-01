@@ -425,3 +425,68 @@ it("does not remove an orphaned object unless the canonical owner cleanup task a
   expect(fixture.service).not.toHaveBeenCalled();
   expect(fixture.remove).not.toHaveBeenCalled();
 });
+
+it("uses the caller's bounded area catalogue and public grouped feed RPCs", async () => {
+  fixture.rpc.mockResolvedValue({
+    data: { available: true, cities: [] },
+    error: null,
+  });
+  const catalogue = await handleStoryRequest(
+    new Request(
+      "https://app.test/api/community/stories/cities?area=Fuengirola",
+    ),
+    ["cities"],
+  );
+  expect(catalogue.status).toBe(200);
+  expect(fixture.rpc).toHaveBeenLastCalledWith("community_story_city_catalog", {
+    p_area: "Fuengirola",
+  });
+  await handleStoryRequest(
+    new Request("https://app.test/api/community/stories/cities"),
+    ["cities"],
+  );
+  expect(fixture.rpc).toHaveBeenLastCalledWith("community_story_city_catalog", {
+    p_area: "fuengirola",
+  });
+  await handleStoryRequest(
+    new Request("https://app.test/api/community/stories?city=malaga"),
+  );
+  expect(fixture.rpc).toHaveBeenLastCalledWith("community_story_city_feed", {
+    p_city: "malaga",
+  });
+  expect(fixture.service).not.toHaveBeenCalled();
+  expect(fixture.getUser).not.toHaveBeenCalled();
+});
+it.each([
+  "area=",
+  "area=" + "x".repeat(101),
+  "area=Fuengirola&area=Madrid",
+  "area=%00",
+  "area=Fuengirola&latitude=36",
+  "cursor=abc",
+])(
+  "rejects invalid/covert-coordinate catalogue input %s before RPC",
+  async (query) => {
+    const result = await handleStoryRequest(
+      new Request("https://app.test/api/community/stories/cities?" + query),
+      ["cities"],
+    );
+    expect(result.status).toBe(400);
+    expect(fixture.rpc).not.toHaveBeenCalled();
+    expect(fixture.service).not.toHaveBeenCalled();
+  },
+);
+it.each([
+  "city=malaga&city=madrid",
+  "city=malaga&longitude=-4",
+  "city=malaga&area=secret",
+])("rejects ambiguous grouped feed input %s", async (query) => {
+  expect(
+    (
+      await handleStoryRequest(
+        new Request("https://app.test/api/community/stories?" + query),
+      )
+    ).status,
+  ).toBe(400);
+  expect(fixture.rpc).not.toHaveBeenCalled();
+});

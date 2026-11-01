@@ -2877,3 +2877,33 @@ Four EN/ES outside-geofence/weak-location page-slot cases were added;20 Passport
 tests pass. Server geofence/rewards and accepted-receipt guard are unchanged.
 Fresh negative-state geometry and final-head CI are required; earlier4375 green
 CI is retained as historical evidence, not clearance for this repair.
+
+## 2026-11-01 | Live QR/Stories release and production catalogue repair
+
+PR357 exact6fd653d merged8a99a3c97942a4b93285bf701e28657711776806. Automatic
+buildd0978bd8-25b2-4099-8d44-e5dd8af38a82 deployed Worker
+656151bc-203e-4fec-b48d-bd4b2092b213 at100%, deployment
+9f41f4bb-f385-4222-9ed6-f683db0df1ed. Ready/publishing/privateIdentity/Funnel
+bindings TRUE verified from deployed version. Root verified original API581156
+and private5MiB bucket, then enabled collection. Public HTTPS7checks passed,
+including real QR pixels/Stop/auth redirects and guest boundaries; no actual
+check-in, GPS or customer POST was sent. Physical Android retest remains separate.
+Compatible UI-off rollbackfc43e4d0 is retained.
+
+Production inspection correctly prevented declaring all Stories complete: the
+old alphabetic200-row national catalog showed wrong/duplicate area circles. New
+read-only projections preserve original API body28bb/581156 and all private
+lifecycle paths while grouping same-name nearby city aliases and focusing the
+selected area. Five-km calibration reflects actual public Mijas3788m aliases;
+far homonyms remain separate, no city/venue data is merged. Only the exact new
+helper changed from3km to5km in isolated QA, with original evidence retained.
+Source111bd82b mirrored forward is installed ONLY in QA so far.
+
+Actual PostGIS30anonymous assertions pass over232added cities/16synthetic
+Story states, including221far alphabetical distractors,3/2/3live alias counts,
+Mijas grouping, far homonym, hidden states and private-helper denial. Nine
+explicitly synthetic WebP objects were uploaded to QA storage and byte-verified
+for actual viewer tests. HTTP/client50 and PGlite8contract cases pass; the latter
+use a declared geometry adapter and do not replace real PostGIS evidence.
+Fresh native/rendered evidence, final-head CI, independent review and exact
+production forward remain required. No production customer-record writes.

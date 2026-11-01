@@ -4677,3 +4677,35 @@ both locales/themes, retaining existing controls and banner adjacency checks.
 Full local check, exact-head hosted browser/Cloudflare CI and live verification
 are required before release; physical-device acceptance is not inferred.
 Rollback reverts these UI sources only.
+
+## 2026-11-01 | Real-area City Stories and read-only alias projection
+
+Production357/8a99a3c is verified on Worker656151bc at100%; camera/receipt changes
+and public Stories controls passed HTTPS checks. Collection was enabled only
+after exact Worker/source/bindings verification. The production smoke then exposed
+a genuine catalogue defect: the old RPC alphabetically limited6,796 public city
+rows to200, excluding the selected coast and showing duplicate regional aliases.
+
+A new additive read-only city catalog/feed projection groups normalized Spanish
+names using deterministic5km public-centroid clusters, preferring a bare/short
+stable representative. This is display grouping, not a write/merge of city/venue
+records or any change to check-in geofences. Distant homonyms remain separate.
+Actual Mijas aliases3,788m apart justified5km rather than the initial3km; that
+calibration was tested on real isolated PostGIS. The catalogue returns at most200
+canonical groups nearest the selected public area name/slug, with Fuengirola
+coast fallback, and sums only the unchanged approved/public/recent/verified-venue
+photo counts. Counts are photos, never crowd levels.
+
+Public feeds resolve all group aliases through the unchanged original public
+feed, deduplicate/sort/cap50 results and rewrite only citySlug to the requested
+alias for existing viewer compatibility. Private lifecycle/moderation/export
+RPC code, ACL/RLS, storage and original API body remain unchanged. The internal
+map helper denies client execution; only public read projections allow anon/auth.
+
+The client sends only its already-selected public area label, refreshes/aborts
+stale area requests and keeps precise visitor coordinates local. Landmark photos
+resolve canonical aliases through existing normalized names with all original
+credits/licenses preserved. No historical city reconstruction or customer-row
+change occurs. Original90-route overhaul and live QR/celebration fixes remain
+intact; private347 stays excluded. Fresh exact-head checks, actual PostGIS/provider
+proof, rendered coastal rings and reviewed forward installation gate this repair.

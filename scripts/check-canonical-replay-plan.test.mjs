@@ -40,9 +40,9 @@ test("current repository inventory validates only as a blocked partial plan", ()
   assert.equal(result.fullCanonicalParity, false);
   assert.equal(result.executable, false);
   assert.equal(result.databaseExecutionSupported, false);
-  assert.equal(result.inventoryCount, 345);
+  assert.equal(result.inventoryCount, 347);
   assert.equal(result.candidateSourceCount, 97);
-  assert.equal(result.unresolvedSourceCount, 154);
+  assert.equal(result.unresolvedSourceCount, 155);
   const preview = frozen.entries.find(
     (entry) =>
       entry.path ===
@@ -80,6 +80,23 @@ test("current repository inventory validates only as a blocked partial plan", ()
   assert.equal(emailMirror.sha256, emailExport.sha256);
   assert(!frozen.candidateOrder.includes(emailExport.path));
   assert(!frozen.candidateOrder.includes(emailMirror.path));
+
+  const cityCatalog = frozen.entries.find(
+    (entry) =>
+      entry.path ===
+      "database/migrations/20261101165836_community_story_canonical_city_catalog.sql",
+  );
+  const cityMirror = frozen.entries.find(
+    (entry) =>
+      entry.path ===
+      "supabase/migrations/20261101165836_community_story_canonical_city_catalog.sql",
+  );
+  assert.equal(cityCatalog.classification, "unresolved");
+  assert.equal(cityMirror.classification, "byte-identical-transport");
+  assert.equal(cityMirror.aliasOf, cityCatalog.path);
+  assert.equal(cityMirror.sha256, cityCatalog.sha256);
+  assert(!frozen.candidateOrder.includes(cityCatalog.path));
+  assert(!frozen.candidateOrder.includes(cityMirror.path));
 
   assert.equal(frozen.evidence.scopedCreatorCounts.applicationSql, 78);
   assert.equal(frozen.evidence.scopedCreatorCounts.officialStorageSql, 17);

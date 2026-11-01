@@ -107,6 +107,21 @@ export async function handleStoryRequest(
       }
       return data;
     };
+    // Public catalogue/feed reads use the ordinary caller session. Private and
+    // mutation paths retain their existing RPC and authorization boundaries.
+    const publicRead = async (
+      name: "community_story_city_catalog" | "community_story_city_feed",
+      args: Record<string, string>,
+    ) => {
+      const { data, error } = await db.rpc(name, args);
+      if (error || !data)
+        throw new RequestSecurityError(
+          "Story read unavailable",
+          error?.code === "22023" ? 400 : 503,
+          error?.code === "22023" ? "invalid_input" : "unavailable",
+        );
+      return data;
+    };
     const cleanupMedia = async (id: string): Promise<"removed" | "pending"> => {
       try {
         const { error } = await createSupabaseServiceClient()
@@ -127,13 +142,39 @@ export async function handleStoryRequest(
           .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
           .max(100)
           .safeParse(url.searchParams.get("city"));
-        if (!city.success || url.searchParams.has("cursor"))
+        if (
+          !city.success ||
+          url.searchParams.getAll("city").length !== 1 ||
+          [...url.searchParams.keys()].some((key) => key !== "city")
+        )
           return failure("invalid_input", 400);
-        return response(await rpc("feed", { city: city.data }));
+        return response(
+          await publicRead("community_story_city_feed", { p_city: city.data }),
+        );
+      }
+      if (segments.length === 1 && segments[0] === "cities") {
+        const area = z
+          .string()
+          .trim()
+          .min(1)
+          .max(100)
+          .regex(/^[^\u0000-\u001f\u007f]+$/)
+          .safeParse(url.searchParams.get("area") ?? "fuengirola");
+        if (
+          !area.success ||
+          url.searchParams.getAll("area").length > 1 ||
+          [...url.searchParams.keys()].some((key) => key !== "area")
+        )
+          return failure("invalid_input", 400);
+        return response(
+          await publicRead("community_story_city_catalog", {
+            p_area: area.data,
+          }),
+        );
       }
       if (
         segments.length === 1 &&
-        ["cities", "mine", "check-ins", "moderation"].includes(segments[0])
+        ["mine", "check-ins", "moderation"].includes(segments[0])
       ) {
         const queue = url.searchParams.get("queue") || "pending";
         if (
