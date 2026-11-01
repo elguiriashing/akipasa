@@ -10,7 +10,6 @@
 
 **Verification.** Added signed-URL and claim-state regression tests; full CI and responsive E2E required before merge, then Cloudflare source/deployment comparison and live smoke. Do not claim device or production-image success without inspecting it.
 
-
 ## 2026-10-31 | Finish authorized #332 release and preserve concurrent #341
 
 **Need.** Alex authorized completion, checks and live release after all90 page
