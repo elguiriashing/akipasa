@@ -5,6 +5,7 @@ import { resultPage, resultSlice } from "@/lib/result-pagination";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { EventCard } from "@/components/EventCard";
+import { DiscoveryArtwork } from "@/components/DiscoveryArtwork";
 import { ProductionMap } from "@/components/ProductionMap";
 import { MapResultsDrawer } from "@/components/MapResultsDrawer";
 import { config, isLocale } from "@/lib/config";
@@ -223,9 +224,7 @@ export default async function MapPage({
                   href={`/${locale}/venues/${venue.slug}`}
                 >
                   <div className="card-media">
-                    <div className="card-media-fallback" aria-hidden>
-                      <span>{venue.name.slice(0, 1).toUpperCase()}</span>
-                    </div>
+                    <DiscoveryArtwork src={venue.imageUrl} alt={venue.name} />
                     <div className="card-media-scrim" aria-hidden />
                     <div className="card-media-badges">
                       <span className="pill card-pill-date">
