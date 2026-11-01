@@ -23,7 +23,7 @@ export function LaunchRibbon({ locale }: { locale: Locale }) {
         </div>
       </div>
       <Link href={`/${locale}/roadmap`} className={styles.link}>
-        {es ? "Nuestro plan" : "Roadmap"}
+        {es ? "Nuestra hoja de ruta" : "Our Roadmap"}
         <Icon name="arrow-right" size={17} />
       </Link>
     </aside>
