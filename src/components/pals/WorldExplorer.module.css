@@ -726,3 +726,36 @@
 .avatarPin {
   pointer-events: none;
 }
+
+/* Neutral recovery sits beside, not inside, the disposable WebGL canvas. */
+.avatarRecovery {
+  position: absolute;
+  left: -12px;
+  right: -12px;
+  top: 24px;
+  padding: 10px;
+  border: 1px solid #ffffff38;
+  border-radius: 16px;
+  background: #131c2beb;
+  color: #f4f1eb;
+  text-align: center;
+  font-size: 11px;
+  pointer-events: auto;
+}
+.avatarRecovery[hidden] {
+  display: none;
+}
+.avatarRecovery button {
+  margin-top: 7px;
+  min-height: 44px;
+  width: 100%;
+  border: 1px solid #ffba86;
+  border-radius: 12px;
+  background: #ff964f;
+  color: #21170e;
+  font: inherit;
+  font-weight: 700;
+}
+.avatarRecovery button[hidden] {
+  display: none;
+}

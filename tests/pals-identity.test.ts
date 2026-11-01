@@ -19,7 +19,7 @@ describe("AkiPals human avatar identity", () => {
     }
   });
 
-  it("keeps older saved wardrobe choices on their original model", () => {
+  it("retains legacy styling data but projects only an authored model", () => {
     const legacy: Record<string, unknown> = {
       ...DEFAULT_APPEARANCE,
       skin: "deep",
@@ -31,7 +31,7 @@ describe("AkiPals human avatar identity", () => {
     delete legacy.model;
     expect(appearanceSchema.parse(legacy)).toEqual({
       ...legacy,
-      model: "classic-v2",
+      model: "rain-v3",
     });
   });
 
@@ -46,7 +46,7 @@ describe("AkiPals human avatar identity", () => {
         /"([a-z]+-v\d+)":\s*"(\/pals\/models\/professional\/[^"\s]+\.glb)"/g,
       ),
     ].map((match) => match[1]);
-    expect(APPEARANCE_OPTIONS.model).toEqual(["classic-v2", ...ids]);
+    expect(APPEARANCE_OPTIONS.model).toEqual(ids);
   });
 
   it("rejects extra fields, injected markup and invalid body values", () => {

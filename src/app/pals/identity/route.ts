@@ -32,6 +32,11 @@ export async function GET() {
     return reply({
       appearance,
       saved: Boolean(data),
+      // A read upgrades the presentation only; the old database row is untouched.
+      needsUpgrade:
+        Boolean(data) &&
+        (data.appearance?.model !== appearance.model ||
+          !data.appearance?.starterOutfit),
     });
   } catch {
     return reply(

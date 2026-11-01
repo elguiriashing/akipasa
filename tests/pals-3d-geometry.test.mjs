@@ -8,7 +8,7 @@ import {
   makeHair,
   makeWardrobe,
   prepareBase,
-} from "../src/components/pals/studio-3d.js";
+} from "../src/components/pals/legacy-avatar-geometry.js";
 import { DEFAULT_APPEARANCE } from "../src/lib/pals/avatar-v2";
 
 const loaded = new Map();

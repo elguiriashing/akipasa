@@ -64,12 +64,13 @@ describe("private Wardrobe account boundary", () => {
     expect(await response.json()).toEqual({
       appearance: DEFAULT_APPEARANCE,
       saved: false,
+      needsUpgrade: false,
     });
     expect(DEFAULT_APPEARANCE.model).toBe("rain-v3");
     expect(query.upsert).not.toHaveBeenCalled();
   });
 
-  it("restores an existing model-less saved look as classic without rewriting it", async () => {
+  it("upgrades a model-less save for display without rewriting its legacy row", async () => {
     const legacy: Record<string, unknown> = {
       ...DEFAULT_APPEARANCE,
       hair: "bun",
@@ -84,14 +85,15 @@ describe("private Wardrobe account boundary", () => {
     });
     const response = await GET();
     expect(await response.json()).toEqual({
-      appearance: { ...legacy, model: "classic-v2" },
+      appearance: { ...legacy, model: "rain-v3" },
       saved: true,
+      needsUpgrade: true,
     });
     expect(query.upsert).not.toHaveBeenCalled();
   });
 
   it.each(["classic-v2", "rain-v3", "snow-v4"])(
-    "saves the allowed %s model while preserving hidden wardrobe choices",
+    "normalizes %s on explicit Save while preserving legacy wardrobe data",
     async (model) => {
       const appearance = {
         ...DEFAULT_APPEARANCE,
@@ -103,11 +105,21 @@ describe("private Wardrobe account boundary", () => {
       };
       const response = await POST(request({ appearance, save: true }));
       expect(response.status).toBe(200);
+      const normalized = {
+        ...appearance,
+        model: model === "classic-v2" ? "rain-v3" : model,
+      };
       expect(query.upsert).toHaveBeenCalledWith(
-        expect.objectContaining({ user_id: "caller-only", appearance }),
+        expect.objectContaining({
+          user_id: "caller-only",
+          appearance: normalized,
+        }),
         { onConflict: "user_id" },
       );
-      expect(await response.json()).toEqual({ appearance, saved: true });
+      expect(await response.json()).toEqual({
+        appearance: normalized,
+        saved: true,
+      });
     },
   );
 

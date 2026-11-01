@@ -1,4 +1,11 @@
 import { z } from "zod";
+import {
+  authoredModelId,
+  STARTER_OUTFITS,
+  STARTER_HAIR,
+  STARTER_PALETTES,
+  STARTER_HAIR_COLORS,
+} from "./starter-catalogue";
 
 /**
  * AkiPals identity v2. Stylised illustration, not biometrics.
@@ -6,9 +13,15 @@ import { z } from "zod";
  */
 export const appearanceSchema = z
   .object({
-    // Older saved looks retain their original renderer until the owner chooses
-    // a different model. Model IDs are local presets, never supplied asset URLs.
-    model: z.enum(["classic-v2", "rain-v3", "snow-v4"]).default("classic-v2"),
+    // Accept a legacy ID only as migration input. Never return/render it.
+    model: z
+      .enum(["classic-v2", "rain-v3", "snow-v4"])
+      .default("rain-v3")
+      .transform(authoredModelId),
+    starterOutfit: z.enum(STARTER_OUTFITS).default("crew"),
+    starterHair: z.enum(STARTER_HAIR).default("original"),
+    starterPalette: z.enum(STARTER_PALETTES).default("ember"),
+    starterHairColor: z.enum(STARTER_HAIR_COLORS).default("espresso"),
     bodyStyle: z.enum(["feminine", "masculine"]).default("feminine"),
     skin: z.enum(["porcelain", "light", "warm", "olive", "brown", "deep"]),
     face: z.enum(["oval", "round", "angular"]),
@@ -47,6 +60,10 @@ export type Appearance = z.infer<typeof appearanceSchema>;
 
 export const DEFAULT_APPEARANCE: Appearance = {
   model: "rain-v3",
+  starterOutfit: "crew",
+  starterHair: "original",
+  starterPalette: "ember",
+  starterHairColor: "espresso",
   bodyStyle: "feminine",
   skin: "warm",
   face: "oval",
@@ -73,7 +90,11 @@ export const DEFAULT_APPEARANCE: Appearance = {
 
 /** Every starter item and colour is free. No paid, random or unlockable gear here. */
 export const APPEARANCE_OPTIONS: Record<keyof Appearance, readonly string[]> = {
-  model: ["classic-v2", "rain-v3", "snow-v4"],
+  model: ["rain-v3", "snow-v4"],
+  starterOutfit: STARTER_OUTFITS,
+  starterHair: STARTER_HAIR,
+  starterPalette: STARTER_PALETTES,
+  starterHairColor: STARTER_HAIR_COLORS,
   bodyStyle: ["feminine", "masculine"],
   skin: ["porcelain", "light", "warm", "olive", "brown", "deep"],
   face: ["oval", "round", "angular"],

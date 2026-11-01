@@ -1,5 +1,57 @@
 import { APPEARANCE_OPTIONS } from "@/lib/pals/avatar-v2";
+import {
+  PALS_RUNTIME_VERSION,
+  STARTER_COLORS,
+  STARTER_HAIR_TINTS,
+} from "@/lib/pals/starter-catalogue";
 const SPANISH: Record<string, string> = {
+  "Your look. Your next adventure.": "Tu estilo. Tu próxima aventura.",
+  "Private playtest": "Prueba privada",
+  "Free starter wardrobe": "Armario inicial gratis",
+  "Outfit style": "Estilo de ropa",
+  Clothes: "Ropa",
+  Colour: "Color",
+  World: "Mundo",
+  Profile: "Perfil",
+  "Your style kit": "Tu colección de estilos",
+  "Everything here is free": "Todo aquí es gratis",
+  "Aki Crew": "Aki Crew",
+  Varsity: "Universitario",
+  Explorer: "Explorador",
+  "Signature colour and badge": "Color y emblema Aki",
+  "Contrast collar and hem": "Cuello y bajos a contraste",
+  "Layered vest and centre seam": "Chaleco y costura central",
+  Original: "Original",
+  Swept: "Con flequillo",
+  Cropped: "Corto",
+  "Outfit palette": "Paleta de ropa",
+  Ember: "Ámbar",
+  Midnight: "Medianoche",
+  Coast: "Costa",
+  Orchid: "Orquídea",
+  Sand: "Arena",
+  Copper: "Cobre",
+  "Retry 3D": "Reintentar 3D",
+  "Loading your look…": "Cargando tu estilo…",
+  "Your saved look is safe. Retry or choose another character.":
+    "Tu estilo guardado está a salvo. Reintenta o elige otro personaje.",
+  "Rotate character": "Girar personaje",
+  "Save look": "Guardar estilo",
+  "Undo changes": "Deshacer cambios",
+  "Save before leaving. Your changes are private until saved.":
+    "Guarda antes de salir. Los cambios son privados hasta que los guardes.",
+  "Choose an authored character": "Elige un personaje 3D",
+  "Three starter outfits": "Tres estilos iniciales",
+  "Made for both Rain and Snow": "Para Rain y Snow",
+  "Take your look into World": "Lleva tu estilo al Mundo",
+  "Your saved character follows you": "Tu personaje guardado te acompaña",
+  "Standing-pose playtest": "Prueba con pose de pie",
+  "Body shaping and animation are not included yet":
+    "Los ajustes corporales y la animación aún no están incluidos",
+  "Your older save is safe. Save this updated look to use it next time.":
+    "Tu estilo anterior está a salvo. Guarda este nuevo estilo para la próxima vez.",
+  "Choose your look": "Elige tu estilo",
+
   "AkiPals | Wardrobe": "AkiPals | Armario",
   "AkiPals / Wardrobe": "AkiPals / Armario",
   "Your Wardrobe.": "Tu armario.",
@@ -193,231 +245,116 @@ const SPANISH: Record<string, string> = {
   "AkiPals | Your 3D character creator":
     "AkiPals | Tu creador de personajes 3D",
 };
-const STYLE = String.raw`
-:root{color-scheme:dark;font-family:system-ui,-apple-system,sans-serif;background:#080c17;color:#f7f3ef}
-*{box-sizing:border-box}body{margin:0;min-height:100svh;background:radial-gradient(circle at 25% 15%,#38283c,transparent 40%),radial-gradient(circle at 80% 55%,#1c3541,transparent 50%),#080c17}
-button,select{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid #ffb080;outline-offset:3px}
-a{color:inherit}header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:19px clamp(17px,5vw,55px);border-bottom:1px solid #ffffff25}
-.brand{text-decoration:none;font-weight:900;font-size:22px;letter-spacing:-.045em}.brand em{font-style:normal;color:#ff9d71}
-.pill{border:1px solid #ffffff34;padding:8px 12px;border-radius:30px;font-size:12px;color:#cecbd4}
-header a.pill{display:inline-flex;align-items:center;min-height:44px}
-main{max-width:1370px;margin:0 auto;padding:35px clamp(17px,4vw,55px) 60px}.eyebrow{font-size:11px;font-weight:800;letter-spacing:.21em;text-transform:uppercase;color:#ff9d71}
-h1{font-size:clamp(38px,6vw,76px);letter-spacing:-.07em;line-height:1.03;margin:12px 0 15px}h1 em{color:#ff9863;font-style:normal}
-.lede{color:#c3c5d0;max-width:800px;line-height:1.65;font-size:16px}
-.grid{display:grid;grid-template-columns:minmax(290px,1fr) minmax(320px,1.13fr);gap:21px;margin-top:30px}
-.panel{background:linear-gradient(140deg,#ffffff15,#ffffff07);border:1px solid #ffffff2b;border-radius:27px;overflow:hidden;min-width:0}
-.stage{display:flex;flex-direction:column;align-items:center;padding:25px;min-height:620px;background:radial-gradient(circle at 50% 45%,#ff9e6737,transparent 52%),linear-gradient(150deg,#33283d,#171d2b 72%)}
-.stage h2{align-self:flex-start;text-transform:uppercase;letter-spacing:.15em;font-size:12px;color:#f3c5a7;margin:0}
-#portrait{width:min(100%,460px);margin:auto;filter:drop-shadow(0 19px 25px #02060a5e)}#portrait svg{display:block;width:100%;height:auto}
-.stage-caption{text-align:center;font-weight:800;font-size:21px}.stage-caption small{display:block;font-weight:400;font-size:12px;max-width:360px;line-height:1.5;color:#b9bdc9;margin-top:8px}
-.editor{padding:26px}.editor h2{font-size:26px;letter-spacing:-.04em;margin:0 0 8px}.editor>p{color:#b9becb;font-size:13px;line-height:1.6}
-.group{padding-top:15px}.group h3{font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:#ffbc97}
-.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{display:flex;flex-direction:column;gap:6px;color:#d0cbd3;font-size:12px;font-weight:600}
-select{width:100%;background:#131b2a;color:#f8f2ed;border:1px solid #ffffff30;border-radius:12px;padding:12px 10px;min-height:46px}
-.actions{display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid #ffffff2a;padding-top:21px;margin-top:24px}
-button{padding:12px 17px;min-height:45px;border-radius:12px;background:#ffffff15;color:#f7f3ef;font-weight:800;border:1px solid #ffffff40}
-button.primary{background:#ff854a;color:#241f28;border-color:#ff854a}button:disabled{opacity:1;cursor:default;background:#343743;color:#cbd0dc;border-color:#697180;box-shadow:none}.actions button.primary:disabled{background:#68432f;color:#ffe6d6;border-color:#a17457;box-shadow:none}
-#status{flex-basis:100%;font-size:12px;color:#c2c7d1;min-height:18px}
-.notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:18px}
-.note{background:#ffffff0a;border:1px solid #ffffff25;border-radius:17px;padding:19px}.note strong{font-size:14px}.note p{font-size:12px;line-height:1.6;color:#b5bdc9}
-footer{text-align:center;font-size:12px;color:#979eae;padding:18px}
-@media(max-width:860px){.grid{grid-template-columns:1fr}.stage{min-height:420px}#portrait{width:min(100%,360px)}.notes{grid-template-columns:1fr}}
-@media(max-width:480px){.pill{font-size:10px}main{padding:28px 14px}.editor{padding:20px 16px}.stage{padding:19px}.panel{border-radius:21px}select{padding:9px 6px;font-size:13px}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
 
-/* The real WebGL stage replaces the previous illustrated SVG preview. */
-.grid{grid-template-columns:minmax(340px,1.2fr) minmax(340px,.8fr);gap:18px}
-.stage{position:relative;padding:0;min-height:630px;justify-content:flex-start;background:radial-gradient(ellipse at 50% 49%,#60463e70 0,transparent 64%),linear-gradient(140deg,#292636,#111923)}
-.stage h2{position:absolute;top:22px;left:22px;z-index:2;border:1px solid #ff945e65;border-radius:22px;background:#11172295;padding:9px 12px;backdrop-filter:blur(8px)}
-#avatar-stage{position:absolute;inset:0;height:100%;width:100%;touch-action:none;min-height:630px}
-#avatar-stage canvas{display:block}
-.stage-caption{position:absolute;z-index:3;left:18px;right:18px;bottom:15px;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left}
-.stage-caption small{font-size:11px;max-width:230px}.stage-caption .rotate{color:#fff;cursor:pointer;border:1px solid #ffffff60;border-radius:100px;background:#111723a8;padding:9px 14px}
-.stage-caption strong{font-size:15px;line-height:1.1}
-#stage-error{position:absolute;z-index:4;inset:0;background:#141927eb;display:grid;place-items:center;padding:24px;text-align:center;font-size:15px;color:#f3d2ba}
-#stage-error[hidden]{display:none}
-.editor{display:flex;flex-direction:column;min-height:630px;background:linear-gradient(155deg,#282735ee,#141c2bee)}
-.editor >p{margin-top:4px}
-.tabstrip{display:flex;gap:5px;overflow-x:auto;margin:13px 0 12px;padding-bottom:12px;border-bottom:1px solid #ffffff1c}
-.tab{white-space:nowrap;padding:10px 10px;min-height:44px;font-size:12px;background:#ffffff0b;border:1px solid #ffffff2c;border-radius:12px}
-.tab[aria-selected="true"]{background:#ff854a28;color:#ffc3a2;border-color:#ff955e;box-shadow:inset 0 -2px #ff854a}
-#fields{flex:1}
-.group h3{margin:3px 0 15px;font-size:14px;color:#ffc19e}
-.color-group{grid-column:1/-1;border-top:1px solid #ffffff23;padding-top:12px}
-.color-group strong{display:block;font-size:12px;margin-bottom:11px}
-.swatches{display:flex;gap:9px;flex-wrap:wrap}
-.swatch{width:44px;height:44px;min-height:44px;padding:0;border-radius:100%;background:var(--color);border:2px solid #ffffff48}
-.swatch[aria-pressed="true"]{box-shadow:0 0 0 3px #ff854a57;border:3px solid #ff9659}
-.presets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:0 0 16px}
-.presets button{min-height:58px;border-radius:12px;padding:9px 12px;text-align:left;background:linear-gradient(135deg,#3f3844,#1e2634);font-size:12px}
-.presets button[aria-pressed="true"]{border-color:#ff955e;background:linear-gradient(135deg,#5a332e,#202232)}
-.actions{margin-top:auto}.actions button.primary{flex:1;background:linear-gradient(120deg,#ff914c,#ff7148);font-size:15px;box-shadow:0 7px 23px #f7754040}
-.actions #download{width:100%;background:none;border:0;font-size:12px;min-height:44px;color:#cbd0dc;text-align:left;padding:0}
-@media(max-width:860px){.grid{grid-template-columns:1fr}.stage,#avatar-stage{min-height:495px;height:495px}.editor{min-height:400px}}
-@media(max-width:480px){.stage{border-radius:23px 23px 0 0}.stage,#avatar-stage{height:456px;min-height:456px}.stage h2{font-size:10px}.editor{border-radius:0 0 23px 23px;padding:22px 16px}.tab{font-size:11px;padding:10px 8px}.stage-caption strong{font-size:13px}.stage-caption small{font-size:10px}}
+const STYLE = String.raw`
+:root{color-scheme:dark;font-family:Inter,system-ui,-apple-system,sans-serif;background:#080b10;color:#f6f4f0;--accent:#ff8b45;--muted:#b6bbc6}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 15%,#39202c70,transparent 55%),#080b10;min-height:100svh;padding-bottom:calc(82px + env(safe-area-inset-bottom))}
+button,select{font:inherit}button,a{-webkit-tap-highlight-color:transparent}button{cursor:pointer}a{color:inherit;text-decoration:none}button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #ffc292;outline-offset:4px}
+button{border:1px solid #ffffff26;color:inherit;background:#1b202a;min-height:44px;border-radius:14px}button:disabled{cursor:default;color:#aeb3c0;background:#252934;border-color:#424956;box-shadow:none}
+header{max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 24px}.brand{display:flex;align-items:center;gap:9px;font-size:23px;font-weight:850;letter-spacing:-.8px}.brand img{width:29px;height:34px}.pill{display:flex;align-items:center;gap:7px;border:1px solid #ffffff25;border-radius:30px;padding:9px 12px;font-size:11px;color:var(--muted)}.pill:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
+main{max-width:1160px;margin:auto;padding:6px 24px 22px}h1{font-size:clamp(35px,5vw,58px);letter-spacing:-2.8px;line-height:1;margin:8px 0}.lede{font-size:14px;color:#d2d4dc;margin:10px 0 20px}.grid{display:grid;grid-template-columns:1.4fr 1fr;gap:20px;align-items:stretch}
+.stage{position:relative;min-width:0;min-height:560px;border:1px solid #ffffff20;border-radius:26px;overflow:hidden;background:radial-gradient(ellipse at 22% 75%,#e777323d,transparent 45%),radial-gradient(ellipse at 70% 30%,#5250a53d,transparent 55%),linear-gradient(170deg,#191723,#10171e 85%)}
+.stage:before{content:"";position:absolute;inset:55% 0 0;background:repeating-linear-gradient(100deg,transparent 0 62px,#ffffff04 63px 64px);transform:perspective(300px) rotateX(35deg);transform-origin:bottom;pointer-events:none}.stage h2{position:absolute;top:18px;left:18px;z-index:2;margin:0;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:#ffd0ac;background:#14131bc9;border:1px solid #f2a5653b;padding:9px 11px;border-radius:30px}
+#avatar-stage{position:absolute;left:-3%;right:64px;top:0;bottom:0;touch-action:none}#avatar-stage canvas{display:block;width:100%;height:100%}.stage-caption{position:absolute;left:16px;bottom:17px;right:96px;display:flex;align-items:center;justify-content:space-between;gap:8px;z-index:2}.stage-caption small{font-size:10px;color:#bdc4d3;line-height:1.5;max-width:140px}.rotate{font-size:20px;width:44px;background:#131722c9;border-radius:50%}
+.tabstrip{position:absolute;right:12px;top:70px;display:flex;flex-direction:column;padding:5px;gap:5px;z-index:3;border-radius:20px;border:1px solid #ffffff22;background:#0d121ceb;box-shadow:0 12px 32px #0005}.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:1px solid transparent;border-radius:14px;background:transparent;width:70px;height:70px;font-size:10px;color:#c6cad4}.tab svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.tab[aria-selected=true]{background:#ff8b4521;border-color:#ff9a605c;color:#ffbd8e}
+#stage-error{position:absolute;inset:58px 100px 65px 12px;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:15px;background:#10151deb;border-radius:20px}#stage-error[hidden],#stage-retry[hidden]{display:none}#stage-error p{font-size:13px;line-height:1.6;color:#d6d8e0;margin:0}#stage-retry{padding:9px 15px;background:#ff8b45;color:#24180e;font-weight:750}.loader{width:27px;height:27px;border:2px solid #ff9d7133;border-top-color:#ff9d71;border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.editor{min-width:0;padding:23px;border:1px solid #ffffff20;border-radius:24px;background:linear-gradient(135deg,#20202be8,#10161de8);display:flex;flex-direction:column}.editor-title{display:flex;align-items:center;justify-content:space-between;gap:12px}.editor h2{font-size:22px;letter-spacing:-.7px;margin:0}.free{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#ffb888}.editor-intro{font-size:12px;line-height:1.6;color:var(--muted);margin:9px 0 18px}.group h3{font-size:13px;font-weight:650;margin:0 0 14px;color:#e7e7ed}.fields{display:grid;gap:12px;min-width:0}.choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.choice{position:relative;min-width:0;min-height:92px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px 6px;background:#ffffff05;font-size:12px}.choice small{color:#aeb6c5;line-height:1.4;font-size:10px;text-align:center}.choice[aria-pressed=true]{background:#ff8b4517;border-color:#ff9d71;box-shadow:inset 0 0 0 1px #ff9d7130}.choice[aria-pressed=true]:after{content:"✓";position:absolute;right:6px;top:4px;color:#ffbd8e;font-size:11px}.choice-icon{font-size:25px;line-height:1;color:#ffb581}.choice svg{width:30px;height:30px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.character-choices{grid-template-columns:1fr 1fr}.character-choices .choice{min-height:100px;font-size:16px;letter-spacing:-.4px}
+.palette-group{margin-top:10px}.palette-group>strong{display:block;font-size:12px;color:#ced2dc;margin:10px 0}.palettes{display:flex;flex-wrap:wrap;gap:10px}.palette{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;background:#ffffff06;min-width:52px;min-height:74px;padding:9px 7px;border-radius:14px;font-size:10px;color:#c4cbd7}.palette-colours{display:flex}.palette-colours i{display:block;width:13px;height:25px;background:var(--color)}.palette-colours i:first-child{border-radius:10px 0 0 10px}.palette-colours i:last-child{border-radius:0 10px 10px 0}.palette[aria-pressed=true],.swatch[aria-pressed=true]{border-color:#ffb27d;box-shadow:0 0 0 2px #ff985739}.swatches{display:flex;flex-wrap:wrap;gap:10px}.swatch{width:44px;height:44px;border-radius:50%;padding:6px;background:transparent}.swatch i{display:block;background:var(--color);width:100%;height:100%;border-radius:50%;border:1px solid #ffffff3b}
+label{display:flex;flex-direction:column;gap:8px;font-size:12px;color:#c9cfda;margin-top:10px}select{background:#111822;border:1px solid #ffffff30;color:#f6f5f3;padding:11px;border-radius:12px;min-height:44px;width:100%}.actions{margin-top:auto;padding-top:22px}.primary-row{display:flex;gap:9px}#save{flex:1;color:#22160f;background:linear-gradient(120deg,#ffac63,#ff7a39);border-color:#ff9f63;font-size:14px;font-weight:800;box-shadow:0 5px 20px #fc7b2920}#save:disabled{color:#e4c1aa;background:#5d3f2e;border-color:#8a624c;box-shadow:none}#reset{padding:9px 12px;font-size:11px}#status{display:block;min-height:36px;font-size:11px;line-height:1.5;color:#d0d5e0;margin-top:12px}.save-note{font-size:10px;color:#9fa9b9;line-height:1.5;margin:0}#download{margin-top:8px;min-height:44px;width:100%;border:0;background:transparent;font-size:11px;color:#c1c7d3;text-align:left;padding:0}
+.kit{margin-top:22px}.kit h2{font-size:19px;margin:0 0 12px;letter-spacing:-.5px}.notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.note{border:1px solid #ffffff20;border-radius:18px;background:linear-gradient(140deg,#38251c60,#141921);padding:17px 13px;min-width:0}.note .note-icon{font-size:23px;color:#ff934c;display:block;margin-bottom:13px}.note strong{font-size:12px;line-height:1.4;display:block}.note p{font-size:11px;line-height:1.5;color:#aeb7c6;margin:7px 0 0}footer{text-align:center;font-size:10px;line-height:1.7;color:#9aa4b4;padding:10px 24px}footer a{text-decoration:underline}.dock{position:fixed;z-index:10;bottom:0;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:7px;padding:8px 15px calc(8px + env(safe-area-inset-bottom));border-top:1px solid #ffffff24;background:#0b1119f5;backdrop-filter:blur(16px)}.dock a{min-width:72px;width:130px;min-height:51px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-radius:14px;color:#b9c0ce;font-size:11px}.dock a[aria-current=page]{color:#ffb37c;background:#ff8b4518}.dock svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:760px){header{padding:14px 17px}.brand{font-size:21px}.pill{font-size:10px}main{padding:4px 14px 14px}h1{font-size:40px;letter-spacing:-2px}.lede{font-size:12px;margin-bottom:15px}.grid{grid-template-columns:1fr;gap:0}.stage{min-height:380px;height:48svh;max-height:500px;border-radius:23px 23px 0 0;border-bottom:0}.editor{padding:18px 16px;border-radius:0 0 23px 23px}.editor-intro{margin-bottom:14px}.editor h2{font-size:19px}.tabstrip{top:61px;right:10px}.tab{width:62px;height:62px}.tab svg{width:22px;height:22px}#avatar-stage{right:64px;left:-6%}.stage-caption{right:89px;bottom:12px}.stage h2{font-size:9px;left:13px;top:14px}#stage-error{right:90px}.actions{padding-top:17px}.choice{min-height:87px}.kit{margin-top:19px}.note{padding:14px 10px}.note strong{font-size:11px}.note p{font-size:10px}.notes{gap:8px}}
+@media(max-width:360px){main{padding-left:10px;padding-right:10px}.stage{min-height:345px}.tab{width:55px;height:59px}.pill{font-size:9px;padding:8px}.choices{gap:6px}.choice{font-size:11px}#reset{font-size:10px;padding:8px}.editor{padding:16px 12px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 `;
+
 const CLIENT = String.raw`
 (()=>{"use strict";
-const options=window.AKI_AVATAR_OPTIONS;
-const t = text => window.AKI_AVATAR_TEXT[text] || text;
-const tabs={
-Character:[["model","Character model"],["height","Height"]],
-Hair:[["hair","Hairstyle"],["hairColor","Hair colour"]],
-Face:[["bodyStyle","Body frame"],["skin","Skin tone"],["face","Face shape"],["eyes","Eye shape"],["eyeColor","Eye colour"],["brows","Eyebrows"],["nose","Nose"],["mouth","Mouth"],["ears","Ears"],["chin","Chin"]],
-Body:[["neck","Neck"],["shoulders","Shoulders"],["height","Height"],["build","Body build"]],
-Outfit:[["top","Top"],["topColor","Top colour"],["bottom","Bottoms"],["shoes","Shoes"],["bag","Bag"]],
-Extras:[["accessory","Accessory"]]
-};
-const presets={
-street:{top:"hoodie",topColor:"orange",bottom:"cargo",shoes:"sneakers",bag:"crossbody"},
-night:{top:"jacket",topColor:"ink",bottom:"tailored",shoes:"boots",bag:"none",accessory:"earrings"},
-casual:{top:"sweater",topColor:"mint",bottom:"jeans",shoes:"trainers",bag:"none"},
-beach:{top:"tee",topColor:"cream",bottom:"shorts",shoes:"sneakers",bag:"crossbody",accessory:"glasses"}
-};
-const colorSets={
-skin:{porcelain:"#f2d6c7",light:"#e8c1a8",warm:"#d6a181",olive:"#b78b69",brown:"#946547",deep:"#664231"},
-hairColor:{black:"#17191e",espresso:"#352523",chestnut:"#694332",auburn:"#a65f43",blonde:"#c99a59",silver:"#a9afb7",pink:"#b77892",blue:"#4d6ca3"},
-eyeColor:{brown:"#573b31",hazel:"#8b714a",green:"#4e7462",blue:"#5689bb",grey:"#828a98"},
-topColor:{orange:"#ff834b",ink:"#2a2e3a",cream:"#ede2d5",mint:"#78bcae",purple:"#836ca8",red:"#bb5160"}
-};
-const fields=document.querySelector("#fields"),area=document.querySelector("#avatar-stage"),status=document.querySelector("#status");
-const save=document.querySelector("#save"),reset=document.querySelector("#reset"),failure=document.querySelector("#stage-error");
-let current=null,saved=null,hasSaved=false,saving=false,rendering=true,tab="Character",stage=null;
-const pretty=s=>s.charAt(0).toUpperCase()+s.slice(1).replaceAll("-"," ");
-const modelNames={"classic-v2":"Classic saved look","rain-v3":"Rain","snow-v4":"Snow"};
-const isProfessional=()=>current?.model==="rain-v3"||current?.model==="snow-v4";
-function message(s){status.textContent=t(s)}
+const options=window.AKI_AVATAR_OPTIONS,t=text=>window.AKI_AVATAR_TEXT[text]||text;
+const fields=document.querySelector("#fields"),area=document.querySelector("#avatar-stage"),status=document.querySelector("#status"),save=document.querySelector("#save"),reset=document.querySelector("#reset"),failure=document.querySelector("#stage-error"),retry=document.querySelector("#stage-retry"),errorText=document.querySelector("#stage-message"),spinner=document.querySelector(".loader");
+const label={"rain-v3":"Rain","snow-v4":"Snow",crew:"Aki Crew",varsity:"Varsity",explorer:"Explorer",original:"Original",swept:"Swept",cropped:"Cropped",ember:"Ember",midnight:"Midnight",coast:"Coast",orchid:"Orchid",sand:"Sand",espresso:"Espresso",black:"Black",copper:"Copper",blonde:"Blonde",silver:"Silver",pink:"Pink",short:"Short",medium:"Medium",tall:"Tall"};
+let current=null,saved=null,hasSaved=false,saving=false,rendering=true,tab="Outfit",stage=null,starting=false,disposed=false;
+const authored=a=>({...a,model:!a.model||a.model==="classic-v2"?"rain-v3":a.model,starterOutfit:a.starterOutfit||"crew",starterHair:a.starterHair||"original",starterPalette:a.starterPalette||"ember",starterHairColor:a.starterHairColor||"espresso"});
+function message(text){status.textContent=t(text)}
 function changed(){return JSON.stringify(current)!==JSON.stringify(saved)}
 function dirty(){return !hasSaved||changed()}
-function buttons(){save.disabled=!current||!dirty()||saving||rendering;reset.disabled=!current||!changed()||saving;document.querySelector("#download").disabled=rendering}
+function buttons(){save.disabled=!current||!dirty()||saving||rendering;reset.disabled=!current||!changed()||saving;document.querySelector("#download").disabled=rendering||!stage}
+function choiceGroup(key,title){
+ const group=document.createElement("div");group.className="choices"+(key==="model"?" character-choices":"");group.setAttribute("role","group");group.setAttribute("aria-label",t(title));
+ for(const value of options[key]){
+  const button=document.createElement("button");button.type="button";button.className="choice";button.dataset.field=key;button.dataset.value=value;button.setAttribute("aria-label",t(label[value]));button.setAttribute("aria-pressed",String(current[key]===value));
+  const icon=document.createElement("span");icon.className="choice-icon";icon.setAttribute("aria-hidden","true");icon.textContent=key==="model"?(value==="rain-v3"?"R":"S"):key==="starterHair"?({original:"≋",swept:"〰",cropped:"⌁"}[value]):({crew:"✦",varsity:"◈",explorer:"▤"}[value]);
+  const name=document.createElement("strong");name.textContent=t(label[value]);button.append(icon,name);
+  if(key==="starterOutfit"){const note=document.createElement("small");note.textContent=t({crew:"Signature colour and badge",varsity:"Contrast collar and hem",explorer:"Layered vest and centre seam"}[value]);button.append(note)}
+  group.append(button);
+ }return group;
+}
+function paletteGroup(){
+ const group=document.createElement("div");group.className="palette-group";const heading=document.createElement("strong");heading.textContent=t("Outfit palette");group.append(heading);
+ const line=document.createElement("div");line.className="palettes";line.setAttribute("role","group");line.setAttribute("aria-label",t("Outfit palette"));
+ for(const value of options.starterPalette){const button=document.createElement("button");button.type="button";button.className="palette";button.dataset.field="starterPalette";button.dataset.value=value;button.setAttribute("aria-label",t(label[value]));button.setAttribute("aria-pressed",String(current.starterPalette===value));const chips=document.createElement("span");chips.className="palette-colours";chips.setAttribute("aria-hidden","true");for(const color of Object.values(window.AKI_STARTER_COLORS[value])){const chip=document.createElement("i");chip.style.setProperty("--color",color);chips.append(chip)}button.append(chips,document.createTextNode(t(label[value])));line.append(button)}group.append(line);return group;
+}
+function hairColours(){const group=document.createElement("div");group.className="palette-group";const heading=document.createElement("strong");heading.textContent=t("Hair colour");group.append(heading);const line=document.createElement("div");line.className="swatches";line.setAttribute("role","group");line.setAttribute("aria-label",t("Hair colour"));for(const value of options.starterHairColor){const button=document.createElement("button");button.type="button";button.className="swatch";button.dataset.field="starterHairColor";button.dataset.value=value;button.setAttribute("aria-label",t("Hair colour")+" "+t(label[value]));button.setAttribute("aria-pressed",String(current.starterHairColor===value));const chip=document.createElement("i");chip.style.setProperty("--color",window.AKI_STARTER_HAIR[value]);chip.setAttribute("aria-hidden","true");button.append(chip);line.append(button)}group.append(line);return group;}
 function draw(){
- if(isProfessional()&&tab!=="Character")tab="Character";
- const previous = document.activeElement;
- const focusName = previous?.tagName === "SELECT" ? previous.name : null;
- const focusField = previous?.dataset?.field;
- const focusValue = previous?.dataset?.value;
- fields.replaceChildren();
- const title=document.createElement("h3");title.textContent=t(tab==="Outfit"?"Style your story.":tab==="Hair"?"The hair studio":tab);
- const section=document.createElement("section");section.className="group";section.append(title);
- if(tab==="Outfit"){
-  const box=document.createElement("div");box.className="presets";
-  for(const [id,p] of Object.entries(presets)){
-   const btn=document.createElement("button");btn.type="button";btn.dataset.preset=id;
-   btn.textContent=t({street:"Streetwear",night:"Night out",casual:"Casual day",beach:"Beach plan"}[id]);
-   btn.setAttribute("aria-pressed",String(Object.keys(p).every(k=>current[k]===p[k])));box.append(btn);
-  }
-  section.append(box);
- }
- const grid=document.createElement("div");grid.className="fields";
- for(const [key,text] of tabs[tab]){
-  if(colorSets[key]){
-   const wrap=document.createElement("div");wrap.className="color-group";
-   const heading=document.createElement("strong");heading.textContent=t(text);wrap.append(heading);
-   const line=document.createElement("div");line.className="swatches";line.setAttribute("role","group");line.setAttribute("aria-label",t(text));
-   for(const choice of options[key]){
-    const btn=document.createElement("button");btn.type="button";btn.className="swatch";
-    btn.dataset.field=key;btn.dataset.value=choice;btn.style.setProperty("--color",colorSets[key][choice]);
-    btn.setAttribute("aria-label",t(text)+" "+t(pretty(choice)));btn.setAttribute("aria-pressed",String(current[key]===choice));
-    line.append(btn);
-   }wrap.append(line);grid.append(wrap);
-  }else{
-   const label=document.createElement("label");label.textContent=t(text);
-   const select=document.createElement("select");select.name=key;select.setAttribute("aria-label",t(text));
-   for(const choice of options[key]){
-    const opt=document.createElement("option");opt.value=choice;opt.textContent=t(key==="model"?modelNames[choice]:pretty(choice));select.append(opt);
-   }select.value=current[key];label.append(select);grid.append(label);
-  }
- }
- section.append(grid);
- if(tab==="Character"&&isProfessional()){
-  const note=document.createElement("p");note.textContent=t("Rain and Snow include their original hairstyle and outfit. You can choose a character and adjust its height.");section.append(note);
-  const pose=document.createElement("p");pose.textContent=t("These character previews use a standing pose.");section.append(pose);
-  const preserved=document.createElement("p");preserved.textContent=t("Your classic styling choices stay available when you switch back to Classic saved look.");section.append(preserved);
- }
- fields.append(section);
- document.querySelectorAll("[data-tab]").forEach(x=>{
-  x.hidden=isProfessional()&&x.dataset.tab!=="Character";
-  x.setAttribute("aria-selected",String(x.dataset.tab===tab));
-  x.tabIndex=x.dataset.tab===tab?0:-1;
-  x.id="tab-"+x.dataset.tab;x.setAttribute("aria-controls","fields");
- });
- fields.setAttribute("role","tabpanel");fields.setAttribute("aria-labelledby","tab-"+tab);
- const replacement=focusName?fields.querySelector('select[name="'+focusName+'"]'):focusField?Array.from(fields.querySelectorAll("[data-field]")).find(x=>x.dataset.field===focusField&&x.dataset.value===focusValue):null;
- replacement?.focus({preventScroll:true});
+ const previous=document.activeElement,focusField=previous?.dataset.field,focusValue=previous?.dataset.value,focusName=previous?.name;
+ fields.replaceChildren();const section=document.createElement("section");section.className="group";const title=document.createElement("h3");title.textContent=t({Character:"Choose an authored character",Outfit:"Outfit style",Hair:"Hairstyle",Colour:"Outfit palette"}[tab]);section.append(title);const grid=document.createElement("div");grid.className="fields";
+ if(tab==="Character"){grid.append(choiceGroup("model","Character model"));const wrap=document.createElement("label");wrap.textContent=t("Height");const select=document.createElement("select");select.name="height";select.setAttribute("aria-label",t("Height"));for(const value of options.height){const option=document.createElement("option");option.value=value;option.textContent=t(label[value]);select.append(option)}select.value=current.height;wrap.append(select);grid.append(wrap)}
+ if(tab==="Outfit")grid.append(choiceGroup("starterOutfit","Outfit style"));
+ if(tab==="Hair")grid.append(choiceGroup("starterHair","Hairstyle"),hairColours());
+ if(tab==="Colour")grid.append(paletteGroup(),hairColours());
+ section.append(grid);fields.append(section);
+ document.querySelectorAll("[data-tab]").forEach(button=>{button.setAttribute("aria-selected",String(button.dataset.tab===tab));button.tabIndex=button.dataset.tab===tab?0:-1});fields.setAttribute("aria-labelledby","tab-"+tab);
+ if(focusField)Array.from(fields.querySelectorAll("[data-field]")).find(button=>button.dataset.field===focusField&&button.dataset.value===focusValue)?.focus({preventScroll:true});else if(focusName)fields.querySelector('select[name="'+focusName+'"]')?.focus({preventScroll:true});
 }
-function change(patch){
- current={...current,...patch};draw();buttons();
- if(stage){void stage.setAppearance(current);message(dirty()?"Unsaved changes":"Your saved look is ready.");}
-}
-document.querySelectorAll("[data-tab]").forEach(btn=>btn.addEventListener("click",()=>{if(!current)return;tab=btn.dataset.tab;draw();fields.focus({preventScroll:true})}));
-document.querySelector(".tabstrip").addEventListener("keydown",event=>{
- if(!current||!["ArrowLeft","ArrowRight","Home","End"].includes(event.key))return;
- event.preventDefault();
- const buttons=Array.from(document.querySelectorAll("[data-tab]")).filter(button=>!button.hidden);
- const index=buttons.findIndex(button=>button.dataset.tab===tab);
- const next=event.key==="Home"?0:event.key==="End"?buttons.length-1:(index+(event.key==="ArrowRight"?1:-1)+buttons.length)%buttons.length;
- tab=buttons[next].dataset.tab;draw();buttons[next].focus({preventScroll:true});
-});
-fields.addEventListener("change",event=>{
- const e=event.target;if(current&&e.tagName==="SELECT"&&options[e.name]?.includes(e.value))change({[e.name]:e.value});
-});
-fields.addEventListener("click",event=>{
- if(!current)return;const btn=event.target.closest("button");if(!btn)return;
- if(btn.dataset.field&&options[btn.dataset.field]?.includes(btn.dataset.value))change({[btn.dataset.field]:btn.dataset.value});
- else if(btn.dataset.preset)change(presets[btn.dataset.preset]);
-});
+function change(patch){current={...current,...patch};draw();buttons();if(stage)void stage.setAppearance(current);message(dirty()?"Unsaved changes":"Your saved look is ready.")}
+document.querySelectorAll("[data-tab]").forEach(button=>button.addEventListener("click",()=>{if(!current)return;tab=button.dataset.tab;draw()}));
+document.querySelector(".tabstrip").addEventListener("keydown",event=>{if(!current||!["ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Home","End"].includes(event.key))return;event.preventDefault();const tabs=Array.from(document.querySelectorAll("[data-tab]")),index=tabs.findIndex(button=>button.dataset.tab===tab),next=event.key==="Home"?0:event.key==="End"?tabs.length-1:(index+(["ArrowRight","ArrowDown"].includes(event.key)?1:-1)+tabs.length)%tabs.length;tab=tabs[next].dataset.tab;draw();tabs[next].focus({preventScroll:true})});
+fields.addEventListener("click",event=>{const button=event.target.closest("button[data-field]");if(current&&button&&options[button.dataset.field]?.includes(button.dataset.value))change({[button.dataset.field]:button.dataset.value})});
+fields.addEventListener("change",event=>{const input=event.target;if(current&&input.tagName==="SELECT"&&options[input.name]?.includes(input.value))change({[input.name]:input.value})});
 document.querySelector("#rotate").addEventListener("click",()=>stage?.rotate(Math.PI/3));
-document.querySelector("#download").addEventListener("click",()=>{
- if(!stage)return;try{
-  const a=document.createElement("a");a.href=stage.screenshot();a.download="akipals-3d-preview.png";a.click();
- }catch{message("Cannot export a screenshot on this browser.")}
-});
+document.querySelector("#download").addEventListener("click",()=>{if(!stage||rendering)return;try{const link=document.createElement("a");link.href=stage.screenshot();link.download="akipals-3d-preview.png";link.click()}catch{message("Cannot export a screenshot on this browser.")}});
 reset.addEventListener("click",()=>{if(!saved)return;current={...saved};draw();buttons();void stage?.setAppearance(current);message("Restored your saved 3D look.")});
-save.addEventListener("click",async()=>{
- if(!current||saving||rendering||!dirty())return;
- saving=true;buttons();message("Saving your avatar...");
- try{
-  const copy={...current};
-  const response=await fetch("/pals/identity",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({appearance:copy,save:true})});
-  const result=await response.json();if(!response.ok)throw new Error(result.error||"Save failed");
-  saved={...result.appearance};hasSaved=true;message("Saved to your AkiPasa account.");
- }catch(err){message(err.message||"Previous saved look unchanged.")}
- finally{saving=false;buttons()}
-});
-function showError(msg){rendering=true;area.dataset.ready="error";buttons();failure.hidden=false;failure.textContent=t(msg);message("3D could not render on this device.")}
-area.addEventListener("akipals:loading",()=>{rendering=true;area.dataset.ready="loading";buttons()});
-area.addEventListener("akipals:rendered",()=>{rendering=false;buttons();failure.hidden=true;area.dataset.ready="true"});
-area.addEventListener("akipals:error",event=>showError(event.detail?.message||"3D model failed to load."));
-(async()=>{
- try{
-  if(!window.AkiPals3D)throw new Error("3D runtime not loaded. Refresh to retry.");
-  const response=await fetch("/pals/identity",{credentials:"same-origin",cache:"no-store"});
-  const data=await response.json();if(!response.ok)throw new Error(data.error||"Cannot load saved avatar.");
-  current={model:"classic-v2",...data.appearance};saved={...current};hasSaved=Boolean(data.saved);tab=current.model==="classic-v2"?"Hair":"Character";
-  stage=window.AkiPals3D.mount(area);draw();buttons();void stage.setAppearance(current);
-  message(data.saved?"Saved character loaded.":"Free starter character ready. Customise and save!");
- }catch(error){showError(error.message||"Could not load the character studio.")}
-})();
-window.addEventListener("pagehide",()=>{rendering=true;buttons();stage?.dispose()},{once:true});
-// A BFCache-restored document contains a disposed canvas and may belong to an
-// earlier account session. Re-enter through the server's private access gate;
-// restore only the saved identity, never a cached unsaved local draft.
+save.addEventListener("click",async()=>{if(!current||saving||rendering||!dirty())return;saving=true;buttons();message("Saving your avatar...");try{const copy={...current};const response=await fetch("/pals/identity",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({appearance:copy,save:true})});const result=await response.json();if(!response.ok)throw new Error("Previous saved look unchanged.");saved=authored(result.appearance);hasSaved=true;message("Saved to your AkiPasa account.")}catch{message("Previous saved look unchanged.")}finally{saving=false;buttons()}});
+function showError(){rendering=true;area.dataset.ready="error";buttons();failure.hidden=false;spinner.hidden=true;retry.hidden=false;errorText.textContent=t("Your saved look is safe. Retry or choose another character.");message("The 3D model could not load. Please retry.")}
+area.addEventListener("akipals:loading",()=>{rendering=true;area.dataset.ready="loading";buttons();failure.hidden=false;spinner.hidden=false;retry.hidden=true;errorText.textContent=t("Loading your look…")});
+area.addEventListener("akipals:rendered",()=>{rendering=false;area.dataset.ready="true";failure.hidden=true;buttons()});
+area.addEventListener("akipals:error",showError);
+async function start(){if(starting||disposed)return;starting=true;try{if(!window.AkiPals3D)throw new Error("Runtime missing");const response=await fetch("/pals/identity",{credentials:"same-origin",cache:"no-store"});const data=await response.json();if(!response.ok||!data.appearance)throw new Error("Identity unavailable");if(disposed)return;current=authored(data.appearance);saved={...current};hasSaved=Boolean(data.saved)&&!data.needsUpgrade;stage=window.AkiPals3D.mount(area);draw();buttons();void stage.setAppearance(current);message(data.needsUpgrade?"Your older save is safe. Save this updated look to use it next time.":data.saved?"Saved character loaded.":"Free starter character ready. Customise and save!")}catch{showError()}finally{starting=false}}
+retry.addEventListener("click",()=>{if(stage&&current)void stage.setAppearance(current);else if(!window.AkiPals3D)window.location.reload();else void start()});
+void start();
+window.addEventListener("pagehide",()=>{disposed=true;rendering=true;buttons();stage?.dispose()},{once:true});
 window.addEventListener("pageshow",event=>{if(event.persisted)window.location.reload()});
 })();
 `;
+
+const ICONS: Record<string, string> = {
+  Character:
+    '<circle cx="12" cy="7" r="3"/><path d="M5 21v-3a7 7 0 0 1 14 0v3"/>',
+  Outfit: '<path d="m8 3-5 3 3 5 2-1v11h8V10l2 1 3-5-5-3a4 4 0 0 1-8 0Z"/>',
+  Hair: '<path d="M5 18V9a7 7 0 0 1 14 0v9M5 9c6 0 8-4 8-5 0 4 3 5 6 5M8 12v2a4 4 0 0 0 8 0v-2"/>',
+  Colour:
+    '<path d="M12 3a9 9 0 1 0 0 18h2a2 2 0 0 0 1-4 2 2 0 0 1 1-4h2a3 3 0 0 0 3-3c0-4-4-7-9-7Z"/><circle cx="7" cy="10" r=".7"/><circle cx="10" cy="6" r=".7"/><circle cx="15" cy="7" r=".7"/>',
+  World:
+    '<path d="M20 10c0 6-8 11-8 11S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+};
+const svg = (name: string) =>
+  `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
 export function identityPreviewHtml(
   nonce: string,
   locale: "en" | "es" = "en",
 ): string {
   const t = (text: string) => (locale === "es" ? SPANISH[text] || text : text);
-  return `<!doctype html>
-<html lang="${locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><meta name="theme-color" content="#080c17"><title>${t("AkiPals | Wardrobe")}</title><link rel="icon" href="/icon.svg"><style nonce="${nonce}">${STYLE}</style></head>
-<body><header><a class="brand" href="/${locale}" aria-label="${t("Return to AkiPasa")}">Aki<em>Pals</em></a><a class="pill" href="/pals/world" style="text-decoration:none" aria-label="${t("Enter the private AkiPals World prototype")}">◉ ${t("Enter AkiWorld")} ↗</a></header>
-<main><p class="eyebrow">${t("AkiPals / Wardrobe")}</p><h1>${t("Looking like")} <em>${t("yourself.")}</em></h1>
-<p class="lede">${t("Choose your character and save the look you want to take into AkiWorld.")}</p>
-<div class="grid"><section class="panel stage" aria-label="${t("Your avatar preview")}"><h2>✦ ${t("Real 3D preview")}</h2><div id="avatar-stage" aria-label="${t("Rotatable 3D avatar")}"></div><div id="stage-error" hidden></div><div class="stage-caption"><div><strong>${t("One of one. Yours.")}</strong><small>${t("Drag to rotate, pinch to zoom")}</small></div><button class="rotate" id="rotate" type="button">⤾ 360°</button></div></section>
-<section class="panel editor"><h2>${t("Your Wardrobe.")}</h2><p>${t("Make this 3D character yours. Your saved appearance is reused on the AkiWorld map.")}</p><p>${t("Save before leaving this page. Unsaved edits are discarded when you return.")}</p><div class="tabstrip" role="tablist" aria-label="${t("Avatar customization")}"><button class="tab" type="button" data-tab="Character" role="tab" aria-selected="true">${t("Character")}</button><button class="tab" type="button" data-tab="Face" role="tab">${t("Face")}</button><button class="tab" type="button" data-tab="Hair" role="tab">${t("Hair")}</button><button class="tab" type="button" data-tab="Body" role="tab">${t("Body")}</button><button class="tab" type="button" data-tab="Outfit" role="tab">${t("Outfit")}</button><button class="tab" type="button" data-tab="Extras" role="tab">${t("Extras")}</button></div><div id="fields" tabindex="-1" aria-label="${t("Avatar editor controls")}"></div><div class="actions"><button id="save" type="button" class="primary" disabled>${t("Save my look")}</button><button id="reset" type="button" disabled>${t("Restore saved look")}</button><button id="download" type="button">↓ ${t("Export a 3D preview image")}</button><span id="status" role="status" aria-live="polite">${t("Loading your 3D character\u2026")}</span></div></section></div>
-<div class="notes"><div class="note"><strong>✧ ${t("Personal wardrobe")}</strong><p>${t("Free starter clothes now. Earned city drops and optional individually priced branded collections later. No paid randomness.")}</p></div><div class="note"><strong>◎ ${t("Your look goes exploring")}</strong><p>${t("Future verified check-ins can unlock profile keepsakes and cosmetics, without combat stats or RPG mechanics.")}</p></div><div class="note"><strong>◉ ${t("Where's Poppin'?")}</strong><p>${t("Aggregate venue activity and separate optional social presence are future features. No location-sharing in this preview.")}</p></div></div>
-</main><footer>${t("Private AkiPals Wardrobe · Free starter characters · No payments · No location sharing from this screen")} · <a href="/pals/models/professional/ATTRIBUTION.txt" target="_blank" rel="noopener">${t("Character credits")}</a></footer>
-<script nonce="${nonce}" src="/pals/runtime/creator.min.js?v=20261031-professional-1"></script><script nonce="${nonce}">window.AKI_AVATAR_TEXT=${JSON.stringify(locale === "es" ? SPANISH : {})};window.AKI_AVATAR_OPTIONS=${JSON.stringify(APPEARANCE_OPTIONS)};${CLIENT}</script></body></html>`;
+  const world = `/pals/world`;
+  return `<!doctype html><html lang="${locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><meta name="theme-color" content="#080b10"><title>${t("AkiPals | Wardrobe")}</title><link rel="icon" href="/icon.svg"><style nonce="${nonce}">${STYLE}</style></head>
+<body><header><a class="brand" href="/${locale}" aria-label="${t("Return to AkiPasa")}"><img src="/icon.svg" alt=""/>AkiPasa</a><span class="pill">${t("Private playtest")}</span></header>
+<main><h1>AkiPals</h1><p class="lede">${t("Your look. Your next adventure.")}</p>
+<div class="grid"><section class="stage" aria-label="${t("Your avatar preview")}"><h2>✦ ${t("Free starter wardrobe")}</h2><div id="avatar-stage" aria-label="${t("Rotatable 3D avatar")}"></div>
+<div id="stage-error" role="status"><span class="loader" aria-hidden="true"></span><p id="stage-message">${t("Loading your look…")}</p><button id="stage-retry" type="button" hidden>${t("Retry 3D")}</button></div>
+<div class="tabstrip" role="tablist" aria-orientation="vertical" aria-label="${t("Avatar customization")}">${["Character", "Outfit", "Hair", "Colour"].map((name) => `<button id="tab-${name}" class="tab" type="button" data-tab="${name}" role="tab" aria-controls="fields" aria-selected="${name === "Outfit"}" tabindex="${name === "Outfit" ? 0 : -1}">${svg(name)}<span>${t(name === "Outfit" ? "Clothes" : name)}</span></button>`).join("")}</div>
+<div class="stage-caption"><small>${t("Drag to rotate, pinch to zoom")}</small><button class="rotate" id="rotate" type="button" aria-label="${t("Rotate character")}">⤾</button></div></section>
+<section class="editor" aria-label="${t("Avatar editor controls")}"><div class="editor-title"><h2>${t("Choose your look")}</h2><span class="free">${t("Everything here is free")}</span></div><p class="editor-intro">${t("Make this 3D character yours. Your saved appearance is reused on the AkiWorld map.")}</p><div id="fields" role="tabpanel" tabindex="-1" aria-labelledby="tab-Outfit"></div>
+<div class="actions"><div class="primary-row"><button id="save" type="button" class="primary" disabled>${t("Save look")}</button><button id="reset" type="button" disabled>${t("Undo changes")}</button></div><span id="status" role="status" aria-live="polite">${t("Loading your look…")}</span><p class="save-note">${t("Save before leaving. Your changes are private until saved.")}</p><button id="download" type="button" disabled>↓ ${t("Export a 3D preview image")}</button></div></section></div>
+<section class="kit"><h2>${t("Your style kit")}</h2><div class="notes"><div class="note"><span class="note-icon" aria-hidden="true">✦</span><strong>${t("Three starter outfits")}</strong><p>${t("Made for both Rain and Snow")}</p></div><a class="note" href="${world}" aria-label="${t("Enter the private AkiPals World prototype")}"><span class="note-icon" aria-hidden="true">◎</span><strong>${t("Take your look into World")}</strong><p>${t("Your saved character follows you")}</p></a><div class="note"><span class="note-icon" aria-hidden="true">◇</span><strong>${t("Standing-pose playtest")}</strong><p>${t("Body shaping and animation are not included yet")}</p></div></div></section></main>
+<footer>${t("Private AkiPals Wardrobe · Free starter characters · No payments · No location sharing from this screen")}<br><a href="/pals/models/professional/ATTRIBUTION.txt" target="_blank" rel="noopener">${t("Character credits")}</a></footer>
+<nav class="dock" aria-label="AkiPals"><a href="${world}">${svg("World")}${t("World")}</a><a href="/pals?lang=${locale}" aria-current="page">${svg("Outfit")}${t("Your Wardrobe.").replace(".", "")}</a><a href="/${locale}/account">${svg("Character")}${t("Profile")}</a></nav>
+<script nonce="${nonce}" src="/pals/runtime/creator.min.js?v=${PALS_RUNTIME_VERSION}"></script><script nonce="${nonce}">window.AKI_AVATAR_TEXT=${JSON.stringify(locale === "es" ? SPANISH : {})};window.AKI_AVATAR_OPTIONS=${JSON.stringify(APPEARANCE_OPTIONS)};window.AKI_STARTER_COLORS=${JSON.stringify(STARTER_COLORS)};window.AKI_STARTER_HAIR=${JSON.stringify(STARTER_HAIR_TINTS)};${CLIENT}</script></body></html>`;
 }

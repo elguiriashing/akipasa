@@ -4,6 +4,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Appearance } from "@/lib/pals/avatar-v2";
+import { PALS_RUNTIME_VERSION } from "@/lib/pals/starter-catalogue";
 import {
   coarseWorldCell,
   normalizeWorldVenues,
@@ -159,6 +160,7 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
     let cancelled = false;
     let script: HTMLScriptElement | null = null;
     let loading = false;
+    let releaseListeners = () => {};
     const start = async () => {
       if (cancelled || loading || avatarStage.current) return;
       const target = document.querySelector<HTMLElement>(
@@ -166,6 +168,45 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
       );
       if (!target) return;
       loading = true;
+      const parent = target.parentElement;
+      parent?.querySelector("[data-avatar-recovery]")?.remove();
+      const recovery = document.createElement("div");
+      recovery.className = styles.avatarRecovery;
+      recovery.dataset.avatarRecovery = "loading";
+      recovery.setAttribute("role", "status");
+      const note = document.createElement("div");
+      note.textContent = "Loading avatar…";
+      const retry = document.createElement("button");
+      retry.type = "button";
+      retry.textContent = "Retry avatar";
+      retry.hidden = true;
+      retry.addEventListener("click", () => {
+        if (cancelled || loading) return;
+        releaseListeners();
+        avatarStage.current?.dispose();
+        avatarStage.current = null;
+        recovery.remove();
+        void start();
+      });
+      recovery.append(note, retry);
+      parent?.append(recovery);
+      const failed = () => {
+        if (cancelled) return;
+        recovery.hidden = false;
+        recovery.dataset.avatarRecovery = "error";
+        note.textContent = "Avatar unavailable";
+        retry.hidden = false;
+      };
+      const rendered = () => {
+        recovery.hidden = true;
+      };
+      target.addEventListener("akipals:error", failed);
+      target.addEventListener("akipals:rendered", rendered);
+      releaseListeners = () => {
+        target.removeEventListener("akipals:error", failed);
+        target.removeEventListener("akipals:rendered", rendered);
+        recovery.remove();
+      };
       try {
         const response = await fetch("/pals/identity", {
           cache: "no-store",
@@ -177,7 +218,7 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
         const win = window as Window & { AkiPals3D?: AvatarRuntime };
         if (!win.AkiPals3D) {
           script = document.createElement("script");
-          script.src = "/pals/runtime/creator.min.js?v=20261031-professional-1";
+          script.src = "/pals/runtime/creator.min.js?v=" + PALS_RUNTIME_VERSION;
           script.async = true;
           const loading = new Promise<void>((resolve, reject) => {
             if (!script) return reject(new Error("No script"));
@@ -197,8 +238,8 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
         await stage.setAppearance(json.appearance);
       } catch {
         if (!cancelled) {
-          target.textContent = "3D unavailable";
-          target.setAttribute("role", "status");
+          target.replaceChildren();
+          failed();
         }
       } finally {
         loading = false;
@@ -212,6 +253,7 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
     return () => {
       cancelled = true;
       window.removeEventListener("akipals:world-map-ready", onMapReady);
+      releaseListeners();
       avatarStage.current?.dispose();
       avatarStage.current = null;
       script?.remove();
@@ -301,7 +343,7 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
         canvas.dataset.palsWorldAvatar = "true";
         const fallback = document.createElement("div");
         fallback.className = styles.avatarFallback;
-        fallback.textContent = "🧍";
+        fallback.textContent = "…";
         canvas.append(fallback);
         const label = document.createElement("span");
         label.textContent = "Preview avatar";

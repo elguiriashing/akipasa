@@ -5330,3 +5330,49 @@ canonical scope,
 non-execution gates and STOPs remain intact. No hosted storage evidence, paid
 resource, production SQL, photo activation or physical Android proof is claimed.
 New targeted and exact-head validation is required before merging repaired source.
+
+
+## 2026-11-01 | AkiPals #344 authored-only starter editor candidate
+
+Owner requested removal of the retired Classic character, reliable Rain/Snow
+loading, free starter clothes/hair/palettes and the supplied avatar-first layout.
+The former model-less/Classic read path deliberately restored the retired avatar;
+that behavior is superseded. Legacy records/fields remain stored, but parsed
+read responses and the active renderer select authored Rain/Snow only. GET never
+rewrites a row; an explicit Save is required to persist the upgraded appearance.
+
+World and Wardrobe share the versioned runtime and bounded starter catalogue:
+three garment treatments, three hairstyles, five coordinated outfit palettes and
+six hair colours. Garment overlays fit the existing posed meshes and preserve
+underlying body coverage. Snow crown edits preserve the scalp, and every edit
+starts from original positions. These are starter treatments of the existing
+standing meshes, not M3 integration, arbitrary clothing fitting, face/body
+sculpting, skeletal animation or a public launch. All starter items are free.
+
+The glTF pipeline uses standard HTML image decoding instead of the separate
+ImageBitmap fetch/decode path, validates loaded textures and bounds download/
+decode time. Failures clear the visible character, retain the saved appearance,
+and offer retry in World and Wardrobe. This addresses a compatibility risk; no
+physical Android root-cause confirmation is inferred from an HTTP 200 or hash.
+The private access, no-store/noindex, owner RLS, CSRF, 4096-byte input boundary,
+foreground-only GPS and canonical geographic venue coordinates remain intact.
+No new schema, feature activation, account grant, billing or customer write.
+
+The editor uses a prominent 3D stage, vertical category buttons, compact preset
+cards, accessible palette swatches, clear Save/Undo and stable World/Wardrobe/
+Profile navigation. EN/ES, keyboard navigation and reduced motion remain. No
+fabricated currency, progress or activity numbers are added from the concept art.
+
+Local unit and geometry coverage passed 171 tests, including all 540 bounded
+style combinations. Hosted browser evidence must exercise real GLB textures,
+ImageBitmap-unavailable mode, network/decode failures and Retry, saved reload,
+legacy display migration without writes, context loss, both languages, narrow
+layouts and touch emulation. Local browser navigation is blocked by the execution
+environment; no local browser pass is claimed. Full exact-head CI, reviewed
+screenshots and production verification remain required. Issue #344 stays open
+until physical Android Chrome/World acceptance is actually recorded.
+
+Rollback restores source; new JSON appearance fields and original legacy fields
+remain in the existing owner row. Reverting to a parser that predates these fields
+would display a default rather than the upgraded look. Preserve the row during
+rollback; do not run a destructive backfill or delete user choices.

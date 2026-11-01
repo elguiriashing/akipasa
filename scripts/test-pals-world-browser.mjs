@@ -277,14 +277,18 @@ async function setup(context) {
   await context.addInitScript(() => {
     window.palsCspViolations = [];
     window.palsDecodedImages = [];
-    const decodeImage = window.createImageBitmap.bind(window);
-    window.createImageBitmap = async (...args) => {
-      const image = await decodeImage(...args);
-      window.palsDecodedImages.push({
-        width: image.width,
-        height: image.height,
-      });
-      return image;
+    const createImage = document.createElementNS.bind(document);
+    document.createElementNS = (namespace, name, ...args) => {
+      const element = createImage(namespace, name, ...args);
+      if (name === "img")
+        element.addEventListener("load", () => {
+          if (element.src.startsWith("blob:"))
+            window.palsDecodedImages.push({
+              width: element.naturalWidth,
+              height: element.naturalHeight,
+            });
+        });
+      return element;
     };
     document.addEventListener("securitypolicyviolation", (event) => {
       window.palsCspViolations.push({
@@ -488,7 +492,7 @@ try {
     assert.ok(
       decodedImages.length > 0 &&
         decodedImages.every((image) => image.width > 0 && image.height > 0),
-      "Native ImageBitmap decoding completes for embedded model textures",
+      "Native HTML image decoding completes for embedded model textures",
     );
     await expect(
       page.getByRole("button", { name: /TEST ONLY Music Room/ }).first(),
