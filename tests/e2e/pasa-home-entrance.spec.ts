@@ -197,7 +197,11 @@ for (const locale of ["en", "es"] as const) {
   }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.addInitScript(() => {
-      localStorage.setItem("akipasa.theme", "dark");
+      // Seed the first navigation without overwriting a theme changed in-page.
+      // Init scripts also run on reload, where the saved preference must win.
+      if (!localStorage.getItem("akipasa.theme")) {
+        localStorage.setItem("akipasa.theme", "dark");
+      }
       document.cookie = "ak_consent_version=2; Path=/";
     });
     await page.goto(`/${locale}`);
