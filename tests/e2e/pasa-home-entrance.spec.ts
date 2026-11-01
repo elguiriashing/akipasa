@@ -59,6 +59,22 @@ for (const locale of ["en", "es"] as const)
               );
             }),
           ).toBe(true);
+          // No empty strip between the launch marquee and the Home hero.
+          const ribbon = page.getByRole("complementary", {
+            name: locale === "es" ? "Aviso de lanzamiento" : "Launch update",
+          });
+          await expect(ribbon.getByText(/COSTA DEL SOL/)).toHaveCount(1);
+          const ticker = ribbon.locator('[aria-hidden="true"]').filter({
+            has: page.locator("span"),
+          }).last();
+          await expect(ticker).toBeVisible();
+          expect(
+            await ribbon.evaluate((node) => {
+              const ticker = node.querySelector('[class*="track"]');
+              return ticker ? getComputedStyle(ticker).animationName : "";
+            }),
+          ).toBe("none");
+
           const hero = page.getByRole("region", {
             name:
               locale === "es"
@@ -70,6 +86,13 @@ for (const locale of ["en", "es"] as const)
             name: locale === "es" ? "Buscar locales" : "Search venues",
             exact: true,
           });
+          const ribbonBottom = await ribbon.evaluate(
+            (element) => element.getBoundingClientRect().bottom,
+          );
+          const heroTop = await hero.evaluate(
+            (element) => element.getBoundingClientRect().top,
+          );
+          expect(Math.abs(heroTop - ribbonBottom)).toBeLessThanOrEqual(2);
           await expect(entrance).toBeEnabled();
           await expect(hero.locator("img")).toHaveJSProperty("complete", true);
           expect(
