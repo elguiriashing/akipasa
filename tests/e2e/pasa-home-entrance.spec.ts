@@ -65,9 +65,11 @@ for (const locale of ["en", "es"] as const)
           });
           await expect(ribbon.locator("p")).toContainText("COSTA DEL SOL");
           await expect(ribbon.locator('[class*="track"] > span')).toHaveCount(2);
-          await expect(ribbon.getByRole("link", {
-            name: locale === "es" ? "Nuestra hoja de ruta" : "Our Roadmap",
-          })).toBeVisible();
+          await expect(
+            ribbon.getByRole("link", {
+              name: locale === "es" ? "Nuestra hoja de ruta" : "Our Roadmap",
+            }),
+          ).toBeVisible();
           expect(
             await ribbon.evaluate((node) => {
               const ticker = node.querySelector('[class*="track"]');
