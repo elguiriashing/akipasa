@@ -97,3 +97,39 @@
     backdrop-filter: none;
   }
 }
+
+/* The single consumer dock is shared by Home, Map, Check-in, Community,
+   Profile and other shell-backed routes. Match the light header everywhere. */
+@media (max-width: 850px) {
+  html[data-theme="light"] .app-bottom-nav.pasa-dock {
+    border-color: #d8d0c6;
+    background: #faf7f2;
+    box-shadow: 0 -12px 32px rgba(31, 42, 59, 0.12);
+  }
+  html[data-theme="light"] .app-bottom-nav.pasa-dock .pasa-dock__item {
+    color: #405068;
+  }
+  html[data-theme="light"] .app-bottom-nav.pasa-dock .pasa-dock__item.active {
+    color: #a9470e;
+    background: rgba(242, 107, 29, 0.1);
+  }
+  html[data-theme="light"]
+    .app-bottom-nav.pasa-dock
+    .pasa-dock__item:hover:not(.active) {
+    color: #172238;
+    background: rgba(20, 33, 61, 0.055);
+  }
+  html[data-theme="light"]
+    .app-bottom-nav.pasa-dock
+    .pasa-dock__item--checkin
+    svg {
+    color: #ffffff;
+    background: #f26b1d;
+    box-shadow: 0 4px 16px rgba(242, 107, 29, 0.25);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  html[data-theme="light"] .app-bottom-nav.pasa-dock {
+    background: #faf7f2;
+  }
+}
