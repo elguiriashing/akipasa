@@ -552,3 +552,8 @@ html[data-theme="light"]
   margin-top: 0;
   padding-top: 0;
 }
+
+/* Do not alter the announcement's existing gutter on Community, Map or details. */
+.app-shell .app-content:has(> .discover-page) > [data-launch-ribbon] {
+  margin-bottom: 0;
+}
