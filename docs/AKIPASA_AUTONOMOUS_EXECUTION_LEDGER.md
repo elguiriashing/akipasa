@@ -2851,3 +2851,10 @@ Android success, attendance, physical purge or full historical replay parity fro
 QA. The exact current readonly venue-preview migration was added only to the
 existing isolated QA fixture for actual page rendering; production already had
 that RPC and no new production preview mutation was required.
+
+PR357 integration preserved subsequently merged Home-width PR356/master4f6ff50.
+Only two append-only documentation conflicts required resolution; all Home runtime
+CSS/hero-marker/tests and all check-in/Stories code are retained. The earlier248
+local check remains bound to that tree; final integrated CI and compiled browser
+evidence must bind the resulting merge. No production feature flag is changed by
+this source integration.

@@ -38,7 +38,11 @@ export function PlansFirstHero({
     radius: String(location.radius),
   });
   return (
-    <section className={styles.hero} aria-labelledby="plans-first-title">
+    <section
+      className={styles.hero}
+      data-home-hero
+      aria-labelledby="plans-first-title"
+    >
       <div className={styles.media} aria-hidden="true">
         <Image
           src={imageUrl || "/images/akipasa/nightlife-editorial.webp"}

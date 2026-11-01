@@ -586,11 +586,34 @@ html[data-theme="light"]
 /* Home's photo starts directly below the rollout ribbon at every viewport.
    Keep the rest of the consumer shell's content gutters unchanged. */
 .app-shell .app-content:has(> .discover-page) > .discover-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) min(1240px, calc(100% - 2rem)) minmax(
+      0,
+      1fr
+    );
+  width: 100%;
+  max-width: none;
   margin-top: 0;
+  padding-inline: 0;
   padding-top: 0;
+}
+
+.app-shell .app-content > .discover-page > * {
+  grid-column: 2;
+  min-width: 0;
+}
+
+/* The photograph fills the available app column, including a collapsed rail.
+   Keep search/headline padding inside it and results in the central track. */
+.app-shell .app-content > .discover-page > [data-home-hero] {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-inline: 0;
+  border-radius: 0;
 }
 
 /* Do not alter the announcement's existing gutter on Community, Map or details. */
 .app-shell .app-content:has(> .discover-page) > [data-launch-ribbon] {
+  width: 100%;
   margin-bottom: 0;
 }

@@ -4,7 +4,7 @@ import { expect, test } from "@playwright/test";
 // API rows below are disposable browser fixtures, never claimed real venues.
 for (const locale of ["en", "es"] as const)
   for (const theme of ["dark", "light"] as const)
-    for (const width of [360, 390, 820, 1440])
+    for (const width of [360, 390, 820, 1440, 1920])
       test.describe(`${locale} Home ${width}px/${theme}`, () => {
         test.use({ isMobile: width < 700, hasTouch: width < 1200 });
         test("inline search and header filters", async ({ page }) => {
@@ -130,6 +130,75 @@ for (const locale of ["en", "es"] as const)
             (element) => element.getBoundingClientRect().top,
           );
           expect(Math.abs(heroTop - ribbonBottom)).toBeLessThanOrEqual(2);
+          const assertFullWidthHero = async () => {
+            const bounds = await hero.evaluate((element) => {
+              const frame = element.getBoundingClientRect();
+              const content = element
+                .closest(".app-content")!
+                .getBoundingClientRect();
+              const image = element
+                .querySelector("img")!
+                .getBoundingClientRect();
+              return {
+                left: frame.left,
+                right: frame.right,
+                contentLeft: content.left,
+                contentRight: content.right,
+                imageLeft: image.left,
+                imageRight: image.right,
+              };
+            });
+            expect(
+              Math.abs(bounds.left - bounds.contentLeft),
+            ).toBeLessThanOrEqual(1);
+            expect(
+              Math.abs(bounds.right - bounds.contentRight),
+            ).toBeLessThanOrEqual(1);
+            expect(
+              Math.abs(bounds.imageLeft - bounds.left),
+            ).toBeLessThanOrEqual(1);
+            expect(
+              Math.abs(bounds.imageRight - bounds.right),
+            ).toBeLessThanOrEqual(1);
+            await expect(hero).toHaveCSS("border-top-left-radius", "0px");
+            expect(
+              await page.evaluate(
+                () =>
+                  document.documentElement.scrollWidth <=
+                  document.documentElement.clientWidth,
+              ),
+            ).toBe(true);
+          };
+          await assertFullWidthHero();
+          await page.screenshot({
+            path: `test-results/pasa-review-hero-full-width-${locale}-${theme}-${width}.png`,
+          });
+          if (width >= 1440) {
+            await page
+              .getByRole("button", {
+                name:
+                  locale === "es"
+                    ? "Contraer barra lateral"
+                    : "Collapse sidebar",
+                exact: true,
+              })
+              .click();
+            await assertFullWidthHero();
+            await page.screenshot({
+              path: `test-results/pasa-review-hero-full-width-${locale}-${theme}-${width}-collapsed.png`,
+            });
+            await page
+              .getByRole("button", {
+                name:
+                  locale === "es" ? "Expandir barra lateral" : "Expand sidebar",
+                exact: true,
+              })
+              .click();
+          } else {
+            await page.setViewportSize({ width: 900, height: width });
+            await assertFullWidthHero();
+            await page.setViewportSize({ width, height: 900 });
+          }
           const inputSurface = entrance.locator("..");
           await expect(inputSurface).toHaveCSS(
             "background-color",

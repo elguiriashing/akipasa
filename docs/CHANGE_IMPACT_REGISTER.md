@@ -5446,3 +5446,24 @@ uploaded settings, which may describe unrelated unpublished preview code.
 - Rollback: stop collection then use the recorded schema-compatible UI-off Worker;
   preserve private bucket, retained rows, complete export and owner cleanup rights.
   No claim of physical-phone acceptance or backup erasure from emulation.
+
+## 2026-11-01 | Full-width Home hero beside the navigation rail
+
+The owner requested that Home photography reach the side menu and scrollbar on
+all screen sizes, retaining the existing flush join below the launch banner.
+Home alone now uses a three-track grid: the hero spans the full app-content
+column while other direct children retain a centred 1240px maximum and 1rem
+side gutters. The hero has square outer corners and no negative mobile margin;
+its existing internal search/headline padding is preserved. The Home launch
+ribbon also fills the app column. Expanded/collapsed rail geometry is inherited
+from the existing shell, without viewport-width guesses or new layout state.
+
+Only presentation and a semantic hero marker change. Existing photo selection,
+search/filter destinations, EN/ES, themes, roles, AkiHQ, cards, data, consent,
+analytics, storage and other app routes are unchanged. No SQL or customer writes.
+The maintained Home browser suite adds edge/image bounds, no overflow, zero
+corner radius, rail toggles and rotation across 360/390/820/1440/1920 widths in
+both locales/themes, retaining existing controls and banner adjacency checks.
+Full local check, exact-head hosted browser/Cloudflare CI and live verification
+are required before release; physical-device acceptance is not inferred.
+Rollback reverts these UI sources only.
