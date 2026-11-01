@@ -134,7 +134,7 @@
 }
 
 .directory .card .claim {
-  max-width: 12ch;
+  max-width: calc(100% - 2.75rem);
   padding: 0.3rem 0.5rem;
   border: 1px solid var(--venue-card-border);
   border-radius: 0.65rem;
@@ -144,7 +144,8 @@
   font-weight: 650;
   line-height: 1.4;
   text-align: right;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 .identity {
