@@ -156,9 +156,7 @@ for (const locale of ["en", "es"] as const)
             await expect(dock).toBeVisible();
             await expect(dock).toHaveCSS(
               "background-color",
-              theme === "light"
-                ? "rgb(250, 247, 242)"
-                : "rgba(7, 9, 11, 0.97)",
+              theme === "light" ? "rgb(250, 247, 242)" : "rgba(7, 9, 11, 0.97)",
             );
             const first = dock.getByRole("link", {
               name: locale === "es" ? "Inicio" : "Home",
@@ -179,7 +177,9 @@ for (const locale of ["en", "es"] as const)
               locale === "es" ? "Comunidad" : "Community",
               locale === "es" ? "Perfil" : "Profile",
             ]) {
-              await expect(dock.getByRole("link", { name: label })).toBeVisible();
+              await expect(
+                dock.getByRole("link", { name: label }),
+              ).toBeVisible();
             }
           }
           await expect(entrance).toBeEnabled();
