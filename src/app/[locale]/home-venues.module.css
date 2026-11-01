@@ -1,9 +1,21 @@
-/* Nearby cards display explicitly published AkiHQ Explore media where present.
- * The neutral SVG is a non-photographic fallback, never an invented venue photo. */
+/* Real artwork or a storefront, never both. Text has its own opaque surface. */
 .directory {
+  --venue-card-bg: #000;
+  --venue-card-ink: #f7f8fa;
+  --venue-card-muted: #b9c0c9;
+  --venue-card-border: #353b43;
+  --venue-card-accent: #ffac79;
   min-width: 0;
   margin-top: clamp(2rem, 5vw, 3.5rem);
   scroll-margin-top: 6rem;
+}
+
+:global(html[data-theme="light"]) .directory {
+  --venue-card-bg: #fff;
+  --venue-card-ink: #17212b;
+  --venue-card-muted: #505c69;
+  --venue-card-border: #d8dde3;
+  --venue-card-accent: #9a3e0d;
 }
 
 .directory .heading {
@@ -57,16 +69,16 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 1rem;
+  gap: 0.85rem;
   min-width: 0;
   min-height: 230px;
   margin: 0;
-  padding: 1rem;
+  padding: 0;
   overflow: hidden;
-  border: 1px solid #43403b;
+  border: 1px solid var(--venue-card-border);
   border-radius: 1.15rem;
-  background: #23282c;
-  color: #faf7f2;
+  background: var(--venue-card-bg);
+  color: var(--venue-card-ink);
   text-decoration: none;
   box-shadow: 0 8px 24px #00000014;
   transition:
@@ -74,39 +86,35 @@
     box-shadow 160ms ease;
 }
 
-.directory .grid .card::before {
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgb(16 23 28 / 35%) 0%,
-    transparent 37%,
-    rgb(16 23 28 / 56%) 58%,
-    rgb(16 23 28 / 97%) 100%
-  );
-  pointer-events: none;
-  content: "";
+/* Do not depend on the global hover stripe as a contrast overlay. */
+.directory .grid .card::before,
+.directory .grid .card::after {
+  display: none;
+  content: none;
 }
 
-.cardTop,
-.identity,
-.cardBottom {
+.directory .grid .card > [data-artwork] {
   position: relative;
-  z-index: 2;
+  flex: 0 0 auto;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-bottom: 1px solid var(--venue-card-border);
 }
 
 .directory .grid .card:hover {
-  border-color: #ff9b62;
+  border-color: var(--venue-card-accent);
   box-shadow: 0 10px 26px #00000026;
 }
 
 .directory .grid .card:focus-visible {
-  outline: 3px solid #ff9b62;
+  outline: 3px solid var(--venue-card-accent);
   outline-offset: 3px;
 }
 
 .cardTop {
+  position: absolute;
+  z-index: 1;
+  inset: 0.65rem 0.65rem auto;
   display: flex;
   align-items: start;
   justify-content: space-between;
@@ -116,38 +124,42 @@
 .mark {
   display: grid;
   flex: 0 0 auto;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.25rem;
+  height: 2.25rem;
   place-items: center;
-  border: 1px solid #a7663d;
-  border-radius: 0.85rem;
-  background: #2d211b;
-  color: #ffac79;
+  border: 1px solid var(--venue-card-border);
+  border-radius: 0.75rem;
+  background: var(--venue-card-bg);
+  color: var(--venue-card-accent);
 }
 
-.claim {
-  max-width: 10ch;
-  padding-top: 0.2rem;
-  color: #d8c8ba;
+.directory .card .claim {
+  max-width: calc(100% - 2.75rem);
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--venue-card-border);
+  border-radius: 0.65rem;
+  background: var(--venue-card-bg);
+  color: var(--venue-card-muted);
   font-size: 0.65rem;
-  font-weight: 600;
+  font-weight: 650;
   line-height: 1.4;
   text-align: right;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 .identity {
   display: grid;
   gap: 0.5rem;
   min-width: 0;
-  margin-top: auto;
+  padding-inline: 1rem;
 }
 
 .directory .card h3 {
   display: -webkit-box;
   margin: 0;
   overflow: hidden;
-  color: #faf7f2;
+  color: var(--venue-card-ink);
   font-size: clamp(1rem, 1.8vw, 1.3rem);
   font-weight: 750;
   line-height: 1.25;
@@ -157,11 +169,11 @@
   -webkit-box-orient: vertical;
 }
 
-.address {
+.directory .card .address {
   display: -webkit-box;
   margin: 0;
   overflow: hidden;
-  color: #c5c8ca;
+  color: var(--venue-card-muted);
   font-size: 0.77rem;
   line-height: 1.5;
   overflow-wrap: anywhere;
@@ -174,16 +186,17 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  margin-top: 0.15rem;
+  margin-top: auto;
+  padding: 0 1rem 1rem;
 }
 
-.distance {
+.directory .card .distance {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  color: #e5d7cb;
+  color: var(--venue-card-muted);
   font-size: 0.72rem;
-  font-weight: 600;
+  font-weight: 650;
   line-height: 1.4;
   white-space: nowrap;
 }
@@ -194,9 +207,9 @@
   width: 2rem;
   height: 2rem;
   place-items: center;
-  border: 1px solid #a7663d;
+  border: 1px solid var(--venue-card-border);
   border-radius: 50%;
-  color: #ffac79;
+  color: var(--venue-card-accent);
 }
 
 .destination {
@@ -217,7 +230,6 @@
 
   .directory .grid .card {
     min-height: 250px;
-    padding: 1.25rem;
   }
 }
 

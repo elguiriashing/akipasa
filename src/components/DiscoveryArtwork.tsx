@@ -4,43 +4,37 @@
 import { useState } from "react";
 import styles from "./DiscoveryArtwork.module.css";
 
-/** A real image covers the illustration only after a usable URL is supplied.
- * Failed/expired signed URLs fall back without broken-image icons. */
-export function DiscoveryArtwork({
-  src,
-  alt,
-  contain = false,
-}: {
+type ArtworkProps = {
   src?: string | null;
   alt: string;
   contain?: boolean;
-}) {
-  const [failedSrc, setFailedSrc] = useState<string | null>(null);
-  const visible = Boolean(src && failedSrc !== src);
+};
+
+/** Each source gets its own error state, including retries after changing URLs. */
+export function DiscoveryArtwork({ src, ...props }: ArtworkProps) {
+  const source = src?.trim() || undefined;
+  return <ArtworkSource key={source || "no-artwork"} src={source} {...props} />;
+}
+
+function ArtworkSource({ src, alt, contain = false }: ArtworkProps) {
+  const [failed, setFailed] = useState(false);
+  const photo = Boolean(src && !failed);
   return (
     <span
       className={styles.artwork}
-      data-artwork={visible ? "photo" : "placeholder"}
+      data-artwork={photo ? "photo" : "placeholder"}
     >
       <img
-        className={styles.placeholder}
-        src="/explore-storefront-placeholder.svg"
-        alt=""
-        aria-hidden="true"
+        key={photo ? src : "storefront"}
+        className={photo ? styles.image : styles.placeholder}
+        src={photo ? src! : "/explore-storefront-placeholder.svg"}
+        alt={photo ? alt : ""}
+        aria-hidden={photo ? undefined : true}
         loading="lazy"
+        decoding="async"
+        style={photo && contain ? { objectFit: "contain" } : undefined}
+        onError={photo ? () => setFailed(true) : undefined}
       />
-      {visible ? (
-        <img
-          key={src}
-          src={src!}
-          alt={alt}
-          loading="lazy"
-          decoding="async"
-          className={styles.image}
-          style={contain ? { objectFit: "contain" } : undefined}
-          onError={() => setFailedSrc(src!)}
-        />
-      ) : null}
     </span>
   );
 }
