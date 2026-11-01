@@ -18,6 +18,16 @@ const landmarkPhotos: Record<
 import type { StoryCity, CityStory } from "@/lib/community-stories/contracts";
 type City = StoryCity;
 type Story = CityStory;
+function cityLandmarkPhoto(city: City) {
+  const name = city.nameEs
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+  return landmarkPhotos[city.slug] || landmarkPhotos[name];
+}
 function cityName(city: City, es: boolean) {
   return (
     (es ? city.nameEs : city.nameEn)?.trim() || city.nameEs.trim() || city.slug
@@ -99,26 +109,42 @@ export function CityStories({
   const dialog = useRef<HTMLDialogElement>(null);
   const opener = useRef<HTMLButtonElement | null>(null);
   const touch = useRef<number | null>(null);
+  const catalogueRequest = useRef<AbortController | null>(null);
   async function loadCities() {
+    catalogueRequest.current?.abort();
+    const controller = new AbortController();
+    catalogueRequest.current = controller;
     setStatus("loading");
     try {
-      const response = await fetch("/api/community/stories/cities", {
-        credentials: "same-origin",
-        cache: "no-store",
-      });
+      const response = await fetch(
+        `/api/community/stories/cities?area=${encodeURIComponent(areaLabel)}`,
+        {
+          signal: controller.signal,
+          credentials: "same-origin",
+          cache: "no-store",
+        },
+      );
       if (!response.ok) throw new Error("unavailable");
       const data = await response.json();
+      if (controller.signal.aborted) return;
       if (!data.available || !Array.isArray(data.cities))
         throw new Error("unavailable");
       setCities(data.cities);
       setStatus("ready");
     } catch {
-      setStatus("unavailable");
+      if (!controller.signal.aborted) setStatus("unavailable");
     }
   }
   useEffect(() => {
+    setLocation(null);
+    setGeoMessage("");
+    dialog.current?.close();
+    setSelected(null);
     void loadCities();
-  }, []);
+    return () => catalogueRequest.current?.abort();
+    // A selected public area changes the coarse catalogue, never visitor GPS.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areaLabel]);
   useEffect(() => {
     if (!selected) return;
     const controller = new AbortController();
@@ -281,9 +307,9 @@ export function CityStories({
                   className={`${styles.ring} ${city.approvedStories24h === 0 ? styles.emptyRing : ""}`}
                   aria-hidden="true"
                 >
-                  {landmarkPhotos[city.slug] ? (
+                  {cityLandmarkPhoto(city) ? (
                     <Image
-                      src={landmarkPhotos[city.slug].src}
+                      src={cityLandmarkPhoto(city).src}
                       alt=""
                       width={68}
                       height={68}
@@ -304,7 +330,7 @@ export function CityStories({
               </button>
             ))}
           </div>
-          {ranked.some((city) => landmarkPhotos[city.slug]) && (
+          {ranked.some((city) => cityLandmarkPhoto(city)) && (
             <details className={styles.credits}>
               <summary>
                 {es
@@ -312,9 +338,9 @@ export function CityStories({
                   : "City landmark photos · credits"}
               </summary>
               {ranked
-                .filter((city) => landmarkPhotos[city.slug])
+                .filter((city) => cityLandmarkPhoto(city))
                 .map((city) => {
-                  const photo = landmarkPhotos[city.slug];
+                  const photo = cityLandmarkPhoto(city);
                   return (
                     <p key={city.slug}>
                       {cityName(city, es)}:{" "}

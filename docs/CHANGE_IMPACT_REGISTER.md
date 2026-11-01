@@ -5467,3 +5467,30 @@ both locales/themes, retaining existing controls and banner adjacency checks.
 Full local check, exact-head hosted browser/Cloudflare CI and live verification
 are required before release; physical-device acceptance is not inferred.
 Rollback reverts these UI sources only.
+
+## 2026-11-01 | Fix alphabetical/duplicate City Stories production catalogue
+
+- Actual defect: live200-row alphabetical slice from6,796 public city entries
+  omitted selected Fuengirola/coast and repeated regional aliases. Read-only
+  public catalogue inspection reproduced it; no customer rows were changed.
+- Scope: additive owner-only display-group helper and anon/auth read-only
+  catalog/feed RPCs; HTTP calls use normal caller permissions. No service-key
+  catalogue reads, city/venue mutations or original lifecycle/API changes.
+- Grouping: normalized Spanish name +5km public-centroid clusters, stable
+  representative, distant homonyms separate. Actual Mijas3,788m aliases are
+  covered; this is not the venue check-in radius. Nearest200 groups use selected
+  coarse area; public counts apply all original visibility/expiry/venue filters.
+- Feed: delegates to original approved public feed across aliases, capped64
+  member cities and50 merged photos, only returned citySlug normalized. No
+  owner/report/moderation/precise-location fields are added.
+- Client: selected-area-only queries, fail-closed inputs, aborted stale fetches,
+  existing3nearest+3active ranking, truthful zero states, canonical landmark
+  photo fallback with preserved licensing. Precise GPS stays local.
+- Evidence:50 targeted HTTP/client and8 executable SQL contract tests pass;
+  actual isolated PostGIS30 assertions cover>200 distractors, aliases3/2/3,
+  distant homonym, Mijas and hidden-state/privacy exclusions. Nine explicitly
+  synthetic private images support viewer evidence; no real attendance/XP is
+  claimed. Fresh compiled/native/CI evidence remains required.
+- Release/rollback: install exact additive read-only source before new HTTP
+  deployment; old API remains usable. Pause collection first on rollback and
+  preserve schema readiness/exports/withdrawal. No manual/duplicate deployment.

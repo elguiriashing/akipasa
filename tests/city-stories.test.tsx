@@ -40,7 +40,7 @@ beforeEach(() => {
   fetcher.mockImplementation(async (url: string) => ({
     ok: true,
     json: async () =>
-      url.endsWith("/cities")
+      url.includes("/cities?area=")
         ? { available: true, cities }
         : { available: true, stories: [] },
   }));
@@ -97,7 +97,7 @@ it("uses actual proxy stories, keyboard progress, pause and close", async () => 
   fetcher.mockImplementation(async (url: string) => ({
     ok: true,
     json: async () =>
-      url.endsWith("/cities")
+      url.includes("/cities?area=")
         ? { available: true, cities }
         : {
             available: true,
@@ -150,7 +150,7 @@ it("withholds expired, wrong-city and non-proxy media stories", async () => {
   fetcher.mockImplementation(async (url: string) => ({
     ok: true,
     json: async () =>
-      url.endsWith("/cities")
+      url.includes("/cities?area=")
         ? { available: true, cities }
         : {
             available: true,
@@ -204,7 +204,7 @@ for (const status of [200, 401, 429, 503]) {
       return {
         ok: true,
         json: async () =>
-          url.endsWith("/cities")
+          url.includes("/cities?area=")
             ? { available: true, cities }
             : {
                 available: true,
@@ -275,7 +275,7 @@ it("renders and opens real nullable English city names using Spanish then slug f
   fetcher.mockImplementation(async (url: string) => ({
     ok: true,
     json: async () =>
-      url.endsWith("/cities")
+      url.includes("/cities?area=")
         ? {
             available: true,
             cities: [
@@ -320,7 +320,7 @@ it("ignores an aborted city's delayed JSON after a different city viewer opens",
   fetcher.mockImplementation(async (url: string) => ({
     ok: true,
     json: () =>
-      url.endsWith("/cities")
+      url.includes("/cities?area=")
         ? Promise.resolve({ available: true, cities })
         : url.includes("city=Madrid")
           ? new Promise((resolve) => {
@@ -359,4 +359,74 @@ it("ignores an aborted city's delayed JSON after a different city viewer opens",
   expect(
     screen.getByRole("heading", { name: "The next moment could be yours" }),
   ).toBeVisible();
+});
+
+it("requests only the selected coarse area and refetches safely when it changes", async () => {
+  let finishOld!: (value: unknown) => void;
+  let oldSignal!: AbortSignal;
+  fetcher.mockImplementation(async (url: string, options: RequestInit) => {
+    if (url.includes("area=Fuengirola")) {
+      oldSignal = options.signal as AbortSignal;
+      return {
+        ok: true,
+        json: () =>
+          new Promise((resolve) => {
+            finishOld = resolve;
+          }),
+      };
+    }
+    return {
+      ok: true,
+      json: async () => ({ available: true, cities: [city("Marbella", 0)] }),
+    };
+  });
+  const view = render(<CityStories locale="es" areaLabel="Fuengirola" />);
+  await waitFor(() => expect(finishOld).toBeTypeOf("function"));
+  view.rerender(<CityStories locale="es" areaLabel="Marbella" />);
+  expect(oldSignal.aborted).toBe(true);
+  expect(await screen.findByRole("button", { name: /Marbella/ })).toBeVisible();
+  await act(async () =>
+    finishOld({ available: true, cities: [city("Abades", 0)] }),
+  );
+  expect(
+    screen.queryByRole("button", { name: /Abades/ }),
+  ).not.toBeInTheDocument();
+  expect(fetcher.mock.calls.map(([url]) => url)).toEqual([
+    "/api/community/stories/cities?area=Fuengirola",
+    "/api/community/stories/cities?area=Marbella",
+  ]);
+});
+it("uses licensed city-name photos for canonical coastal alias slugs without fake story counts", async () => {
+  fetcher.mockResolvedValue({
+    ok: true,
+    json: async () => ({
+      available: true,
+      cities: [
+        { ...city("malaga-29", 0, 36.72), nameEs: "Málaga", nameEn: "Malaga" },
+        {
+          ...city("marbella-29", 0, 36.51),
+          nameEs: "Marbella",
+          nameEn: "Marbella",
+        },
+        {
+          ...city("fuengirola-29", 0, 36.54),
+          nameEs: "Fuengirola",
+          nameEn: "Fuengirola",
+        },
+      ],
+    }),
+  });
+  render(<CityStories locale="es" areaLabel="Fuengirola" />);
+  const malaga = await screen.findByRole("button", { name: /Málaga/ });
+  expect(malaga.querySelector("img")).toHaveAttribute(
+    "src",
+    expect.stringContaining("/images/cities/malaga.webp"),
+  );
+  expect(
+    screen.getByRole("button", { name: /Marbella/ }).querySelector("img"),
+  ).toHaveAttribute(
+    "src",
+    expect.stringContaining("/images/cities/marbella.webp"),
+  );
+  expect(screen.getAllByText("Sin historias todavía")).toHaveLength(3);
 });
