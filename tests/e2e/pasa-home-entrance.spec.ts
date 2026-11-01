@@ -63,11 +63,11 @@ for (const locale of ["en", "es"] as const)
           const ribbon = page.getByRole("complementary", {
             name: locale === "es" ? "Aviso de lanzamiento" : "Launch update",
           });
-          await expect(ribbon.getByText(/COSTA DEL SOL/)).toHaveCount(1);
-          const ticker = ribbon.locator('[aria-hidden="true"]').filter({
-            has: page.locator("span"),
-          }).last();
-          await expect(ticker).toBeVisible();
+          await expect(ribbon.locator("p")).toContainText("COSTA DEL SOL");
+          await expect(ribbon.locator('[class*="track"] > span')).toHaveCount(2);
+          await expect(ribbon.getByRole("link", {
+            name: locale === "es" ? "Nuestra hoja de ruta" : "Our Roadmap",
+          })).toBeVisible();
           expect(
             await ribbon.evaluate((node) => {
               const ticker = node.querySelector('[class*="track"]');
