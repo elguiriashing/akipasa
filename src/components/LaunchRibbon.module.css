@@ -77,6 +77,22 @@
   outline: 3px solid #ffbf8c;
   outline-offset: 2px;
 }
+/* One theme-aware launch strip for mobile portrait, landscape and desktop.
+   Keep motion, spacing, roadmap target and visible orange spark unchanged. */
+:global(html[data-theme="light"]) .ribbon {
+  border-bottom-color: #d8d0c6;
+  background: #faf7f2;
+  color: #172238;
+}
+:global(html[data-theme="light"]) .message {
+  color: #283345;
+}
+:global(html[data-theme="light"]) .link {
+  color: #a9470e;
+}
+:global(html[data-theme="light"]) .link:hover {
+  color: #873509;
+}
 @media (max-width: 390px) {
   .ribbon {
     gap: 8px;
