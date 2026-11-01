@@ -64,12 +64,14 @@ describe("Costa del Sol-first public launch roadmap", () => {
     expect(shell).toContain("<LaunchRibbon locale={locale} />");
     expect(ribbon).toContain("href={`/${locale}/roadmap`}");
     expect(ribbon).not.toContain("<marquee");
+    expect(ribbon).toContain('"Our Roadmap"');
+    expect(shell).toContain('"Our Roadmap"');
   });
 
   it("adds a truthful roadmap link on empty discovery results", () => {
     const home = readFileSync("src/app/[locale]/page.tsx", "utf8");
     expect(home).toContain("No plans nearby yet");
-    expect(home).toContain("See our rollout plan");
+    expect(home).toContain("See Our Roadmap");
     expect(home).toContain("/roadmap");
   });
 });
