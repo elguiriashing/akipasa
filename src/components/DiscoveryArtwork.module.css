@@ -11,8 +11,11 @@
   position: absolute;
   inset: 0;
   display: block;
-  background: #e1e3e4 url("/explore-storefront-placeholder.svg") center / cover
-    no-repeat;
+  width: 100%;
+  height: 100%;
+  background: #e1e3e4;
+  object-fit: cover;
+  object-position: center;
 }
 
 .image {
