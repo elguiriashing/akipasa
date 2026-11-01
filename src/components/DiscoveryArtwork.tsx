@@ -18,7 +18,10 @@ export function DiscoveryArtwork({
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const visible = Boolean(src && failedSrc !== src);
   return (
-    <span className={styles.artwork} data-artwork={visible ? "photo" : "placeholder"}>
+    <span
+      className={styles.artwork}
+      data-artwork={visible ? "photo" : "placeholder"}
+    >
       <span className={styles.placeholder} aria-hidden="true" />
       {visible ? (
         <img

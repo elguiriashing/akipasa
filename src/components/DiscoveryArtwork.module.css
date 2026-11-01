@@ -11,7 +11,8 @@
   position: absolute;
   inset: 0;
   display: block;
-  background: #e1e3e4 url("/explore-storefront-placeholder.svg") center / cover no-repeat;
+  background: #e1e3e4 url("/explore-storefront-placeholder.svg") center / cover
+    no-repeat;
 }
 
 .image {

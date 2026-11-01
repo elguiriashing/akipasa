@@ -110,7 +110,8 @@ async function pageArtwork(
       typeof path !== "string" ||
       !path ||
       (chosen.get(id)?.priority ?? Infinity) <= priority
-    ) continue;
+    )
+      continue;
     chosen.set(id, { path, priority });
   }
 
@@ -132,7 +133,8 @@ async function pageArtwork(
         !chosen.has(id) &&
         typeof row.storage_path === "string" &&
         row.storage_path
-      ) chosen.set(id, { path: row.storage_path, priority: 3 });
+      )
+        chosen.set(id, { path: row.storage_path, priority: 3 });
     }
   }
 
@@ -169,21 +171,21 @@ export async function nearbyVenuePage({
   unclaimedOnly?: boolean;
 }): Promise<{ rows: NearbyVenue[]; total: number; page: number }> {
   const supabase = createSupabasePublicClient();
-  const { data, error } = await supabase.rpc(
-    "public_nearby_venue_page",
-    {
-      p_lat: center.latitude,
-      p_lng: center.longitude,
-      p_radius: radiusKm,
-      p_page: page,
-      p_unclaimed: unclaimedOnly,
-    },
-  );
+  const { data, error } = await supabase.rpc("public_nearby_venue_page", {
+    p_lat: center.latitude,
+    p_lng: center.longitude,
+    p_radius: radiusKm,
+    p_page: page,
+    p_unclaimed: unclaimedOnly,
+  });
   if (error) throw new Error(`Public venue query failed: ${error.message}`);
   const result = data as { rows: NearbyVenue[]; total: number; page: number };
   if (!result.rows?.length) return result;
   try {
-    const images = await pageArtwork(supabase, result.rows.map((row) => row.id));
+    const images = await pageArtwork(
+      supabase,
+      result.rows.map((row) => row.id),
+    );
     return {
       ...result,
       rows: result.rows.map((row) => ({
