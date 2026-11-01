@@ -23,6 +23,15 @@ describe("canonical AkiPasa navigation", () => {
     expect(shell).toContain("<PasaBottomDock locale={locale} />");
     expect(shell).not.toMatch(/<nav\s+className="app-bottom-nav"/);
   });
+  it("styles the shared dock for light mode without altering its dark mode or accessibility guards", () => {
+    const css = readFileSync("src/components/PasaBottomDock.css", "utf8");
+    expect(css).toContain('html[data-theme="light"] .app-bottom-nav.pasa-dock');
+    expect(css).toContain(".pasa-dock__item.active");
+    expect(css).toContain("background: #faf7f2");
+    expect(css).toContain("background: rgba(7, 9, 11, 0.97)");
+    expect(css).toContain("prefers-reduced-transparency");
+    expect(css).toContain('data-owner-focus="true"');
+  });
   it("never makes the check-in entry an award operation", () => {
     const entry = readFileSync("src/app/[locale]/check-in/page.tsx", "utf8");
     expect(entry).not.toMatch(/completeCheckIn|grantXp|awardAchievement/);

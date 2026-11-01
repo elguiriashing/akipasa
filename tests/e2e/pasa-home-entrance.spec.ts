@@ -130,6 +130,58 @@ for (const locale of ["en", "es"] as const)
             (element) => element.getBoundingClientRect().top,
           );
           expect(Math.abs(heroTop - ribbonBottom)).toBeLessThanOrEqual(2);
+          const inputSurface = entrance.locator("..");
+          await expect(inputSurface).toHaveCSS(
+            "background-color",
+            theme === "light" ? "rgb(250, 247, 242)" : "rgb(21, 19, 19)",
+          );
+          const todayChip = hero.getByRole("link", {
+            name: locale === "es" ? "Hoy" : "Today",
+            exact: true,
+          });
+          const tonightChip = hero.getByRole("link", {
+            name: locale === "es" ? "Esta noche" : "Tonight",
+            exact: true,
+          });
+          await expect(todayChip).toHaveCSS(
+            "background-color",
+            theme === "light" ? "rgb(242, 107, 29)" : "rgb(255, 118, 40)",
+          );
+          await expect(tonightChip).toHaveCSS(
+            "background-color",
+            theme === "light" ? "rgb(250, 247, 242)" : "rgb(17, 19, 22)",
+          );
+          if (width <= 850) {
+            const dock = page.locator("nav.app-bottom-nav.pasa-dock");
+            await expect(dock).toBeVisible();
+            await expect(dock).toHaveCSS(
+              "background-color",
+              theme === "light" ? "rgb(250, 247, 242)" : "rgba(7, 9, 11, 0.97)",
+            );
+            const first = dock.getByRole("link", {
+              name: locale === "es" ? "Inicio" : "Home",
+            });
+            await expect(first).toHaveAttribute("aria-current", "page");
+            await expect(first).toHaveCSS(
+              "color",
+              theme === "light" ? "rgb(169, 71, 14)" : "rgb(255, 154, 96)",
+            );
+            const camera = dock.getByRole("link", { name: "Check-in" });
+            await expect(camera.locator("svg")).toHaveCSS(
+              "background-color",
+              "rgb(242, 107, 29)",
+            );
+            for (const label of [
+              locale === "es" ? "Mapa" : "Map",
+              "Check-in",
+              locale === "es" ? "Comunidad" : "Community",
+              locale === "es" ? "Perfil" : "Profile",
+            ]) {
+              await expect(
+                dock.getByRole("link", { name: label }),
+              ).toBeVisible();
+            }
+          }
           await expect(entrance).toBeEnabled();
           await expect(hero.locator("img")).toHaveJSProperty("complete", true);
           expect(
