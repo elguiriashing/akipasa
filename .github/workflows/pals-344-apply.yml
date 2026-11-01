@@ -1,0 +1,85 @@
+name: Apply reviewed AkiPals 344 source
+on:
+  push:
+    branches: [work/akipals-344-source-20261101]
+    paths: [.github/workflows/pals-344-apply.yml]
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/akipals-starter-studio-20261101
+      - name: Validate and apply exact reviewed source edits
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import base64, hashlib, json, lzma, os, subprocess, urllib.request
+          from pathlib import Path
+          base = '38578ecc8693b8dc72ea4e26f4a9eda43349c201'
+          assert subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip() == base, 'Repair branch moved; do not overwrite it'
+          blobs = ['e7164cddf37d399e91977d60eebe629b381101b0','acbb53e95c50675614c8ebba1965ead368cf1269','5cb526a12b6ff624fafecfbc7026fc4575f2fe56','c864b4546c0897b02427b263a621de255f2b30e7']
+          parts = []
+          for sha in blobs:
+              req = urllib.request.Request('https://api.github.com/repos/elguiriashing/akipasa/git/blobs/'+sha,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','User-Agent':'AkiPals-reviewed-patch'})
+              with urllib.request.urlopen(req,timeout=30) as r: data = json.load(r)
+              assert data['encoding'] == 'base64'
+              raw = base64.b64decode(data['content'])
+              assert hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest() == sha
+              parts.append(raw)
+          raw = lzma.decompress(b''.join(parts))
+          assert hashlib.sha256(raw).hexdigest() == '2f6fa6753f55eccc3eb765498b76fc734213e50f306497c03c90a9b77562cdf3'
+          entries = json.loads(raw)
+          allowed = set('''docs/AKIPASA_MASTER.md
+          docs/CHANGE_IMPACT_REGISTER.md
+          scripts/test-pals-identity-browser.mjs
+          scripts/test-pals-world-browser.mjs
+          src/app/pals/identity/route.ts
+          src/components/pals/WorldExplorer.module.css
+          src/components/pals/WorldExplorer.tsx
+          src/components/pals/identity-preview.ts
+          src/components/pals/legacy-avatar-geometry.js
+          src/components/pals/starter-style.js
+          src/components/pals/studio-3d.js
+          src/lib/pals/avatar-v2.ts
+          src/lib/pals/starter-catalogue.ts
+          tests/pals-3d-geometry.test.mjs
+          tests/pals-entry.test.ts
+          tests/pals-identity-route.test.ts
+          tests/pals-identity.test.ts
+          tests/pals-starter-geometry.test.mjs
+          tests/pals-starter-studio.test.ts'''.splitlines())
+          assert len(entries) == len(allowed) and {e['p'] for e in entries} == allowed
+          sources = {}
+          for e in entries:
+              if e['s']:
+                  assert e['s'] in allowed
+                  sources[e['s']] = Path(e['s']).read_text()
+          outputs = {}
+          for e in entries:
+              original = sources[e['s']] if e['s'] else ''
+              assert hashlib.sha256(original.encode()).hexdigest() == e['h'], e['p']+' base mismatch'
+              lines = original.splitlines(keepends=True)
+              previous = len(lines)+1
+              for start,end,replacement in reversed(e['e']):
+                  assert 0 <= start <= end <= len(lines) and end <= previous
+                  lines[start:end] = replacement.splitlines(keepends=True)
+                  previous = start
+              result = ''.join(lines)
+              assert hashlib.sha256(result.encode()).hexdigest() == e['n'], e['p']+' output mismatch'
+              outputs[e['p']] = result
+          for path,result in outputs.items():
+              Path(path).parent.mkdir(parents=True,exist_ok=True)
+              Path(path).write_text(result)
+              print(path,hashlib.sha256(result.encode()).hexdigest())
+          subprocess.run(['git','diff','--check'],check=True)
+          subprocess.run(['git','add','--',*sorted(allowed)],check=True)
+          subprocess.run(['git','diff','--cached','--check'],check=True)
+          subprocess.run(['git','-c','user.name=github-actions[bot]','-c','user.email=41898282+github-actions[bot]@users.noreply.github.com','commit','-m','fix(pals): authored-only starter wardrobe, image decoding and mobile studio (#344)'],check=True)
+          subprocess.run(['git','push','origin','HEAD:refs/heads/fix/akipals-starter-studio-20261101'],check=True)
+          print('REPAIR_COMMIT='+subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip())
+          PY
