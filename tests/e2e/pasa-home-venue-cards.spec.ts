@@ -7,6 +7,9 @@ const sourceFiles = [
   "src/app/[locale]/page.tsx",
   "src/app/[locale]/home-venues.module.css",
   "src/components/ResultPagination.tsx",
+  "src/components/DiscoveryArtwork.tsx",
+  "src/components/DiscoveryArtwork.module.css",
+  "public/explore-storefront-placeholder.svg",
 ];
 const sourceHashes = Object.fromEntries(
   sourceFiles.map((file) => [
@@ -62,6 +65,57 @@ for (const locale of ["en", "es"] as const)
           ).toBeVisible();
           const cards = section.locator("a.card[data-home-venue-card]");
           await expect(cards).toHaveCount(20);
+          // Exercise the real placement -> signing -> native image path. Previous
+          // contrast checks sampled the card base while an opaque fallback image
+          // covered it, so they missed the reported unreadable overlaid text.
+          for (let index = 0; index < 4; index++) {
+            const card = cards.nth(index);
+            await card.scrollIntoViewIfNeeded();
+            const artwork = card.locator("[data-artwork]");
+            await expect(artwork).toHaveAttribute(
+              "data-artwork",
+              index < 2 ? "photo" : "placeholder",
+            );
+            await expect(artwork.locator("img")).toHaveCount(1);
+            await expect(artwork.locator("img")).toHaveJSProperty(
+              "complete",
+              true,
+            );
+            expect(
+              await artwork
+                .locator("img")
+                .evaluate((img: HTMLImageElement) => img.naturalWidth),
+            ).toBeGreaterThan(0);
+            if (index < 2) {
+              await expect(
+                artwork.locator(
+                  'img[src="/explore-storefront-placeholder.svg"]',
+                ),
+              ).toHaveCount(0);
+              expect(
+                await artwork.evaluate(
+                  (element) => getComputedStyle(element).backgroundColor,
+                ),
+              ).toBe(
+                theme === "light" ? "rgb(255, 255, 255)" : "rgb(10, 10, 10)",
+              );
+              expect(
+                await artwork
+                  .locator("img")
+                  .evaluate((img) => getComputedStyle(img).objectFit),
+              ).toBe("contain");
+            }
+            const media = await artwork.boundingBox();
+            for (const text of await card
+              .locator("h3,p,[class*='claim'],[class*='distance']")
+              .all()) {
+              const bounds = await text.boundingBox();
+              expect(
+                bounds!.y,
+                "Every text label is below the artwork",
+              ).toBeGreaterThanOrEqual(media!.y + media!.height);
+            }
+          }
           const firstHref = await cards.first().getAttribute("href");
           expect(firstHref).toMatch(new RegExp(`^/${locale}/venues/`));
           const state = await cards.evaluateAll((elements) => {

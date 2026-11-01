@@ -305,33 +305,41 @@ export default async function DiscoverPage({
                 data-claim-status={venue.claimStatus}
                 href={`/${locale}/venues/${venue.slug}`}
               >
-                <DiscoveryArtwork src={venue.imageUrl} alt={venue.name} />
-                <div className={homeVenues.cardTop}>
-                  <span className={homeVenues.mark} aria-hidden="true">
-                    <Icon name="venue" size={24} />
-                  </span>
-                  <span className={homeVenues.claim}>
-                    {venue.claimStatus === "claimed"
-                      ? locale === "es"
-                        ? "Local"
-                        : "Venue"
-                      : locale === "es"
-                        ? "No reclamado"
-                        : "Unclaimed"}
-                  </span>
+                <div className={homeVenues.media}>
+                  <DiscoveryArtwork
+                    src={venue.imageUrl}
+                    alt={venue.name}
+                    contain
+                  />
                 </div>
-                <div className={homeVenues.identity}>
-                  <h3>{venue.name}</h3>
-                  <p className={homeVenues.address}>{venue.address}</p>
-                </div>
-                <div className={homeVenues.cardBottom}>
-                  <span className={homeVenues.distance}>
-                    <Icon name="map" size={14} aria-hidden="true" />
-                    {`${venue.distanceKm.toFixed(1)} km`}
-                  </span>
-                  <span className={homeVenues.arrow} aria-hidden="true">
-                    <Icon name="arrow-right" size={18} />
-                  </span>
+                <div className={homeVenues.content}>
+                  <div className={homeVenues.cardTop}>
+                    <span className={homeVenues.mark} aria-hidden="true">
+                      <Icon name="venue" size={24} />
+                    </span>
+                    <span className={homeVenues.claim}>
+                      {venue.claimStatus === "claimed"
+                        ? locale === "es"
+                          ? "Local"
+                          : "Venue"
+                        : locale === "es"
+                          ? "No reclamado"
+                          : "Unclaimed"}
+                    </span>
+                  </div>
+                  <div className={homeVenues.identity}>
+                    <h3>{venue.name}</h3>
+                    <p className={homeVenues.address}>{venue.address}</p>
+                  </div>
+                  <div className={homeVenues.cardBottom}>
+                    <span className={homeVenues.distance}>
+                      <Icon name="map" size={14} aria-hidden="true" />
+                      {`${venue.distanceKm.toFixed(1)} km`}
+                    </span>
+                    <span className={homeVenues.arrow} aria-hidden="true">
+                      <Icon name="arrow-right" size={18} />
+                    </span>
+                  </div>
                 </div>
                 <span className={homeVenues.destination}>
                   {locale === "es" ? "Ver negocio" : "View business"}

@@ -1,5 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="480" height="560" viewBox="0 0 480 560" role="img" aria-label="Illustrated storefront">
-  <rect width="480" height="560" fill="#e1e3e4"/>
   <g fill="none" stroke="#afb5b8" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" opacity=".87">
     <path d="M111 229V183c0-12 10-22 22-22h214c12 0 22 10 22 22v46"/>
     <path d="M101 224 128 176h224l27 48"/>

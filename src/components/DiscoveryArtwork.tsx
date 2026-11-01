@@ -4,8 +4,8 @@
 import { useState } from "react";
 import styles from "./DiscoveryArtwork.module.css";
 
-/** A real image covers the illustration only after a usable URL is supplied.
- * Failed/expired signed URLs fall back without broken-image icons. */
+/** Photography and fallback artwork are mutually exclusive. Transparent uploads
+ * reveal only the theme's solid canvas; failed URLs show the storefront. */
 export function DiscoveryArtwork({
   src,
   alt,
@@ -22,13 +22,6 @@ export function DiscoveryArtwork({
       className={styles.artwork}
       data-artwork={visible ? "photo" : "placeholder"}
     >
-      <img
-        className={styles.placeholder}
-        src="/explore-storefront-placeholder.svg"
-        alt=""
-        aria-hidden="true"
-        loading="lazy"
-      />
       {visible ? (
         <img
           key={src}
@@ -40,7 +33,15 @@ export function DiscoveryArtwork({
           style={contain ? { objectFit: "contain" } : undefined}
           onError={() => setFailedSrc(src!)}
         />
-      ) : null}
+      ) : (
+        <img
+          className={styles.placeholder}
+          src="/explore-storefront-placeholder.svg"
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+        />
+      )}
     </span>
   );
 }

@@ -24,6 +24,20 @@ const detailTables = new Set([
   "venue_booking_settings",
 ]);
 
+// Deliberately synthetic media for actual Home/Map artwork acceptance. The wide
+// logo has transparent pixels; the invalid image exercises native error fallback.
+const artworkPaths = [
+  "fixture/transparent.svg",
+  "fixture/solid.svg",
+  "fixture/broken.svg",
+];
+const syntheticArtwork = {
+  "fixture/transparent.svg":
+    '<svg xmlns="http://www.w3.org/2000/svg" width="640" height="240"><text x="20" y="150" font-size="88" font-family="sans-serif" font-weight="bold" fill="#f97316">TEST LOGO</text></svg>',
+  "fixture/solid.svg":
+    '<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400"><rect width="640" height="400" fill="#216b65"/><path d="M0 330 170 110 370 330 510 160 640 330V400H0Z" fill="#f9b477"/><text x="35" y="65" font-family="sans-serif" font-size="30" fill="#fff">Synthetic test image</text></svg>',
+};
+
 function venueRow(venue) {
   return {
     id: venue.id,
@@ -92,6 +106,24 @@ function publicDetailRead(url) {
     return venue ? [venueRow(venue)] : [];
   }
   const venueId = url.searchParams.get("venue_id");
+  if (
+    ["venue_media_placements", "venue_media"].includes(table) &&
+    venueId?.startsWith("in.(")
+  ) {
+    const ids = venueId.slice(4, -1).split(",");
+    if (!ids.every((id) => publicUiVenues.some((venue) => venue.id === id)))
+      return undefined;
+    return table === "venue_media"
+      ? []
+      : ids.slice(0, 3).map((id, index) => ({
+          venue_id: id,
+          placement: "venue_explore",
+          venue_media: {
+            id: `fixture-${index}`,
+            storage_path: artworkPaths[index],
+          },
+        }));
+  }
   if (detailTables.has(table) && knownVenueFilter(venueId)) return [];
   if (
     table === "events" &&
@@ -236,6 +268,19 @@ export async function startPublicUiSupabase(env = process.env) {
         venueCount: publicUiVenues.length,
       });
     }
+    if (
+      request.method === "GET" &&
+      path.startsWith("/storage/v1/object/sign/event-media/")
+    ) {
+      const asset = path.slice("/storage/v1/object/sign/event-media/".length);
+      if (!Object.hasOwn(syntheticArtwork, asset))
+        return json(response, 404, { error: "Synthetic missing image" });
+      response.writeHead(200, {
+        "Content-Type": "image/svg+xml",
+        "Cache-Control": "no-store",
+      });
+      return response.end(syntheticArtwork[asset]);
+    }
     if (request.method === "GET") {
       const rows = publicDetailRead(url);
       if (rows !== undefined) {
@@ -244,17 +289,30 @@ export async function startPublicUiSupabase(env = process.env) {
       }
     }
     const rpc =
-      path === "/rest/v1/rpc/public_nearby_venue_page"
-        ? nearbyPage
-        : path === "/rest/v1/rpc/public_map_venue_page"
-          ? mapPage
-          : path === "/rest/v1/rpc/public_venue_catalogue"
-            ? ({ p_venue }) => {
-                if (!publicUiVenues.some((venue) => venue.id === p_venue))
-                  throw new Error("Unknown synthetic venue");
-                return null;
-              }
-            : null;
+      path === "/storage/v1/object/sign/event-media"
+        ? ({ paths }) => {
+            if (
+              !Array.isArray(paths) ||
+              !paths.every((item) => artworkPaths.includes(item))
+            )
+              throw new Error("Unknown synthetic media path");
+            return paths.map((item) => ({
+              path: item,
+              signedURL: `/object/sign/event-media/${item}?token=fixture`,
+              error: null,
+            }));
+          }
+        : path === "/rest/v1/rpc/public_nearby_venue_page"
+          ? nearbyPage
+          : path === "/rest/v1/rpc/public_map_venue_page"
+            ? mapPage
+            : path === "/rest/v1/rpc/public_venue_catalogue"
+              ? ({ p_venue }) => {
+                  if (!publicUiVenues.some((venue) => venue.id === p_venue))
+                    throw new Error("Unknown synthetic venue");
+                  return null;
+                }
+              : null;
     if (!rpc || request.method !== "POST") {
       // Never forward requests, authenticate users, or accept arbitrary writes.
       return json(response, 501, {

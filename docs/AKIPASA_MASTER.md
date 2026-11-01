@@ -4551,3 +4551,28 @@ New targeted and exact-head validation is required before merging repaired sourc
 - **Change:** On mobile shell widths up to 850px, apply `html[data-theme="light"]` cream background, navy wordmark/icons and light, bordered menu/search controls. The reusable EN/ES marquee now uses the same cream/light ink and accessible orange roadmap link for all viewport widths. Preserve the existing dark palette, orange brand mark, announcement content/animation/reduced-motion, 44px touch targets, inset/header geometry, and landscape rail without restructuring navigation.
 - **Boundaries:** AkiPasa client-side styling and Home browser regression only. No session/theme persistence logic, other suite host, auth/roles, database, API, analytics, personal data, consent, payment, CI or release flag changes.
 - **Evidence/gate:** Home EN/ES, dark/light, 360/390/820/1440 viewport browser assertions cover computed header, launcher, search, marquee colours and unchanged image adjacency. New tests toggle light through the real More sheet, rotate 390x844 -> 844x390 -> 390x844 and reload, checking persistence and actual computed styling. Require fresh exact-head checks plus verified production Cloudflare build/deployment; test emulation is not physical Android certification. Rollback is CSS/test/doc-only.
+
+## 2026-11-01 | Explore cards: opaque image canvas and separate readable details
+
+The owner-reported regression after #352 put pale text over a grey storefront and
+left that illustration visible through transparent AkiHQ logos. Home venue cards
+now keep their media above a separate, opaque details panel, with theme-specific
+ink, address, claim and distance colours. The existing chosen venue image is
+contained without cropping. DiscoveryArtwork renders either the chosen image or
+the fallback, never both; its canvas is white in light mode and black in dark mode.
+The storefront SVG has no opaque rectangle and is limited to the image area.
+Shared Event/Map artwork gains the same transparency/error repair while its own
+card structure and content remain unchanged.
+
+This is public presentation only: existing AkiHQ Explore/Cover/Profile priority,
+public RLS reads, signed URLs, claim state, links, paging, locale, auth, storage,
+analytics, database and other product hosts retain their existing authority.
+The maintained 32-context Home browser suite now exercises transparent, solid,
+broken and missing images through synthetic public placements/signing, verifies
+one image layer, a solid canvas, non-overlapping text, actual label contrast,
+keyboard links and responsive layouts in EN/ES and both themes. Fixture images
+are explicitly synthetic and do not assert real venue inventory or physical
+Android acceptance. Full local checks, fresh exact-head CI/Cloudflare packaging
+and live source/visual verification are release gates. Rollback is a source revert
+with no database operation. The prior live Worker c54fc316-5bb7-40d8-94f0-044b238a164a
+is the release rollback reference.
