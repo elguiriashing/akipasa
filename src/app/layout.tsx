@@ -51,12 +51,16 @@ const sharedMetadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/brand/v3/pasa-32.png", type: "image/png", sizes: "32x32" },
-      { url: "/brand/v3/pasa-192.png", type: "image/png", sizes: "192x192" },
+      { url: "/brand/v3/pasa-2026.svg", type: "image/svg+xml" },
+      { url: "/brand/v3/pasa-2026-32.png", type: "image/png", sizes: "32x32" },
+      {
+        url: "/brand/v3/pasa-2026-192.png",
+        type: "image/png",
+        sizes: "192x192",
+      },
     ],
-    apple: "/brand/v3/pasa-180.png",
-    shortcut: "/icon.svg",
+    apple: "/brand/v3/pasa-2026-180.png",
+    shortcut: "/brand/v3/pasa-2026.svg",
   },
 };
 
@@ -85,22 +89,29 @@ export async function generateMetadata(): Promise<Metadata> {
       brand === "akipasa"
         ? sharedMetadata.title
         : { default: name, template: `%s · ${name}` },
-    icons: {
-      icon: [
-        {
-          url:
-            brand === "conduzco"
-              ? "/brand/v3/coches.svg"
-              : `/pwa/${brand}-192.png`,
-          type: brand === "conduzco" ? "image/svg+xml" : "image/png",
-          sizes: "192x192",
-        },
-      ],
-      apple:
-        brand === "conduzco" ? "/brand/v3/coches.svg" : `/pwa/${brand}-192.png`,
-      shortcut:
-        brand === "conduzco" ? "/brand/v3/coches.svg" : `/pwa/${brand}-192.png`,
-    },
+    icons:
+      brand === "akipasa"
+        ? sharedMetadata.icons
+        : {
+            icon: [
+              {
+                url:
+                  brand === "conduzco"
+                    ? "/brand/v3/coches.svg"
+                    : `/pwa/${brand}-192.png`,
+                type: brand === "conduzco" ? "image/svg+xml" : "image/png",
+                sizes: "192x192",
+              },
+            ],
+            apple:
+              brand === "conduzco"
+                ? "/brand/v3/coches.svg"
+                : `/pwa/${brand}-192.png`,
+            shortcut:
+              brand === "conduzco"
+                ? "/brand/v3/coches.svg"
+                : `/pwa/${brand}-192.png`,
+          },
     ...(brand === "conduzco"
       ? {
           description:

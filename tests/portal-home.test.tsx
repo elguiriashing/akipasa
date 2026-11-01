@@ -133,7 +133,7 @@ it.each(["en", "es"] as const)(
       expect(pasa).toHaveAttribute("href", `https://akipasa.com/${locale}`);
       expect(pasa.querySelector("img")).toHaveAttribute(
         "src",
-        "/brand/v3/pasa.svg",
+        "/brand/v3/pasa-2026.svg",
       );
       expect(within(popover).queryByRole("link", { name: "AkiHQ" })).toBeNull();
       expect(

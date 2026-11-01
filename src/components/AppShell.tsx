@@ -122,7 +122,7 @@ export function AppShell({
     {
       name: "AkiPasa",
       href: `/${locale}`,
-      icon: "/brand/v3/pasa.svg",
+      icon: "/brand/v3/pasa-2026.svg",
       accent: "#F26B1D",
     },
     {

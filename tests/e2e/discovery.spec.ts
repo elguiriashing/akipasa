@@ -248,8 +248,8 @@ test("account-only actions redirect guests safely", async ({ page }) => {
 test("manifest and favicon are served", async ({ page }) => {
   const manifest = await page.request.get("/manifest.webmanifest");
   expect(manifest.ok()).toBeTruthy();
-  expect((await manifest.json()).icons[0].src).toBe("/brand/v3/pasa.svg");
-  const appIcon = await page.request.get("/brand/v3/pasa.svg");
+  expect((await manifest.json()).icons[0].src).toBe("/brand/v3/pasa-2026.svg");
+  const appIcon = await page.request.get("/brand/v3/pasa-2026.svg");
   expect(appIcon.ok()).toBeTruthy();
   expect(appIcon.headers()["content-type"]).toContain("image/svg+xml");
   const icon = await page.request.get("/icon.svg");

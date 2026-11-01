@@ -5536,3 +5536,30 @@ Rollback reverts these UI sources only.
   full Chrome149 passed the same20 contexts and negative permission cases.
   Assertions/timeouts remain unchanged, and bounded fixture-only media error
   diagnostics retain no GPS, frames or device IDs. No runtime policy change.
+
+## 2026-11-01 | Current AkiPasa movement logo across all surfaces
+
+Owner requested removal of the retired orange pin/gold star AkiPasa artwork.
+The approved `pasa-2026-traced.svg` remains the geometry authority. Deterministic
+`generate-pasa-2026-icons.mjs` extracts its movement mark and dark endpoint,
+producing versioned selector/favicon/Apple/PWA SVG and PNGs, refreshed legacy
+aliases and wordmark lockups, ICO, store/adaptive artwork and Android notification
+vector. Cream icon backing preserves the dark endpoint in either theme; maskable
+artwork stays inside the central circular safe zone. The generic icon generator
+finishes with this generator so regeneration cannot restore the retired mark.
+
+Dependencies: public and authenticated EN/ES desktop/mobile suite and workspace
+selectors, memberships, Passport, HQ entry, Android return page, metadata,
+manifest, offline shell/service-worker cache, Android drawable resources, and
+local AkiPasa asset copies in Duermo/Coches/HQ/Business. Other product identities,
+app IDs/start URLs, locale routes, authorization, Supabase/RLS/storage, analytics,
+consent, billing and customer records are unchanged. Legacy icon URLs remain
+valid; current references use versioned URLs to avoid stale cached artwork.
+
+Validation: PWA and selector regressions pass 27 cases, including actual manifest
+and legacy endpoint resolution, raster dimensions/alias equality and pixel-based
+maskable safe-zone checks. Generated icon visually inspected. Full source checks,
+exact-head CI and compiled browser review are recorded separately before release.
+No signed Android/Play/iOS release or installed-device icon refresh is claimed;
+native launcher/notification resources require a newly signed package. Source
+revert and preceding app/Worker version are the rollback, with no data migration.

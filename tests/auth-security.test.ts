@@ -104,7 +104,7 @@ describe("authentication security", () => {
       script: "",
       id: "android-return",
     });
-    expect(html).toContain("/brand/v3/pasa.svg");
+    expect(html).toContain("/brand/v3/pasa-2026.svg");
     expect(html).toContain("Abrir AkiPasa ahora");
     expect(html).toContain('id="return-seconds">5');
     expect(html).toContain("akipasa://auth/callback?");

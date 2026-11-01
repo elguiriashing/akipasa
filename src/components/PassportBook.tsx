@@ -521,7 +521,7 @@ export function PassportBook({
                 }}
               >
                 <Image
-                  src="/brand/logo-horizontal-dark.svg"
+                  src="/brand/logo-horizontal-dark.svg?brand=2026"
                   alt="AkiPasa"
                   width={220}
                   height={70}

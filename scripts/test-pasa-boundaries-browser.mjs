@@ -58,6 +58,7 @@ for (const path of sources) {
 }
 for (const path of [
   "public/brand/v3/pasa.svg",
+  "public/brand/v3/pasa-2026.svg",
   "public/brand/pasa-2026-traced.svg",
   "public/brand/v3/business.svg",
   "public/brand/v3/coches.svg",
