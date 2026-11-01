@@ -22,7 +22,13 @@ export function DiscoveryArtwork({
       className={styles.artwork}
       data-artwork={visible ? "photo" : "placeholder"}
     >
-      <span className={styles.placeholder} aria-hidden="true" />
+      <img
+        className={styles.placeholder}
+        src="/explore-storefront-placeholder.svg"
+        alt=""
+        aria-hidden="true"
+        loading="lazy"
+      />
       {visible ? (
         <img
           key={src}
