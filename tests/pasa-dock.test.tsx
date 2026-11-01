@@ -27,8 +27,8 @@ describe("canonical AkiPasa navigation", () => {
     const css = readFileSync("src/components/PasaBottomDock.css", "utf8");
     expect(css).toContain('html[data-theme="light"] .app-bottom-nav.pasa-dock');
     expect(css).toContain('.pasa-dock__item.active');
-    expect(css).toContain('background: #faf7f2');
-    expect(css).toContain('background: rgba(7, 9, 11, 0.97)');
+    expect(css).toContain("background: #faf7f2");
+    expect(css).toContain("background: rgba(7, 9, 11, 0.97)");
     expect(css).toContain("prefers-reduced-transparency");
     expect(css).toContain('data-owner-focus="true"');
   });
