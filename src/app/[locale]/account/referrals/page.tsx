@@ -68,6 +68,7 @@ export default async function Referrals({
   const days = query.period === "30" ? 30 : query.period === "365" ? 365 : 90;
   const representativeEvidence =
     ready &&
+    !rep.error &&
     rep.data?.state === "approved" &&
     process.env.AKISUITE_REFERRAL_REP_EVIDENCE_READY === "true"
       ? await supabase.rpc("suite_referral_representative_evidence", {
@@ -78,7 +79,24 @@ export default async function Referrals({
     representativeEvidence.data,
   );
   const parsed = referralDashboardSchema.safeParse(overview.data);
-  const data = parsed.success ? parsed.data : null;
+  const data = !overview.error && parsed.success ? parsed.data : null;
+  const retryHref = accountReturnPath(
+    locale,
+    `/${locale}/account/referrals?${new URLSearchParams(Object.entries(query).filter((entry): entry is [string, string] => typeof entry[1] === "string"))}`,
+  );
+  const readFailure = (label: string) => (
+    <section role="alert" className="stack">
+      <strong>{label}</strong>
+      <p>
+        {es
+          ? "Los datos no están disponibles. Reintenta antes de continuar."
+          : "These records are not available. Retry before continuing."}
+      </p>
+      <a className="button secondary" href={retryHref}>
+        {es ? "Reintentar" : "Retry"}
+      </a>
+    </section>
+  );
   const messages: Record<string, string> = {
     saved: es
       ? "Guardado. Los pagos siguen pendientes de aprobación."
@@ -103,12 +121,18 @@ export default async function Referrals({
         </p>
       </header>
       <p role="status">{query.result ? messages[query.result] || "" : null}</p>
-      {!ready || !data ? (
+      {!ready ? (
         <p>
           {es
             ? "El programa aún no está disponible. No hay descuentos ni comisiones activos."
             : "The programme is not available yet. Discounts and commissions are not active."}
         </p>
+      ) : !data ? (
+        readFailure(
+          es
+            ? "No se han podido cargar tus recomendaciones"
+            : "Your referrals could not be loaded",
+        )
       ) : (
         <>
           <div className="referral-metrics">
@@ -251,127 +275,135 @@ export default async function Referrals({
           <h2>
             {es ? "Tus revisiones (últimas 50)" : "Your reviews (latest 50)"}
           </h2>
-          {cases.error ? (
-            <p>{es ? "No se pueden cargar." : "Could not load reviews."}</p>
-          ) : (
-            cases.data?.map((item) => (
-              <article key={item.id}>
-                <span>{referralCaseLabel(item.case_type, locale)}</span>
-                <strong>
-                  {
-                    (es
-                      ? {
-                          open: "Abierta",
-                          reviewing: "En revisión",
-                          resolved: "Resuelta",
-                          rejected: "Rechazada",
-                        }
-                      : {
-                          open: "Open",
-                          reviewing: "Reviewing",
-                          resolved: "Resolved",
-                          rejected: "Rejected",
-                        })[
-                      item.state as
-                        | "open"
-                        | "reviewing"
-                        | "resolved"
-                        | "rejected"
-                    ]
-                  }
-                </strong>
-                <p>{item.resolution}</p>
-              </article>
-            ))
-          )}
-          {rep.data?.state === "approved" && (
-            <>
-              <RepresentativeEvidence
-                locale={locale}
-                days={days}
-                data={
-                  !representativeEvidence.error && evidence.success
-                    ? evidence.data
-                    : null
-                }
-              />
-              <form action={saveReferralLead}>
-                <h2>{es ? "Registrar oportunidad" : "Register lead"}</h2>
-                <input type="hidden" name="locale" value={locale} />
-                <label>
-                  {es ? "Negocio" : "Business"}
-                  <input
-                    name="business"
-                    minLength={2}
-                    maxLength={160}
-                    required
+          {cases.error
+            ? readFailure(
+                es
+                  ? "No se pueden cargar las revisiones."
+                  : "Could not load reviews.",
+              )
+            : cases.data?.map((item) => (
+                <article key={item.id}>
+                  <span>{referralCaseLabel(item.case_type, locale)}</span>
+                  <strong>
+                    {
+                      (es
+                        ? {
+                            open: "Abierta",
+                            reviewing: "En revisión",
+                            resolved: "Resuelta",
+                            rejected: "Rechazada",
+                          }
+                        : {
+                            open: "Open",
+                            reviewing: "Reviewing",
+                            resolved: "Resolved",
+                            rejected: "Rejected",
+                          })[
+                        item.state as
+                          | "open"
+                          | "reviewing"
+                          | "resolved"
+                          | "rejected"
+                      ]
+                    }
+                  </strong>
+                  <p>{item.resolution}</p>
+                </article>
+              ))}
+          {rep.error
+            ? readFailure(
+                es
+                  ? "No se ha podido comprobar tu acceso de representante."
+                  : "Your representative access could not be checked.",
+              )
+            : rep.data?.state === "approved" && (
+                <>
+                  <RepresentativeEvidence
+                    locale={locale}
+                    days={days}
+                    data={
+                      !representativeEvidence.error && evidence.success
+                        ? evidence.data
+                        : null
+                    }
                   />
-                </label>
-                <label>
-                  Email
-                  <input name="email" type="email" maxLength={254} />
-                </label>
-                <label>
-                  {es
-                    ? "Notas (solo información necesaria)"
-                    : "Notes (necessary information only)"}
-                  <textarea name="notes" maxLength={2000} />
-                </label>
-                <button>{es ? "Guardar oportunidad" : "Save lead"}</button>
-              </form>
-              <h2>
-                {es
-                  ? "Tus oportunidades (últimas 50)"
-                  : "Your leads (latest 50)"}
-              </h2>
-              {leads.error ? (
-                <p>
-                  {es ? "No se han podido cargar." : "Could not load leads."}
-                </p>
-              ) : (
-                leads.data?.map((lead) => (
-                  <form action={updateReferralLead} key={lead.id}>
-                    <strong>{lead.business_name}</strong>
+                  <form action={saveReferralLead}>
+                    <h2>{es ? "Registrar oportunidad" : "Register lead"}</h2>
                     <input type="hidden" name="locale" value={locale} />
-                    <input type="hidden" name="id" value={lead.id} />
                     <label>
-                      {es ? "Etapa" : "Stage"}
-                      <select name="stage" defaultValue={lead.stage}>
-                        {[
-                          "registered",
-                          "qualified",
-                          "contacted",
-                          "converted",
-                          "lost",
-                        ].map((stage, i) => (
-                          <option key={stage} value={stage}>
-                            {
-                              (es
-                                ? [
-                                    "Registrada",
-                                    "Cualificada",
-                                    "Contactada",
-                                    "Convertida",
-                                    "Perdida",
-                                  ]
-                                : [
-                                    "Registered",
-                                    "Qualified",
-                                    "Contacted",
-                                    "Converted",
-                                    "Lost",
-                                  ])[i]
-                            }
-                          </option>
-                        ))}
-                      </select>
+                      {es ? "Negocio" : "Business"}
+                      <input
+                        name="business"
+                        minLength={2}
+                        maxLength={160}
+                        required
+                      />
                     </label>
-                    <button>{es ? "Actualizar" : "Update"}</button>
+                    <label>
+                      Email
+                      <input name="email" type="email" maxLength={254} />
+                    </label>
+                    <label>
+                      {es
+                        ? "Notas (solo información necesaria)"
+                        : "Notes (necessary information only)"}
+                      <textarea name="notes" maxLength={2000} />
+                    </label>
+                    <button>{es ? "Guardar oportunidad" : "Save lead"}</button>
                   </form>
-                ))
+                  <h2>
+                    {es
+                      ? "Tus oportunidades (últimas 50)"
+                      : "Your leads (latest 50)"}
+                  </h2>
+                  {leads.error
+                    ? readFailure(
+                        es
+                          ? "No se han podido cargar las oportunidades."
+                          : "Could not load leads.",
+                      )
+                    : leads.data?.map((lead) => (
+                        <form action={updateReferralLead} key={lead.id}>
+                          <strong>{lead.business_name}</strong>
+                          <input type="hidden" name="locale" value={locale} />
+                          <input type="hidden" name="id" value={lead.id} />
+                          <label>
+                            {es ? "Etapa" : "Stage"}
+                            <select name="stage" defaultValue={lead.stage}>
+                              {[
+                                "registered",
+                                "qualified",
+                                "contacted",
+                                "converted",
+                                "lost",
+                              ].map((stage, i) => (
+                                <option key={stage} value={stage}>
+                                  {
+                                    (es
+                                      ? [
+                                          "Registrada",
+                                          "Cualificada",
+                                          "Contactada",
+                                          "Convertida",
+                                          "Perdida",
+                                        ]
+                                      : [
+                                          "Registered",
+                                          "Qualified",
+                                          "Contacted",
+                                          "Converted",
+                                          "Lost",
+                                        ])[i]
+                                  }
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                          <button>{es ? "Actualizar" : "Update"}</button>
+                        </form>
+                      ))}
+                </>
               )}
-            </>
-          )}
         </>
       )}
     </section>

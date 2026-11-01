@@ -24,6 +24,7 @@ import { roleCapabilities } from "../lib/roles";
 import { useSuiteReferral } from "./useSuiteReferral";
 import { suiteHref } from "../lib/suite-navigation";
 import { discoveryViewHref } from "../lib/discovery-navigation";
+import { useCheckinDocumentNavigation } from "./useCheckinDocumentNavigation";
 
 type NavItem = {
   href: string;
@@ -88,6 +89,7 @@ export function AppShell({
 }) {
   const referralCode = useSuiteReferral();
   const pathname = usePathname();
+  useCheckinDocumentNavigation(pathname);
   const previousPathname = useRef(pathname);
   const m = msg(locale);
   const es = locale === "es";

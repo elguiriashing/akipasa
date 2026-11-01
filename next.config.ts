@@ -90,6 +90,18 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        // This existing scanner asks for video only after the user's Scan action.
+        // Preserve global denial elsewhere and microphone/payment denial here.
+        source: "/:locale(en|es)/check-in",
+        headers: [
+          {
+            key: "Permissions-Policy",
+            value:
+              "camera=(self), microphone=(), geolocation=(self), payment=()",
+          },
+        ],
+      },
+      {
         source: "/pals/world/:path*",
         headers: [
           {

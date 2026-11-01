@@ -4389,3 +4389,147 @@ failure during page collection; restoring a real.next with only cache linked
 fixed the unchanged-source production build. The original failure is preserved;
 fresh complete published-head CI remains mandatory. See
 receipts/AKIPASA_HOME_INLINE_SEARCH_20261031.json.
+
+## 2026-10-31 | Verified-visit city stories and camera permission repair
+
+This new follow-up preserves production80ec55b/#332's90 accepted screens and
+#343's restricted authored models. Community city circles now open a real city
+story viewer with keyboard, native dialogs, explicit swipe/previous/next/pause,
+reporting and truthful empty/error states. A compact horizontal strip combines
+Add Story, Creators and city landmark circles; Suggest a Plan remains a working
+contribution action. The initial nearby cities derive from a public selected area;
+precise location is opt-in, calculated on-device and not sent to Stories APIs.
+Three nearest available cities plus three most active by approved24-hour photo
+counts are deduplicated. These counts are not crowd levels or occupancy.
+
+Add Story fetches the authenticated owner's actual recent eligible check-ins,
+requires explicit public opt-in and a chosen photo, and re-encodes/canonicalizes
+an opaque WebP before upload. The server independently validates bounded static
+WebP structure and rejects metadata, animation, unexpected fields and duplicate
+multipart values. The server derives the published verified venue and canonical
+city from an owned, accepted, credential-backed recent visit. Client coordinates,
+selfie labels and photographs do not prove attendance or award XP. No AI/AR,
+notification provider, payment or new reward behavior is introduced.
+
+New private Stories tables and a restrictive private-bucket policy protect photo
+objects even against unrelated permissive legacy storage policies. Source-only
+migration20261031230204 and its mirror have NOT been applied. Collection starts
+OFF and the server schema-readiness flag defaults OFF until the installed schema,
+private storage, export and role boundaries are verified. Only existing eligible
+moderator/administrator roles can review pending photos and approve/reject/remove
+with an explicit reason. Public reads project no private profile/owner IDs,
+precise visitor location, storage path or report details; media is authorized on
+each request and served directly as no-store WebP. Photos await manual review.
+
+Owner read/removal/export remains possible after publication eligibility changes.
+Expiry revokes public access24 hours after reservation; it is not a claim of
+physical image/backup deletion. Failed cleanup is reported and tracked privately.
+Account/check-in/venue cascades remove linked metadata without blocking existing
+account deletion; an opaque cleanup outbox survives. Account JSON export adds
+bounded, cursor-validated own retained story/report/cleanup records, fails honestly
+on missing required RPCs, and excludes staff review reasons/third-party text.
+Schema readiness must remain enabled once records exist even when collection is
+turned off. Rollback must preserve these privacy controls; stop collection first
+and keep a Stories-compatible API/export deployment rather than silently return
+an older incomplete export. Stronger physical-retention promises or an automated
+cleanup schedule are not implemented by this change.
+
+The live scanner's global camera=() header was independently confirmed to deny
+camera on both actual HTTPS language routes. Only the exact bilingual Check-in
+scanner page now permits same-origin camera. Microphone/payment remain denied;
+other pages retain camera denial and existing one-time geolocation permission.
+The scanner still requires a user action and device permission. Native file
+capture in Stories is a separate mechanism and is not falsely described as
+blocked by the scanner-policy observation. Physical Android/camera/GPS acceptance
+is separate from Chromium fake-device or synthetic-coordinate testing.
+
+Targeted units, executable PGlite policies/lifecycles and real component/browser
+fixtures cover publication gates, private/owner/staff scope, opt-in, moderation,
+withdrawal, metadata rejection, deletion cascades, export redaction and native
+controls. Fixtures are not actual hosted Supabase Auth/storage or device proof.
+Fresh full checks, exact-source browser results and independent review must gate
+publication. New paid QA resources and production SQL still require actual owner
+authorization; no customer data or production schema has been changed here.
+
+The first fullcheck correctly rejected the two new unclassified migration paths.
+Both are now explicitly inventoried by their actual hash: one unresolved source
+and one byte-identical transport mirror, neither in the execution prefix. The
+inventory grows341→343, unresolved152→153; all97 prior candidate entries, STOPs,
+non-execution flags and existing assertions remain. Sixteen inventory safety
+tests pass with additional assertions protecting the new source-only status.
+This is classification of the new feature delta, not historical reconstruction
+or permission to execute any migration.
+
+## 2026-11-01 | Default-off foundation rollout and camera lifecycle verification
+
+Public sharing needs both nonpublic server flags: schema readiness and
+AKIPASA_COMMUNITY_STORIES_ENABLED. With neither flag set, the existing Community
+places/contribution/creator navigation stays intact and no new upload controls or
+Stories requests are shown. With schema readiness retained but publishing off,
+My Photos still permits owner withdrawal/cleanup without eligibility requests or
+upload forms. Staff's new photo entry remains hidden until the schema is ready.
+Root upload POST also rejects disabled publication before reading the body or
+accessing data/storage; current owner reads/deletion remain available. Query
+parameters cannot activate these flags. SQL collection independently defaults
+OFF and remains the direct-RPC authority.
+
+The rollout can publish completed camera and existing read-recovery repairs now
+while keeping photo sharing hidden. This does NOT apply the Stories migration or
+claim a working hosted photo service. Before collection, obtain explicit resource/
+SQL authority and real isolated Auth/storage proof; install reviewed schema with
+collection OFF, verify export/storage, record a compatible schema-ready/UI-off
+Worker rollback version, then enable collection/UI. Stop SQL collection first to
+roll back, disable public UI, and retain schema readiness, My Photos and export.
+Never silently revert retained user records to an older incomplete export build.
+
+Enabling the existing scanner exposed three reproducible lifecycle failures:
+repeated starts could create multiple streams, deferred detection could navigate
+after Stop, and backgrounding retained a track. Nine focused tests now pass with
+request generations, cancellable permission wait and stale-stream/detection/play
+invalidation; Stop, background and unmount end tracks. Official QR validation and
+healthy navigation remain. Native fake-device checks still require a fresh build;
+no physical camera/Android or attendance proof is inferred.
+
+Before this small final rollout/lifecycle delta, fullcheck passed3,232 Vitest
+cases/18 groups and the optimized Next build (193 generated pages) at00de4db. Its earlier inventory
+and accessible-contribution failures are preserved and genuinely repaired, with
+all prior assertions retained. New targeted rollout/lifecycle regressions, fresh
+build/native checks and all final-head CI remain required for the new source.
+The tablet workflow adds one parallel Community/Staff evidence job, retaining
+every existing job, threshold and assertion. SQL stays unapplied.
+
+Home345 is separately merged as76bceebdcd69c779f57f8f117145dfd94d3e0496 and
+independently deployed at100% as Worker05ebc787-5d2d-438c-9d53-ff6ac4fda243
+through automatic master build53cbf577. Sixteen actual HTTPS Home cases passed
+using genuine Casa1899 matches, EN/ES/themes/four widths;80 attempted Cloudflare
+RUM writes were blocked, not falsely counted as zero attempts. No manual deploy
+or production customer write. This source/history is preserved in the candidate.
+
+## 2026-11-01 | Review repairs before the photo-foundation release
+
+Fresh head133d3c3 CI passed all11 workflows (23 successful checks and one
+conditional site-regression skip), including3,258 Vitest cases,140 Node cases,
+optimized Next and Cloudflare builds. The tested synthetic merge tree matched
+the reviewed source. Public browser shards passed590 with101 conditional skips.
+This did not waive review: two real findings prevented merge.
+
+Permissions-Policy belongs to a document. AppShell now forces a full document
+navigation for ordinary links across the exact EN/ES scanner boundary in either
+direction, preserving modified/new-tab/download and unrelated SPA navigation.
+A navigation-entry check also refreshes document policy after programmatic router
+and history transitions. Header policy remains camera-self only on the scanner,
+with microphone/payment denied; native dock and history regressions supplement
+the earlier direct-load camera tests.
+
+My Photos now restores owner-only durable cleanup identifiers from its mine
+response after close/reopen, instead of relying only on transient client state.
+The bounded backlog can be drained by explicit retry and refresh, including
+soft-deleted/expired or orphaned metadata. Ownership and ineligible-owner
+withdrawal remain enforced, and collection-off does not strand existing records.
+The mirrored additive SQL is still UNAPPLIED; its revised SHA256 is
+28bbffb5b7cd3c943bc58de09580f57cb95929e71f7660fdbef2d62203ed7541.
+Only the existing source/mirror hashes and derived inventory fingerprints changed;
+canonical scope,
+non-execution gates and STOPs remain intact. No hosted storage evidence, paid
+resource, production SQL, photo activation or physical Android proof is claimed.
+New targeted and exact-head validation is required before merging repaired source.

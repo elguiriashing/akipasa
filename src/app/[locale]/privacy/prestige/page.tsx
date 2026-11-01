@@ -62,9 +62,10 @@ export default async function PrestigePrivacyPage({
 
       {error ? (
         <p className={styles.privacyNotice} role="alert">
-          {es
-            ? "No se pudo cargar. Reinténtalo."
-            : "Could not load. Please retry."}
+          {es ? "No se pudo cargar." : "Could not load."}{" "}
+          <Link href={`/${locale}/privacy/prestige`}>
+            {es ? "Reintentar" : "Retry"}
+          </Link>
         </p>
       ) : (
         <section

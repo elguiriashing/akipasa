@@ -3,6 +3,41 @@ import { verifiedVenueQrPath } from "../src/lib/checkin-scan";
 
 const token = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
 describe("verified venue QR navigation", () => {
+  it.each([
+    "a".repeat(36),
+    "-".repeat(36),
+    "aaaaaaaaa-bbb-cccc-dddd-eeeeeeeeeeee",
+    "aaaaaaaa-bbbbcccc-dddd-eeeeeeeeeeee",
+    "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeeg",
+    `${token}/extra`,
+    `${token}?next=/en/account`,
+    `${token}#fragment`,
+    encodeURIComponent(`${token}/extra`),
+  ])("rejects malformed or injected UUID path %s", (value) => {
+    for (const locale of ["en", "es"] as const)
+      expect(
+        verifiedVenueQrPath(
+          `/${locale}/check-in/${value}`,
+          "https://akipasa.com",
+          locale,
+        ),
+      ).toBeNull();
+  });
+  it.each([
+    token,
+    token.toUpperCase(),
+    "00000000-0000-0000-0000-000000000000",
+    "ffffffff-ffff-ffff-ffff-ffffffffffff",
+  ])("retains canonical UUID variant %s", (value) => {
+    for (const locale of ["en", "es"] as const)
+      expect(
+        verifiedVenueQrPath(
+          `/${locale}/check-in/${value}`,
+          "https://akipasa.com",
+          locale,
+        ),
+      ).toBe(`/${locale}/check-in/${value}`);
+  });
   it("accepts an exact same-origin token", () => {
     expect(
       verifiedVenueQrPath(

@@ -1,4 +1,8 @@
 import {
+  communityStoriesExportReady,
+  readCommunityStoryExports,
+} from "@/lib/community-stories-export";
+import {
   privateIdentityExportsReady,
   readPrivateIdentityExports,
 } from "@/lib/identity-private-export";
@@ -58,6 +62,11 @@ export async function GET() {
     data: bookingEmails.data || [],
     failed: Boolean(bookingEmails.error),
   });
+  // Schema readiness remains on while optional retained records exist, even
+  // when new Story collection is disabled. Missing expected RPC fails the export.
+  if (communityStoriesExportReady()) {
+    derivedEntries.push(...(await readCommunityStoryExports(supabase)));
+  }
   if (onboardingEnabled()) {
     const receipt = await supabase.rpc("my_account_onboarding");
     derivedEntries.push({

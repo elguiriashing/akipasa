@@ -17,6 +17,7 @@ export function VenueRelevanceReview({ locale }: { locale: Locale }) {
   const [selectedId, setSelectedId] = useState("");
   const [mobilePane, setMobilePane] = useState<"list" | "editor">("list");
   const [error, setError] = useState("");
+  const [readUnavailable, setReadUnavailable] = useState(false);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState("");
 
@@ -33,8 +34,10 @@ export function VenueRelevanceReview({ locale }: { locale: Locale }) {
         if (!response.ok) throw new Error(data.error || "Review unavailable");
         setRows(data.rows || []);
         setTotal(data.total || 0);
+        setReadUnavailable(false);
       } catch (e) {
         if (!(e instanceof DOMException && e.name === "AbortError")) {
+          setReadUnavailable(true);
           setError(e instanceof Error ? e.message : "Review unavailable");
         }
       } finally {
@@ -50,7 +53,9 @@ export function VenueRelevanceReview({ locale }: { locale: Locale }) {
     return () => controller.abort();
   }, [load]);
 
-  const selected = rows.find((row) => row.id === selectedId) || rows[0];
+  const visibleRows = readUnavailable ? [] : rows;
+  const selected =
+    visibleRows.find((row) => row.id === selectedId) || visibleRows[0];
 
   async function save(
     event: React.FormEvent<HTMLFormElement>,
@@ -102,8 +107,20 @@ export function VenueRelevanceReview({ locale }: { locale: Locale }) {
           </p>
         </div>
         <div className="admin-relevance-count">
-          <strong>{total.toLocaleString(es ? "es-ES" : "en-GB")}</strong>
-          <small>{es ? "pendientes" : "pending"}</small>
+          <strong>
+            {readUnavailable
+              ? "—"
+              : total.toLocaleString(es ? "es-ES" : "en-GB")}
+          </strong>
+          <small>
+            {readUnavailable
+              ? es
+                ? "no disponible"
+                : "unavailable"
+              : es
+                ? "pendientes"
+                : "pending"}
+          </small>
         </div>
       </header>
 
@@ -189,7 +206,7 @@ export function VenueRelevanceReview({ locale }: { locale: Locale }) {
             className="admin-relevance-items"
             aria-label={es ? "Propuestas pendientes" : "Pending proposals"}
           >
-            {rows.map((row) => (
+            {visibleRows.map((row) => (
               <button
                 type="button"
                 key={row.id}
@@ -217,7 +234,24 @@ export function VenueRelevanceReview({ locale }: { locale: Locale }) {
                 </span>
               </button>
             ))}
-            {!loading && rows.length === 0 && (
+            {readUnavailable && (
+              <div className="admin-relevance-no-results" role="status">
+                <p>
+                  {es
+                    ? "No se pudieron cargar las propuestas. Reintenta antes de tomar una decisión."
+                    : "Proposals could not be loaded. Retry before making a decision."}
+                </p>
+                <button
+                  type="button"
+                  className="button"
+                  onClick={() => void load()}
+                  disabled={loading}
+                >
+                  {es ? "Reintentar" : "Retry"}
+                </button>
+              </div>
+            )}
+            {!loading && !readUnavailable && rows.length === 0 && (
               <div className="admin-relevance-no-results">
                 {es
                   ? "No hay propuestas con estos filtros."
@@ -228,19 +262,21 @@ export function VenueRelevanceReview({ locale }: { locale: Locale }) {
           <div className="admin-relevance-pagination">
             <button
               type="button"
-              disabled={offset === 0 || loading}
+              disabled={offset === 0 || loading || readUnavailable}
               onClick={() => setOffset(Math.max(0, offset - 40))}
             >
               {es ? "Anterior" : "Previous"}
             </button>
             <small>
-              {total
-                ? `${offset + 1}–${Math.min(offset + rows.length, total)} / ${total}`
-                : "0 / 0"}
+              {readUnavailable
+                ? "—"
+                : total
+                  ? `${offset + 1}–${Math.min(offset + rows.length, total)} / ${total}`
+                  : "0 / 0"}
             </small>
             <button
               type="button"
-              disabled={offset + 40 >= total || loading}
+              disabled={offset + 40 >= total || loading || readUnavailable}
               onClick={() => setOffset(offset + 40)}
             >
               {es ? "Siguiente" : "Next"}
@@ -378,9 +414,13 @@ export function VenueRelevanceReview({ locale }: { locale: Locale }) {
             </>
           ) : (
             <div className="admin-master-placeholder">
-              {es
-                ? "Selecciona una propuesta para revisarla."
-                : "Select a proposal to review."}
+              {readUnavailable
+                ? es
+                  ? "Vuelve a cargar las propuestas antes de revisarlas."
+                  : "Reload proposals before reviewing them."
+                : es
+                  ? "Selecciona una propuesta para revisarla."
+                  : "Select a proposal to review."}
             </div>
           )}
         </article>

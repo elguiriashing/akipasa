@@ -223,7 +223,20 @@ export default async function PassportsPage({
             </p>
           )}
           {user && query.checkin === "accepted" && (
-            <AchievementCelebration locale={locale} checkInId={query.visit} />
+            <>
+              <AchievementCelebration locale={locale} checkInId={query.visit} />
+              {process.env.AKIPASA_COMMUNITY_STORIES_SCHEMA_READY === "true" &&
+                process.env.AKIPASA_COMMUNITY_STORIES_ENABLED === "true" && (
+                  <Link
+                    className="button secondary"
+                    href={`/${locale}/community#city-stories`}
+                  >
+                    {es
+                      ? "Compartir una foto de mi visita (opcional)"
+                      : "Share a photo from my visit (optional)"}
+                  </Link>
+                )}
+            </>
           )}
           {query.reward && (
             <p className="notice">

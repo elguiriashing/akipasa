@@ -121,9 +121,40 @@ for (const locale of ["en", "es"])
       expect(mocks.form).not.toHaveBeenCalled();
       expect(mocks.uuid).not.toHaveBeenCalled();
     });
-    it("rejects malformed tokens before client creation", async () => {
-      await expect(page(locale, "invalid-token")).rejects.toThrow("not-found");
+    it.each([
+      "invalid-token",
+      "a".repeat(36),
+      "-".repeat(36),
+      "aaaaaaaaa-bbb-cccc-dddd-eeeeeeeeeeee",
+      "aaaaaaaa-bbbbcccc-dddd-eeeeeeeeeeee",
+      `${token}/extra`,
+      `${token}?next=/en/account`,
+      `${token}#fragment`,
+      encodeURIComponent(`${token}/extra`),
+    ])("rejects malformed token %s before client creation", async (value) => {
+      await expect(page(locale, value)).rejects.toThrow("not-found");
       expect(mocks.client).not.toHaveBeenCalled();
+      expect(mocks.flags).not.toHaveBeenCalled();
+      expect(mocks.rpc).not.toHaveBeenCalled();
+      expect(mocks.form).not.toHaveBeenCalled();
+      expect(mocks.uuid).not.toHaveBeenCalled();
+    });
+    it.each([
+      token.toUpperCase(),
+      "00000000-0000-0000-0000-000000000000",
+      "ffffffff-ffff-ffff-ffff-ffffffffffff",
+    ])("preserves valid UUID %s and unknown-token 404", async (value) => {
+      mocks.read.mockResolvedValue({ data: null, error: null });
+      await expect(page(locale, value)).rejects.toThrow("not-found");
+      expect(mocks.client).toHaveBeenCalledExactlyOnceWith(
+        locale,
+        `/${locale}/check-in/${value}`,
+      );
+      expect(mocks.rpc).toHaveBeenCalledExactlyOnceWith(
+        "checkin_venue_preview",
+        { p_token: value },
+      );
+      expect(mocks.form).not.toHaveBeenCalled();
     });
   });
 it("rejects invalid locale before client creation", async () => {

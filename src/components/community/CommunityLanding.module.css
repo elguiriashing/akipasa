@@ -502,3 +502,31 @@
   font-size: 0.9rem;
   font-weight: 750;
 }
+
+.storyShortcut {
+  flex: 0 0 92px;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 8px;
+  padding-top: 0;
+  color: var(--ink);
+  text-align: center;
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+.storyShortcut > span {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  border: 1px solid #a45b28;
+  border-radius: 50%;
+  background: #171310;
+  color: #ff8a39;
+}
+.storyShortcut:focus-visible {
+  outline: 3px solid #ff9a51;
+  outline-offset: 3px;
+  border-radius: 16px;
+}

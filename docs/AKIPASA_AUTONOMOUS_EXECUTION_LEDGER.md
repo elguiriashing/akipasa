@@ -2584,3 +2584,139 @@ failure during page collection; restoring a real.next with only cache linked
 fixed the unchanged-source production build. The original failure is preserved;
 fresh complete published-head CI remains mandatory. See
 receipts/AKIPASA_HOME_INLINE_SEARCH_20261031.json.
+
+## 31 October23:45UTC — New Community Stories follow-up candidate
+
+The old ninety-route overhaul is already merged; do not restart its49/90
+historical backlog. This worktree is work/community-stories-inline-search-20261031
+on current production80ec55b. Six nonoverlapping workers completed the new city
+viewer, photo composer, moderation, ownership/export/deletion controls and composed
+QA, with one integration owner. Home-only PR345 at638915f is separately published
+so its finished inline search need not wait for the new Stories SQL.
+
+New feature tests cover actual executable policies and negative cases; source
+receipts distinguish local/mock/PGlite from real hosted Auth/storage and physical
+Android. Current new-feature unit count was160 before the added narrow camera
+policy case; fresh frozen fullcheck must provide the final count. Community
+leading-row/Staff composition and camera native checks have independent evidence
+folders; never promote fixture results to production acceptance. Public Privacy
+now explains explicit photo publication, manual review, location boundaries and
+access expiry versus physical cleanup without changing required consent values.
+
+SQL20261031230204 remains UNAPPLIED, collection defaults OFF, and the nonpublic
+AKIPASA_COMMUNITY_STORIES_SCHEMA_READY flag defaults OFF.31October23:45read-only
+Supabase branch discovery finds only live main vhpbvcfkcteswlsdjrfl; no disposable
+hosted test target exists. No paid branch, AI service, production customer write
+or schema application has been performed by this follow-up. Existing production
+Staff/preview forwards already applied by the completed332 release must not repeat.
+
+Next: finish exact frozen fullcheck/build/native camera and composed evidence,
+independent review and commit/publish this one candidate; obtain genuine isolated
+hosted Auth/storage/role evidence using an authorized target and reviewed schema
+activation before any Stories release. Preserve the private bucket, retained
+record exports and deletion controls even when collection is disabled. No claim
+that a background engineer survives an ended execution session.
+
+## 2026-11-01 | Default-off foundation rollout and camera lifecycle verification
+
+Public sharing needs both nonpublic server flags: schema readiness and
+AKIPASA_COMMUNITY_STORIES_ENABLED. With neither flag set, the existing Community
+places/contribution/creator navigation stays intact and no new upload controls or
+Stories requests are shown. With schema readiness retained but publishing off,
+My Photos still permits owner withdrawal/cleanup without eligibility requests or
+upload forms. Staff's new photo entry remains hidden until the schema is ready.
+Root upload POST also rejects disabled publication before reading the body or
+accessing data/storage; current owner reads/deletion remain available. Query
+parameters cannot activate these flags. SQL collection independently defaults
+OFF and remains the direct-RPC authority.
+
+The rollout can publish completed camera and existing read-recovery repairs now
+while keeping photo sharing hidden. This does NOT apply the Stories migration or
+claim a working hosted photo service. Before collection, obtain explicit resource/
+SQL authority and real isolated Auth/storage proof; install reviewed schema with
+collection OFF, verify export/storage, record a compatible schema-ready/UI-off
+Worker rollback version, then enable collection/UI. Stop SQL collection first to
+roll back, disable public UI, and retain schema readiness, My Photos and export.
+Never silently revert retained user records to an older incomplete export build.
+
+Enabling the existing scanner exposed three reproducible lifecycle failures:
+repeated starts could create multiple streams, deferred detection could navigate
+after Stop, and backgrounding retained a track. Nine focused tests now pass with
+request generations, cancellable permission wait and stale-stream/detection/play
+invalidation; Stop, background and unmount end tracks. Official QR validation and
+healthy navigation remain. Native fake-device checks still require a fresh build;
+no physical camera/Android or attendance proof is inferred.
+
+Before this small final rollout/lifecycle delta, fullcheck passed3,232 Vitest
+cases/18 groups and the optimized Next build (193 generated pages) at00de4db. Its earlier inventory
+and accessible-contribution failures are preserved and genuinely repaired, with
+all prior assertions retained. New targeted rollout/lifecycle regressions, fresh
+build/native checks and all final-head CI remain required for the new source.
+The tablet workflow adds one parallel Community/Staff evidence job, retaining
+every existing job, threshold and assertion. SQL stays unapplied.
+
+Home345 is separately merged as76bceebdcd69c779f57f8f117145dfd94d3e0496 and
+independently deployed at100% as Worker05ebc787-5d2d-438c-9d53-ff6ac4fda243
+through automatic master build53cbf577. Sixteen actual HTTPS Home cases passed
+using genuine Casa1899 matches, EN/ES/themes/four widths;80 attempted Cloudflare
+RUM writes were blocked, not falsely counted as zero attempts. No manual deploy
+or production customer write. This source/history is preserved in the candidate.
+
+Final default-off candidate verification (1 November): TypeScript, ESLint,
+Prettier and fresh optimized Next build passed. Actual Next EN/ES camera tests
+passed2/2 using Chromium fake hardware: explicit start/live video/no audio,
+Stop ends tracks, Home camera remains denied. Root inspected the Spanish live
+preview PNG. Independent review reproduced and fixed scanner test registration:
+all nine lifecycle tests now run in the maintained aliased Stories group, leaving
+the previous default test invocation intact. That group passed187/187 across12
+files. Existing seven tablet jobs remain byte-equivalent; one parallel evidence
+job is additive. Strict audit passed104 inventoried/0 awaiting for the existing
+accepted inventory, not acceptance of the new inactive photo service. The full
+suite and fresh exact-head hosted CI must still complete before merge.
+
+Durable receipts: checkin-camera-native2-final-20261101.json and
+stories-final-rollout-delta-independent-review-20261101.json under
+/workspace/akipasa-main-checkpoints. Mirrored Stories SQL remains97d43953581b58238c8ab5716a7d027fb310c088f6e0c129f939efea9c7e1b32,
+unapplied. New public sharing/schema flags stay false for this release; no
+hosted photo activation, physical Android result or production SQL is claimed.
+
+## 2026-11-01 | Review repairs before the photo-foundation release
+
+Fresh head133d3c3 CI passed all11 workflows (23 successful checks and one
+conditional site-regression skip), including3,258 Vitest cases,140 Node cases,
+optimized Next and Cloudflare builds. The tested synthetic merge tree matched
+the reviewed source. Public browser shards passed590 with101 conditional skips.
+This did not waive review: two real findings prevented merge.
+
+Permissions-Policy belongs to a document. AppShell now forces a full document
+navigation for ordinary links across the exact EN/ES scanner boundary in either
+direction, preserving modified/new-tab/download and unrelated SPA navigation.
+A navigation-entry check also refreshes document policy after programmatic router
+and history transitions. Header policy remains camera-self only on the scanner,
+with microphone/payment denied; native dock and history regressions supplement
+the earlier direct-load camera tests.
+
+My Photos now restores owner-only durable cleanup identifiers from its mine
+response after close/reopen, instead of relying only on transient client state.
+The bounded backlog can be drained by explicit retry and refresh, including
+soft-deleted/expired or orphaned metadata. Ownership and ineligible-owner
+withdrawal remain enforced, and collection-off does not strand existing records.
+The mirrored additive SQL is still UNAPPLIED; its revised SHA256 is
+28bbffb5b7cd3c943bc58de09580f57cb95929e71f7660fdbef2d62203ed7541.
+Only the existing source/mirror hashes and derived inventory fingerprints changed;
+canonical scope,
+non-execution gates and STOPs remain intact. No hosted storage evidence, paid
+resource, production SQL, photo activation or physical Android proof is claimed.
+New targeted and exact-head validation is required before merging repaired source.
+
+Repaired-source local closure: all207 focused tests passed, plus29 shared
+shell/dock and13 Stay UI regressions. Fresh types/lint/format/optimized build
+passed; canonical inventory tests16/16 passed with STOPs intact. The unchanged
+six actual Next camera cases passed: original two direct-load checks plus four
+EN/ES native dock boundary checks, including live video/no audio, Stop, fresh
+main-frame documents, Home capture denial and Back/Forward policy restoration.
+Before repair, all four new boundary cases failed on the frozen prior build;
+those failures are preserved. Four component-native cleanup cases also passed
+through close/reopen and full reload with explicit-only deletion. These are
+browser test devices/synthetic photo adapters, not physical Android or real
+hosted Auth/storage proof. Fresh exact-head CI and cleared review remain required.

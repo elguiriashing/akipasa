@@ -2,6 +2,7 @@ import styles from "../../events/[slug]/book/consumer-action.module.css";
 import { randomUUID } from "node:crypto";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/config";
+import { isVenueCheckInToken } from "@/lib/checkin-scan";
 import { loadFeatureFlags } from "@/lib/feature-flags";
 import { requireUser } from "@/lib/auth";
 import { CheckInForm } from "./CheckInForm";
@@ -12,7 +13,7 @@ export default async function CheckInPage({
   params: Promise<{ locale: string; token: string }>;
 }) {
   const { locale, token } = await params;
-  if (!isLocale(locale) || !/^[0-9a-f-]{36}$/i.test(token)) notFound();
+  if (!isLocale(locale) || !isVenueCheckInToken(token)) notFound();
   const { supabase } = await requireUser(
     locale,
     `/${locale}/check-in/${token}`,

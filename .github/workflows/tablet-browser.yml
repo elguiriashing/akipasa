@@ -262,3 +262,27 @@ jobs:
           name: passport-places-route-evidence
           path: test-results/passport-places
           retention-days: 7
+
+  community-stories-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Verify composed Community sharing and paused owner controls
+        run: node scripts/test-community-stories-browser.mjs
+      - name: Verify actual Staff composition, roles, schema gates and contrast
+        run: node scripts/test-staff-stories-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: community-stories-source-bound-evidence
+          path: |
+            test-results/community-stories-composed
+            test-results/staff-stories
+          retention-days: 7

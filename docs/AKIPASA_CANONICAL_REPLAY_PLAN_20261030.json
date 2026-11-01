@@ -9,8 +9,8 @@
   "scope": "Hash inventory and candidate prefix only; not an approved migration executor, production chronology or complete eligibility list.",
   "inventoryRoots": ["database/migrations", "supabase/migrations"],
   "inventoryFingerprints": {
-    "database/migrations": "537f6598d0bbe216a51d74139039a8ade46867321f41171e872ea03bc058dbab",
-    "supabase/migrations": "b62687afab194eb8988e37235a242a6281b9ac4073c38ef1e1731abae9ed4180"
+    "database/migrations": "c777c6786158be53dc43f4f517464bc7210f8e4a74fb2612ed45bc4c0d9842a3",
+    "supabase/migrations": "aabe82566fccf13a056d4fc6b6ce0959c5ee66b9fcc07e79b3a3b7625b38306d"
   },
   "evidence": {
     "checkpoint": "canonical-replay-next-20261030.md",
@@ -3242,6 +3242,27 @@
       "aliasOf": "database/migrations/20261030163000_add_checkin_venue_preview.sql",
       "filenameVersion": "20261030163000",
       "reason": "Exact byte mirror only; never apply twice or infer live application/fresh canonical eligibility."
+    },
+    {
+      "path": "database/migrations/20261031230204_community_stories.sql",
+      "sha256": "28bbffb5b7cd3c943bc58de09580f57cb95929e71f7660fdbef2d62203ed7541",
+      "classification": "unresolved",
+      "requires": [
+        "database/migrations/0006_loyalty_passports.sql",
+        "database/migrations/0084_product_readiness_loyalty_reporting.sql",
+        "database/migrations/20261020190818_account_identity_existence_guard.sql"
+      ],
+      "filenameVersion": "20261031230204",
+      "reason": "New source-only City Stories, private storage, owner lifecycle and export delta. Not applied or admitted to the historical candidate prefix; requires scoped independent schema/storage/role acceptance and explicit deployment authorization."
+    },
+    {
+      "path": "supabase/migrations/20261031230204_community_stories.sql",
+      "sha256": "28bbffb5b7cd3c943bc58de09580f57cb95929e71f7660fdbef2d62203ed7541",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261031230204_community_stories.sql",
+      "filenameVersion": "20261031230204",
+      "reason": "Exact byte mirror only; never execute twice or infer production application/canonical parity."
     }
   ]
 }

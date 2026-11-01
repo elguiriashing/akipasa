@@ -3,9 +3,24 @@ import Link from "next/link";
 import { Icon } from "@/components/Icons";
 import { cityDiscoveryHref, majorCities } from "@/lib/city-discovery";
 import styles from "./CommunityLanding.module.css";
+import { CityStories } from "./CityStories";
+import { CheckinStories } from "./CheckinStories";
 
-export function CommunityLanding({ locale }: { locale: "en" | "es" }) {
+export function CommunityLanding({
+  locale,
+  initialCenter,
+  areaLabel,
+  schemaReady = false,
+  storiesEnabled = false,
+}: {
+  locale: "en" | "es";
+  initialCenter?: { latitude: number; longitude: number };
+  areaLabel?: string;
+  schemaReady?: boolean;
+  storiesEnabled?: boolean;
+}) {
   const es = locale === "es";
+  const showStories = schemaReady && storiesEnabled;
   const base = `/${locale}/community`;
   const cities = ["malaga", "marbella"].flatMap((key) => {
     const city = majorCities.find((entry) => entry.key === key);
@@ -29,39 +44,70 @@ export function CommunityLanding({ locale }: { locale: "en" | "es" }) {
         <Link href={`/${locale}/account/following`}>
           {es ? "Siguiendo" : "Following"}
         </Link>
-        <Link href={`/${locale}/map`}>{es ? "Cerca de ti" : "Nearby"}</Link>
-      </nav>
-      <nav
-        className={styles.shortcuts}
-        aria-label={es ? "Explora y participa" : "Explore and contribute"}
-      >
-        <Link href={`${base}?view=suggest`}>
-          <span className={styles.add}>
-            <Icon name="plus" size={24} />
-          </span>
-          <b>{es ? "Proponer un plan" : "Suggest a plan"}</b>
+        <Link href={showStories ? "#city-stories" : `/${locale}/map`}>
+          {es ? "Cerca de ti" : "Nearby"}
         </Link>
-        <Link href={`${base}/creators`}>
-          <span>
-            <Icon name="users" size={24} />
-          </span>
-          <b>{es ? "Creadores" : "Creators"}</b>
-        </Link>
-        {cities.map((city) => (
-          <Link key={city.key} href={cityDiscoveryHref(city, locale)}>
-            <span className={styles.cityCircle}>
-              <Image
-                src={city.photo.src}
-                alt=""
-                fill
-                sizes="58px"
-                unoptimized
-              />
-            </span>
-            <b>{city[locale]}</b>
-          </Link>
-        ))}
       </nav>
+      {showStories ? (
+        <div id="city-stories" tabIndex={-1}>
+          <CityStories
+            locale={locale}
+            initialCenter={initialCenter}
+            areaLabel={areaLabel}
+            leadingContent={
+              <>
+                <CheckinStories locale={locale} variant="story" />
+                <Link
+                  className={styles.storyShortcut}
+                  href={`${base}/creators`}
+                >
+                  <span>
+                    <Icon name="users" size={25} />
+                  </span>
+                  <b>{es ? "Creadores" : "Creators"}</b>
+                </Link>
+              </>
+            }
+          />
+        </div>
+      ) : (
+        <>
+          <nav
+            className={styles.shortcuts}
+            aria-label={es ? "Explora y participa" : "Explore and contribute"}
+          >
+            <Link href={`${base}?view=suggest`}>
+              <span className={styles.add}>
+                <Icon name="plus" size={24} />
+              </span>
+              <b>{es ? "Proponer un plan" : "Suggest a plan"}</b>
+            </Link>
+            <Link href={`${base}/creators`}>
+              <span>
+                <Icon name="users" size={24} />
+              </span>
+              <b>{es ? "Creadores" : "Creators"}</b>
+            </Link>
+            {cities.map((city) => (
+              <Link key={city.key} href={cityDiscoveryHref(city, locale)}>
+                <span className={styles.cityCircle}>
+                  <Image
+                    src={city.photo.src}
+                    alt=""
+                    fill
+                    sizes="58px"
+                    unoptimized
+                  />
+                </span>
+                <b>{city[locale]}</b>
+              </Link>
+            ))}
+          </nav>
+          {schemaReady && (
+            <CheckinStories locale={locale} publishingEnabled={false} />
+          )}
+        </>
+      )}
       <article className={styles.feature}>
         <div className={styles.byline}>
           <span className={styles.editorIcon}>
@@ -161,6 +207,26 @@ export function CommunityLanding({ locale }: { locale: "en" | "es" }) {
         className={styles.actions}
         aria-label={es ? "Tu comunidad" : "Your community"}
       >
+        {showStories && (
+          <Link
+            href={`${base}?view=suggest`}
+            aria-label={es ? "Proponer un plan" : "Suggest a plan"}
+            aria-describedby="community-suggest-description"
+          >
+            <span>
+              <Icon name="plus" size={21} />
+            </span>
+            <div>
+              <strong>{es ? "Proponer un plan" : "Suggest a plan"}</strong>
+              <small id="community-suggest-description">
+                {es
+                  ? "Propón una experiencia para que la comunidad la descubra."
+                  : "Suggest an experience for the community to discover."}
+              </small>
+            </div>
+            <Icon name="arrow-right" size={18} />
+          </Link>
+        )}
         <Link href={`/${locale}/account/following`}>
           <span>
             <Icon name="heart" size={21} />

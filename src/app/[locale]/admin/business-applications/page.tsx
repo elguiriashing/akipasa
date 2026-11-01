@@ -28,6 +28,22 @@ export default async function BusinessApplicationsPage({
     .order("created_at", { ascending: false })
     .limit(100);
   const es = locale === "es";
+  const stateLabels: Record<string, string> = {
+    submitted: es ? "Pendiente de revisión" : "Waiting for review",
+    under_review: es ? "En revisión" : "Under review",
+    awaiting_payment: es ? "Pendiente de pago" : "Awaiting payment",
+    active: es ? "Negocio activo" : "Business active",
+    rejected: es ? "Rechazada" : "Rejected",
+  };
+  const paymentLabels: Record<string, string> = {
+    not_started: es ? "No se requiere todavía" : "Not required yet",
+    pending: es ? "Pendiente" : "Pending",
+    paid: es ? "Pagado" : "Paid",
+    trial: es ? "Periodo de prueba" : "Trial",
+    waived: es ? "Sin cargo" : "No charge",
+    failed: es ? "Necesita atención" : "Needs attention",
+    cancelled: es ? "Cancelado" : "Cancelled",
+  };
 
   return (
     <>
@@ -63,6 +79,7 @@ export default async function BusinessApplicationsPage({
           locale={locale}
           label={es ? "Solicitudes de negocio" : "Business applications"}
           className="admin-list-grid"
+          statusLabels={stateLabels}
           items={(applications || []).map((application) => ({
             id: application.id,
             status: application.state,
@@ -89,7 +106,9 @@ export default async function BusinessApplicationsPage({
                     </p>
                   </div>
                   <span className="status-pill">
-                    {application.state.replaceAll("_", " ")}
+                    {Object.hasOwn(stateLabels, application.state)
+                      ? stateLabels[application.state]
+                      : application.state.replaceAll("_", " ")}
                   </span>
                 </div>
                 <p>{application.message}</p>
@@ -105,7 +124,11 @@ export default async function BusinessApplicationsPage({
                 <dl className="compact-definition-list">
                   <div>
                     <dt>{es ? "Pago" : "Payment"}</dt>
-                    <dd>{application.payment_state.replaceAll("_", " ")}</dd>
+                    <dd>
+                      {Object.hasOwn(paymentLabels, application.payment_state)
+                        ? paymentLabels[application.payment_state]
+                        : application.payment_state.replaceAll("_", " ")}
+                    </dd>
                   </div>
                   <div>
                     <dt>{es ? "Recibida" : "Received"}</dt>
@@ -139,11 +162,13 @@ export default async function BusinessApplicationsPage({
                     <label>
                       {es ? "Decisión" : "Decision"}
                       <select name="state" defaultValue="under_review">
-                        <option value="under_review">under review</option>
-                        <option value="awaiting_payment">
-                          awaiting payment
+                        <option value="under_review">
+                          {stateLabels.under_review}
                         </option>
-                        <option value="rejected">rejected</option>
+                        <option value="awaiting_payment">
+                          {stateLabels.awaiting_payment}
+                        </option>
+                        <option value="rejected">{stateLabels.rejected}</option>
                       </select>
                     </label>
                     <label>
