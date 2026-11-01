@@ -22,66 +22,56 @@ export function CheckInFailure({
     outside_geofence: {
       title: es ? "Acércate al local" : "Move closer to the venue",
       detail: es
-        ? "No se pudo confirmar que estés dentro de la zona de check-in del local. Si ya estás allí, activa la ubicación precisa, espera a que mejore la señal y vuelve a escanear su QR oficial."
-        : "We could not confirm that you are within the venue’s check-in area. If you are already there, enable precise location, wait for a better signal and scan its official QR again.",
+        ? "Activa la ubicación precisa y vuelve a escanear en el local."
+        : "Enable precise location and scan again at the venue.",
     },
     cooldown: {
-      title: es ? "Esta visita ya cuenta" : "This visit already counts",
+      title: es ? "Check-in ya registrado" : "Already checked in",
       detail: es
-        ? "Ya hay un check-in aceptado en este local en las últimas seis horas. Puedes seguir disfrutando de tu visita; este nuevo intento no añade XP ni sellos."
-        : "You already have an accepted check-in at this venue within the last six hours. Enjoy your visit; this new attempt adds no XP or stamp.",
+        ? "Espera seis horas entre check-ins en el mismo local."
+        : "Allow six hours between check-ins at the same venue.",
     },
     rate_limited: {
-      title: es
-        ? "Has llegado al límite de check-ins"
-        : "You’ve reached the check-in limit",
+      title: es ? "Límite de check-ins alcanzado" : "Check-in limit reached",
       detail: es
-        ? "No se pueden aceptar más check-ins por ahora. Espera antes de volver a intentarlo; escanear varias veces no elimina el límite."
-        : "More check-ins cannot be accepted right now. Wait before trying again; repeated scans will not remove the limit.",
+        ? "Espera antes de volver a intentarlo."
+        : "Wait before trying again.",
     },
     invalid_token: {
-      title: es ? "Este QR no está disponible" : "This QR is unavailable",
+      title: es ? "QR no disponible" : "QR unavailable",
       detail: es
-        ? "El código no es válido o ya no está activo. Pide al personal el QR oficial actual del local y vuelve a escanearlo."
-        : "The code is invalid or no longer active. Ask the staff for the venue’s current official QR and scan it again.",
+        ? "Pide al personal el QR oficial actual del local."
+        : "Ask staff for the venue’s current official QR.",
     },
     account: {
       title: es ? "Revisa tu cuenta" : "Check your account",
       detail: es
-        ? "Tu cuenta necesita atención antes de confirmar una visita. Revisa el acceso y cualquier paso pendiente de tu perfil."
-        : "Your account needs attention before a visit can be confirmed. Check your access and any unfinished profile steps.",
+        ? "Completa los pasos pendientes de tu cuenta."
+        : "Complete any unfinished account steps.",
     },
     weak_location: {
-      title: es
-        ? "Necesitamos una ubicación más precisa"
-        : "We need a more precise location",
+      title: es ? "Ubicación poco precisa" : "Location too imprecise",
       detail: es
-        ? "La ubicación recibida no permite comprobar esta visita. Activa la ubicación precisa del navegador, busca una mejor señal y vuelve a intentarlo desde el QR del local."
-        : "The location received cannot be used to check this visit. Enable precise browser location, find a better signal and try again from the venue’s QR.",
+        ? "Activa la ubicación precisa y busca una mejor señal."
+        : "Enable precise location and find a better signal.",
     },
     location_unavailable: {
-      title: es
-        ? "No se ha recibido tu ubicación"
-        : "Your location was not received",
+      title: es ? "Ubicación no disponible" : "Location unavailable",
       detail: es
-        ? "Permite el acceso a la ubicación en el navegador y en el dispositivo. Después, vuelve a escanear el QR del local para solicitarla de nuevo."
-        : "Allow location access in your browser and device settings. Then scan the venue’s QR again to request a fresh location.",
+        ? "Permite la ubicación en los ajustes del navegador y vuelve a intentarlo."
+        : "Allow location in your browser settings and try again.",
     },
     network: {
-      title: es
-        ? "No podemos confirmar el resultado"
-        : "We cannot confirm the result",
+      title: es ? "Conexión interrumpida" : "Connection interrupted",
       detail: es
-        ? "Se perdió la conexión al comprobar la visita. Consulta primero tu progreso en el Pasaporte; puede que la confirmación haya llegado aunque no se haya mostrado."
-        : "The connection was interrupted while checking your visit. Check your Passport progress first; confirmation may have arrived even if it was not displayed.",
+        ? "Revisa tu progreso antes de reintentar: el check-in podría haberse confirmado."
+        : "Check your progress before retrying: the check-in may have succeeded.",
     },
     unknown: {
-      title: es
-        ? "No podemos confirmar este check-in"
-        : "We cannot confirm this check-in",
+      title: es ? "Check-in sin confirmar" : "Check-in unconfirmed",
       detail: es
-        ? "No tenemos un resultado confirmado para este intento. Revisa tu progreso antes de volver a escanear el QR oficial del local."
-        : "We do not have a confirmed result for this attempt. Check your progress before scanning the venue’s official QR again.",
+        ? "Revisa tu progreso antes de volver a intentarlo."
+        : "Check your progress before trying again.",
     },
   };
   const knownReason = Object.hasOwn(copy, reason);
@@ -106,27 +96,12 @@ export function CheckInFailure({
         <span className={styles.marker} aria-hidden="true">
           !
         </span>
-        <div>
-          <p className={styles.eyebrow}>
-            {es ? "Tu check-in" : "Your check-in"}
-          </p>
-          <h2>{message.title}</h2>
-        </div>
+        <h2>{message.title}</h2>
       </div>
       <p>{message.detail}</p>
       {distance !== null && (
         <p className={styles.distance}>
-          {es
-            ? "Distancia comprobada en este intento"
-            : "Distance checked for this attempt"}
-          : {distance} m.
-        </p>
-      )}
-      {!uncertain && reason !== "cooldown" && (
-        <p className={styles.note}>
-          {es
-            ? "Este intento no añade XP ni sellos."
-            : "This attempt adds no XP or stamp."}
+          {es ? "Distancia" : "Distance"}: <span>{distance} m</span>
         </p>
       )}
       <nav
@@ -170,11 +145,6 @@ export function CheckInFailure({
               : "Explore the map"}
         </a>
       </nav>
-      <p className={styles.photoNote}>
-        {es
-          ? "El QR y tu ubicación se usan para verificar tu visita. Compartir una foto es opcional, se hace por separado y necesita revisión antes de aparecer en las historias públicas."
-          : "The QR and your location are used to verify your visit. Sharing a photo is optional, happens separately and needs review before appearing in public stories."}
-      </p>
     </section>
   );
 }

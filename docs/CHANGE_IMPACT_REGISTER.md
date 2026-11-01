@@ -5524,3 +5524,9 @@ Rollback reverts these UI sources only.
   both-language viewport review and exact-head CI required before live claims.
 - Rollback: pause collection, preserve readiness/private bucket/exports and use
   compatible UI-off Worker. No production customer test check-in or XP mutation.
+- Owner-reviewed UI direction was tightened during implementation: removed
+  repeated instructions, slogan/eyebrow and explanatory footer; short states,
+  clear primary actions and collapsed optional help preserve the same guards.
+  Four Passport recovery tests were updated from the removed generic sentence
+  to exact reason-specific headings while retaining scrolling/order/no-success
+  assertions; the initial failed run remains recorded and was not a pass.

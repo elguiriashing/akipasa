@@ -296,11 +296,6 @@ export function StoryCamera({
       className={styles.camera}
       aria-label={es ? "Cámara de historias" : "Story camera"}
     >
-      <p>
-        {es
-          ? "Abre la cámara para hacer una foto nueva. Comprobamos también que sigues cerca del local; tu GPS exacto no se guarda. El navegador decide si recuerda tus permisos."
-          : "Open the camera for a new photo. We also check you are still near the venue; your exact GPS is not stored. Your browser controls whether permissions are remembered."}
-      </p>
       <video
         ref={video}
         playsInline
@@ -315,24 +310,16 @@ export function StoryCamera({
         }
       />
       {phase === "starting" && (
-        <p role="status">
-          {es
-            ? "Preparando cámara y ubicación…"
-            : "Preparing camera and location…"}
-        </p>
+        <p role="status">{es ? "Preparando…" : "Preparing…"}</p>
       )}
       {phase === "ready" && (
         <p role="status">
-          {es
-            ? "Ubicación comprobada. Encuadra tu foto del local, el ambiente o la comida."
-            : "Location checked. Frame the venue, atmosphere or food."}
+          {es ? "Lista para hacer la foto." : "Ready to take your photo."}
         </p>
       )}
       {phase === "capturing" && (
         <p role="status">
-          {es
-            ? "Comprobando tu ubicación para esta foto…"
-            : "Checking your location for this photo…"}
+          {es ? "Comprobando ubicación…" : "Checking location…"}
         </p>
       )}
       {phase === "error" && (
@@ -345,9 +332,7 @@ export function StoryCamera({
             disabled={disabled}
             onClick={() => void start()}
           >
-            {es
-              ? "Abrir cámara y comprobar ubicación"
-              : "Open camera and check location"}
+            {es ? "Abrir cámara" : "Open camera"}
           </button>
         ) : (
           <>
@@ -370,6 +355,14 @@ export function StoryCamera({
           </>
         )}
       </div>
+      <details>
+        <summary>{es ? "Cámara y privacidad" : "Camera & privacy"}</summary>
+        <p>
+          {es
+            ? "Necesitamos la cámara y tu ubicación precisa para comprobar que estás cerca del local. Tu GPS exacto no se guarda. El navegador decide si recuerda tus permisos."
+            : "Camera and precise location are needed to check you are near the venue. Your exact GPS is not stored. Your browser controls whether permissions are remembered."}
+        </p>
+      </details>
     </section>
   );
 }

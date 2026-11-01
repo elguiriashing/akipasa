@@ -483,18 +483,16 @@ it.each(["en", "es"] as const)(
         venueName="Known venue"
       />,
     );
+    const help = screen.getByText(
+      locale === "es" ? "Fotos y privacidad" : "Photo guidance & privacy",
+    );
+    expect(help.closest("details")).not.toHaveAttribute("open");
+    fireEvent.click(help);
     expect(
       screen.getByText(
         locale === "es"
           ? /El escáner QR no guarda ni adjunta imágenes/
           : /The QR scanner does not save or attach images/,
-      ),
-    ).toBeVisible();
-    expect(
-      screen.getByText(
-        locale === "es"
-          ? /Volvemos a comprobar tu ubicación al enviar/
-          : /We check your location again when you submit/,
       ),
     ).toBeVisible();
     expect(

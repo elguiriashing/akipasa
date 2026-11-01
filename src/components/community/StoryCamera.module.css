@@ -43,3 +43,18 @@
   outline: 3px solid var(--story-accent, #ffad78);
   outline-offset: 3px;
 }
+
+.actions button:first-child {
+  background: #ff762b;
+  color: #21140c;
+  border-color: #ff762b;
+}
+.camera details {
+  color: var(--story-muted, #c9c2bb);
+  font-size: 13px;
+}
+.camera summary {
+  cursor: pointer;
+  min-height: 32px;
+  display: list-item;
+}

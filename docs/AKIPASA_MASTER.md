@@ -4765,3 +4765,9 @@ retake consent and exact private-store denial before failed geofences. Fixtures
 are not physical Android proof. Full check, strict audit, exact-head CI and normal
 automatic deployment remain required. Rollback pauses SQL collection before a
 compatible UI-off version; retain readiness, exports and withdrawal rights.
+
+The owner's follow-up sets a clear UI rule: controls and short status labels,
+not feature paragraphs or slogans. Camera/photo screens keep normal-flow copy
+minimal; permission/privacy and photo guidance are collapsed help. Rejection
+cards contain one short reason, a genuine distance when available and recovery
+actions. Detailed explanations belong in documentation or requested help.

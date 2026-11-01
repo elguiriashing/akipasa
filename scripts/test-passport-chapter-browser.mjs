@@ -560,8 +560,8 @@ try {
                     ? "Move closer to the venue"
                     : "Acércate al local"
                   : locale === "en"
-                    ? "We cannot confirm this check-in"
-                    : "No podemos confirmar este check-in",
+                    ? "Check-in unconfirmed"
+                    : "Check-in sin confirmar",
             }),
           });
           await expect(failure).toBeVisible();
@@ -581,7 +581,7 @@ try {
           } else {
             await expect(failure).not.toContainText("438 m");
             await expect(failure).not.toContainText(
-              locale === "en" ? "Distance checked" : "Distancia comprobada",
+              locale === "en" ? "Distance:" : "Distancia:",
             );
             await expect(
               failure.getByRole("link", {

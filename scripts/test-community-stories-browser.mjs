@@ -151,9 +151,7 @@ async function prepareRealPhoto(page, locale, exerciseLifecycle = false) {
   });
   const preview = camera.locator("video");
   const start = camera.getByRole("button", {
-    name: es
-      ? "Abrir cámara y comprobar ubicación"
-      : "Open camera and check location",
+    name: es ? "Abrir cámara" : "Open camera",
     exact: true,
   });
   const shutter = camera.getByRole("button", {

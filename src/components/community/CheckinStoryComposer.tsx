@@ -398,23 +398,25 @@ export function CheckinStoryComposer({
       }
     >
       <header>
-        <span className={styles.eyebrow}>
-          {es ? "TU MOMENTO, TU DECISIÓN" : "YOUR MOMENT, YOUR CHOICE"}
-        </span>
-        <h2>{es ? "Comparte tu momento" : "Share your moment"}</h2>
+        <h2>{es ? "Añadir foto" : "Add a photo"}</h2>
         <p>{venueName}</p>
       </header>
       <p>
         {es
-          ? "Opcional: añade una foto de este check-in verificado. Hacer o compartir una foto no añade XP ni confirma otra visita."
-          : "Optional: add a photo from this verified check-in. Taking or sharing a photo adds no XP and does not verify another visit."}
+          ? "Historia opcional · pública tras la revisión · hasta 24 h."
+          : "Optional story · public after review · up to 24 h."}
       </p>
       {!receipt && (
-        <p className={styles.hint}>
-          {es
-            ? "El escáner QR no guarda ni adjunta imágenes a tu historia. Haz una foto nueva del local, su ambiente o la comida; evita códigos QR y pantallas. Si aparecen otras personas, pide su permiso. Una foto no demuestra que hayas visitado el local."
-            : "The QR scanner does not save or attach images to your story. Take a fresh photo of the venue, atmosphere or food; avoid QR codes and screens. Ask permission from other people shown. A photo does not prove you visited the venue."}
-        </p>
+        <details className={styles.hint}>
+          <summary>
+            {es ? "Fotos y privacidad" : "Photo guidance & privacy"}
+          </summary>
+          <p>
+            {es
+              ? "Fotografía el local, el ambiente o la comida; evita códigos QR y pantallas. Pide permiso a las personas que aparezcan. El escáner QR no guarda ni adjunta imágenes. Eliminamos los metadatos de la foto; no publicamos tu GPS exacto. Las fotos no demuestran asistencia ni dan XP."
+              : "Photograph the venue, atmosphere or food; avoid QR codes and screens. Ask permission from people shown. The QR scanner does not save or attach images. Photo metadata is removed; your exact GPS is not published. Photos do not prove attendance or earn XP."}
+          </p>
+        </details>
       )}
       {receipt ? (
         <div className={styles.receipt} role="status">
@@ -434,15 +436,15 @@ export function CheckinStoryComposer({
           <p>
             {receipt.status === "approved"
               ? es
-                ? "Tu historia está aprobada para las historias de la ciudad hasta que caduque. No muestra tu ubicación exacta."
-                : "Your story is approved for city stories until it expires. Your exact location is not shown."
+                ? "Visible en las historias de la ciudad hasta que caduque."
+                : "Visible in city stories until it expires."
               : receipt.status === "rejected"
                 ? es
-                  ? "La revisión no ha aprobado esta historia. No se publica en las historias de la ciudad."
-                  : "Review did not approve this story. It is not published in city stories."
+                  ? "Esta foto no se ha publicado."
+                  : "This photo has not been published."
                 : es
-                  ? "Se revisará antes de publicarse. Enviar una foto no garantiza su publicación. Caduca 24 horas después del envío."
-                  : "It will be reviewed before publication. Sending a photo does not guarantee publication. It expires 24 hours after submission."}
+                  ? "Se revisará antes de publicarse. Caduca 24 h después del envío."
+                  : "Reviewed before publication. Expires 24 hours after submission."}
           </p>
         </div>
       ) : (
@@ -475,17 +477,8 @@ export function CheckinStoryComposer({
             disabled={busy}
             onCapture={(photo) => void choosePhoto(photo)}
           />
-          <p className={styles.hint}>
-            {es
-              ? "Nada se envía hasta que revises la vista previa, marques tu permiso y pulses Enviar a revisión. Volvemos a comprobar tu ubicación al enviar. Puedes continuar sin compartir una historia."
-              : "Nothing is sent until you review the preview, give permission and select Submit for review. We check your location again when you submit. You can continue without sharing a story."}
-          </p>
           {phase === "preparing" && (
-            <p role="status">
-              {es
-                ? "Preparando una copia segura de tu foto…"
-                : "Preparing a safe copy of your photo…"}
-            </p>
+            <p role="status">{es ? "Preparando foto…" : "Preparing photo…"}</p>
           )}
           {preview && (
             <>
@@ -502,11 +495,6 @@ export function CheckinStoryComposer({
                     : "Preview of your chosen photo"
                 }
               />
-              <p className={styles.hint}>
-                {es
-                  ? "¿Quieres cambiarla? Abre la cámara de nuevo. La nueva foto necesitará tu permiso para compartir."
-                  : "Want to change it? Open the camera again. A replacement photo needs your permission to share."}
-              </p>
               <button type="button" disabled={busy} onClick={removePhoto}>
                 {es ? "Quitar foto" : "Remove photo"}
               </button>
@@ -536,11 +524,6 @@ export function CheckinStoryComposer({
                 : "I want to share this photo publicly in city stories for up to 24 hours, only if review approves it."}
             </span>
           </label>
-          <p className={styles.hint}>
-            {es
-              ? "Comparte solo fotos que puedas publicar y respeta a las personas que aparecen. Eliminamos los metadatos de la copia enviada. No se publica tu GPS exacto."
-              : "Only share photos you may publish, and respect people shown in them. We remove metadata from the uploaded copy. Your exact GPS is not published."}
-          </p>
           {phase === "error" && (
             <p role="alert" className={styles.error}>
               {errorText}

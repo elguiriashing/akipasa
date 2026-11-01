@@ -38,13 +38,10 @@ it.each(reasons)(
       expect(screen.getByRole("status")).not.toHaveTextContent(
         /You’re checked in|¡Ya estás dentro|Location confirmed|Ubicación confirmada/,
       );
-      expect(
-        screen.getByText(
-          locale === "en"
-            ? /Sharing a photo is optional, happens separately and needs review/
-            : /Compartir una foto es opcional, se hace por separado y necesita revisión/,
-        ),
-      ).toBeVisible();
+      expect(screen.getByRole("status").querySelectorAll("p")).toHaveLength(1);
+      expect(screen.getByRole("status")).not.toHaveTextContent(
+        /XP|public stories|historias públicas/,
+      );
       unmount();
     }
   },
@@ -61,11 +58,15 @@ it.each(["network", "unknown"] as const)(
     );
   },
 );
-it("keeps cooldown separate from previous earned XP and directs to progress", () => {
+it("shows a compact cooldown and directs to progress without claiming previous XP changed", () => {
   render(<CheckInFailure locale="es" reason="cooldown" />);
+  expect(
+    screen.getByRole("heading", { name: "Check-in ya registrado" }),
+  ).toBeVisible();
   expect(screen.getByRole("status")).toHaveTextContent(
-    "este nuevo intento no añade XP ni sellos",
+    "Espera seis horas entre check-ins en el mismo local.",
   );
+  expect(screen.getByRole("status")).not.toHaveTextContent("XP");
   expect(screen.getByRole("link", { name: "Ver mi progreso" })).toHaveAttribute(
     "href",
     "/es/passports?view=progress",
@@ -85,9 +86,7 @@ it("shows a supplied server-read distance only for an outside-geofence receipt",
       verifiedDistanceMeters={428.4}
     />,
   );
-  expect(
-    screen.getByText(/Distance checked for this attempt/),
-  ).toHaveTextContent("428 m");
+  expect(screen.getByText(/Distance:/)).toHaveTextContent("428 m");
   expect(
     screen.getByRole("link", { name: "Scan official QR" }),
   ).toHaveAttribute("href", "/en/check-in");
@@ -98,7 +97,7 @@ it("shows a supplied server-read distance only for an outside-geofence receipt",
       verifiedDistanceMeters={428.4}
     />,
   );
-  expect(screen.queryByText(/Distance checked/)).not.toBeInTheDocument();
+  expect(screen.queryByText(/Distance:/)).not.toBeInTheDocument();
 });
 it.each([undefined, null, -1, NaN, Infinity])(
   "does not invent distance or radius from malformed or absent value %s",
@@ -110,7 +109,7 @@ it.each([undefined, null, -1, NaN, Infinity])(
         verifiedDistanceMeters={verifiedDistanceMeters}
       />,
     );
-    expect(screen.queryByText(/Distancia comprobada/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Distancia:/)).not.toBeInTheDocument();
     expect(screen.getByRole("status")).not.toHaveTextContent(
       /radio|radius|\b100 m\b|\b250 m\b/,
     );
@@ -157,7 +156,7 @@ it("falls back safely for an unrecognized runtime reason", () => {
     />,
   );
   expect(
-    screen.getByRole("heading", { name: "We cannot confirm this check-in" }),
+    screen.getByRole("heading", { name: "Check-in unconfirmed" }),
   ).toBeVisible();
   expect(screen.getByRole("status")).not.toHaveTextContent("adds no XP");
 });

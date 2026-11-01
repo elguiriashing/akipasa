@@ -71,9 +71,7 @@ function mount() {
   );
 }
 async function start() {
-  fireEvent.click(
-    screen.getByRole("button", { name: "Open camera and check location" }),
-  );
+  fireEvent.click(screen.getByRole("button", { name: "Open camera" }));
   await waitFor(() =>
     expect(screen.getByRole("button", { name: "Take photo" })).toBeEnabled(),
   );
@@ -90,9 +88,7 @@ it("one gesture starts camera and fresh GPS together, preflight gates shutter", 
     success = callback;
   });
   mount();
-  fireEvent.click(
-    screen.getByRole("button", { name: "Open camera and check location" }),
-  );
+  fireEvent.click(screen.getByRole("button", { name: "Open camera" }));
   expect(media).toHaveBeenCalledOnce();
   expect(geo).toHaveBeenCalledOnce();
   expect(screen.getByRole("button", { name: "Take photo" })).toBeDisabled();
@@ -146,9 +142,7 @@ it("server outside-geofence denial ends camera and never enables capture", async
     json: async () => ({ error: { code: "outside_geofence" } }),
   });
   mount();
-  fireEvent.click(
-    screen.getByRole("button", { name: "Open camera and check location" }),
-  );
+  fireEvent.click(screen.getByRole("button", { name: "Open camera" }));
   expect(await screen.findByRole("alert")).toHaveTextContent("100 m");
   expect(live.stop).toHaveBeenCalledOnce();
   expect(captured).not.toHaveBeenCalled();
@@ -166,9 +160,7 @@ it("close invalidates late GPS and stops a late permission stream", async () => 
   });
   const live = stream();
   mount();
-  fireEvent.click(
-    screen.getByRole("button", { name: "Open camera and check location" }),
-  );
+  fireEvent.click(screen.getByRole("button", { name: "Open camera" }));
   fireEvent.click(screen.getByRole("button", { name: "Close camera" }));
   await act(async () => {
     success(position());
@@ -189,9 +181,7 @@ it("background and unmount stop camera tracks", async () => {
   });
   fireEvent(document, new Event("visibilitychange"));
   expect(live.stop).toHaveBeenCalledOnce();
-  expect(
-    screen.getByRole("button", { name: "Open camera and check location" }),
-  ).toBeEnabled();
+  expect(screen.getByRole("button", { name: "Open camera" })).toBeEnabled();
   view.unmount();
   expect(live.stop).toHaveBeenCalledOnce();
 });
@@ -201,9 +191,7 @@ it("denied GPS explains settings and prevents preflight/capture", async () => {
       error({ code: 1 } as GeolocationPositionError),
   );
   mount();
-  fireEvent.click(
-    screen.getByRole("button", { name: "Open camera and check location" }),
-  );
+  fireEvent.click(screen.getByRole("button", { name: "Open camera" }));
   expect(await screen.findByRole("alert")).toHaveTextContent(
     "Allow precise location",
   );
@@ -227,9 +215,7 @@ it("does not navigate or publish when a preflight resolves after unmount", async
   const live = stream();
   media.mockResolvedValue(live.stream);
   const view = mount();
-  fireEvent.click(
-    screen.getByRole("button", { name: "Open camera and check location" }),
-  );
+  fireEvent.click(screen.getByRole("button", { name: "Open camera" }));
   await waitFor(() => expect(fetcher).toHaveBeenCalledOnce());
   view.unmount();
   await act(async () =>
@@ -358,10 +344,7 @@ it.each([
       );
       fireEvent.click(
         screen.getByRole("button", {
-          name:
-            locale === "en"
-              ? "Open camera and check location"
-              : "Abrir cámara y comprobar ubicación",
+          name: locale === "en" ? "Open camera" : "Abrir cámara",
         }),
       );
       expect(await screen.findByRole("alert")).toHaveTextContent(
@@ -408,10 +391,7 @@ it.each([
       );
       fireEvent.click(
         screen.getByRole("button", {
-          name:
-            locale === "en"
-              ? "Open camera and check location"
-              : "Abrir cámara y comprobar ubicación",
+          name: locale === "en" ? "Open camera" : "Abrir cámara",
         }),
       );
       expect(await screen.findByRole("alert")).toHaveTextContent(
@@ -429,18 +409,26 @@ it("explains unsupported camera access without promising browser permission pers
     value: undefined,
   });
   mount();
-  fireEvent.click(
-    screen.getByRole("button", { name: "Open camera and check location" }),
-  );
+  fireEvent.click(screen.getByRole("button", { name: "Open camera" }));
   expect(await screen.findByRole("alert")).toHaveTextContent(
     "No camera is available in this browser or device.",
   );
   expect(geo).not.toHaveBeenCalled();
   expect(captured).not.toHaveBeenCalled();
   expect(fetcher).not.toHaveBeenCalled();
+  const help = screen.getByText("Camera & privacy");
+  expect(help.closest("details")).not.toHaveAttribute("open");
+  fireEvent.click(help);
   expect(
     screen.getByText(
       /Your browser controls whether permissions are remembered/,
     ),
   ).toBeVisible();
+});
+
+it("keeps ordinary camera copy compact and privacy help collapsed", () => {
+  const view = mount();
+  expect(view.container.querySelector("details")).not.toHaveAttribute("open");
+  expect(screen.queryByText(/Open the camera for a new photo/)).toBeNull();
+  expect(screen.getByRole("button", { name: "Open camera" })).toBeVisible();
 });
