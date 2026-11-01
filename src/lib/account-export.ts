@@ -25,7 +25,6 @@ export const accountExportTables = [
   ["venue_claims", "claimant_id"],
   ["claim_decision_emails", "claimant_id"],
   ["claim_submission_alerts", "claimant_id"],
-  ["suite_email_outbox", "profile_id"],
   ["suite_email_preferences", "profile_id"],
   ["suite_saved_stays", "profile_id"],
   ["business_applications", "applicant_id"],

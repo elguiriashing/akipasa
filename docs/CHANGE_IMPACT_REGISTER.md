@@ -5355,3 +5355,26 @@ rollback version. A subsequent reviewed config release enables publishing only
 after the collection/privacy/export checks pass. Explicit config values override
 kept remote vars; other secret bindings are preserved. Do not patch latest
 uploaded settings, which may describe unrelated unpublished preview code.
+
+## 2026-11-01 | Hosted City Stories: complete-export dependency and panel repair
+
+- Trigger: real isolated Auth/Storage/Next tests passed pending-photo privacy and
+  moderation, but complete account export returned503 for the intentionally
+  private suite email outbox. Exact production ACL metadata confirmed the same
+  inaccessible direct-read contract. No customer rows were inspected.
+- Dependency map: authenticated EN/ES Account download -> current Auth user ->
+  owner-only paginated email RPC -> private outbox; Stories readiness still adds
+  all three owned retained-record sections. No onboarding/gameplay eligibility
+  gate may remove portability or withdrawal rights.
+- Security: keep raw outbox RLS/ACL deny, prohibit caller-selected owners, exclude
+  delivery capabilities/provider internals and other customers' rental contacts,
+  preserve meaningful owned personal records and fail closed on incomplete pages.
+  No email, SMS, webhook, billing, reward or production customer mutation is part
+  of the test or export repair.
+- UI: sticky header within the existing photo-manager overflow container keeps
+  Close reachable on small screens; preserve all other layout and native controls.
+- Release order: verify new RPC and full real-provider download in isolated QA,
+  install reviewed additive SQL with Stories collection OFF, then deploy exact
+  reviewed readiness-on/publishing-off source through normal master automation.
+  Retain schema readiness and privacy/export rights on rollback. Publishing is a
+  subsequent reviewed gate; no successful merge or activation is implied here.

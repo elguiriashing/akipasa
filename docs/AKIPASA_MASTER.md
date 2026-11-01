@@ -4558,3 +4558,25 @@ rollback version. A subsequent reviewed config release enables publishing only
 after the collection/privacy/export checks pass. Explicit config values override
 kept remote vars; other secret bindings are preserved. Do not patch latest
 uploaded settings, which may describe unrelated unpublished preview code.
+
+## 2026-11-01 | Real-provider Stories privacy dependency repair
+
+The isolated hosted test exposed an existing complete-account-export failure:
+`suite_email_outbox` is deliberately service-only, but the export reader tried a
+direct authenticated table read. Production catalog-only inspection confirmed
+RLS enabled, no client SELECT grant and no client policy; these boundaries must
+remain intact. The candidate replaces that read with a bounded caller-session
+RPC projection, derives ownership from `auth.uid()` and preserves export rights
+when account-feature eligibility is revoked. A missing, malformed or incomplete
+page still fails the entire download without returning partial personal data.
+Known personal email fields are separated from provider internals and third-party
+rental customer details. The additive export migration must be installed before
+this candidate deploys; no direct client outbox grant or service-key export is
+authorized by this repair. Existing delivery, cron, consent, billing and booking
+mutations are unchanged.
+
+Native viewport testing also found that scrolling the photo manager moved its
+header and Close control out of view. Its header is made sticky within the
+existing scroll container; focus, dismissal and overflow behavior require fresh
+browser verification against the repaired source. These are candidate changes,
+not evidence of production SQL, merge, activation or physical-phone acceptance.

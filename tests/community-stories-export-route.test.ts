@@ -12,7 +12,9 @@ vi.mock("@/lib/supabase/server", () => ({
       getUser: async () => ({ data: { user: fixture.user }, error: null }),
     },
     rpc: fixture.rpc,
-    from() {
+    from(table: string) {
+      if (table === "suite_email_outbox")
+        throw new Error("The private delivery table is not a client read");
       const q = {
         select: () => q,
         eq: () => q,
@@ -54,7 +56,13 @@ beforeEach(() => {
             },
             error: null,
           }
-        : { data: [], error: null },
+        : {
+            data:
+              name === "my_suite_email_export_page"
+                ? { items: [], nextCursor: null, truncated: false }
+                : [],
+            error: null,
+          },
   );
 });
 afterEach(() => vi.unstubAllEnvs());
@@ -94,7 +102,13 @@ it("returns503 rather than false-complete200 when the expected Stories RPC is mi
           data: null,
           error: { code: "PGRST202", message: "Private internal detail" },
         }
-      : { data: [], error: null },
+      : {
+          data:
+            name === "my_suite_email_export_page"
+              ? { items: [], nextCursor: null, truncated: false }
+              : [],
+          error: null,
+        },
   );
   const response = await GET();
   expect(response.status).toBe(503);
@@ -112,4 +126,26 @@ it("keeps guests out before any export RPC", async () => {
   fixture.user = null;
   expect((await GET()).status).toBe(401);
   expect(fixture.rpc).not.toHaveBeenCalled();
+});
+it("uses the private mail projection without directly reading its table", async () => {
+  const response = await GET();
+  expect(response.status).toBe(200);
+  expect((await response.json()).data.suite_email_outbox).toEqual([]);
+  expect(fixture.rpc).toHaveBeenCalledWith("my_suite_email_export_page", {
+    p_after: null,
+    p_limit: 100,
+  });
+});
+it("fails the complete export if private mail portability is unavailable", async () => {
+  fixture.rpc.mockImplementation(async (name: string) =>
+    name === "my_suite_email_export_page"
+      ? { data: null, error: { message: "Private delivery details" } }
+      : { data: [], error: null },
+  );
+  const response = await GET();
+  expect(response.status).toBe(503);
+  const body = await response.json();
+  expect(body.unavailable_tables).toEqual(["suite_email_outbox"]);
+  expect(body).not.toHaveProperty("data");
+  expect(JSON.stringify(body)).not.toContain("Private delivery details");
 });

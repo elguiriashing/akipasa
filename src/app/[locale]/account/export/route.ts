@@ -7,6 +7,7 @@ import {
   readPrivateIdentityExports,
 } from "@/lib/identity-private-export";
 import { readBusinessFunnelExport } from "@/lib/business-funnel-export";
+import { readSuiteEmailExport } from "@/lib/suite-email-export";
 import { onboardingEnabled } from "@/lib/account-onboarding";
 import { NextResponse } from "next/server";
 import {
@@ -62,6 +63,9 @@ export async function GET() {
     data: bookingEmails.data || [],
     failed: Boolean(bookingEmails.error),
   });
+  // The delivery outbox remains server-only. Its caller-scoped RPC provides
+  // portability without granting direct table access or using a service key.
+  derivedEntries.push(await readSuiteEmailExport(supabase));
   // Schema readiness remains on while optional retained records exist, even
   // when new Story collection is disabled. Missing expected RPC fails the export.
   if (communityStoriesExportReady()) {

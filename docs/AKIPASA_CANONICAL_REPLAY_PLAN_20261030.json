@@ -9,8 +9,8 @@
   "scope": "Hash inventory and candidate prefix only; not an approved migration executor, production chronology or complete eligibility list.",
   "inventoryRoots": ["database/migrations", "supabase/migrations"],
   "inventoryFingerprints": {
-    "database/migrations": "c777c6786158be53dc43f4f517464bc7210f8e4a74fb2612ed45bc4c0d9842a3",
-    "supabase/migrations": "aabe82566fccf13a056d4fc6b6ce0959c5ee66b9fcc07e79b3a3b7625b38306d"
+    "database/migrations": "b907c1b880e3b04ed593817765829884f06f929f5e6f42b9283d5ca3c9ea42bb",
+    "supabase/migrations": "f6f60ee4b2d650623cd08464dd2878040867bc75a29c085bde32639303aad01e"
   },
   "evidence": {
     "checkpoint": "canonical-replay-next-20261030.md",
@@ -3263,6 +3263,23 @@
       "aliasOf": "database/migrations/20261031230204_community_stories.sql",
       "filenameVersion": "20261031230204",
       "reason": "Exact byte mirror only; never execute twice or infer production application/canonical parity."
+    },
+    {
+      "path": "database/migrations/20261101115853_suite_email_owner_export.sql",
+      "sha256": "99627f4d458e37189a3a59f22556aefffb2bced9e19b61e72f2a7fc189ddbf7c",
+      "classification": "unresolved",
+      "requires": ["database/migrations/20261011013000_suite_emails.sql"],
+      "filenameVersion": "20261101115853",
+      "reason": "Scoped caller-only personal mail export repair. Applied only to isolated QA; not admitted to the historical candidate prefix or evidence of production application/parity."
+    },
+    {
+      "path": "supabase/migrations/20261101115853_suite_email_owner_export.sql",
+      "sha256": "99627f4d458e37189a3a59f22556aefffb2bced9e19b61e72f2a7fc189ddbf7c",
+      "classification": "byte-identical-transport",
+      "requires": [],
+      "aliasOf": "database/migrations/20261101115853_suite_email_owner_export.sql",
+      "filenameVersion": "20261101115853",
+      "reason": "Exact byte mirror only; never apply twice or infer production application/canonical parity."
     }
   ]
 }

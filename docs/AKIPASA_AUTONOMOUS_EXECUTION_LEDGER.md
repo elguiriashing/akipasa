@@ -2753,3 +2753,50 @@ Next cache symlink target. The disposable target was restored; unchanged-code
 optimized build passed. Source-controlled phase-one binding contract tests also
 pass. No test/assertion/timeout was weakened. Fresh final-head CI is still
 required; no source or production activation is yet claimed accepted.
+
+## 2026-11-01 | Hosted provider checks and actual export blocker repair
+
+Production remains38578ecc / Workerbfc9cf21 at100%; Stories SQL is still
+unapplied there and publishing remains OFF. PR348 preparation99565df passed
+all7 triggered workflows (19 successful checks, one conditional skip),3,278
+Vitest cases,140 Node contracts and594 browser cases with101 conditional skips.
+Those receipts remain bound to99565df, not to subsequent repairs.
+
+Actual isolated provider testing passed24 core Auth/RPC/Storage/API cases,12
+direct-table ACL/RLS denials and17 blocked-owner/storage-failure/withdrawal cases.
+A real failed Storage DELETE left an owned durable cleanup task across fresh
+reads; a healthy withdrawal removed its object and public access. Browser tests
+used native file upload, real staff approval and decoded real public image bytes.
+No physical-device, actual venue attendance or full final browser pass is inferred.
+One test identity had an obsolete synthetic Terms label; only four synthetic
+profiles/onboarding receipts were corrected to the actual app version. Guards
+were preserved.
+
+Complete account export correctly failed503 rather than returning partial data.
+Its remaining fault was the pre-existing direct read of the private email outbox;
+production catalog-only inspection confirmed the same deny-all client boundary.
+The repair adds a caller-only bounded RPC and strict fail-closed reader, retains
+raw table denial, excludes provider internals and operator copies of third-party
+contacts, and preserves server-proven customer-owned contact history. Its new
+mirrored migration20261101115853 is applied ONLY in isolated QA. The full export
+route now uses that projection; no service-key export or permissive grant is used.
+Targeted helper/SQL/account/export tests passed54 cases across their proper
+Vitest configurations; an initial combined invocation without the configured
+path alias failed module resolution and is preserved rather than counted.
+
+Native viewport inspection also proved that the manager header scrolled away;
+four scoped sticky-header CSS declarations repair that behavior. Existing37
+controller tests pass. Fresh repaired-source build, hosted browser/export proof,
+exact-head CI and independent review remain required before production SQL or
+merge. A connector confirmation expired before the synthetic parent-check-in
+DELETE ran; readback confirmed no partial mutation, and no orphan-case pass is
+claimed. Original source, fixtures, screenshots and failed receipts are retained.
+
+The new email migration is classified as an unresolved scoped source with its
+byte-identical transport mirror; historical candidate order and every STOP remain
+unchanged. Canonical inventory now345 sources/154 unresolved, with97 historical
+candidates unchanged;16 consistency tests pass in the managed execution context.
+Production optional identity/Funnel export modules and gating blocks remain
+byte-identical. Their three live RPC signatures/ACLs/search paths were inspected
+without customer rows. QA with these optional flags unset verifies the repaired
+base and Stories sections, not authenticated production optional-export behavior.
