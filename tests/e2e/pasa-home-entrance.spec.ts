@@ -42,12 +42,10 @@ for (const locale of ["en", "es"] as const)
           );
           if (width <= 850) {
             const header = page.locator(".app-shell .app-topbar-mobile");
-            const expectedHeader = theme === "light"
-              ? "rgb(250, 247, 242)"
-              : "rgb(9, 11, 13)";
-            const expectedHeaderInk = theme === "light"
-              ? "rgb(23, 34, 56)"
-              : "rgb(247, 249, 253)";
+            const expectedHeader =
+              theme === "light" ? "rgb(250, 247, 242)" : "rgb(9, 11, 13)";
+            const expectedHeaderInk =
+              theme === "light" ? "rgb(23, 34, 56)" : "rgb(247, 249, 253)";
             await expect(header).toHaveCSS("background-color", expectedHeader);
             await expect(header.locator(".brand-wordmark")).toHaveCSS(
               "color",
