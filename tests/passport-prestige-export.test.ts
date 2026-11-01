@@ -18,6 +18,13 @@ vi.mock("@/lib/account-export", () => ({
     failed: false,
   }),
 }));
+vi.mock("@/lib/suite-email-export", () => ({
+  readSuiteEmailExport: async () => ({
+    table: "suite_email_outbox",
+    data: [],
+    failed: false,
+  }),
+}));
 import { GET } from "../src/app/[locale]/account/export/route";
 afterEach(() => {
   vi.clearAllMocks();

@@ -414,8 +414,8 @@ export function CheckinStories({
                   </div>
                   <p className={styles.hint}>
                     {es
-                      ? "Actualiza después de enviar una foto para consultar su estado. Solo aparecen tus historias aún vigentes; no se inventan publicaciones."
-                      : "Refresh after submitting a photo to check its status. Only your unexpired stories appear; no activity is invented."}
+                      ? "Actualiza para consultar la revisión de tu foto. Las fotos aprobadas aparecen en las historias de la ciudad hasta 24 horas después del envío."
+                      : "Refresh to check your photo’s review status. Approved photos appear in city stories for up to 24 hours after submission."}
                   </p>
                   {deletedNotice && (
                     <p role="status" className={styles.notice}>

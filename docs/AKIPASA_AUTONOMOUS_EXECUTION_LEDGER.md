@@ -2720,3 +2720,93 @@ those failures are preserved. Four component-native cleanup cases also passed
 through close/reopen and full reload with explicit-only deletion. These are
 browser test devices/synthetic photo adapters, not physical Android or real
 hosted Auth/storage proof. Fresh exact-head CI and cleared review remain required.
+
+## 2026-11-01 | Owner-approved City Stories activation started
+
+Current live source remains38578ecc, Workerbfc9cf21 at100%. Owner approved
+previously proposed capped database testing and requested enabling Stories.
+Created temporary branchfc06c148-cc42-4945-86bd-c6a833cc6ee3 /
+zbfozgzlucdlutqgcwlc with_data=false at09:41UTC, USD0.01344/hour.
+Automatic migration replay failed before profiles existed; no customer data
+was copied and no historical replay/reconstruction is undertaken. Scoped
+current-catalog fixture dependencies are being installed only on this target.
+
+My Photos copy cleanup37/37, lint and formatting pass; no behavior or assertion
+changes. Real Storage upload/provider UI testing remains blocked on a securely
+supplied branch service-role key. Automatic approval rejected a temporary
+encrypted key-bootstrap endpoint as credential extraction; no endpoint deployed
+and no credential workaround is authorized. Safe schema/Auth/RLS checks continue.
+ProductionSQL28bb and both server publication gates remain off/unapplied.
+A maximum-lifetime cleanup task was actually created for the disposable branch;
+root will normally remove it earlier after evidence capture.
+
+Subsequent explicit owner approval: "Approve temporary test-key access".
+The bounded encrypted handoff was approved, completed only for zbfo, and replaced
+immediately with HTTP410(version2). Closureverified10:23UTC; no credential
+values displayed. Modern sb_secret server keys are accepted by the provider;
+the local private configuration is chmod600. No production key was accessed.
+Ordinary SDK requests retain the managed proxy; Node24 uses --use-env-proxy.
+
+Preparation fullcheck passed3,278 Vitest/18 invocations and140 Node contracts,
+then correctly failed because the environment restart removed the temporary
+Next cache symlink target. The disposable target was restored; unchanged-code
+optimized build passed. Source-controlled phase-one binding contract tests also
+pass. No test/assertion/timeout was weakened. Fresh final-head CI is still
+required; no source or production activation is yet claimed accepted.
+
+## 2026-11-01 | Hosted provider checks and actual export blocker repair
+
+Production remains38578ecc / Workerbfc9cf21 at100%; Stories SQL is still
+unapplied there and publishing remains OFF. PR348 preparation99565df passed
+all7 triggered workflows (19 successful checks, one conditional skip),3,278
+Vitest cases,140 Node contracts and594 browser cases with101 conditional skips.
+Those receipts remain bound to99565df, not to subsequent repairs.
+
+Actual isolated provider testing passed24 core Auth/RPC/Storage/API cases,12
+direct-table ACL/RLS denials and17 blocked-owner/storage-failure/withdrawal cases.
+A real failed Storage DELETE left an owned durable cleanup task across fresh
+reads; a healthy withdrawal removed its object and public access. Browser tests
+used native file upload, real staff approval and decoded real public image bytes.
+No physical-device, actual venue attendance or full final browser pass is inferred.
+One test identity had an obsolete synthetic Terms label; only four synthetic
+profiles/onboarding receipts were corrected to the actual app version. Guards
+were preserved.
+
+Complete account export correctly failed503 rather than returning partial data.
+Its remaining fault was the pre-existing direct read of the private email outbox;
+production catalog-only inspection confirmed the same deny-all client boundary.
+The repair adds a caller-only bounded RPC and strict fail-closed reader, retains
+raw table denial, excludes provider internals and operator copies of third-party
+contacts, and preserves server-proven customer-owned contact history. Its new
+mirrored migration20261101115853 is applied ONLY in isolated QA. The full export
+route now uses that projection; no service-key export or permissive grant is used.
+Targeted helper/SQL/account/export tests passed54 cases across their proper
+Vitest configurations; an initial combined invocation without the configured
+path alias failed module resolution and is preserved rather than counted.
+
+Native viewport inspection also proved that the manager header scrolled away;
+four scoped sticky-header CSS declarations repair that behavior. Existing37
+controller tests pass. Fresh repaired-source build, hosted browser/export proof,
+exact-head CI and independent review remain required before production SQL or
+merge. A connector confirmation expired before the synthetic parent-check-in
+DELETE ran; readback confirmed no partial mutation, and no orphan-case pass is
+claimed. Original source, fixtures, screenshots and failed receipts are retained.
+
+The new email migration is classified as an unresolved scoped source with its
+byte-identical transport mirror; historical candidate order and every STOP remain
+unchanged. Canonical inventory now345 sources/154 unresolved, with97 historical
+candidates unchanged;16 consistency tests pass in the managed execution context.
+Production optional identity/Funnel export modules and gating blocks remain
+byte-identical. Their three live RPC signatures/ACLs/search paths were inspected
+without customer rows. QA with these optional flags unset verifies the repaired
+base and Stories sections, not authenticated production optional-export behavior.
+
+Integration recovery: after a managed tool stalled the session, fresh fetch found
+master19a1d1f (reviewed Home artwork, marquee and light-theme/dock releases).
+Merged that history normally, preserving all incoming runtime changes and both
+sets of mandatory test additions. Only append-only product/impact docs and the
+long package test script conflicted. No force push, competing deployment or
+private PR347 source is included. The integrated focused regression group passes
+38 cases; ff45290 full npm check passed before this base changed. Full checks
+and browser evidence must now bind the integrated source. SQL28bb/99627 remain
+unapplied to production.

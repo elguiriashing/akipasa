@@ -4538,6 +4538,53 @@ non-execution gates and STOPs remain intact. No hosted storage evidence, paid
 resource, production SQL, photo activation or physical Android proof is claimed.
 New targeted and exact-head validation is required before merging repaired source.
 
+## 2026-11-01 | City Stories activation preparation
+
+Alex approved isolated database testing within the previously proposed USD2 cap
+and requested City Stories activation after verification. Production remains
+38578ecc and dormant while real Auth/Storage checks are prepared. The temporary
+branch zbfozgzlucdlutqgcwlc has no production data; failed provider history replay
+is not schema parity. Only the current scoped dependencies are installed there.
+My Photos now explains refreshing review status and the24-hour visibility limit
+in EN/ES without internal verification language; labels, consent, ownership,
+cleanup and publication gates are unchanged. Existing37 controller tests pass.
+Initial private-key retrieval was rejected by automatic review. Alex then
+explicitly approved encrypted QA-only server-key access. The approved five-minute
+handoff completed without displaying credentials and was immediately replaced
+with HTTP410; the branch-only configuration remains private. Real-provider
+verification is in progress, not yet claimed complete.
+
+The activation candidate adds source-controlled server bindings
+SCHEMA_READY="true" and ENABLED="false". It MUST NOT merge before complete real
+provider tests and installation of the reviewed production SQL with collection
+OFF. Automatic master deployment then creates a schema-compatible UI-off
+rollback version. A subsequent reviewed config release enables publishing only
+after the collection/privacy/export checks pass. Explicit config values override
+kept remote vars; other secret bindings are preserved. Do not patch latest
+uploaded settings, which may describe unrelated unpublished preview code.
+
+## 2026-11-01 | Real-provider Stories privacy dependency repair
+
+The isolated hosted test exposed an existing complete-account-export failure:
+`suite_email_outbox` is deliberately service-only, but the export reader tried a
+direct authenticated table read. Production catalog-only inspection confirmed
+RLS enabled, no client SELECT grant and no client policy; these boundaries must
+remain intact. The candidate replaces that read with a bounded caller-session
+RPC projection, derives ownership from `auth.uid()` and preserves export rights
+when account-feature eligibility is revoked. A missing, malformed or incomplete
+page still fails the entire download without returning partial personal data.
+Known personal email fields are separated from provider internals and third-party
+rental customer details. The additive export migration must be installed before
+this candidate deploys; no direct client outbox grant or service-key export is
+authorized by this repair. Existing delivery, cron, consent, billing and booking
+mutations are unchanged.
+
+Native viewport testing also found that scrolling the photo manager moved its
+header and Close control out of view. Its header is made sticky within the
+existing scroll container; focus, dismissal and overflow behavior require fresh
+browser verification against the repaired source. These are candidate changes,
+not evidence of production SQL, merge, activation or physical-phone acceptance.
+
 ## 2026-11-01 | Flush discovery hero and rolling local launch notice
 
 - **Owner request:** AkiPasa Home photography starts immediately after the launch strip in desktop, tablet and handset orientations; the formerly static banner scrolls a truthful Costa del Sol-first announcement. Public Roadmap links are retitled **Our Roadmap** in English and **Nuestra hoja de ruta** in Spanish while preserving existing `/en/roadmap` and `/es/roadmap` routes.
