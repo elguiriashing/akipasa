@@ -12,6 +12,7 @@ export function LaunchRibbon({ locale }: { locale: Locale }) {
   return (
     <aside
       className={styles.ribbon}
+      data-launch-ribbon
       aria-label={es ? "Aviso de lanzamiento" : "Launch update"}
     >
       <span className={styles.spark} aria-hidden="true" />
