@@ -1,0 +1,39 @@
+name: Prepare AkiPals recovery browser correction
+on:
+  push:
+    branches: [work/akipals-344-source-20261101]
+    paths: [.github/workflows/pals-344-correct-browser.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 0daae02e57deb0278a68e84a63ccad8f80808836
+      - name: Apply exact reviewed test correction to a candidate ref
+        run: |
+          python - <<'PY'
+          import base64,hashlib,json,lzma,subprocess
+          from pathlib import Path
+          payload='/Td6WFoAAATm1rRGAgAhARYAAAB0L+Wj4AulBQJdAC2ewEcBJG9kjTVlfHtz1tOTau21KJpfuGFcEDfbns5231YRj3qsEoiwfu+kbtmuN6jT4pzKsZwbOGe9IdGuwGEmuVG8SHhAcHMwRL0UOYMm0exULLaSz6xhcNEdsQO0uw+XMouOInx+RbOizeEemGUBijxKfpNyOhVcibpu8QrmKI/0ynfMP1SI36PD7Ntk/vCWeddw78q55rC13TzGASmcl/LOdFpNSv91Mt+cS2gCRZWzfqqbyHytDsLFdn+2rD887R2g0RPL9YgM6ZgvCnpJJdbfcLiVt9SGcWfEMB9dikQWpjMggLy++e69CzNv5FVSjdjS5a+xqbRffCf6RCQ+RevRgIHyCdtYxWHBkHE9lThF+xrV6n7qY4jJ00aS//+T2lbgrjrdOz+8e54v2BM5djNP9reJNpFKYm+kcbnFlGbr+vp/ZuIpTsW+dVP801HDpZ/MHIu9xgZbDlkZmQTtjEbvRVzf7IeYaNoo5+cVFuILckrIlrAq9GSwgOMorfxMWx95+IedhnE+WuHkk/QJlDl2hr1tigDuFb4zQdGBWGBiWYdiH1/IONe700an9pBDDtT6CYCCKYXjvmNTAiicQZUIQjXsmahD073e/UmdvGLXzG/KVZHeldKUgkT7NwvO0PaIfnx6+PQ9thhgPV9Auzf2WU8/0obu1vPOHyPmhyoUv/TXonjczwpLxQX/DsEy9o3fn2n2lfnKUsyZWMPUOcxICPHOqDWmM2tjusfkN+OATsA+b79aYcSvnR2+Fz5r43rbY2yu0j4UtLC3X015wlhKvrkbKOmNf5hxbWcHFKoqE3THTf7nEgaZ6T8ggoqL4nXN4KjWvUqzoMrBQCxESGnKO9MdRnbVvzrV12l+9Pnvteku2XEDEybWtOCenFVspInxUKmrAPNG6fPJ/nx4D3QLtzxlzplgr67c4gJ3qSS2DRFFNRN7TRnWp/zVMzDO/AkhycX14B50pZIK6Z1ClTF8MCzLI1rGfwwpBmuCEuacviEablu9JMpKr6kkWLUr1/Sn8Doi3gJ7eFFxaW52/mlHpzVEVGDa8a/hd9DDu3NoCVOXNti1zmDWgTgih5hIyBox9b9umO4hpAdjZTZMJtxfF+jwNoc9bMGClBB66GBsZSTfItyFREyBQPyEbcVFO2X0Ij4hxf/Hj+ZmmsR1rP6sbAW7iA5UuEr8SoLRJ4JQ127FkqDfUqedBd1B4sTZMNyNcbTwikPmjpXnh9WPU4aBq1ohNwyQ6a5Bcp51g4fji49StH1EJQDlUb7SHJ9oIWj6IyNRYmaNsIU89YT+Wx29ATyWhuB8Zy1hYFtOA8O1yqWx17QMy7FdoZyAlgjaDLXdcqsp/XrnfDKdGCX9O42z6e/hrBXvKXOIqW3yf9drqrb7sKMMe8Y9Zx/Erwcj6nOIDRcJsagmKIaAWTrub8j5XZC2rMFWSVnKht/jgMY+s7Zm4jxrFJEKem43bQ7R2IDcJORLKFnBU0c0hhOCK89ZJ05+ujUTBJIMUFFH3xH50lk484fRxIqZ+BEiWXoLr5+IC7t8+7lyQvZEyYResHboh4EgptxGR4v1ATSa7qCzDCY/eL3zdlwCpqcJvGKqeBKdXbMZJcka8VidL4Ndkw2u0un3BjCVNz5VOuVrsYMG2JLJwKpCXU58XI287mSXdKPa6GAQMDm2/XbsYWr2bbY53rrM0uRx+GyCqbnuvpYAAABhAYE6q7NAaQABngqmFwAAY0jg37HEZ/sCAAAAAARZWg=='
+          raw=lzma.decompress(base64.b64decode(payload))
+          assert hashlib.sha256(raw).hexdigest()=='ddadd8171c64f9ef3baff8a5310722dbecb181a2b107947f246bb01bfba0ca9e'
+          entries=json.loads(raw)
+          allowed={'scripts/test-pals-world-browser.mjs','scripts/test-pals-identity-browser.mjs'}
+          assert {e['p'] for e in entries}==allowed and len(entries)==2
+          for e in entries:
+              p=Path(e['p']);old=p.read_text()
+              assert hashlib.sha256(old.encode()).hexdigest()==e['h']
+              lines=old.splitlines(keepends=True)
+              for i,j,text in reversed(e['e']): lines[i:j]=text.splitlines(keepends=True)
+              new=''.join(lines);assert hashlib.sha256(new.encode()).hexdigest()==e['n']
+              p.write_text(new)
+          subprocess.run(['git','diff','--check'],check=True)
+          subprocess.run(['git','add','--',*sorted(allowed)],check=True)
+          subprocess.run(['git','-c','user.name=github-actions[bot]','-c','user.email=41898282+github-actions[bot]@users.noreply.github.com','commit','-m','test(pals): assert neutral World retry and isolate page lifecycle recovery'],check=True)
+          subprocess.run(['git','push','origin','HEAD:refs/heads/work/pals-344-browser-correction-20261101'],check=True)
+          print('CANDIDATE='+subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip())
+          PY
