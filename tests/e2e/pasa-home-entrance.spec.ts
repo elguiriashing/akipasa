@@ -64,7 +64,9 @@ for (const locale of ["en", "es"] as const)
             name: locale === "es" ? "Aviso de lanzamiento" : "Launch update",
           });
           await expect(ribbon.locator("p")).toContainText("COSTA DEL SOL");
-          await expect(ribbon.locator('[class*="track"] > span')).toHaveCount(2);
+          await expect(ribbon.locator('[class*="track"] > span')).toHaveCount(
+            2,
+          );
           await expect(
             ribbon.getByRole("link", {
               name: locale === "es" ? "Nuestra hoja de ruta" : "Our Roadmap",
