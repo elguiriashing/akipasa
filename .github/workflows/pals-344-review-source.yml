@@ -1,0 +1,49 @@
+name: AkiPals 344 isolated review inputs
+on:
+  push:
+    branches: [work/akipals-344-source-20261101]
+    paths: [.github/workflows/pals-344-review-source.yml]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 38578ecc8693b8dc72ea4e26f4a9eda43349c201
+          persist-credentials: false
+      - name: Archive tracked source only, without Git credentials or environment files
+        run: |
+          git archive --format=tar.gz --output=source.tar.gz HEAD
+          sha256sum source.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pals-344-source
+          path: source.tar.gz
+          retention-days: 1
+          compression-level: 0
+  dependencies:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 38578ecc8693b8dc72ea4e26f4a9eda43349c201
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Archive locked dependencies without repository credentials
+        run: |
+          tar -czf dependencies.tar.gz node_modules
+          ls -lh dependencies.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pals-344-dependencies
+          path: dependencies.tar.gz
+          retention-days: 1
+          compression-level: 0
