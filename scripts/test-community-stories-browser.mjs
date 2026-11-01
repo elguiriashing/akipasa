@@ -21,7 +21,7 @@ const globals = [
     /import\s+["'](\.\/[^"']+\.css)["'];/g,
   ),
 ].map((m) => resolve("src/app", m[1]));
-const entry = `import React from'react';import{createRoot}from'react-dom/client';import{CommunityLanding}from'./src/components/community/CommunityLanding';import{AppShell}from'./src/components/AppShell';const locale=location.pathname.startsWith('/es/')?'es':'en';window.fixtureActions=[];createRoot(document.getElementById('root')).render(<AppShell locale={locale} signedIn={true}><CommunityLanding locale={locale} initialCenter={{latitude:36.7213,longitude:-4.4214}} areaLabel="Málaga"/></AppShell>);requestAnimationFrame(()=>requestAnimationFrame(()=>window.fixtureReady=true));`;
+const entry = `import React from'react';import{createRoot}from'react-dom/client';import{CommunityLanding}from'./src/components/community/CommunityLanding';import{AppShell}from'./src/components/AppShell';const locale=location.pathname.startsWith('/es/')?'es':'en';window.fixtureActions=[];createRoot(document.getElementById('root')).render(<AppShell locale={locale} signedIn={true}>{location.pathname.endsWith("/fixture-manager")?<CommunityLanding locale={locale} schemaReady={true} storiesEnabled={false}/>:<CommunityLanding locale={locale} schemaReady={true} storiesEnabled={true} initialCenter={{latitude:36.7213,longitude:-4.4214}} areaLabel="Málaga"/>}</AppShell>);requestAnimationFrame(()=>requestAnimationFrame(()=>window.fixtureReady=true));`;
 const bundle = await build({
   stdin: { contents: entry, resolveDir: root, loader: "tsx" },
   bundle: true,
@@ -781,6 +781,124 @@ try {
         });
         await context.close();
       }
+  // Paused publishing is a separate explicit fixture surface, never a production URL flag.
+  for (const locale of ["en", "es"])
+    for (const theme of ["dark", "light"]) {
+      const context = await browser.newContext({
+        viewport: { width: 390, height: 900 },
+        colorScheme: theme,
+        reducedMotion: "reduce",
+      });
+      const apiRequests = [],
+        forbidden = [];
+      await context.addInitScript(
+        (value) => localStorage.setItem("akipasa.theme", value),
+        theme,
+      );
+      await context.route("**/*", async (route) => {
+        const request = route.request(),
+          url = new URL(request.url());
+        if (url.origin !== origin) {
+          forbidden.push(url.href);
+          return route.abort();
+        }
+        if (url.pathname === "/api/community/stories/mine") {
+          apiRequests.push({ method: request.method(), path: url.pathname });
+          return route.fulfill({
+            json: { available: true, stories: [story(true)] },
+          });
+        }
+        if (
+          url.pathname === `/api/community/stories/${storyId}` &&
+          request.method() === "DELETE"
+        ) {
+          apiRequests.push({ method: request.method(), path: url.pathname });
+          return route.fulfill({
+            json: { deleted: true, mediaCleanup: "removed" },
+          });
+        }
+        if (
+          url.pathname.startsWith("/api/community/stories") &&
+          !url.pathname.endsWith("/media")
+        ) {
+          forbidden.push(url.pathname);
+          return route.abort();
+        }
+        if (url.pathname.endsWith("/media"))
+          return route.fulfill({
+            contentType: "image/svg+xml",
+            body: '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="200" height="200" fill="#793e26"/></svg>',
+          });
+        if (!["GET", "HEAD"].includes(request.method())) {
+          forbidden.push(request.method() + url.pathname);
+          return route.abort();
+        }
+        return route.continue();
+      });
+      const page = await context.newPage();
+      await page.goto(`${origin}/${locale}/fixture-manager`);
+      await page.waitForFunction(() => window.fixtureReady);
+      await page.evaluate((value) => {
+        document.documentElement.dataset.theme = value;
+        document.documentElement.classList.toggle(
+          "theme-light",
+          value === "light",
+        );
+        document.documentElement.classList.toggle("dark", value === "dark");
+      }, theme);
+      const launcher = page.getByRole("button", {
+        name: locale === "es" ? "Mis fotos" : "My photos",
+        exact: true,
+      });
+      await expect(launcher).toBeVisible();
+      expect(apiRequests).toEqual([]);
+      await expect(
+        page.getByRole("button", {
+          name: locale === "es" ? "Añadir historia" : "Add story",
+          exact: true,
+        }),
+      ).toHaveCount(0);
+      await launcher.focus();
+      await page.keyboard.press("Enter");
+      await expect(page.getByText("Synthetic own pending story")).toBeVisible();
+      await expect(page.locator("input[type=file]")).toHaveCount(0);
+      await expect(page.getByRole("combobox")).toHaveCount(0);
+      await page.screenshot({
+        path: resolve(out, `${locale}-${theme}-manager-owned.png`),
+      });
+      await page
+        .getByRole("button", {
+          name: locale === "es" ? "Retirar historia" : "Remove story",
+        })
+        .click();
+      expect(apiRequests.some((row) => row.method === "DELETE")).toBe(false);
+      await page
+        .getByRole("button", {
+          name: locale === "es" ? "Confirmar retirada" : "Confirm removal",
+        })
+        .click();
+      await expect(
+        page.getByText(
+          locale === "es" ? "Historia retirada." : "Story removed.",
+        ),
+      ).toBeVisible();
+      await page.keyboard.press("Escape");
+      await expect(launcher).toBeFocused();
+      expect(forbidden).toEqual([]);
+      expect(apiRequests).toEqual([
+        { method: "GET", path: "/api/community/stories/mine" },
+        { method: "DELETE", path: `/api/community/stories/${storyId}` },
+      ]);
+      results.push({
+        mode: "publishing-paused-owner-management",
+        locale,
+        theme,
+        width: 390,
+        apiRequests,
+        forbidden,
+      });
+      await context.close();
+    }
   expect(sourceHashes()).toEqual(initialSourceHashes);
   console.log(
     `${results.length} actual composed Community story contexts PASS; synthetic API only`,

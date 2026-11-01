@@ -36,8 +36,8 @@ const explicit = [
 explicit.forEach(track);
 const entry = `import React from 'react';import{createRoot}from'react-dom/client';import Page from './src/app/[locale]/staff/moderation/page';import Layout from './src/app/[locale]/staff/layout';import{AppShell}from'./src/components/AppShell';import{ThemeManager}from'./src/components/ThemeModeControls';
 const q=new URLSearchParams(location.search),locale=location.pathname.startsWith('/es/')?'es':'en',role=q.get('fixture_role')||'moderator';document.documentElement.lang=locale;document.documentElement.dataset.theme=q.get('theme')||'dark';window.__reads=[];window.__authReads=0;window.__actions=[];
-(async()=>{try{const props={params:Promise.resolve({locale}),searchParams:Promise.resolve({queue:'stories'})};let content;if(q.get('target')==='layout'){content=await Layout({...props,children:<p>Guard probe only</p>})}else{content=await Page(props);if(q.get('target')!=='page')content=await Layout({...props,children:content})}createRoot(document.getElementById('root')).render(<><ThemeManager/><AppShell locale={locale} signedIn role={role}>{content}</AppShell></>);requestAnimationFrame(()=>requestAnimationFrame(()=>window.__ready=true));}catch(error){window.__denial={message:error.message,destination:error.destination||null};window.__ready=true;}})();`;
-const identity = `import{config}from'@/lib/config';const q=()=>new URLSearchParams(location.search);export function createSupabaseServerClient(){return{auth:{getUser:async()=>{window.__authReads++;return{data:{user:q().get('fixture_role')==='guest'?null:{id:'00000000-0000-4000-8000-000000000001'}}}}},from(table){window.__reads.push(table);if(table!=='profiles')throw Error('Stories loaded unrelated '+table);const result={data:{app_role:q().get('fixture_role')||'moderator',terms_version:config.currentTermsVersion},error:null};const request={select(){return request},eq(){return request},maybeSingle:async()=>result};return request},rpc(){throw Error('Stories must not invoke unrelated queue RPC')}}}export const createSupabasePublicClient=createSupabaseServerClient;`;
+(async()=>{try{const props={params:Promise.resolve({locale}),searchParams:Promise.resolve({queue:q.get('fixture_queue')||'stories'})};let content;if(q.get('target')==='layout'){content=await Layout({...props,children:<p>Guard probe only</p>})}else{content=await Page(props);if(q.get('target')!=='page')content=await Layout({...props,children:content})}createRoot(document.getElementById('root')).render(<><ThemeManager/><AppShell locale={locale} signedIn role={role}>{content}</AppShell></>);requestAnimationFrame(()=>requestAnimationFrame(()=>window.__ready=true));}catch(error){window.__denial={message:error.message,destination:error.destination||null};window.__ready=true;}})();`;
+const identity = `import{config}from'@/lib/config';const q=()=>new URLSearchParams(location.search);export function createSupabaseServerClient(){return{auth:{getUser:async()=>{window.__authReads++;return{data:{user:q().get('fixture_role')==='guest'?null:{id:'00000000-0000-4000-8000-000000000001'}}}}},from(table){window.__reads.push(table);if(table!=='profiles'&&!(q().get('fixture_queue')==='venues'&&['venues','automatic_moderation_settings'].includes(table)))throw Error('Stories loaded unrelated '+table);const result={data:table==='profiles'?{app_role:q().get('fixture_role')||'moderator',terms_version:config.currentTermsVersion}:table==='automatic_moderation_settings'?{enabled:false}:[],count:0,error:null};const request={select(){return request},eq(){return request},order(){return request},range(){return request},maybeSingle:async()=>result,then:resolve=>Promise.resolve(result).then(resolve)};return request},rpc(){throw Error('Stories must not invoke unrelated queue RPC')}}}export const createSupabasePublicClient=createSupabaseServerClient;`;
 const virtual = {
   identity,
   onboarding: 'export async function readOnboardingStatus(){return "ready"}',
@@ -46,61 +46,73 @@ const virtual = {
   link: `import React from'react';export default function Link({children,prefetch,replace,scroll,...props}){return <a {...props}>{children}</a>}`,
   actions: `const forbidden=()=>{window.__actions.push('forbidden-server-action');throw Error('Forbidden fixture server action')};export const signOut=forbidden,moderateItem=forbidden,reviewRentalCompany=forbidden,setAutomaticModeration=forbidden;`,
 };
-const bundle = await build({
-  stdin: { contents: entry, resolveDir: root, loader: "tsx" },
-  bundle: true,
-  write: false,
-  outdir: out,
-  metafile: true,
-  platform: "browser",
-  format: "iife",
-  jsx: "automatic",
-  define: { "process.env.NODE_ENV": '"production"', "process.env": "{}" },
-  plugins: [
-    {
-      name: "staff-story-disposable-boundaries",
-      setup(b) {
-        b.onResolve({ filter: /(?:^|\/)supabase\/(server|public)$/ }, () => ({
-          path: "identity",
-          namespace: "fixture",
-        }));
-        b.onResolve({ filter: /account-onboarding-server$/ }, () => ({
-          path: "onboarding",
-          namespace: "fixture",
-        }));
-        b.onResolve({ filter: /^next\/headers$/ }, () => ({
-          path: "headers",
-          namespace: "fixture",
-        }));
-        b.onResolve({ filter: /^next\/navigation$/ }, () => ({
-          path: "navigation",
-          namespace: "fixture",
-        }));
-        b.onResolve({ filter: /^next\/link$/ }, () => ({
-          path: "link",
-          namespace: "fixture",
-        }));
-        b.onResolve({ filter: /(?:^|\/)actions$/ }, () => ({
-          path: "actions",
-          namespace: "fixture",
-        }));
-        b.onLoad({ filter: /.*/, namespace: "fixture" }, (a) => ({
-          contents: virtual[a.path],
-          loader: "jsx",
-          resolveDir: root,
-        }));
-        b.onLoad({ filter: /\.module\.css$/, namespace: "file" }, (a) => ({
-          contents: readFileSync(track(a.path), "utf8"),
-          loader: "local-css",
-        }));
-        b.onLoad({ filter: /.*/, namespace: "file" }, (a) => {
-          track(a.path);
-          return null;
-        });
-      },
+const buildFixture = (schemaReady) =>
+  build({
+    stdin: { contents: entry, resolveDir: root, loader: "tsx" },
+    bundle: true,
+    write: false,
+    outdir: out,
+    metafile: true,
+    platform: "browser",
+    format: "iife",
+    jsx: "automatic",
+    define: {
+      "process.env.NODE_ENV": '"production"',
+      "process.env.AKIPASA_COMMUNITY_STORIES_SCHEMA_READY": JSON.stringify(
+        String(schemaReady),
+      ),
+      "process.env": "{}",
     },
-  ],
-});
+    plugins: [
+      {
+        name: "staff-story-disposable-boundaries",
+        setup(b) {
+          b.onResolve({ filter: /(?:^|\/)supabase\/(server|public)$/ }, () => ({
+            path: "identity",
+            namespace: "fixture",
+          }));
+          b.onResolve({ filter: /account-onboarding-server$/ }, () => ({
+            path: "onboarding",
+            namespace: "fixture",
+          }));
+          b.onResolve({ filter: /^next\/headers$/ }, () => ({
+            path: "headers",
+            namespace: "fixture",
+          }));
+          b.onResolve({ filter: /^next\/navigation$/ }, () => ({
+            path: "navigation",
+            namespace: "fixture",
+          }));
+          b.onResolve({ filter: /^next\/link$/ }, () => ({
+            path: "link",
+            namespace: "fixture",
+          }));
+          b.onResolve({ filter: /(?:^|\/)actions$/ }, () => ({
+            path: "actions",
+            namespace: "fixture",
+          }));
+          b.onLoad({ filter: /.*/, namespace: "fixture" }, (a) => ({
+            contents: virtual[a.path],
+            loader: "jsx",
+            resolveDir: root,
+          }));
+          b.onLoad({ filter: /\.module\.css$/, namespace: "file" }, (a) => ({
+            contents: readFileSync(track(a.path), "utf8"),
+            loader: "local-css",
+          }));
+          b.onLoad({ filter: /.*/, namespace: "file" }, (a) => {
+            track(a.path);
+            return null;
+          });
+        },
+      },
+    ],
+  });
+const bundle = await buildFixture(true);
+const disabledBundle = await buildFixture(false);
+const disabledJS = disabledBundle.outputFiles.find((f) =>
+  f.path.endsWith(".js"),
+).text;
 const js = bundle.outputFiles.find((f) => f.path.endsWith(".js")).text;
 const globalFiles = [
   ...readFileSync(track("src/app/layout.tsx"), "utf8").matchAll(
@@ -122,7 +134,10 @@ writeFileSync(out + "/bundle.js", js);
 writeFileSync(out + "/styles.css", css);
 const server = createServer((req, res) => {
   const u = new URL(req.url, "http://local");
-  if (u.pathname === "/bundle.js") {
+  if (u.pathname === "/bundle-disabled.js") {
+    res.setHeader("Content-Type", "text/javascript");
+    res.end(disabledJS);
+  } else if (u.pathname === "/bundle.js") {
     res.setHeader("Content-Type", "text/javascript");
     res.end(js);
   } else if (u.pathname === "/styles.css") {
@@ -147,7 +162,7 @@ const server = createServer((req, res) => {
   } else {
     res.setHeader("Content-Type", "text/html");
     res.end(
-      '<html><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/styles.css"><body><div id="root"></div><script src="/bundle.js"></script></body></html>',
+      `<html><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/styles.css"><body><div id="root"></div><script src="${u.searchParams.get("fixture_schema_ready") === "false" ? "/bundle-disabled.js" : "/bundle.js"}"></script></body></html>`,
     );
   }
 });
@@ -155,7 +170,9 @@ await new Promise((r) => server.listen(0, "127.0.0.1", r));
 const origin = "http://127.0.0.1:" + server.address().port;
 let browser;
 const results = [],
-  guards = [];
+  guards = [],
+  disabledGate = [],
+  legacyNavigation = [];
 const id = "00000000-0000-4000-8000-000000000041";
 async function capture(page, name, state) {
   await page.evaluate(() => scrollTo(0, 0));
@@ -234,45 +251,156 @@ try {
       ? { executablePath: process.env.BOOKING_BROWSER_PATH }
       : {}),
   });
-  for (const locale of ["en", "es"])
-    for (const role of ["consumer", "organiser", "owner", "guest"])
-      for (const target of ["page", "layout"]) {
+  for (const schemaReady of [true, false])
+    for (const locale of ["en", "es"])
+      for (const role of ["consumer", "organiser", "owner", "guest"])
+        for (const target of ["page", "layout"]) {
+          const context = await browser.newContext({
+              viewport: { width: 390, height: 900 },
+            }),
+            page = await context.newPage();
+          let api = 0;
+          await context.route("**/*", (route) => {
+            const u = new URL(route.request().url());
+            if (u.origin !== origin) return route.abort();
+            if (u.pathname.startsWith("/api/")) {
+              api++;
+              return route.fulfill({ status: 403, json: { available: false } });
+            }
+            return route.continue();
+          });
+          await page.goto(
+            `${origin}/${locale}/staff/moderation?queue=stories&fixture_role=${role}&target=${target}&fixture_schema_ready=${schemaReady}`,
+            { waitUntil: "networkidle" },
+          );
+          await page.waitForFunction(() => window.__ready);
+          const state = await page.evaluate(() => ({
+            denial: window.__denial,
+            reads: window.__reads,
+            actions: window.__actions,
+          }));
+          if (!state.denial || api || state.actions.length)
+            throw Error("Unauthorized fixture rendered/accessed Story queue");
+          if (role === "guest") {
+            const destination = new URL(state.denial.destination, origin);
+            if (
+              destination.searchParams.get("next") !==
+              `/${locale}/staff/moderation?queue=stories`
+            )
+              throw Error("Stories auth return lost");
+          } else if (state.denial.message !== "not-found")
+            throw Error("Unexpected denial");
+          if (
+            role !== "guest" &&
+            (state.reads.length < 2 ||
+              state.reads.some((table) => table !== "profiles"))
+          )
+            throw Error("Role guard was bypassed by schema gate");
+          guards.push({ locale, role, target, schemaReady, ...state, api });
+          await context.close();
+        }
+  // Default-off schema readiness must withhold the new route after actual role
+  // checks; legacy Staff layout remains usable without a Photos navigation item.
+  // The Photos link belongs to the legacy moderation page, not StaffLayout.
+  for (const schemaReady of [true, false])
+    for (const locale of ["en", "es"])
+      for (const role of ["moderator", "administrator"]) {
         const context = await browser.newContext({
             viewport: { width: 390, height: 900 },
           }),
           page = await context.newPage();
         let api = 0;
         await context.route("**/*", (route) => {
-          const u = new URL(route.request().url());
-          if (u.origin !== origin) return route.abort();
-          if (u.pathname.startsWith("/api/")) {
+          const url = new URL(route.request().url());
+          if (url.origin !== origin) return route.abort();
+          if (url.pathname.startsWith("/api/")) {
             api++;
             return route.fulfill({ status: 403, json: { available: false } });
           }
           return route.continue();
         });
         await page.goto(
-          `${origin}/${locale}/staff/moderation?queue=stories&fixture_role=${role}&target=${target}`,
+          `${origin}/${locale}/staff/moderation?queue=venues&fixture_queue=venues&fixture_role=${role}&fixture_schema_ready=${schemaReady}`,
           { waitUntil: "networkidle" },
         );
         await page.waitForFunction(() => window.__ready);
-        const state = await page.evaluate(() => ({
-          denial: window.__denial,
+        const actual = await page.evaluate(() => ({
+          denial: window.__denial || null,
           reads: window.__reads,
           actions: window.__actions,
+          photos: document.querySelectorAll(
+            'a[href$="/staff/moderation?queue=stories"]',
+          ).length,
+          story: document.querySelectorAll(
+            '[aria-labelledby="story-moderation-title"]',
+          ).length,
         }));
-        if (!state.denial || api || state.actions.length)
-          throw Error("Unauthorized fixture rendered/accessed Story queue");
-        if (role === "guest") {
-          const destination = new URL(state.denial.destination, origin);
-          if (
-            destination.searchParams.get("next") !==
-            `/${locale}/staff/moderation?queue=stories`
-          )
-            throw Error("Stories auth return lost");
-        } else if (state.denial.message !== "not-found")
-          throw Error("Unexpected denial");
-        guards.push({ locale, role, target, ...state, api });
+        if (
+          actual.denial ||
+          api ||
+          actual.story ||
+          actual.actions.length ||
+          Boolean(actual.photos) !== schemaReady ||
+          !actual.reads.includes("venues") ||
+          !actual.reads.includes("automatic_moderation_settings")
+        )
+          throw Error("Legacy queue/schema gated link regression");
+        legacyNavigation.push({ schemaReady, locale, role, api, ...actual });
+        await context.close();
+      }
+  for (const locale of ["en", "es"])
+    for (const role of ["moderator", "administrator"])
+      for (const target of ["page", "layout"]) {
+        const context = await browser.newContext({
+          viewport: { width: 390, height: 900 },
+        });
+        const page = await context.newPage();
+        let api = 0;
+        await context.route("**/*", (route) => {
+          const url = new URL(route.request().url());
+          if (url.origin !== origin) return route.abort();
+          if (url.pathname.startsWith("/api/")) {
+            api++;
+            return route.fulfill({ status: 403, json: { available: false } });
+          }
+          return route.continue();
+        });
+        await page.goto(
+          `${origin}/${locale}/staff/moderation?queue=stories&fixture_role=${role}&target=${target}&fixture_schema_ready=false`,
+          { waitUntil: "networkidle" },
+        );
+        await page.waitForFunction(() => window.__ready);
+        const actual = await page.evaluate(() => ({
+          denial: window.__denial || null,
+          reads: window.__reads,
+          actions: window.__actions,
+          photos: document.querySelectorAll(
+            'a[href$="/staff/moderation?queue=stories"]',
+          ).length,
+          story: document.querySelectorAll(
+            '[aria-labelledby="story-moderation-title"]',
+          ).length,
+        }));
+        if (
+          api ||
+          actual.actions.length ||
+          actual.story ||
+          actual.photos ||
+          actual.reads.some((table) => table !== "profiles")
+        )
+          throw Error("Disabled schema leaked stories/API/unrelated data");
+        if (target === "page" && actual.denial?.message !== "not-found")
+          throw Error("Disabled Stories page did not404 after authorization");
+        if (target === "layout" && actual.denial)
+          throw Error("Disabled schema broke legacy Staff layout");
+        disabledGate.push({
+          locale,
+          role,
+          target,
+          schemaReady: false,
+          api,
+          ...actual,
+        });
         await context.close();
       }
   for (const role of ["moderator", "administrator"])
@@ -558,6 +686,9 @@ try {
         sourceHashes: Object.fromEntries(
           [...inputs].map(([p, h]) => [relative(root, p), h]),
         ),
+        fixtureSchemaReady: true,
+        disabledGate,
+        legacyNavigation,
         guards,
         results,
       },
@@ -566,7 +697,7 @@ try {
     ),
   );
   console.log(
-    "PASS32 composed contexts/16 denial checks/256 upper-lower captures; native guarded decisions and recovery; synthetic only",
+    "PASS32 enabled composed contexts/32 role denials/8 disabled schema checks/8 legacy Photos navigation checks/256 upper-lower captures; native guarded decisions and recovery; synthetic only",
   );
 } finally {
   await browser?.close();

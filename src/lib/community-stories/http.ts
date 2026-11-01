@@ -58,6 +58,12 @@ export async function handleStoryRequest(
     if (mutating) requireSameOriginRequest(request);
     if (process.env.AKIPASA_COMMUNITY_STORIES_SCHEMA_READY !== "true")
       return failure("unavailable", 503);
+    if (
+      request.method === "POST" &&
+      segments.length === 0 &&
+      process.env.AKIPASA_COMMUNITY_STORIES_ENABLED !== "true"
+    )
+      return failure("collection_paused", 503);
     const db = await createSupabaseServerClient();
     if (
       mutating ||

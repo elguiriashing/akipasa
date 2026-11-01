@@ -61,9 +61,11 @@ const initial = <T,>(): ReadState<T> => ({ phase: "loading", rows: [] });
 export function CheckinStories({
   locale,
   variant = "button",
+  publishingEnabled = true,
 }: {
   locale: "en" | "es";
   variant?: "button" | "story";
+  publishingEnabled?: boolean;
 }) {
   const es = locale === "es";
   const [open, setOpen] = useState(false);
@@ -136,7 +138,8 @@ export function CheckinStories({
           });
       }
     };
-    void load("check-ins", "checkIns", isCheckIn, setCheckIns);
+    if (publishingEnabled)
+      void load("check-ins", "checkIns", isCheckIn, setCheckIns);
     void load("mine", "stories", isStory, setStories);
     return () => {
       controller.abort();
@@ -144,7 +147,7 @@ export function CheckinStories({
       deletionBusy.current = false;
       setDeleting("");
     };
-  }, [open, revision]);
+  }, [open, revision, publishingEnabled]);
   const remove = async (id: string, retryCleanup = false) => {
     if (
       deletionBusy.current ||
@@ -247,7 +250,15 @@ export function CheckinStories({
             <Icon name="plus" size={30} />
           </span>
         )}
-        <span>{es ? "Añadir historia" : "Add story"}</span>
+        <span>
+          {publishingEnabled
+            ? es
+              ? "Añadir historia"
+              : "Add story"
+            : es
+              ? "Mis fotos"
+              : "My photos"}
+        </span>
       </button>
       <dialog
         ref={dialog}
@@ -263,7 +274,13 @@ export function CheckinStories({
           <div>
             <span>{es ? "TUS MOMENTOS REALES" : "YOUR REAL MOMENTS"}</span>
             <h2 id={`checkin-stories-title-${locale}`}>
-              {es ? "Tus historias" : "Your stories"}
+              {publishingEnabled
+                ? es
+                  ? "Tus historias"
+                  : "Your stories"
+                : es
+                  ? "Gestionar mis fotos"
+                  : "Manage my photos"}
             </h2>
           </div>
           <button type="button" className={styles.secondary} onClick={close}>
@@ -273,9 +290,13 @@ export function CheckinStories({
         {open && (
           <div className={styles.content}>
             <p>
-              {es
-                ? "Comparte una foto de un check-in verificado propio de las últimas 24 horas. Es opcional, requiere tu autorización pública y pasa por revisión antes de publicarse."
-                : "Share a photo from your own verified check-in in the last 24 hours. It is optional, requires your public-sharing permission and is reviewed before publication."}
+              {publishingEnabled
+                ? es
+                  ? "Comparte una foto de un check-in verificado propio de las últimas 24 horas. Es opcional, requiere tu autorización pública y pasa por revisión antes de publicarse."
+                  : "Share a photo from your own verified check-in in the last 24 hours. It is optional, requires your public-sharing permission and is reviewed before publication."
+                : es
+                  ? "La publicación de nuevas historias no está disponible. Puedes consultar y retirar tus fotos existentes."
+                  : "New story publishing is unavailable. You can view and remove your existing photos."}
             </p>
             {authRequired ? (
               <div className={styles.notice} role="alert">
@@ -293,69 +314,73 @@ export function CheckinStories({
               </div>
             ) : (
               <>
-                <section
-                  className={styles.section}
-                  aria-label={es ? "Elegir check-in" : "Choose check-in"}
-                >
-                  <h3>{es ? "Elige tu check-in" : "Choose your check-in"}</h3>
-                  {checkIns.phase === "loading" ? (
-                    <p role="status">
-                      {es
-                        ? "Cargando tus check-ins…"
-                        : "Loading your check-ins…"}
-                    </p>
-                  ) : checkIns.phase === "error" ? (
-                    failure(checkIns.code)
-                  ) : checkIns.rows.length === 0 ? (
-                    <div className={styles.notice}>
-                      <p>
+                {publishingEnabled && (
+                  <section
+                    className={styles.section}
+                    aria-label={es ? "Elegir check-in" : "Choose check-in"}
+                  >
+                    <h3>{es ? "Elige tu check-in" : "Choose your check-in"}</h3>
+                    {checkIns.phase === "loading" ? (
+                      <p role="status">
                         {es
-                          ? "Aún no hay check-ins verificados disponibles para compartir. Escanear o abrir una página no cuenta como asistencia."
-                          : "There are no verified check-ins available to share yet. Scanning or opening a page does not count as attendance."}
+                          ? "Cargando tus check-ins…"
+                          : "Loading your check-ins…"}
                       </p>
-                      <a
-                        className={styles.secondary}
-                        href={`/${locale}/check-in`}
-                      >
-                        {es ? "Ir a Check-in" : "Go to Check-in"}
-                      </a>
-                    </div>
-                  ) : (
-                    <label className={styles.select}>
-                      {es ? "Lugar visitado" : "Place visited"}
-                      <select
-                        aria-label={es ? "Lugar visitado" : "Place visited"}
-                        value={selected}
-                        onChange={(event) => setSelected(event.target.value)}
-                      >
-                        <option value="">
-                          {es ? "Selecciona un check-in" : "Select a check-in"}
-                        </option>
-                        {checkIns.rows.map((row) => (
-                          <option key={row.id} value={row.id}>
-                            {row.venueName} ·{" "}
-                            {new Date(row.acceptedAt).toLocaleString(
-                              es ? "es-ES" : "en-GB",
-                              {
-                                timeZone: "Europe/Madrid",
-                                dateStyle: "short",
-                                timeStyle: "short",
-                              },
-                            )}
+                    ) : checkIns.phase === "error" ? (
+                      failure(checkIns.code)
+                    ) : checkIns.rows.length === 0 ? (
+                      <div className={styles.notice}>
+                        <p>
+                          {es
+                            ? "Aún no hay check-ins verificados disponibles para compartir. Escanear o abrir una página no cuenta como asistencia."
+                            : "There are no verified check-ins available to share yet. Scanning or opening a page does not count as attendance."}
+                        </p>
+                        <a
+                          className={styles.secondary}
+                          href={`/${locale}/check-in`}
+                        >
+                          {es ? "Ir a Check-in" : "Go to Check-in"}
+                        </a>
+                      </div>
+                    ) : (
+                      <label className={styles.select}>
+                        {es ? "Lugar visitado" : "Place visited"}
+                        <select
+                          aria-label={es ? "Lugar visitado" : "Place visited"}
+                          value={selected}
+                          onChange={(event) => setSelected(event.target.value)}
+                        >
+                          <option value="">
+                            {es
+                              ? "Selecciona un check-in"
+                              : "Select a check-in"}
                           </option>
-                        ))}
-                      </select>
-                    </label>
-                  )}
-                  {chosen && (
-                    <CheckinStoryComposer
-                      key={chosen.id}
-                      locale={locale}
-                      checkInId={chosen.id}
-                      venueName={chosen.venueName}
-                    />
-                  )}
-                </section>
+                          {checkIns.rows.map((row) => (
+                            <option key={row.id} value={row.id}>
+                              {row.venueName} ·{" "}
+                              {new Date(row.acceptedAt).toLocaleString(
+                                es ? "es-ES" : "en-GB",
+                                {
+                                  timeZone: "Europe/Madrid",
+                                  dateStyle: "short",
+                                  timeStyle: "short",
+                                },
+                              )}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    )}
+                    {chosen && (
+                      <CheckinStoryComposer
+                        key={chosen.id}
+                        locale={locale}
+                        checkInId={chosen.id}
+                        venueName={chosen.venueName}
+                      />
+                    )}
+                  </section>
+                )}
                 <section
                   className={styles.section}
                   aria-label={es ? "Tus envíos" : "Your submissions"}

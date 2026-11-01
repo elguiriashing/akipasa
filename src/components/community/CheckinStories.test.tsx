@@ -373,3 +373,81 @@ for (const locale of ["en", "es"] as const) {
     expect(launcher).toHaveFocus();
   });
 }
+
+it("publishing-off mode loads only owned photos and never eligibility or upload controls", async () => {
+  render(<CheckinStories locale="en" publishingEnabled={false} />);
+  fireEvent.click(screen.getByRole("button", { name: "My photos" }));
+  await screen.findByText("My own caption");
+  expect(
+    screen.getByRole("heading", { name: "Manage my photos" }),
+  ).toBeVisible();
+  expect(fetcher).toHaveBeenCalledTimes(1);
+  expect(fetcher.mock.calls[0][0]).toBe("/api/community/stories/mine");
+  expect(screen.queryByRole("combobox")).toBeNull();
+  expect(screen.queryByTestId("composer")).toBeNull();
+  expect(screen.queryByRole("checkbox")).toBeNull();
+  expect(
+    fetcher.mock.calls.some(([, options]) => options.method === "POST"),
+  ).toBe(false);
+});
+it("publishing-off mode preserves confirmation, withdrawal and pending media cleanup retry", async () => {
+  let deletions = 0;
+  fetcher.mockImplementation(async (_url: string, options?: RequestInit) =>
+    options?.method === "DELETE"
+      ? response({
+          deleted: true,
+          mediaCleanup: ++deletions === 1 ? "pending" : "removed",
+        })
+      : response({ available: true, stories: [story()] }),
+  );
+  render(<CheckinStories locale="en" publishingEnabled={false} />);
+  fireEvent.click(screen.getByRole("button", { name: "My photos" }));
+  await screen.findByText("My own caption");
+  fireEvent.click(screen.getByRole("button", { name: "Remove story" }));
+  expect(deletions).toBe(0);
+  fireEvent.click(screen.getByRole("button", { name: "Confirm removal" }));
+  const retry = await screen.findByRole("button", {
+    name: "Retry media cleanup",
+  });
+  fireEvent.click(retry);
+  await waitFor(() =>
+    expect(
+      screen.queryByRole("button", { name: "Retry media cleanup" }),
+    ).toBeNull(),
+  );
+  expect(deletions).toBe(2);
+  expect(
+    fetcher.mock.calls.every(
+      ([url, options]) =>
+        !url.endsWith("check-ins") && options.method !== "POST",
+    ),
+  ).toBe(true);
+});
+it("publishing-off Spanish error retry stays owner-only and restores the native launcher focus", async () => {
+  fetcher
+    .mockResolvedValueOnce(response({ error: { code: "unavailable" } }, 503))
+    .mockResolvedValue(response({ available: true, stories: [] }));
+  render(<CheckinStories locale="es" publishingEnabled={false} />);
+  const launcher = screen.getByRole("button", { name: "Mis fotos" });
+  fireEvent.click(launcher);
+  await screen.findByRole("alert");
+  fireEvent.click(screen.getByRole("button", { name: "Reintentar" }));
+  await screen.findByText("Todavía no tienes historias vigentes.");
+  expect(fetcher.mock.calls.every(([url]) => url.endsWith("mine"))).toBe(true);
+  fireEvent.click(screen.getByRole("button", { name: "Cerrar" }));
+  expect(launcher).toHaveFocus();
+});
+it("publishing-off mode still offers safe sign-in on owner-read 401 without eligibility requests", async () => {
+  fetcher.mockResolvedValue(
+    response({ error: { code: "authentication_required" } }, 401),
+  );
+  render(<CheckinStories locale="en" publishingEnabled={false} />);
+  fireEvent.click(screen.getByRole("button", { name: "My photos" }));
+  expect(await screen.findByRole("link", { name: "Sign in" })).toHaveAttribute(
+    "href",
+    "/en/auth?next=%2Fen%2Fcommunity",
+  );
+  expect(fetcher).toHaveBeenCalledTimes(1);
+  expect(fetcher.mock.calls[0][0]).toBe("/api/community/stories/mine");
+  expect(screen.queryByText("My own caption")).toBeNull();
+});

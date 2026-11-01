@@ -42,6 +42,11 @@ export default async function PrivacyPage({
         </h2>
         <p>
           {es
+            ? "Estas funciones pueden no estar disponibles durante el despliegue. Cuando se activen, se aplicarán las siguientes reglas."
+            : "These features may be unavailable during rollout. When enabled, the following rules apply."}
+        </p>
+        <p>
+          {es
             ? "Compartir una foto es opcional y requiere marcar expresamente su publicación en la ciudad del local. Una visita debe haber sido verificada antes de compartir: la foto, la etiqueta de selfie y abrir una página no acreditan asistencia ni conceden XP. Las fotos esperan revisión manual; no enviamos estas imágenes a un servicio de IA para verificar asistencia."
             : "Sharing a photo is optional and requires an explicit choice to publish it in the venue’s city. A visit must already be verified before sharing: a photo, its selfie label and opening a page do not prove attendance or award XP. Photos await manual review; we do not send these images to an AI service to verify attendance."}
         </p>
@@ -113,8 +118,8 @@ export default async function PrivacyPage({
         <p>
           <small>
             {es
-              ? "Última actualización: 31 de octubre de 2026. Pendiente de revisión jurídica profesional antes del lanzamiento comercial."
-              : "Last updated: 31 October 2026. Pending professional legal review before commercial launch."}
+              ? "Última actualización: 1 de noviembre de 2026. Pendiente de revisión jurídica profesional antes del lanzamiento comercial."
+              : "Last updated: 1 November 2026. Pending professional legal review before commercial launch."}
           </small>
         </p>
       </section>

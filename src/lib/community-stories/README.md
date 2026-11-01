@@ -8,6 +8,23 @@ keep account export enabled after collection is disabled. SQL collection default
 off independently in private `community_story_settings`; enable it only after the
 installed schema, private storage and complete account export are verified.
 
+There are three independent rollout gates:
+
+- `AKIPASA_COMMUNITY_STORIES_SCHEMA_READY=true` declares the installed schema and
+  enables API access and complete account export; retain it after collection ends.
+- `AKIPASA_COMMUNITY_STORIES_ENABLED=true` enables the public Stories interface and
+  new root POST uploads. When off, new uploads return `collection_paused` before
+  reading a body or calling storage; owner reads/withdrawal, moderation and ready
+  media retain their existing authorization rather than disappearing.
+- Private SQL `community_story_settings.collection_enabled` defaults false and is
+  the authoritative collection switch, including direct RPC reservation requests.
+
+For rollback, disable SQL collection first, then turn the UI flag off. Keep schema
+readiness true so retained records remain exportable and owners can withdraw them.
+The public interface falls back to ordinary discovery while My Photos remains a
+read-only listing with withdrawal controls. Do not drop the schema or clear its
+readiness flag as a substitute for pausing collection.
+
 A story requires explicit public consent and the current eligible account's
 accepted, credential-backed venue check-in within the previous 24 hours. The
 server derives the published verified venue and canonical city. Photographs,

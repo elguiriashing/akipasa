@@ -2616,3 +2616,66 @@ hosted Auth/storage/role evidence using an authorized target and reviewed schema
 activation before any Stories release. Preserve the private bucket, retained
 record exports and deletion controls even when collection is disabled. No claim
 that a background engineer survives an ended execution session.
+
+## 2026-11-01 | Default-off foundation rollout and camera lifecycle verification
+
+Public sharing needs both nonpublic server flags: schema readiness and
+AKIPASA_COMMUNITY_STORIES_ENABLED. With neither flag set, the existing Community
+places/contribution/creator navigation stays intact and no new upload controls or
+Stories requests are shown. With schema readiness retained but publishing off,
+My Photos still permits owner withdrawal/cleanup without eligibility requests or
+upload forms. Staff's new photo entry remains hidden until the schema is ready.
+Root upload POST also rejects disabled publication before reading the body or
+accessing data/storage; current owner reads/deletion remain available. Query
+parameters cannot activate these flags. SQL collection independently defaults
+OFF and remains the direct-RPC authority.
+
+The rollout can publish completed camera and existing read-recovery repairs now
+while keeping photo sharing hidden. This does NOT apply the Stories migration or
+claim a working hosted photo service. Before collection, obtain explicit resource/
+SQL authority and real isolated Auth/storage proof; install reviewed schema with
+collection OFF, verify export/storage, record a compatible schema-ready/UI-off
+Worker rollback version, then enable collection/UI. Stop SQL collection first to
+roll back, disable public UI, and retain schema readiness, My Photos and export.
+Never silently revert retained user records to an older incomplete export build.
+
+Enabling the existing scanner exposed three reproducible lifecycle failures:
+repeated starts could create multiple streams, deferred detection could navigate
+after Stop, and backgrounding retained a track. Nine focused tests now pass with
+request generations, cancellable permission wait and stale-stream/detection/play
+invalidation; Stop, background and unmount end tracks. Official QR validation and
+healthy navigation remain. Native fake-device checks still require a fresh build;
+no physical camera/Android or attendance proof is inferred.
+
+Before this small final rollout/lifecycle delta, fullcheck passed3,232 Vitest
+cases/18 groups and the optimized Next build (193 generated pages) at00de4db. Its earlier inventory
+and accessible-contribution failures are preserved and genuinely repaired, with
+all prior assertions retained. New targeted rollout/lifecycle regressions, fresh
+build/native checks and all final-head CI remain required for the new source.
+The tablet workflow adds one parallel Community/Staff evidence job, retaining
+every existing job, threshold and assertion. SQL stays unapplied.
+
+Home345 is separately merged as76bceebdcd69c779f57f8f117145dfd94d3e0496 and
+independently deployed at100% as Worker05ebc787-5d2d-438c-9d53-ff6ac4fda243
+through automatic master build53cbf577. Sixteen actual HTTPS Home cases passed
+using genuine Casa1899 matches, EN/ES/themes/four widths;80 attempted Cloudflare
+RUM writes were blocked, not falsely counted as zero attempts. No manual deploy
+or production customer write. This source/history is preserved in the candidate.
+
+Final default-off candidate verification (1 November): TypeScript, ESLint,
+Prettier and fresh optimized Next build passed. Actual Next EN/ES camera tests
+passed2/2 using Chromium fake hardware: explicit start/live video/no audio,
+Stop ends tracks, Home camera remains denied. Root inspected the Spanish live
+preview PNG. Independent review reproduced and fixed scanner test registration:
+all nine lifecycle tests now run in the maintained aliased Stories group, leaving
+the previous default test invocation intact. That group passed187/187 across12
+files. Existing seven tablet jobs remain byte-equivalent; one parallel evidence
+job is additive. Strict audit passed104 inventoried/0 awaiting for the existing
+accepted inventory, not acceptance of the new inactive photo service. The full
+suite and fresh exact-head hosted CI must still complete before merge.
+
+Durable receipts: checkin-camera-native2-final-20261101.json and
+stories-final-rollout-delta-independent-review-20261101.json under
+/workspace/akipasa-main-checkpoints. Mirrored Stories SQL remains97d43953581b58238c8ab5716a7d027fb310c088f6e0c129f939efea9c7e1b32,
+unapplied. New public sharing/schema flags stay false for this release; no
+hosted photo activation, physical Android result or production SQL is claimed.

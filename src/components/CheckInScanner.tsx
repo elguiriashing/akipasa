@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { verifiedVenueQrPath } from "@/lib/checkin-scan";
 
@@ -15,29 +15,41 @@ export function CheckInScanner({ locale }: { locale: "en" | "es" }) {
   const video = useRef<HTMLVideoElement>(null);
   const camera = useRef<MediaStream | null>(null);
   const frame = useRef<number | null>(null);
+  const generation = useRef(0);
+  const requesting = useRef(false);
   const [status, setStatus] = useState<
-    "idle" | "scanning" | "unsupported" | "error"
+    "idle" | "requesting" | "scanning" | "unsupported" | "error"
   >("idle");
   const [message, setMessage] = useState("");
   const es = locale === "es";
 
-  function stop() {
+  const stop = useCallback(() => {
+    generation.current++;
+    requesting.current = false;
     if (frame.current !== null) cancelAnimationFrame(frame.current);
     frame.current = null;
     camera.current?.getTracks().forEach((track) => track.stop());
     camera.current = null;
     if (video.current) video.current.srcObject = null;
-  }
+  }, []);
 
-  useEffect(
-    () => () => {
-      if (frame.current !== null) cancelAnimationFrame(frame.current);
-      camera.current?.getTracks().forEach((track) => track.stop());
-    },
-    [],
-  );
+  useEffect(() => {
+    const onVisibility = () => {
+      if (document.hidden) {
+        stop();
+        setStatus("idle");
+        setMessage("");
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      stop();
+    };
+  }, [stop]);
 
   async function start() {
+    if (requesting.current || camera.current || document.hidden) return;
     const Factory = (window as Window & { BarcodeDetector?: BarcodeFactory })
       .BarcodeDetector;
     if (!Factory || !navigator.mediaDevices?.getUserMedia) {
@@ -50,11 +62,26 @@ export function CheckInScanner({ locale }: { locale: "en" | "es" }) {
       return;
     }
     stop();
+    const request = generation.current;
+    requesting.current = true;
+    setStatus("requesting");
+    setMessage(
+      es ? "Esperando permiso de cámara…" : "Waiting for camera permission…",
+    );
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: false,
         video: { facingMode: { ideal: "environment" } },
       });
+      if (generation.current !== request || document.hidden) {
+        stream.getTracks().forEach((track) => track.stop());
+        if (generation.current === request) {
+          stop();
+          setStatus("idle");
+          setMessage("");
+        }
+        return;
+      }
       camera.current = stream;
       const element = video.current;
       if (!element) {
@@ -63,6 +90,14 @@ export function CheckInScanner({ locale }: { locale: "en" | "es" }) {
       }
       element.srcObject = stream;
       await element.play();
+      if (generation.current !== request) return;
+      if (document.hidden) {
+        stop();
+        setStatus("idle");
+        setMessage("");
+        return;
+      }
+      requesting.current = false;
       const reader = new Factory({ formats: ["qr_code"] });
       setStatus("scanning");
       setMessage(
@@ -72,10 +107,18 @@ export function CheckInScanner({ locale }: { locale: "en" | "es" }) {
       );
       let busy = false;
       const scan = async () => {
-        if (busy || !camera.current || !video.current) return;
+        if (
+          busy ||
+          generation.current !== request ||
+          document.hidden ||
+          !camera.current ||
+          !video.current
+        )
+          return;
         busy = true;
         try {
           const detected = await reader.detect(video.current);
+          if (generation.current !== request || document.hidden) return;
           const target = detected
             .map((item) =>
               verifiedVenueQrPath(item.rawValue, location.origin, locale),
@@ -91,10 +134,16 @@ export function CheckInScanner({ locale }: { locale: "en" | "es" }) {
         } finally {
           busy = false;
         }
-        if (camera.current) frame.current = requestAnimationFrame(scan);
+        if (
+          generation.current === request &&
+          camera.current &&
+          !document.hidden
+        )
+          frame.current = requestAnimationFrame(scan);
       };
       frame.current = requestAnimationFrame(scan);
     } catch {
+      if (generation.current !== request) return;
       stop();
       setStatus("error");
       setMessage(
@@ -120,7 +169,7 @@ export function CheckInScanner({ locale }: { locale: "en" | "es" }) {
         />
       </div>
       <div className="pasa-checkin-scanner__actions">
-        {status === "scanning" ? (
+        {status === "scanning" || status === "requesting" ? (
           <button
             type="button"
             className="button secondary"
@@ -130,7 +179,13 @@ export function CheckInScanner({ locale }: { locale: "en" | "es" }) {
               setMessage("");
             }}
           >
-            {es ? "Detener escáner" : "Stop scanner"}
+            {status === "requesting"
+              ? es
+                ? "Cancelar cámara"
+                : "Cancel camera"
+              : es
+                ? "Detener escáner"
+                : "Stop scanner"}
           </button>
         ) : (
           <button type="button" className="button" onClick={start}>

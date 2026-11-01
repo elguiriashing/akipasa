@@ -5,7 +5,9 @@ export default defineConfig({
   esbuild: { jsx: "automatic" },
   test: {
     include: [
+      "tests/checkin-scanner-lifecycle.test.tsx",
       "tests/community-stories-*.test.ts",
+      "tests/community-stories-*.test.tsx",
       "tests/city-stories.test.tsx",
       "tests/story-moderation.test.tsx",
       "src/components/community/CheckinStoryComposer.test.tsx",

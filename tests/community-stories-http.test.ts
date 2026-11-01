@@ -33,6 +33,7 @@ const id = "123e4567-e89b-12d3-a456-426614174000";
 beforeEach(() => {
   vi.clearAllMocks();
   vi.stubEnv("AKIPASA_COMMUNITY_STORIES_SCHEMA_READY", "true");
+  vi.stubEnv("AKIPASA_COMMUNITY_STORIES_ENABLED", "true");
   fixture.getUser.mockResolvedValue({ data: { user: { id } }, error: null });
   fixture.rpc.mockResolvedValue({ data: null, error: null });
   fixture.upload.mockResolvedValue({ error: null });
@@ -306,4 +307,82 @@ it("does not collect or query anything before schema/export readiness is explici
   expect(fixture.getUser).not.toHaveBeenCalled();
   expect(fixture.rpc).not.toHaveBeenCalled();
   expect(fixture.service).not.toHaveBeenCalled();
+});
+
+it.each(["", "false"])(
+  "pauses new uploads before consuming a body or querying when UI flag is %s",
+  async (flag) => {
+    vi.stubEnv("AKIPASA_COMMUNITY_STORIES_ENABLED", flag);
+    const request = uploadRequest();
+    const result = await handleStoryRequest(request);
+    expect(result.status).toBe(503);
+    expect(await result.json()).toMatchObject({
+      error: { code: "collection_paused" },
+    });
+    expect(request.bodyUsed).toBe(false);
+    expect(fixture.getUser).not.toHaveBeenCalled();
+    expect(fixture.rpc).not.toHaveBeenCalled();
+    expect(fixture.service).not.toHaveBeenCalled();
+    expect(fixture.upload).not.toHaveBeenCalled();
+  },
+);
+it("still rejects cross-origin submissions while collection is paused", async () => {
+  vi.stubEnv("AKIPASA_COMMUNITY_STORIES_ENABLED", "false");
+  const result = await handleStoryRequest(
+    new Request("https://app.test/api/community/stories", {
+      method: "POST",
+      headers: { origin: "https://evil.test" },
+      body: "unread",
+    }),
+  );
+  expect(result.status).toBe(403);
+  expect(fixture.rpc).not.toHaveBeenCalled();
+});
+it("keeps authenticated owner listing and withdrawal available with collection paused", async () => {
+  vi.stubEnv("AKIPASA_COMMUNITY_STORIES_ENABLED", "false");
+  fixture.rpc.mockImplementation(
+    async (_name: string, { p_action }: { p_action: string }) => ({
+      data:
+        p_action === "mine"
+          ? { stories: [{ id, status: "pending" }], available: true }
+          : p_action === "delete"
+            ? { deleted: true }
+            : { removed: true },
+      error: null,
+    }),
+  );
+  const mine = await handleStoryRequest(
+    new Request("https://app.test/api/community/stories/mine"),
+    ["mine"],
+  );
+  expect(mine.status).toBe(200);
+  expect(await mine.json()).toMatchObject({ stories: [{ id }] });
+  const deleted = await handleStoryRequest(
+    new Request(`https://app.test/api/community/stories/${id}`, {
+      method: "DELETE",
+      headers: { origin: "https://app.test" },
+    }),
+    [id],
+  );
+  expect(deleted.status).toBe(200);
+  expect(await deleted.json()).toEqual({
+    deleted: true,
+    mediaCleanup: "removed",
+  });
+  expect(fixture.rpc.mock.calls.map((call) => call[1].p_action)).toEqual([
+    "mine",
+    "delete",
+    "cleanup-complete",
+  ]);
+  expect(fixture.upload).not.toHaveBeenCalled();
+});
+it("does not bypass authentication for owner reads during a collection pause", async () => {
+  vi.stubEnv("AKIPASA_COMMUNITY_STORIES_ENABLED", "false");
+  fixture.getUser.mockResolvedValue({ data: { user: null }, error: null });
+  const result = await handleStoryRequest(
+    new Request("https://app.test/api/community/stories/mine"),
+    ["mine"],
+  );
+  expect(result.status).toBe(401);
+  expect(fixture.rpc).not.toHaveBeenCalled();
 });

@@ -47,6 +47,12 @@ export default async function CommunityPage({
         locale={locale}
         initialCenter={area.center}
         areaLabel={area.name}
+        schemaReady={
+          process.env.AKIPASA_COMMUNITY_STORIES_SCHEMA_READY === "true"
+        }
+        storiesEnabled={
+          process.env.AKIPASA_COMMUNITY_STORIES_ENABLED === "true"
+        }
       />
     );
   }

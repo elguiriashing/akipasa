@@ -100,6 +100,9 @@ export default async function StaffModerationPage({
     .eq("id", user.id)
     .maybeSingle();
   if (!profile || !canModerate(profile.app_role)) notFound();
+  const storiesSchemaReady =
+    process.env.AKIPASA_COMMUNITY_STORIES_SCHEMA_READY === "true";
+  if (query.queue === "stories" && !storiesSchemaReady) notFound();
   if (query.queue === "stories")
     return (
       <>
@@ -224,12 +227,14 @@ export default async function StaffModerationPage({
             : "Select a queue. Only that task's content is loaded."
         }
       />
-      <Link
-        className="button secondary"
-        href={`/${locale}/staff/moderation?queue=stories`}
-      >
-        {es ? "Revisar fotos de check-ins" : "Review check-in photos"}
-      </Link>
+      {storiesSchemaReady && (
+        <Link
+          className="button secondary"
+          href={`/${locale}/staff/moderation?queue=stories`}
+        >
+          {es ? "Revisar fotos de check-ins" : "Review check-in photos"}
+        </Link>
+      )}
       {(query.updated || query.error) && (
         <p className="notice">
           {query.updated
