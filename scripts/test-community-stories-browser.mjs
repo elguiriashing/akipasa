@@ -146,51 +146,99 @@ const results = [];
 let browser;
 async function prepareRealPhoto(page, locale, exerciseLifecycle = false) {
   const es = locale === "es";
-  const camera = page.getByRole("region", {
-    name: es ? "Cámara de historias" : "Story camera",
-  });
-  const preview = camera.locator("video");
-  const start = camera.getByRole("button", {
-    name: es
-      ? /^(Abrir cámara|Volver a hacer foto)$/
-      : /^(Open camera|Retake photo)$/,
-    exact: true,
-  });
-  const shutter = camera.getByRole("button", {
-    name: es ? "Hacer foto" : "Take photo",
-    exact: true,
-  });
-  await expect(page.locator("input[type=file]")).toHaveCount(0);
-  if (exerciseLifecycle) {
-    await page.evaluate(() => {
-      window.fixtureGeoDenied = true;
+  try {
+    const camera = page.getByRole("region", {
+      name: es ? "Cámara de historias" : "Story camera",
     });
-    await start.click();
-    await expect(camera.getByRole("alert")).toBeVisible();
-    await expect
-      .poll(() =>
-        page.evaluate(() =>
-          window.fixtureCameraTracks.every((t) => t.readyState === "ended"),
-        ),
-      )
-      .toBe(true);
-    await expect(preview).toHaveJSProperty("srcObject", null);
-    await page.evaluate(() => {
-      window.fixtureGeoDenied = false;
+    const preview = camera.locator("video");
+    const start = camera.getByRole("button", {
+      name: es
+        ? /^(Abrir cámara|Volver a hacer foto)$/
+        : /^(Open camera|Retake photo)$/,
+      exact: true,
     });
-    await page.context().clearPermissions();
-    await start.click();
-    await expect(camera.getByRole("alert")).toBeVisible();
-    await expect(preview).toHaveJSProperty("srcObject", null);
-    await page.context().grantPermissions(["camera"]);
+    const shutter = camera.getByRole("button", {
+      name: es ? "Hacer foto" : "Take photo",
+      exact: true,
+    });
+    await expect(page.locator("input[type=file]")).toHaveCount(0);
+    if (exerciseLifecycle) {
+      await page.evaluate(() => {
+        window.fixtureGeoDenied = true;
+      });
+      await start.click();
+      await expect(camera.getByRole("alert")).toBeVisible();
+      await expect
+        .poll(() =>
+          page.evaluate(() =>
+            window.fixtureCameraTracks.every((t) => t.readyState === "ended"),
+          ),
+        )
+        .toBe(true);
+      await expect(preview).toHaveJSProperty("srcObject", null);
+      await page.evaluate(() => {
+        window.fixtureGeoDenied = false;
+      });
+      await page.context().clearPermissions();
+      await start.click();
+      await expect(camera.getByRole("alert")).toBeVisible();
+      await expect(preview).toHaveJSProperty("srcObject", null);
+      await page.context().grantPermissions(["camera"]);
+      await start.click();
+      await expect(shutter).toBeEnabled();
+      await camera
+        .getByRole("button", {
+          name: es ? "Cerrar cámara" : "Close camera",
+          exact: true,
+        })
+        .click();
+      await expect(preview).toHaveJSProperty("srcObject", null);
+      await expect
+        .poll(() =>
+          page.evaluate(() =>
+            window.fixtureCameraTracks.every((t) => t.readyState === "ended"),
+          ),
+        )
+        .toBe(true);
+      await start.click();
+      await expect(shutter).toBeEnabled();
+      await page.evaluate(() => {
+        Object.defineProperty(document, "hidden", {
+          configurable: true,
+          value: true,
+        });
+        document.dispatchEvent(new Event("visibilitychange"));
+      });
+      await expect(preview).toHaveJSProperty("srcObject", null);
+      await expect
+        .poll(() =>
+          page.evaluate(() =>
+            window.fixtureCameraTracks.every((t) => t.readyState === "ended"),
+          ),
+        )
+        .toBe(true);
+      await page.evaluate(() => {
+        Object.defineProperty(document, "hidden", {
+          configurable: true,
+          value: false,
+        });
+      });
+    }
     await start.click();
     await expect(shutter).toBeEnabled();
-    await camera
-      .getByRole("button", {
-        name: es ? "Cerrar cámara" : "Close camera",
-        exact: true,
-      })
-      .click();
+    expect(
+      await preview.evaluate((v) => ({
+        live: v.srcObject
+          .getVideoTracks()
+          .every((t) => t.readyState === "live"),
+        audio: v.srcObject.getAudioTracks().length,
+      })),
+    ).toEqual({ live: true, audio: 0 });
+    if (exerciseLifecycle)
+      await camera.screenshot({
+        path: resolve(out, `${locale}-camera-live-native-frame.png`),
+      });
+    await shutter.click();
     await expect(preview).toHaveJSProperty("srcObject", null);
     await expect
       .poll(() =>
@@ -199,60 +247,74 @@ async function prepareRealPhoto(page, locale, exerciseLifecycle = false) {
         ),
       )
       .toBe(true);
-    await start.click();
-    await expect(shutter).toBeEnabled();
-    await page.evaluate(() => {
-      Object.defineProperty(document, "hidden", {
-        configurable: true,
-        value: true,
-      });
-      document.dispatchEvent(new Event("visibilitychange"));
+  } catch (error) {
+    const diagnostic = await page.evaluate(async () => {
+      let kinds = [],
+        enumerateError = null,
+        permission = null;
+      try {
+        kinds = (await navigator.mediaDevices.enumerateDevices()).map(
+          (device) => device.kind,
+        );
+      } catch (error) {
+        enumerateError = {
+          name: error.name,
+          message: String(error.message).slice(0, 240),
+        };
+      }
+      try {
+        permission = (await navigator.permissions.query({ name: "camera" }))
+          .state;
+      } catch {}
+      return {
+        secureContext: isSecureContext,
+        mediaAPI: typeof navigator.mediaDevices?.getUserMedia,
+        kinds,
+        enumerateError,
+        permission,
+        errors: (window.fixtureMediaErrors || []).slice(-8),
+        videos: [...document.querySelectorAll("video")]
+          .slice(0, 3)
+          .map((video) => ({
+            readyState: video.readyState,
+            networkState: video.networkState,
+            paused: video.paused,
+            mediaErrorCode: video.error?.code || null,
+            tracks:
+              video.srcObject?.getTracks().map((track) => ({
+                kind: track.kind,
+                state: track.readyState,
+              })) || [],
+          })),
+        trackStates: (window.fixtureCameraTracks || [])
+          .slice(-12)
+          .map((track) => ({ kind: track.kind, state: track.readyState })),
+        theme: document.documentElement.dataset.theme,
+        width: innerWidth,
+      };
     });
-    await expect(preview).toHaveJSProperty("srcObject", null);
-    await expect
-      .poll(() =>
-        page.evaluate(() =>
-          window.fixtureCameraTracks.every((t) => t.readyState === "ended"),
-        ),
-      )
-      .toBe(true);
-    await page.evaluate(() => {
-      Object.defineProperty(document, "hidden", {
-        configurable: true,
-        value: false,
-      });
-    });
-  }
-  await start.click();
-  await expect(shutter).toBeEnabled();
-  expect(
-    await preview.evaluate((v) => ({
-      live: v.srcObject.getVideoTracks().every((t) => t.readyState === "live"),
-      audio: v.srcObject.getAudioTracks().length,
-    })),
-  ).toEqual({ live: true, audio: 0 });
-  if (exerciseLifecycle)
-    await camera.screenshot({
-      path: resolve(out, `${locale}-camera-live-native-frame.png`),
-    });
-  await shutter.click();
-  await expect(preview).toHaveJSProperty("srcObject", null);
-  await expect
-    .poll(() =>
-      page.evaluate(() =>
-        window.fixtureCameraTracks.every((t) => t.readyState === "ended"),
+    diagnostic.browserVersion = page.context().browser().version();
+    writeFileSync(
+      resolve(
+        out,
+        `${locale}-${diagnostic.theme}-${diagnostic.width}-camera-failure-diagnostics.json`,
       ),
-    )
-    .toBe(true);
+      JSON.stringify(diagnostic, null, 2),
+    );
+    throw error;
+  }
 }
 
 try {
   browser = await chromium.launch({
     headless: true,
     args: ["--use-fake-device-for-media-stream"],
+    // The bundled headless shell exposes fake devices but rejects native
+    // getUserMedia with NotSupportedError. Full Chromium's new headless mode
+    // supports the same real camera capture and permission-denial assertions.
     ...(process.env.BOOKING_BROWSER_PATH
       ? { executablePath: process.env.BOOKING_BROWSER_PATH }
-      : {}),
+      : { channel: "chromium" }),
   });
   for (const locale of ["en", "es"])
     for (const theme of ["dark", "light"])
@@ -314,14 +376,46 @@ try {
               quality,
             );
           };
-          const getMedia = navigator.mediaDevices.getUserMedia.bind(
-            navigator.mediaDevices,
-          );
-          navigator.mediaDevices.getUserMedia = async (...args) => {
-            const stream = await getMedia(...args);
-            window.fixtureCameraTracks.push(...stream.getTracks());
-            return stream;
+          window.fixtureMediaErrors = [];
+          const record = (operation, error) => {
+            window.fixtureMediaErrors.push({
+              operation,
+              name: error.name,
+              message: String(error.message)
+                .replace(/[A-Za-z0-9_-]{24,}/g, "[redacted]")
+                .slice(0, 240),
+            });
+            if (window.fixtureMediaErrors.length > 8)
+              window.fixtureMediaErrors.shift();
           };
+          const play = HTMLMediaElement.prototype.play;
+          HTMLMediaElement.prototype.play = async function (...args) {
+            try {
+              return await play.apply(this, args);
+            } catch (error) {
+              record("video.play", error);
+              throw error;
+            }
+          };
+          if (navigator.mediaDevices?.getUserMedia) {
+            const getMedia = navigator.mediaDevices.getUserMedia.bind(
+              navigator.mediaDevices,
+            );
+            navigator.mediaDevices.getUserMedia = async (...args) => {
+              try {
+                const stream = await getMedia(...args);
+                window.fixtureCameraTracks.push(...stream.getTracks());
+                return stream;
+              } catch (error) {
+                record("getUserMedia", error);
+                throw error;
+              }
+            };
+          } else
+            record("getUserMedia-availability", {
+              name: "Unavailable",
+              message: "navigator.mediaDevices.getUserMedia is absent",
+            });
           Object.defineProperty(navigator, "geolocation", {
             configurable: true,
             value: {

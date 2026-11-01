@@ -5530,3 +5530,9 @@ Rollback reverts these UI sources only.
   Four Passport recovery tests were updated from the removed generic sentence
   to exact reason-specific headings while retaining scrolling/order/no-success
   assertions; the initial failed run remains recorded and was not a pass.
+- Native camera CI uses the bundled full Chromium (`channel: chromium`) when
+  no existing browser override is supplied. Default headless-shell149 reproducibly
+  rejected getUserMedia with NotSupportedError despite a granted fake camera;
+  full Chrome149 passed the same20 contexts and negative permission cases.
+  Assertions/timeouts remain unchanged, and bounded fixture-only media error
+  diagnostics retain no GPS, frames or device IDs. No runtime policy change.
