@@ -405,6 +405,31 @@ html[data-theme="light"]
   }
 }
 
+/* Match the desktop sidebar's light palette on phones and small tablets.
+   The existing dark-mode palette and 44px controls remain unchanged. */
+@media (max-width: 850px) {
+  html[data-theme="light"] .app-shell .app-topbar-mobile {
+    background: #faf7f2;
+    color: #172238;
+    border-bottom-color: #d8d0c6;
+  }
+  html[data-theme="light"] .app-shell .app-topbar-mobile .brand-wordmark {
+    color: #172238;
+  }
+  html[data-theme="light"] .app-shell .app-topbar-mobile .app-suite-mobile-trigger,
+  html[data-theme="light"] .app-shell .app-topbar-mobile .app-more-mobile-trigger,
+  html[data-theme="light"] .app-shell .global-search-trigger {
+    background: #fffdfa;
+    color: #172238;
+    border-color: #bbc2cb;
+  }
+  html[data-theme="light"] .app-shell .app-topbar-mobile .app-suite-mobile-trigger:hover,
+  html[data-theme="light"] .app-shell .app-topbar-mobile .app-more-mobile-trigger:hover,
+  html[data-theme="light"] .app-shell .global-search-trigger:hover {
+    border-color: #b5531f;
+  }
+}
+
 /* The old empty-state icon grid leaves a narrow second column when its icon
    is hidden on phones. Let the real explanation and recovery links use the row. */
 @media (max-width: 850px) {
