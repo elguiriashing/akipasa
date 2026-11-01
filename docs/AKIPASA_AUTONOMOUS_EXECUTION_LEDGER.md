@@ -2679,3 +2679,44 @@ stories-final-rollout-delta-independent-review-20261101.json under
 /workspace/akipasa-main-checkpoints. Mirrored Stories SQL remains97d43953581b58238c8ab5716a7d027fb310c088f6e0c129f939efea9c7e1b32,
 unapplied. New public sharing/schema flags stay false for this release; no
 hosted photo activation, physical Android result or production SQL is claimed.
+
+## 2026-11-01 | Review repairs before the photo-foundation release
+
+Fresh head133d3c3 CI passed all11 workflows (23 successful checks and one
+conditional site-regression skip), including3,258 Vitest cases,140 Node cases,
+optimized Next and Cloudflare builds. The tested synthetic merge tree matched
+the reviewed source. Public browser shards passed590 with101 conditional skips.
+This did not waive review: two real findings prevented merge.
+
+Permissions-Policy belongs to a document. AppShell now forces a full document
+navigation for ordinary links across the exact EN/ES scanner boundary in either
+direction, preserving modified/new-tab/download and unrelated SPA navigation.
+A navigation-entry check also refreshes document policy after programmatic router
+and history transitions. Header policy remains camera-self only on the scanner,
+with microphone/payment denied; native dock and history regressions supplement
+the earlier direct-load camera tests.
+
+My Photos now restores owner-only durable cleanup identifiers from its mine
+response after close/reopen, instead of relying only on transient client state.
+The bounded backlog can be drained by explicit retry and refresh, including
+soft-deleted/expired or orphaned metadata. Ownership and ineligible-owner
+withdrawal remain enforced, and collection-off does not strand existing records.
+The mirrored additive SQL is still UNAPPLIED; its revised SHA256 is
+28bbffb5b7cd3c943bc58de09580f57cb95929e71f7660fdbef2d62203ed7541.
+Only the existing source/mirror hashes and derived inventory fingerprints changed;
+canonical scope,
+non-execution gates and STOPs remain intact. No hosted storage evidence, paid
+resource, production SQL, photo activation or physical Android proof is claimed.
+New targeted and exact-head validation is required before merging repaired source.
+
+Repaired-source local closure: all207 focused tests passed, plus29 shared
+shell/dock and13 Stay UI regressions. Fresh types/lint/format/optimized build
+passed; canonical inventory tests16/16 passed with STOPs intact. The unchanged
+six actual Next camera cases passed: original two direct-load checks plus four
+EN/ES native dock boundary checks, including live video/no audio, Stop, fresh
+main-frame documents, Home capture denial and Back/Forward policy restoration.
+Before repair, all four new boundary cases failed on the frozen prior build;
+those failures are preserved. Four component-native cleanup cases also passed
+through close/reopen and full reload with explicit-only deletion. These are
+browser test devices/synthetic photo adapters, not physical Android or real
+hosted Auth/storage proof. Fresh exact-head CI and cleared review remain required.

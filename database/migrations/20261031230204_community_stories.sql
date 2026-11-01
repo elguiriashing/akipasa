@@ -17,6 +17,7 @@ create table public.community_stories (
 );
 create unique index community_stories_active_check_in on public.community_stories(check_in_id) where deleted_at is null;
 create table public.community_story_media_cleanup (story_id uuid primary key,owner_id uuid references public.profiles(id) on delete set null,created_at timestamptz not null default now());
+create index community_story_media_cleanup_owner_pending on public.community_story_media_cleanup(owner_id,created_at,story_id);
 alter table public.community_story_media_cleanup enable row level security;
 revoke all on public.community_story_media_cleanup from anon,authenticated;
 create index community_stories_city_live on public.community_stories(city_id,created_at desc,id) where status='approved' and public_opt_in and deleted_at is null;
@@ -129,7 +130,12 @@ begin
  elsif p_action in ('finalize','abort','delete','report','moderate','media') then
   sid:=(p_payload->>'id')::uuid;
   select * into row_story from public.community_stories where id=sid for update;
-  if not found then return null; end if;
+  if not found then
+   -- A parent cascade may remove story metadata before private media cleanup.
+   -- Only that durable task's existing owner may retry the server-side DELETE.
+   if p_action='delete' and exists(select 1 from public.community_story_media_cleanup where story_id=sid and owner_id=actor) then return jsonb_build_object('deleted',true); end if;
+   return null;
+  end if;
   if p_action='abort' then
    if row_story.owner_id<>actor or row_story.status<>'uploading' then raise exception 'Not eligible' using errcode='42501'; end if;
    update public.community_stories set deleted_at=coalesce(deleted_at,now()) where id=sid;
@@ -176,6 +182,15 @@ begin
     and ((p_action='mine' and s.owner_id=actor) or (p_action='moderation' and staff and s.status in ('pending','approved') and ((p_payload->>'queue'='reported' and exists(select 1 from public.community_story_reports r where r.story_id=s.id)) or (coalesce(p_payload->>'queue','pending')='pending' and s.status='pending'))) or (p_action='feed' and c.slug=city_slug and s.status='approved' and s.public_opt_in and v.status='published' and v.verified))
    order by s.created_at desc,s.id desc limit 50
   ) x;
+  if p_action='mine' then
+   -- Restore cleanup controls after remount/session loss, including expired,
+   -- soft-deleted and cascaded metadata. Project only caller-owned opaque IDs.
+   select coalesce(jsonb_agg(q.story_id order by q.created_at,q.story_id),'[]') into page_rows from (
+    select story_id,created_at from public.community_story_media_cleanup where owner_id=actor order by created_at,story_id limit 50
+   ) q;
+   return jsonb_build_object('stories',answer,'nextCursor',null,'available',true,'cleanupPendingIds',page_rows,
+    'cleanupPendingHasMore',exists(select 1 from public.community_story_media_cleanup where owner_id=actor order by created_at,story_id offset 50 limit 1));
+  end if;
   return jsonb_build_object('stories',answer,'nextCursor',null,'available',true);
  end if;
  raise exception 'Invalid action' using errcode='22023';

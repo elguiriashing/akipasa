@@ -563,3 +563,102 @@ it("redacts staff review reasons and third-party free text from direct owner exp
     /moderationReason|moderation_reason|synthetic-third-party|confidential report/,
   );
 });
+
+it("restores owner cleanup retries from the durable outbox after reopening, including expired and removed story metadata", async () => {
+  type Mine = {
+    stories: { id: string }[];
+    cleanupPendingIds: string[];
+    cleanupPendingHasMore: boolean;
+  };
+  await db.query("insert into profiles values($1),($2)", [uid(610), uid(611)]);
+  await db.query(
+    "insert into public.check_ins values($1,$2,$3,$4,'accepted','{}',now())",
+    [uid(610), uid(610), uid(20), uid(30)],
+  );
+  await db.query(
+    "insert into public.community_stories(id,owner_id,check_in_id,venue_id,city_id,kind,public_opt_in,status,created_at,expires_at) values($1,$2,$3,$4,$5,'venue',true,'pending',now()-interval '25 hours',now()-interval '1 hour')",
+    [uid(610), uid(610), uid(610), uid(20), uid(10)],
+  );
+  await db.query("insert into storage.objects values('community-stories',$1)", [
+    `${uid(610)}.webp`,
+  ]);
+  await actor(610);
+  await call("delete", { id: uid(610) });
+  const reopened = (await call("mine")) as unknown as Mine;
+  expect(reopened.stories).toEqual([]);
+  expect(reopened.cleanupPendingIds).toEqual([uid(610)]);
+  expect(reopened.cleanupPendingHasMore).toBe(false);
+  expect(JSON.stringify(reopened)).not.toMatch(
+    /owner_id|storage|caption|credential|latitude|longitude/,
+  );
+  await actor(611);
+  expect(((await call("mine")) as unknown as Mine).cleanupPendingIds).toEqual(
+    [],
+  );
+  await expect(call("delete", { id: uid(610) })).rejects.toThrow(
+    "Not eligible",
+  );
+  await db.query("delete from public.check_ins where id=$1", [uid(610)]);
+  expect(await call("delete", { id: uid(610) })).toBeNull();
+  await actor(null);
+  await expect(call("mine")).rejects.toThrow("Account required");
+  await actor(610);
+  await db.exec(
+    "select set_config('test.eligible','false',false); update public.community_story_settings set collection_enabled=false",
+  );
+  try {
+    expect(((await call("mine")) as unknown as Mine).cleanupPendingIds).toEqual(
+      [uid(610)],
+    );
+    expect(await call("delete", { id: uid(610) })).toEqual({ deleted: true });
+    expect(await call("cleanup-complete", { id: uid(610) })).toEqual({
+      removed: false,
+    });
+    expect(((await call("mine")) as unknown as Mine).cleanupPendingIds).toEqual(
+      [uid(610)],
+    );
+    await db.query(
+      "delete from storage.objects where bucket_id='community-stories' and name=$1",
+      [`${uid(610)}.webp`],
+    );
+    expect(await call("cleanup-complete", { id: uid(610) })).toEqual({
+      removed: true,
+    });
+    expect(((await call("mine")) as unknown as Mine).cleanupPendingIds).toEqual(
+      [],
+    );
+  } finally {
+    await db.exec(
+      "select set_config('test.eligible','true',false); update public.community_story_settings set collection_enabled=true",
+    );
+  }
+});
+it("bounds and drains durable owner cleanup without exposing another owner's backlog", async () => {
+  type Mine = { cleanupPendingIds: string[]; cleanupPendingHasMore: boolean };
+  for (let n = 620; n < 675; n++)
+    await db.query(
+      "insert into public.community_story_media_cleanup(story_id,owner_id) values($1,$2)",
+      [uid(n), uid(610)],
+    );
+  await actor(610);
+  const first = (await call("mine")) as unknown as Mine;
+  expect(first.cleanupPendingIds).toEqual(
+    Array.from({ length: 50 }, (_, n) => uid(n + 620)),
+  );
+  expect(first.cleanupPendingHasMore).toBe(true);
+  await actor(611);
+  expect(await call("delete", { id: uid(620) })).toBeNull();
+  const other = (await call("mine")) as unknown as Mine;
+  expect(other.cleanupPendingIds).toEqual([]);
+  expect(other.cleanupPendingHasMore).toBe(false);
+  await actor(610);
+  for (const id of first.cleanupPendingIds) {
+    expect(await call("delete", { id })).toEqual({ deleted: true });
+    expect(await call("cleanup-complete", { id })).toEqual({ removed: true });
+  }
+  const remaining = (await call("mine")) as unknown as Mine;
+  expect(remaining.cleanupPendingIds).toEqual(
+    Array.from({ length: 5 }, (_, n) => uid(n + 670)),
+  );
+  expect(remaining.cleanupPendingHasMore).toBe(false);
+});

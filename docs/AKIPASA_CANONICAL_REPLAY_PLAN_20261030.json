@@ -9,8 +9,8 @@
   "scope": "Hash inventory and candidate prefix only; not an approved migration executor, production chronology or complete eligibility list.",
   "inventoryRoots": ["database/migrations", "supabase/migrations"],
   "inventoryFingerprints": {
-    "database/migrations": "f29549d07a0d748e8b68b4fc30ad0eb23a154fc926a6944cff35c7c89c812ed6",
-    "supabase/migrations": "725190eae56ff69fc8cd8f5a6d2b4e9ee7d8507769317f54437b2b131537ccf8"
+    "database/migrations": "c777c6786158be53dc43f4f517464bc7210f8e4a74fb2612ed45bc4c0d9842a3",
+    "supabase/migrations": "aabe82566fccf13a056d4fc6b6ce0959c5ee66b9fcc07e79b3a3b7625b38306d"
   },
   "evidence": {
     "checkpoint": "canonical-replay-next-20261030.md",
@@ -3245,7 +3245,7 @@
     },
     {
       "path": "database/migrations/20261031230204_community_stories.sql",
-      "sha256": "97d43953581b58238c8ab5716a7d027fb310c088f6e0c129f939efea9c7e1b32",
+      "sha256": "28bbffb5b7cd3c943bc58de09580f57cb95929e71f7660fdbef2d62203ed7541",
       "classification": "unresolved",
       "requires": [
         "database/migrations/0006_loyalty_passports.sql",
@@ -3257,7 +3257,7 @@
     },
     {
       "path": "supabase/migrations/20261031230204_community_stories.sql",
-      "sha256": "97d43953581b58238c8ab5716a7d027fb310c088f6e0c129f939efea9c7e1b32",
+      "sha256": "28bbffb5b7cd3c943bc58de09580f57cb95929e71f7660fdbef2d62203ed7541",
       "classification": "byte-identical-transport",
       "requires": [],
       "aliasOf": "database/migrations/20261031230204_community_stories.sql",

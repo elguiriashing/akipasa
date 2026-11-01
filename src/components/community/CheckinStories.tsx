@@ -78,6 +78,7 @@ export function CheckinStories({
   const [deleting, setDeleting] = useState("");
   const [deleteError, setDeleteError] = useState("");
   const [cleanupPendingIds, setCleanupPendingIds] = useState<string[]>([]);
+  const [cleanupPendingHasMore, setCleanupPendingHasMore] = useState(false);
   const [deletedNotice, setDeletedNotice] = useState<
     "complete" | "pending" | ""
   >("");
@@ -100,6 +101,8 @@ export function CheckinStories({
     setConfirmId("");
     setDeleteError("");
     setDeletedNotice("");
+    setCleanupPendingIds([]);
+    setCleanupPendingHasMore(false);
     if (!dialog.current?.open) dialog.current?.showModal();
     const load = async <T,>(
       endpoint: string,
@@ -119,16 +122,27 @@ export function CheckinStories({
           setAuthRequired(true);
           return;
         }
+        const pendingIds =
+          data?.cleanupPendingIds === undefined ? [] : data.cleanupPendingIds;
         if (
           !response.ok ||
           data?.available !== true ||
           !Array.isArray(data[key]) ||
-          !data[key].every(valid)
+          !data[key].every(valid) ||
+          (key === "stories" &&
+            (!Array.isArray(pendingIds) ||
+              !pendingIds.every(uuid) ||
+              (data.cleanupPendingHasMore !== undefined &&
+                typeof data.cleanupPendingHasMore !== "boolean")))
         )
           throw new Error(
             response.status === 429 ? "rate_limited" : "unavailable",
           );
         write({ phase: "ready", rows: data[key] });
+        if (key === "stories") {
+          setCleanupPendingIds([...new Set<string>(pendingIds)]);
+          setCleanupPendingHasMore(data.cleanupPendingHasMore === true);
+        }
       } catch (error) {
         if (!controller.signal.aborted)
           write({
@@ -198,6 +212,8 @@ export function CheckinStories({
       setDeletedNotice(
         data.mediaCleanup === "pending" ? "pending" : "complete",
       );
+      if (data.mediaCleanup === "removed" && cleanupPendingHasMore)
+        setRevision((value) => value + 1);
     } catch (error) {
       if (!controller.signal.aborted)
         setDeleteError(error instanceof Error ? error.message : "unavailable");
@@ -412,13 +428,20 @@ export function CheckinStories({
                           : "Story removed."}
                     </p>
                   )}
-                  {cleanupPendingIds.length > 0 && (
+                  {(cleanupPendingIds.length > 0 || cleanupPendingHasMore) && (
                     <div className={styles.notice}>
                       <p>
                         {es
                           ? "Las historias retiradas ya no se comparten. Queda pendiente la limpieza de sus archivos privados."
                           : "Removed stories are no longer shared. Their private media cleanup is still pending."}
                       </p>
+                      {cleanupPendingHasMore && (
+                        <p>
+                          {es
+                            ? "Hay más archivos pendientes. Actualiza tus historias después de limpiar los mostrados para cargar el siguiente grupo."
+                            : "More media cleanup is pending. Refresh your stories after cleaning up the listed files to load the next group."}
+                        </p>
+                      )}
                       {cleanupPendingIds.map((id) => (
                         <button
                           key={id}

@@ -451,3 +451,164 @@ it("publishing-off mode still offers safe sign-in on owner-read 401 without elig
   expect(fetcher.mock.calls[0][0]).toBe("/api/community/stories/mine");
   expect(screen.queryByText("My own caption")).toBeNull();
 });
+
+for (const locale of ["en", "es"] as const) {
+  it(`${locale} restores durable cleanup after a full remount with sharing paused and without eligibility`, async () => {
+    let cleanupPending = true;
+    fetcher.mockImplementation(async (_url: string, options?: RequestInit) => {
+      if (options?.method === "DELETE") {
+        cleanupPending = false;
+        return response({ deleted: true, mediaCleanup: "removed" });
+      }
+      return response({
+        available: true,
+        stories: [],
+        cleanupPendingIds: cleanupPending ? [storyId] : [],
+      });
+    });
+    const launcherName = locale === "es" ? "Mis fotos" : "My photos";
+    const retryName =
+      locale === "es"
+        ? "Reintentar limpieza del archivo"
+        : "Retry media cleanup";
+    const first = render(
+      <CheckinStories locale={locale} publishingEnabled={false} />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: launcherName }));
+    await screen.findByRole("button", { name: retryName });
+    expect(
+      fetcher.mock.calls.some(([, options]) => options.method === "DELETE"),
+    ).toBe(false);
+    first.unmount();
+    render(<CheckinStories locale={locale} publishingEnabled={false} />);
+    fireEvent.click(screen.getByRole("button", { name: launcherName }));
+    const retry = await screen.findByRole("button", { name: retryName });
+    expect(
+      fetcher.mock.calls.some(([, options]) => options.method === "DELETE"),
+    ).toBe(false);
+    fireEvent.click(retry);
+    await waitFor(() =>
+      expect(screen.queryByRole("button", { name: retryName })).toBeNull(),
+    );
+    expect(
+      fetcher.mock.calls.filter(([, options]) => options.method === "DELETE"),
+    ).toHaveLength(1);
+    expect(
+      fetcher.mock.calls.every(
+        ([url, options]) =>
+          url.endsWith("mine") ||
+          (url.endsWith(storyId) && options.method === "DELETE"),
+      ),
+    ).toBe(true);
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: locale === "es" ? "Actualizar historias" : "Refresh your stories",
+      }),
+    );
+    await waitFor(() =>
+      expect(
+        fetcher.mock.calls.filter(([url]) => url.endsWith("mine")),
+      ).toHaveLength(3),
+    );
+    expect(screen.queryByRole("button", { name: retryName })).toBeNull();
+  });
+}
+
+it.each([
+  { cleanupPendingIds: ["not-an-id"] },
+  { cleanupPendingIds: storyId },
+  { cleanupPendingIds: null },
+  { cleanupPendingIds: [storyId], cleanupPendingHasMore: "true" },
+])(
+  "rejects malformed durable cleanup projection %j without retrying arbitrary media",
+  async (projection) => {
+    fetcher.mockResolvedValue(
+      response({ available: true, stories: [], ...projection }),
+    );
+    render(<CheckinStories locale="en" publishingEnabled={false} />);
+    fireEvent.click(screen.getByRole("button", { name: "My photos" }));
+    await screen.findByRole("alert");
+    expect(
+      screen.queryByRole("button", { name: "Retry media cleanup" }),
+    ).toBeNull();
+    expect(screen.queryByText("You have no current stories yet.")).toBeNull();
+    expect(
+      fetcher.mock.calls.some(([, options]) => options.method === "DELETE"),
+    ).toBe(false);
+  },
+);
+
+it("keeps a bounded durable backlog truthful and reads the next group after an explicitly retried cleanup", async () => {
+  const secondId = "00000000-0000-4000-8000-000000000003";
+  let group = 0;
+  fetcher.mockImplementation(async (_url: string, options?: RequestInit) => {
+    if (options?.method === "DELETE") {
+      group += 1;
+      return response({ deleted: true, mediaCleanup: "removed" });
+    }
+    return response({
+      available: true,
+      stories: [],
+      cleanupPendingIds:
+        group === 0 ? [storyId] : group === 1 ? [secondId] : [],
+      cleanupPendingHasMore: group === 0,
+    });
+  });
+  render(<CheckinStories locale="en" publishingEnabled={false} />);
+  fireEvent.click(screen.getByRole("button", { name: "My photos" }));
+  const firstRetry = await screen.findByRole("button", {
+    name: "Retry media cleanup",
+  });
+  expect(screen.getByText(/More media cleanup is pending/)).toBeVisible();
+  expect(fetcher).toHaveBeenCalledTimes(1);
+  fireEvent.click(firstRetry);
+  await waitFor(() => expect(fetcher).toHaveBeenCalledTimes(3));
+  const secondRetry = await screen.findByRole("button", {
+    name: "Retry media cleanup",
+  });
+  expect(
+    fetcher.mock.calls.filter(([, options]) => options.method === "DELETE"),
+  ).toHaveLength(1);
+  expect(screen.queryByText(/More media cleanup is pending/)).toBeNull();
+  fireEvent.click(secondRetry);
+  await waitFor(() =>
+    expect(
+      screen.queryByRole("button", { name: "Retry media cleanup" }),
+    ).toBeNull(),
+  );
+  expect(
+    fetcher.mock.calls
+      .filter(([, options]) => options.method === "DELETE")
+      .map(([url]) => url),
+  ).toEqual([
+    `/api/community/stories/${storyId}`,
+    `/api/community/stories/${secondId}`,
+  ]);
+});
+
+it("retains a restored cleanup retry when deletion fails and never claims successful purge", async () => {
+  fetcher.mockImplementation(async (_url: string, options?: RequestInit) =>
+    options?.method === "DELETE"
+      ? response(
+          { error: { code: "unavailable", message: "PRIVATE DETAILS" } },
+          503,
+        )
+      : response({
+          available: true,
+          stories: [],
+          cleanupPendingIds: [storyId],
+        }),
+  );
+  render(<CheckinStories locale="en" publishingEnabled={false} />);
+  fireEvent.click(screen.getByRole("button", { name: "My photos" }));
+  const retry = await screen.findByRole("button", {
+    name: "Retry media cleanup",
+  });
+  fireEvent.click(retry);
+  await screen.findByRole("alert");
+  expect(
+    screen.getByRole("button", { name: "Retry media cleanup" }),
+  ).toBeVisible();
+  expect(screen.queryByText("Story removed.")).toBeNull();
+  expect(screen.queryByText("PRIVATE DETAILS")).toBeNull();
+});

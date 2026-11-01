@@ -386,3 +386,42 @@ it("does not bypass authentication for owner reads during a collection pause", a
   expect(result.status).toBe(401);
   expect(fixture.rpc).not.toHaveBeenCalled();
 });
+it("returns durable owner cleanup controls on a read during a publishing pause without touching storage", async () => {
+  vi.stubEnv("AKIPASA_COMMUNITY_STORIES_ENABLED", "false");
+  const mine = {
+    stories: [],
+    available: true,
+    cleanupPendingIds: [id],
+    cleanupPendingHasMore: true,
+  };
+  fixture.rpc.mockResolvedValue({ data: mine, error: null });
+  const result = await handleStoryRequest(
+    new Request("https://app.test/api/community/stories/mine"),
+    ["mine"],
+  );
+  expect(result.status).toBe(200);
+  expect(await result.json()).toEqual(mine);
+  expect(fixture.rpc).toHaveBeenCalledWith("community_stories_api", {
+    p_action: "mine",
+    p_payload: { queue: "pending" },
+  });
+  expect(fixture.getUser).toHaveBeenCalledOnce();
+  expect(fixture.service).not.toHaveBeenCalled();
+});
+it("does not remove an orphaned object unless the canonical owner cleanup task authorizes DELETE", async () => {
+  fixture.rpc.mockResolvedValue({ data: null, error: null });
+  const result = await handleStoryRequest(
+    new Request(`https://app.test/api/community/stories/${id}`, {
+      method: "DELETE",
+      headers: { origin: "https://app.test" },
+    }),
+    [id],
+  );
+  expect(result.status).toBe(404);
+  expect(fixture.rpc).toHaveBeenCalledWith("community_stories_api", {
+    p_action: "delete",
+    p_payload: { id },
+  });
+  expect(fixture.service).not.toHaveBeenCalled();
+  expect(fixture.remove).not.toHaveBeenCalled();
+});
