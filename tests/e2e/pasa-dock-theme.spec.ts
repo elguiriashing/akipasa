@@ -23,9 +23,7 @@ for (const locale of ["en", "es"] as const) {
         await expect(dock).toBeVisible();
         await expect(dock).toHaveCSS(
           "background-color",
-          theme === "light"
-            ? "rgb(250, 247, 242)"
-            : "rgba(7, 9, 11, 0.97)",
+          theme === "light" ? "rgb(250, 247, 242)" : "rgba(7, 9, 11, 0.97)",
         );
         await expect(dock.getByRole("link")).toHaveCount(5);
         const activeKey =
@@ -42,7 +40,9 @@ for (const locale of ["en", "es"] as const) {
         ).toHaveCSS("background-color", "rgb(242, 107, 29)");
         const cameraLink = dock.getByRole("link", { name: "Check-in" });
         expect(
-          await cameraLink.evaluate((node) => node.getBoundingClientRect().height),
+          await cameraLink.evaluate(
+            (node) => node.getBoundingClientRect().height,
+          ),
         ).toBeGreaterThanOrEqual(44);
       }
 
@@ -51,9 +51,7 @@ for (const locale of ["en", "es"] as const) {
       await expect(dock).toBeVisible();
       await expect(dock).toHaveCSS(
         "background-color",
-        theme === "light"
-          ? "rgb(250, 247, 242)"
-          : "rgba(7, 9, 11, 0.97)",
+        theme === "light" ? "rgb(250, 247, 242)" : "rgba(7, 9, 11, 0.97)",
       );
       await page.setViewportSize({ width: 900, height: 540 });
       await expect(dock).toBeHidden();
@@ -62,9 +60,7 @@ for (const locale of ["en", "es"] as const) {
       await expect(dock).toBeVisible();
       await expect(dock).toHaveCSS(
         "background-color",
-        theme === "light"
-          ? "rgb(250, 247, 242)"
-          : "rgba(7, 9, 11, 0.97)",
+        theme === "light" ? "rgb(250, 247, 242)" : "rgba(7, 9, 11, 0.97)",
       );
     });
   }
