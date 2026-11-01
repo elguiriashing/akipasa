@@ -209,3 +209,52 @@ it("rejects foreign QR navigation while preserving a working camera", async () =
   expect(push).not.toHaveBeenCalled();
   expect(stream.stop).not.toHaveBeenCalled();
 });
+
+it("opens the camera without native BarcodeDetector for local fallback", async () => {
+  Object.defineProperty(window, "BarcodeDetector", {
+    configurable: true,
+    value: undefined,
+  });
+  const stream = fakeStream();
+  capture.mockResolvedValue(stream.stream);
+  render(<CheckInScanner locale="es" />);
+  fireEvent.click(
+    screen.getByRole("button", { name: "Escanear QR del local" }),
+  );
+  await screen.findByRole("button", { name: "Detener escáner" });
+  expect(capture).toHaveBeenCalledOnce();
+  expect(stream.stop).not.toHaveBeenCalled();
+});
+it("explains invalid decoded QR instead of silently ignoring it", async () => {
+  capture.mockResolvedValue(fakeStream().stream);
+  decode.mockResolvedValue([{ rawValue: "https://example.invalid/wrong" }]);
+  render(<CheckInScanner locale="es" />);
+  fireEvent.click(
+    screen.getByRole("button", { name: "Escanear QR del local" }),
+  );
+  await screen.findByRole("button", { name: "Detener escáner" });
+  await act(async () => {
+    frames.shift()!(0);
+  });
+  expect(screen.getByRole("status")).toHaveTextContent(
+    "no es un QR de check-in válido",
+  );
+  expect(push).not.toHaveBeenCalled();
+});
+it("navigates an official other-language QR in the phone language", async () => {
+  const stream = fakeStream();
+  capture.mockResolvedValue(stream.stream);
+  decode.mockResolvedValue([
+    { rawValue: `${location.origin}/en/check-in/${token}` },
+  ]);
+  render(<CheckInScanner locale="es" />);
+  fireEvent.click(
+    screen.getByRole("button", { name: "Escanear QR del local" }),
+  );
+  await screen.findByRole("button", { name: "Detener escáner" });
+  await act(async () => {
+    frames.shift()!(0);
+  });
+  expect(push).toHaveBeenCalledExactlyOnceWith(`/es/check-in/${token}`);
+  expect(stream.stop).toHaveBeenCalledOnce();
+});
