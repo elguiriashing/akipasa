@@ -18,14 +18,11 @@ export function verifiedVenueQrPath(
   try {
     const url = new URL(raw, origin);
     if (url.origin !== origin || url.search || url.hash) return null;
-    const prefix = `/${locale}/check-in/`;
-    if (
-      !url.pathname.startsWith(prefix) ||
-      !isVenueCheckInToken(url.pathname.slice(prefix.length))
-    ) {
-      return null;
-    }
-    return url.pathname;
+    const matched = /^\/(en|es)\/check-in\/([^/]+)$/.exec(url.pathname);
+    if (!matched || !isVenueCheckInToken(matched[2])) return null;
+    // Printed/tablet credentials are valid in either supported UI language.
+    // Only the display locale changes; the server still validates the token.
+    return `/${locale}/check-in/${matched[2]}`;
   } catch {
     return null;
   }

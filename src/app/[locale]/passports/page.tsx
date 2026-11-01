@@ -8,6 +8,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/config";
 import { optionalUser } from "@/lib/auth";
+import { CheckInSuccess } from "@/components/CheckInSuccess";
 import { AchievementCelebration } from "@/components/AchievementCelebration";
 import { BadgeProgress } from "@/components/BadgeProgress";
 import { WeeklyQuestPanel } from "@/components/WeeklyQuestPanel";
@@ -211,8 +212,8 @@ export default async function PassportsPage({
             <p className="notice">
               {query.checkin === "accepted"
                 ? es
-                  ? "Check-in aceptado. Tu XP y tus sellos se han actualizado."
-                  : "Check-in accepted. Your XP and stamps have been updated."
+                  ? "Consulta abajo la confirmación de tu visita."
+                  : "Check below for confirmation of your visit."
                 : query.checkin === "cooldown"
                   ? es
                     ? "Ya hiciste check-in aquí en las últimas seis horas."
@@ -224,6 +225,11 @@ export default async function PassportsPage({
           )}
           {user && query.checkin === "accepted" && (
             <>
+              <CheckInSuccess
+                locale={locale}
+                checkInId={query.visit}
+                profileId={user.id}
+              />
               <AchievementCelebration locale={locale} checkInId={query.visit} />
               {process.env.AKIPASA_COMMUNITY_STORIES_SCHEMA_READY === "true" &&
                 process.env.AKIPASA_COMMUNITY_STORIES_ENABLED === "true" && (

@@ -47,7 +47,7 @@ describe("verified venue QR navigation", () => {
       ),
     ).toBe(`/en/check-in/${token}`);
   });
-  it("rejects cross-site, wrong locale and arbitrary QR payloads", () => {
+  it("rejects cross-site and arbitrary QR payloads", () => {
     expect(
       verifiedVenueQrPath(
         `https://evil.example/en/check-in/${token}`,
@@ -55,9 +55,7 @@ describe("verified venue QR navigation", () => {
         "en",
       ),
     ).toBeNull();
-    expect(
-      verifiedVenueQrPath(`/es/check-in/${token}`, "https://akipasa.com", "en"),
-    ).toBeNull();
+
     expect(
       verifiedVenueQrPath("javascript:alert(1)", "https://akipasa.com", "en"),
     ).toBeNull();
@@ -81,4 +79,20 @@ describe("verified venue QR navigation", () => {
       ),
     ).toBeNull();
   });
+});
+
+it("normalizes an official same-origin QR into the phone language", () => {
+  expect(
+    verifiedVenueQrPath(`/en/check-in/${token}`, "https://akipasa.com", "es"),
+  ).toBe(`/es/check-in/${token}`);
+  expect(
+    verifiedVenueQrPath(
+      `https://akipasa.com/es/check-in/${token}`,
+      "https://akipasa.com",
+      "en",
+    ),
+  ).toBe(`/en/check-in/${token}`);
+  expect(
+    verifiedVenueQrPath(`/fr/check-in/${token}`, "https://akipasa.com", "es"),
+  ).toBeNull();
 });

@@ -1,0 +1,60 @@
+.success {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  padding: clamp(1.25rem, 4vw, 2rem);
+  margin-block: 1rem;
+  color: #fff6e9;
+  background: radial-gradient(ellipse at top left, #6d3515, #241811 65%);
+  border: 1px solid #b96229;
+  border-radius: 1.5rem;
+  overflow-wrap: anywhere;
+}
+.success h2 {
+  color: inherit;
+  margin-block: 0.25rem 0.75rem;
+  font-size: clamp(1.65rem, 5vw, 2.5rem);
+}
+.success p {
+  color: inherit;
+  line-height: 1.6;
+}
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.seal {
+  display: grid;
+  place-items: center;
+  flex: 0 0 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: #ff8526;
+  color: #211409;
+  font-size: 1.75rem;
+  font-weight: 800;
+  animation: checkin-arrival 500ms ease-out both;
+}
+@keyframes checkin-arrival {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (max-width: 420px) {
+  .success {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .seal {
+    animation: none;
+  }
+}

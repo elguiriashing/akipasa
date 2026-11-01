@@ -2810,3 +2810,44 @@ private PR347 source is included. The integrated focused regression group passes
 38 cases; ff45290 full npm check passed before this base changed. Full checks
 and browser evidence must now bind the integrated source. SQL28bb/99627 remain
 unapplied to production.
+
+## 2026-11-01 | Approved production forwards, phase-one live, Android QR repair
+
+Owner explicitly approved the two production changes and reported a physical
+Android scanner preview with no response at a tablet venue QR. Supabase tool
+output was aborted during the first approved call; root did not retry blindly.
+Fresh catalog read revealed the Stories migration had actually completed at 20261101153017. API body581156a0 matches the reviewed source, bucket private/5MiB,
+client table SELECT denied, RLS and restrictive Storage policy intact, collection
+OFF. Owner-mail99627 then installed successfully; bodyab748386 matches, anonymous
+EXECUTE denied/authenticated allowed, raw outbox client SELECT still denied.
+
+PR348 expected-head merge25c7dcd producedd11794bcc830e43815d01ab42c04601139da2e00.
+Automatic build903b35a0-96c4-4dfd-b3b6-419092729d29 deployed compatible UI-off
+Worker d53f755e-3515-4c45-bfab-421e0b542723 at100%, deployment
+1b3639b2-80ea-4ea7-971f-53addb841be7. ReadinessTRUE/publishingFALSE and private
+identity/Funnel bindings verified from the deployed version, not latest preview.
+No duplicate deploy, production credential extraction or customer check-in was
+performed. Root integrated master normally, preserving pending independent fixes.
+
+Offline device-local decoding of the supplied screenshot proved an official
+Spanish QR while the phone page was English. The parser's locale rejection and
+silent native-only failures are repaired with strict same-origin EN/ES language
+normalization and pinned lazy jsqr1.4.0 fallback. Frames are bounded/local; native
+hangs time out, invalid/no-read feedback is explicit, and camera Stop/background
+generation guards remain. No raw owner QR credential is logged or committed.
+
+The form shows venue/GPS/server stages, validates fresh device fixes, and separates
+accuracy from server distance. A normal RLS-owned accepted visit now gates the
+Passport celebration; forged query strings cannot claim XP or location success.
+Missing legacy distance stays neutral; client/query exceptions fail closed without
+breaking Passport. EN/ES and reduced-motion behavior are covered by targeted
+regressions. Existing server action, geofence, auth and transactional XP are
+unchanged. Fresh compiled browser evidence/full final-head checks remain pending.
+
+This sequential follow-up stages source-controlled publicationTRUE after the
+compatible rollback Worker was verified. SQL collection remains OFF until the
+reviewed final Worker and public boundary checks pass. Do not infer physical
+Android success, attendance, physical purge or full historical replay parity from
+QA. The exact current readonly venue-preview migration was added only to the
+existing isolated QA fixture for actual page rendering; production already had
+that RPC and no new production preview mutation was required.

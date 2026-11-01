@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { verifiedVenueQrPath } from "@/lib/checkin-scan";
+import { createCheckInFrameReader } from "@/lib/checkin-frame-reader";
 
 type ScanResult = { rawValue: string };
 type BarcodeReader = {
@@ -52,7 +53,7 @@ export function CheckInScanner({ locale }: { locale: "en" | "es" }) {
     if (requesting.current || camera.current || document.hidden) return;
     const Factory = (window as Window & { BarcodeDetector?: BarcodeFactory })
       .BarcodeDetector;
-    if (!Factory || !navigator.mediaDevices?.getUserMedia) {
+    if (!navigator.mediaDevices?.getUserMedia) {
       setStatus("unsupported");
       setMessage(
         es
@@ -98,7 +99,7 @@ export function CheckInScanner({ locale }: { locale: "en" | "es" }) {
         return;
       }
       requesting.current = false;
-      const reader = new Factory({ formats: ["qr_code"] });
+      const reader = createCheckInFrameReader(Factory);
       setStatus("scanning");
       setMessage(
         es
@@ -106,6 +107,9 @@ export function CheckInScanner({ locale }: { locale: "en" | "es" }) {
           : "Point the camera at the venue's official QR.",
       );
       let busy = false;
+      let nextFrameAt = 0;
+      let errors = 0;
+      const startedAt = Date.now();
       const scan = async () => {
         if (
           busy ||
@@ -115,9 +119,15 @@ export function CheckInScanner({ locale }: { locale: "en" | "es" }) {
           !video.current
         )
           return;
+        if (Date.now() < nextFrameAt) {
+          frame.current = requestAnimationFrame(scan);
+          return;
+        }
+        nextFrameAt = Date.now() + 200;
         busy = true;
         try {
           const detected = await reader.detect(video.current);
+          errors = 0;
           if (generation.current !== request || document.hidden) return;
           const target = detected
             .map((item) =>
@@ -129,8 +139,32 @@ export function CheckInScanner({ locale }: { locale: "en" | "es" }) {
             router.push(target);
             return;
           }
+          if (detected.length) {
+            setMessage(
+              es
+                ? "Este no es un QR de check-in válido de AkiPasa. Usa el QR oficial del local."
+                : "This is not a valid AkiPasa check-in QR. Use the venue’s official QR.",
+            );
+          } else if (Date.now() - startedAt > 8000) {
+            setMessage(
+              es
+                ? "No se ha leído ningún QR. Acércate, evita reflejos y mantén el código completo dentro de la cámara."
+                : "No QR read yet. Move closer, avoid reflections and keep the whole code in the camera.",
+            );
+          }
         } catch {
-          // Unsupported frames are ignored; server still validates any opened token.
+          if (generation.current !== request || document.hidden) return;
+          errors++;
+          if (errors >= 3) {
+            stop();
+            setStatus("error");
+            setMessage(
+              es
+                ? "No se pudo leer la cámara. Inténtalo de nuevo o abre el QR con la cámara del móvil."
+                : "Camera decoding failed. Try again or open the QR with your phone’s camera.",
+            );
+            return;
+          }
         } finally {
           busy = false;
         }

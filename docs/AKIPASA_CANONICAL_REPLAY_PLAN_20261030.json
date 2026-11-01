@@ -3253,7 +3253,7 @@
         "database/migrations/20261020190818_account_identity_existence_guard.sql"
       ],
       "filenameVersion": "20261031230204",
-      "reason": "New source-only City Stories, private storage, owner lifecycle and export delta. Not applied or admitted to the historical candidate prefix; requires scoped independent schema/storage/role acceptance and explicit deployment authorization."
+      "reason": "Scoped City Stories production forward installed 2026-11-01 after owner authorization and real isolated Auth/storage/export/cleanup verification. Historical fresh-replay candidate admission remains unresolved; production installation does not establish full replay parity."
     },
     {
       "path": "supabase/migrations/20261031230204_community_stories.sql",
@@ -3270,7 +3270,7 @@
       "classification": "unresolved",
       "requires": ["database/migrations/20261011013000_suite_emails.sql"],
       "filenameVersion": "20261101115853",
-      "reason": "Scoped caller-only personal mail export repair. Applied only to isolated QA; not admitted to the historical candidate prefix or evidence of production application/parity."
+      "reason": "Scoped caller-only personal mail export repair installed in production 2026-11-01 after owner approval and genuine provider/export tests. Still outside the historical candidate prefix; no full fresh-replay parity claim."
     },
     {
       "path": "supabase/migrations/20261101115853_suite_email_owner_export.sql",

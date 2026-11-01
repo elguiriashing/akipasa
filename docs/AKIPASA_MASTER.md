@@ -4616,3 +4616,43 @@ not evidence of production SQL, merge, activation or physical-phone acceptance.
 **Scope and dependencies.** Four runtime files only: DiscoveryArtwork component/styles, Home venue card styles and the storefront SVG. Existing AkiHQ Explore selection, claim metadata, public RLS/storage signing, URLs, pagination, locale handling, analytics and private AkiPals access are unchanged. No SQL, customer data, auth, secrets, billing or provider configuration changes. Rollback reverts these UI sources without touching stored media.
 
 **Verification gates.** The new maintained browser suite exercises actual compiled artwork with transparent, absent and HTTP-failed images, recovery and live theme switching; screenshots sample the rendered transparent corner pixels. Actual Next Home in EN/ES at phone/desktop widths verifies one image, physical text/artwork separation, solid theme colours, absent hover-overlay dependency and at least 4.5:1 label contrast. Existing responsive Home, Map, Event and cross-app CI remain required. Inspect rendered evidence before merging; verify the exact deployed source and live DOM/image loading afterwards. Browser emulation is not physical Android certification. No pass or live release is claimed by this contract entry alone.
+
+## 2026-11-01 | Physical QR failure, location receipt and publication activation
+
+Alex approved the reviewed production SQL and reported Android camera preview
+opening without recognizing the venue QR displayed on a tablet. Offline decoding
+of the supplied image established an official Spanish check-in URL; the phone
+page was English. The prior scanner rejected cross-language official URLs and
+silently ignored detector failures. Accept only the existing exact same-origin
+EN/ES venue-token shape, normalize navigation to the phone language, retain all
+other origin/query/hash/token guards, and provide explicit invalid/no-read states.
+A pinned, lazy jsqr1.4.0 decoder processes bounded camera frames locally when the
+native detector is absent, fails, hangs or returns no result. No frame upload,
+AI call, production QR credential logging, location call before choice, or change
+to server proof/authorization/geofence/transactional XP is introduced.
+
+The venue form distinguishes venue identification, an opt-in fresh GPS fix and
+server acceptance. Device accuracy is not venue distance. Invalid/nonfinite or
+out-of-range fixes cannot enable confirmation. The accepted Passport query is
+neutral until a normal authenticated/RLS read proves the requested accepted visit
+belongs to that member. Only that record produces the new short celebration;
+location-confirmed copy additionally requires a finite nonnegative persisted
+distance. Missing legacy distance is described honestly. No fabricated XP amount,
+new reward, audio or motion against reduced-motion preference is introduced.
+
+Production Stories28bb and owner-mail99627 were installed after explicit owner
+approval. Story API body581156a07b486f00bda3eec2b4c68196230882f95027ddb7de63e147c19962bf
+and mail bodyab74838628244183e45f9d5653d30dc8ff9453c339d0778f37e039025260c8ed
+match reviewed sources; bucket private/5MiB, client table access denied and SQL
+collection OFF. PR348 merge d11794bcc830e43815d01ab42c04601139da2e00 deployed
+through automatic master build903b35a0-96c4-4dfd-b3b6-419092729d29. Verified
+Worker d53f755e-3515-4c45-bfab-421e0b542723 at100% is the compatible rollback:
+schema readiness TRUE, publishing FALSE, private identity/Funnel flags preserved.
+
+The follow-up sets source-controlled publishing TRUE while keeping readiness
+TRUE. Do not enable SQL collection until fresh exact-head checks, actual camera
+pixel/browser/receipt evidence and the exact automatic Worker are verified.
+Rollback stops SQL collection first and returns to a compatible UI-off Worker;
+retain schema, owner withdrawal/cleanup and complete exports. Original332 remains
+complete; private347 is not included. No physical Android success, actual venue
+attendance, automated media purge or backup erasure is inferred from fixtures.

@@ -62,6 +62,13 @@ describe("venue check-in proof UI", () => {
 
     expect(submit).toBeEnabled();
     expect(screen.getByText(/Location received/)).toBeVisible();
+    expect(screen.getByText(/Device accuracy/)).toHaveTextContent("±19 m");
+    expect(screen.getByText(/Device accuracy/)).toHaveTextContent(
+      "server checks it when you submit",
+    );
+    expect(
+      screen.queryByText(/Location confirmed by the server/),
+    ).not.toBeInTheDocument();
     expect(screen.queryByText(/Location verified/i)).not.toBeInTheDocument();
   });
 
@@ -109,4 +116,25 @@ describe("venue check-in proof UI", () => {
       screen.getByRole("button", { name: "Confirmar check-in" }),
     ).toBeDisabled();
   });
+  it.each([NaN, Infinity, -1, 501])(
+    "does not submit or present invalid browser accuracy %s as a usable fix",
+    (accuracy) => {
+      render(<CheckInForm {...props} />);
+      fireEvent.click(
+        screen.getByRole("button", { name: "Get current location" }),
+      );
+      act(() => {
+        getCurrentPosition.mock.calls[0][0]({
+          coords: { latitude: 36.54, longitude: -4.63, accuracy },
+        });
+      });
+      expect(
+        screen.getByRole("button", { name: "Confirm check-in" }),
+      ).toBeDisabled();
+      expect(
+        screen.getByText(/A precise location was not received/),
+      ).toBeVisible();
+      expect(screen.queryByText(/Device accuracy/)).not.toBeInTheDocument();
+    },
+  );
 });

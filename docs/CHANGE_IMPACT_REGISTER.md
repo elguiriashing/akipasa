@@ -5420,3 +5420,29 @@ uploaded settings, which may describe unrelated unpublished preview code.
 **Scope and dependencies.** Four runtime files only: DiscoveryArtwork component/styles, Home venue card styles and the storefront SVG. Existing AkiHQ Explore selection, claim metadata, public RLS/storage signing, URLs, pagination, locale handling, analytics and private AkiPals access are unchanged. No SQL, customer data, auth, secrets, billing or provider configuration changes. Rollback reverts these UI sources without touching stored media.
 
 **Verification gates.** The new maintained browser suite exercises actual compiled artwork with transparent, absent and HTTP-failed images, recovery and live theme switching; screenshots sample the rendered transparent corner pixels. Actual Next Home in EN/ES at phone/desktop widths verifies one image, physical text/artwork separation, solid theme colours, absent hover-overlay dependency and at least 4.5:1 label contrast. Existing responsive Home, Map, Event and cross-app CI remain required. Inspect rendered evidence before merging; verify the exact deployed source and live DOM/image loading afterwards. Browser emulation is not physical Android certification. No pass or live release is claimed by this contract entry alone.
+
+## 2026-11-01 | QR language recovery and server-confirmed check-in feedback
+
+- Trigger: owner Android screenshots show live camera but no action at a valid
+  tablet QR. Offline decoding confirmed an ES URL versus an EN scanner; previous
+  language rejection and silent native detector errors explain a real failure.
+- Dependencies: scanner -> strict same-origin token parser -> existing localized
+  authenticated venue preview -> existing fresh-GPS form -> unchanged canonical
+  check_in_by_token/geofence/idempotent rewards -> Passport receipt. New success
+  reads only caller-owned accepted records through RLS. Query text is not proof.
+- Client repair: pinned local jsqr1.4.0 fallback, bounded frames/timeouts, explicit
+  feedback, preserved camera generation/Stop/background safeguards. EN/ES QR URLs
+  normalize only their language; foreign/scheme/query/hash/invalid tokens stay
+  rejected. User QR credentials are neither logged nor committed.
+- Presentation: clear venue/GPS/server stages; truthful device accuracy; actual
+  persisted distance only; short reduced-motion-aware accepted-visit animation.
+  Missing distance does not claim location verification. No new XP or server
+  geofence/radius rule, tracking, audio or data retention is introduced.
+- Release:348 is deployed d11794b / compatible Worker d53f755e, readiness ON and
+  publication OFF after both reviewed SQL forwards were verified. This follow-up
+  stages publication ON. Required exact-head checks and real compiled browser
+  evidence precede merge; actual Worker verification precedes SQL collection ON.
+  Preserve all new Home artwork/theme work and keep private347 unmerged.
+- Rollback: stop collection then use the recorded schema-compatible UI-off Worker;
+  preserve private bucket, retained rows, complete export and owner cleanup rights.
+  No claim of physical-phone acceptance or backup erasure from emulation.
