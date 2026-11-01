@@ -25,7 +25,12 @@ export default async function HQLogin({
       <section className={styles.shell}>
         <div className={styles.content}>
           <div className={styles.brand}>
-            <Image src="/brand/v3/pasa.svg" alt="" width={52} height={52} />
+            <Image
+              src="/brand/v3/pasa-2026.svg"
+              alt=""
+              width={52}
+              height={52}
+            />
             <span>
               AkiPasa <span aria-hidden="true">/</span> AkiHQ
             </span>

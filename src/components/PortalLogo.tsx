@@ -21,7 +21,7 @@ export function PortalLogo({
       <Image
         src={
           product === "pasa"
-            ? "/brand/v3/pasa.svg"
+            ? "/brand/v3/pasa-2026.svg"
             : product === "hq"
               ? "/brand/v3/hq.svg"
               : product === "coches"

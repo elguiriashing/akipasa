@@ -110,3 +110,6 @@ for (const [repo, own] of [["akipasa", "pasa"]]) {
       await readFile(resolve(root, "mobile/icons/adaptive-foreground.png")),
     );
 }
+
+// Pasa uses the newer movement identity, including the native notification glyph.
+await import("./generate-pasa-2026-icons.mjs");

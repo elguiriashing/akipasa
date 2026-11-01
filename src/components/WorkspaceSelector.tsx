@@ -72,7 +72,7 @@ export function WorkspaceSelector({
           arrival: option.id,
           symbol: (
             <Image
-              src={`/brand/v3/${option.id}.svg`}
+              src={`/brand/v3/${option.id === "pasa" ? "pasa-2026" : option.id}.svg`}
               alt=""
               width={56}
               height={56}

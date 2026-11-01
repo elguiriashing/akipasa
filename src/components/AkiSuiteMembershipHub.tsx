@@ -19,7 +19,7 @@ const apps = [
     key: "akipasa",
     name: "AkiPasa",
     hue: "orange",
-    icon: "/brand/v3/pasa.svg",
+    icon: "/brand/v3/pasa-2026.svg",
   },
   {
     key: "akiduermo",

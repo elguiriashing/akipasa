@@ -86,7 +86,7 @@ export function DiscoveryNavigation({
         aria-label={es ? `Inicio de ${name}` : `${name} home`}
       >
         <Image
-          src={`/brand/v3/${product}.svg`}
+          src={`/brand/v3/${product === "pasa" ? "pasa-2026" : product}.svg`}
           width={40}
           height={40}
           alt=""
@@ -135,7 +135,7 @@ export function DiscoveryNavigation({
                   onClick={() => menu.current?.removeAttribute("open")}
                 >
                   <Image
-                    src={`/brand/v3/${id}.svg`}
+                    src={`/brand/v3/${id === "pasa" ? "pasa-2026" : id}.svg`}
                     width={36}
                     height={36}
                     alt=""
