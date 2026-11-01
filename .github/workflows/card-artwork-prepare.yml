@@ -1,0 +1,42 @@
+name: Prepare isolated discovery artwork source
+on:
+  push:
+    branches: [fix/discovery-card-transparency-20261101]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.repository == 'elguiriashing/akipasa' && github.ref == 'refs/heads/fix/discovery-card-transparency-20261101'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Append scoped contract without replacing historical documentation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          note = Path('docs/DISCOVERY_CARD_ARTWORK_20261101.md').read_text()
+          heading = note.splitlines()[0]
+          for filename in ['docs/AKIPASA_MASTER.md', 'docs/CHANGE_IMPACT_REGISTER.md']:
+              path = Path(filename)
+              original = path.read_text()
+              if heading not in original:
+                  path.write_text(original.rstrip() + '\n\n' + note)
+          PY
+      - name: Format scoped source and documentation
+        run: npx prettier --write src/components/DiscoveryArtwork.tsx src/components/DiscoveryArtwork.module.css 'src/app/[locale]/home-venues.module.css' tests/e2e/discovery-artwork.spec.ts docs/DISCOVERY_CARD_ARTWORK_20261101.md docs/AKIPASA_MASTER.md docs/CHANGE_IMPACT_REGISTER.md
+      - name: Commit prepared source and remove this temporary helper
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/card-artwork-prepare.yml
+          git add src/components/DiscoveryArtwork.tsx src/components/DiscoveryArtwork.module.css 'src/app/[locale]/home-venues.module.css' tests/e2e/discovery-artwork.spec.ts docs/DISCOVERY_CARD_ARTWORK_20261101.md docs/AKIPASA_MASTER.md docs/CHANGE_IMPACT_REGISTER.md
+          git commit -m 'Prepare discovery artwork regression source and contract'
+          git push origin HEAD:fix/discovery-card-transparency-20261101
