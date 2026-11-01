@@ -1,5 +1,15 @@
 # Change Impact Register
 
+## 2026-11-01 | P0 Explore media binding and storefront fallback (#351)
+
+**Cause.** Public nearby venue pagination returns geography and claim metadata, not the media slots assigned in AkiHQ. Home/Map cards ignored real venue images and always painted black. Events already resolve explicit Explore media but could show broken URLs.
+
+**Change.** For only the current published result page, resolve RLS-readable AkiHQ venue Explore, Cover and Profile placements (in that order); for media with no slot, consider its published/accessible gallery. Sign only selected paths via the existing public event-media bucket; an inaccessible or expired asset is never published as a plain storage path. Both claimed and unclaimed listings can display legitimate media; absent or failed images use the neutral illustration, not invented photos. Reusable responsive client artwork handles image errors for Home, Map, and event cards. The geospatial RPC, DB schema, indexes, APIs and eligibility rules remain unchanged.
+
+**Impact.** Public discovery, storage signing under existing RLS, venue management media assignments and event card UI. No owner actions, uploads, schema mutations, personal data, analytics changes or affected pricing. Bounded 20-row result image signing; fallback gallery read is bounded to 500. If the media lookup fails, the real venue list still renders.
+
+**Verification.** Added signed-URL and claim-state regression tests; full CI and responsive E2E required before merge, then Cloudflare source/deployment comparison and live smoke. Do not claim device or production-image success without inspecting it.
+
 ## 2026-10-31 | Finish authorized #332 release and preserve concurrent #341
 
 **Need.** Alex authorized completion, checks and live release after all90 page

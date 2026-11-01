@@ -1,5 +1,9 @@
 # AKIPASA MASTER SYSTEM CONTRACT
 
+## 2026-11-01 | Restore actual AkiHQ Explore media on nearby cards (#351)
+
+Nearby Home/Map venue cards had a metadata-only geography RPC and rendered hardcoded black cards, ignoring AkiHQ's existing venue_explore selection. Keep the performant, page-bounded public_nearby_venue_page RPC unchanged; for its 20 published rows, resolve public venue_explore → venue_cover → venue_profile placements through existing RLS, and optionally use an existing gallery image for venues without slots. Sign only the chosen paths through the public event-media storage authority. Unclaimed status does not conceal an existing legitimate photo. Media read/sign failure preserves discovery and displays a neutral, grey storefront vector; client image load failures do likewise. Event-card artwork keeps its current Explore/Map priority, with the same resilient visual fallback. No writes, migrations, claim/status changes, unauthorised media browsing, billing, geolocation, or analytics changes. Regression coverage is tests/nearby-venue-artwork.test.ts plus existing Explore/Map, event media and responsive suites. Deployment requires fresh exact-head CI and live Cloudflare verification; physical-device tests are not claimed.
+
 ## 2026-10-31 | Owner-authorized coordinated release completion
 
 Alex has now instructed that #332's remaining work be completed, checked and

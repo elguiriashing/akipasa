@@ -10,6 +10,7 @@ import type { Locale } from "@/lib/config";
 import { eventPriceLabel } from "@/lib/event-price";
 import { msg } from "@/lib/messages";
 import { Icon } from "@/components/Icons";
+import { DiscoveryArtwork } from "@/components/DiscoveryArtwork";
 import { VerifiedBadge } from "./VerifiedBadge";
 import { trackBehaviour } from "@/lib/personalisation/client";
 import type { RecommendationReason } from "@/lib/personalisation/ranking";
@@ -212,22 +213,11 @@ export function EventCard({
       onClick={openEvent}
     >
       <div className="card-media">
-        {primaryImage ? (
-          <img
-            className={
-              primaryImageIsLogo
-                ? "card-media-image is-logo"
-                : "card-media-image"
-            }
-            src={primaryImage.url}
-            alt={translated(primaryImage.alt, locale)}
-            loading="lazy"
-          />
-        ) : (
-          <div className="card-media-fallback" aria-hidden>
-            <span>{result.event.category.slice(0, 1).toUpperCase()}</span>
-          </div>
-        )}
+        <DiscoveryArtwork
+          src={primaryImage?.url}
+          alt={primaryImage ? translated(primaryImage.alt, locale) : ""}
+          contain={primaryImageIsLogo}
+        />
         <div className="card-media-scrim" aria-hidden />
         {profileImage ? (
           <img
