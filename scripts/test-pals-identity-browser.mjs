@@ -271,7 +271,10 @@ try {
   const page = await context.newPage();
   const failures = [],
     modelRequests = [];
-  page.on("pageerror", (error) => failures.push(error.message));
+  page.on("pageerror", (error) => {
+    failures.push(error.message);
+    console.error("Wardrobe page error:", error.stack || error.message);
+  });
   page.on("request", (request) => {
     if (request.url().includes(".glb")) modelRequests.push(request.url());
   });

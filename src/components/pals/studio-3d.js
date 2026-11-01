@@ -441,7 +441,12 @@ function create(container, { mode = "studio" } = {}) {
       return previousStyle;
     },
     dispose() {
+      if (!active) return;
       active = false;
+      loadNumber++;
+      container.replaceChildren();
+      container.dataset.rendered = "disposed";
+      container.dataset.modelId = "";
       cancelAnimationFrame(raf);
       observer.disconnect();
       document.removeEventListener("visibilitychange", visibility);

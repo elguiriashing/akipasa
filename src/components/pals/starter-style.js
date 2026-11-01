@@ -9,6 +9,9 @@ import {
 const neutralImages = new WeakMap();
 function neutralFabric(texture) {
   if (!texture?.image || typeof document === "undefined") return;
+  // A texture Source must remain stable after its first GPU upload. Replacing
+  // it on every palette edit breaks ownership during context-loss cleanup.
+  if (texture.userData.palsNeutralReady) return;
   const original = texture.userData.palsOriginalImage ?? texture.image;
   texture.userData.palsOriginalImage = original;
   let image = neutralImages.get(original);
@@ -40,6 +43,7 @@ function neutralFabric(texture) {
   }
   // Texture.clone shares Source by default. Do not change the cached asset's image.
   texture.source = new THREE.Source(image);
+  texture.userData.palsNeutralReady = true;
   texture.needsUpdate = true;
 }
 function tint(material, color) {

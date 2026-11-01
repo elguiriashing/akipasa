@@ -724,6 +724,8 @@
   box-sizing: border-box;
 }
 .avatarPin {
+  /* Recovery controls must stay above venue markers, below map tools/HUD. */
+  z-index: 2;
   pointer-events: none;
 }
 
