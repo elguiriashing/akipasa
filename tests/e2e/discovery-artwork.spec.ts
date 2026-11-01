@@ -1,5 +1,5 @@
 import { build } from "esbuild";
-import { readFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
 
 let script = "";
@@ -10,6 +10,12 @@ const storefront = readFileSync(
 );
 const transparent =
   '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="220"><rect x="130" y="80" width="60" height="60" fill="#f26b1d"/></svg>';
+
+function keepEvidence(name: string, image: Buffer) {
+  mkdirSync("test-results", { recursive: true });
+  writeFileSync(`test-results/pasa-review-artwork-${name}.png`, image);
+  return image;
+}
 
 test.use({ serviceWorkers: "block" });
 test.beforeAll(async () => {
@@ -91,7 +97,10 @@ for (const theme of ["light", "dark"] as const) {
           theme === "light" ? "rgb(255, 255, 255)" : "rgb(0, 0, 0)",
         );
 
-        const shot = await page.locator("#artwork-fixture").screenshot();
+        const shot = keepEvidence(
+          `${theme}-${width}-transparent`,
+          await page.locator("#artwork-fixture").screenshot(),
+        );
         const corner = await page.evaluate(async (base64) => {
           const image = new Image();
           image.src = `data:image/png;base64,${base64}`;
@@ -113,7 +122,7 @@ for (const theme of ["light", "dark"] as const) {
 
         await page.evaluate(() =>
           (
-            window as Window & { updateArtwork: (src?: string) => void }
+            window as unknown as { updateArtwork: (src?: string) => void }
           ).updateArtwork("https://fixture.invalid/broken.svg"),
         );
         await expect(artwork).toHaveAttribute("data-artwork", "placeholder");
@@ -134,12 +143,15 @@ for (const theme of ["light", "dark"] as const) {
           .toBe(true);
         await page.evaluate(() =>
           (
-            window as Window & { updateArtwork: (src?: string) => void }
+            window as unknown as { updateArtwork: (src?: string) => void }
           ).updateArtwork(),
         );
         await expect(artwork).toHaveAttribute("data-artwork", "placeholder");
         await testInfo.attach("missing-artwork", {
-          body: await page.locator("#artwork-fixture").screenshot(),
+          body: keepEvidence(
+            `${theme}-${width}-missing`,
+            await page.locator("#artwork-fixture").screenshot(),
+          ),
           contentType: "image/png",
         });
         const otherTheme = theme === "light" ? "dark" : "light";
@@ -152,7 +164,7 @@ for (const theme of ["light", "dark"] as const) {
         );
         await page.evaluate(() =>
           (
-            window as Window & { updateArtwork: (src?: string) => void }
+            window as unknown as { updateArtwork: (src?: string) => void }
           ).updateArtwork("https://fixture.invalid/transparent.svg"),
         );
         await expect(artwork).toHaveAttribute("data-artwork", "photo");
@@ -246,7 +258,10 @@ for (const theme of ["light", "dark"] as const) {
               expect(contrast).toBeGreaterThanOrEqual(4.5);
           }
           await testInfo.attach("home-card-render", {
-            body: await page.locator("#venue-results").screenshot(),
+            body: keepEvidence(
+              `${locale}-${theme}-${width}-home`,
+              await page.locator("#venue-results").screenshot(),
+            ),
             contentType: "image/png",
           });
         });
