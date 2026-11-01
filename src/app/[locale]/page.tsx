@@ -1,6 +1,7 @@
 import { madridLocalDateTimeSchema } from "@/lib/time";
 import { ResultPagination } from "@/components/ResultPagination";
 import { Icon } from "@/components/Icons";
+import { DiscoveryArtwork } from "@/components/DiscoveryArtwork";
 import homeVenues from "./home-venues.module.css";
 import { resultPage, resultSlice } from "@/lib/result-pagination";
 import { publicPageMetadata } from "@/lib/page-metadata";
@@ -226,7 +227,7 @@ export default async function DiscoverPage({
           </div>
           <div className="discovery-empty-actions">
             <Link className="button button-ghost" href={`/${locale}/roadmap`}>
-              {locale === "es" ? "Ver nuestro plan" : "See our rollout plan"}
+              {locale === "es" ? "Ver nuestra hoja de ruta" : "See Our Roadmap"}
             </Link>
             {radius < 100 ? (
               <Link
@@ -304,6 +305,7 @@ export default async function DiscoverPage({
                 data-claim-status={venue.claimStatus}
                 href={`/${locale}/venues/${venue.slug}`}
               >
+                <DiscoveryArtwork src={venue.imageUrl} alt={venue.name} />
                 <div className={homeVenues.cardTop}>
                   <span className={homeVenues.mark} aria-hidden="true">
                     <Icon name="venue" size={24} />

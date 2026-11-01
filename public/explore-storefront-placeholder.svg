@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="340" viewBox="0 110 480 340" role="img" aria-label="Illustrated storefront">
+  <g fill="none" stroke="#91999f" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M111 229V183c0-12 10-22 22-22h214c12 0 22 10 22 22v46"/>
+    <path d="M101 224 128 176h224l27 48"/>
+    <path d="M101 224c0 20 23 29 38 13 12 19 33 18 47 0 13 19 34 19 54 0 15 19 35 19 54 0 14 18 35 19 47 0 16 16 38 7 38-13"/>
+    <path d="M124 259v132h232V259"/>
+    <path d="M148 391v-111h93v111M260 280h73v67h-73z"/>
+    <path d="M189 354h.5M118 392h245"/>
+    <path d="M85 422h310"/>
+  </g>
+</svg>

@@ -1,5 +1,15 @@
 # Change Impact Register
 
+## 2026-11-01 | P0 Explore media binding and storefront fallback (#351)
+
+**Cause.** Public nearby venue pagination returns geography and claim metadata, not the media slots assigned in AkiHQ. Home/Map cards ignored real venue images and always painted black. Events already resolve explicit Explore media but could show broken URLs.
+
+**Change.** For only the current published result page, resolve RLS-readable AkiHQ venue Explore, Cover and Profile placements (in that order); for media with no slot, consider its published/accessible gallery. Sign only selected paths via the existing public event-media bucket; an inaccessible or expired asset is never published as a plain storage path. Both claimed and unclaimed listings can display legitimate media; absent or failed images use the neutral illustration, not invented photos. Reusable responsive client artwork handles image errors for Home, Map, and event cards. The geospatial RPC, DB schema, indexes, APIs and eligibility rules remain unchanged.
+
+**Impact.** Public discovery, storage signing under existing RLS, venue management media assignments and event card UI. No owner actions, uploads, schema mutations, personal data, analytics changes or affected pricing. Bounded 20-row result image signing; fallback gallery read is bounded to 500. If the media lookup fails, the real venue list still renders.
+
+**Verification.** Added signed-URL and claim-state regression tests; full CI and responsive E2E required before merge, then Cloudflare source/deployment comparison and live smoke. Do not claim device or production-image success without inspecting it.
+
 ## 2026-10-31 | Finish authorized #332 release and preserve concurrent #341
 
 **Need.** Alex authorized completion, checks and live release after all90 page
@@ -5378,3 +5388,35 @@ uploaded settings, which may describe unrelated unpublished preview code.
   reviewed readiness-on/publishing-off source through normal master automation.
   Retain schema readiness and privacy/export rights on rollback. Publishing is a
   subsequent reviewed gate; no successful merge or activation is implied here.
+
+## 2026-11-01 | Flush discovery hero and rolling local launch notice
+
+- **Owner request:** AkiPasa Home photography starts immediately after the launch strip in desktop, tablet and handset orientations; the formerly static banner scrolls a truthful Costa del Sol-first announcement. Public Roadmap links are retitled **Our Roadmap** in English and **Nuestra hoja de ruta** in Spanish while preserving existing `/en/roadmap` and `/es/roadmap` routes.
+- **Scope:** Client-side `LaunchRibbon` copy/styles, Home-only layout override in `PasaCinematic.css`, visible link/title copy on `AppShell`, localized Home/roadmap/footer, and focused E2E/contract tests. No backend, Auth, RLS, payments, geolocation, analytics, site-wide padding or alternate AkiSuite host changes.
+- **Accessibility:** One read-once, visually hidden announcement; duplicate visual track excluded from screen readers; pause on hover/focus, stop animation for reduced motion, fixed Roadmap link stays keyboard/touch accessible. No unsupported dates or promises.
+- **Verification:** Release only after exact-head CI, tested responsive Home geometry, EN/ES links and Cloudflare live version/source verification; physical device testing not claimed by emulation. Rollback reverts UI source only, no schema/data changes.
+
+## 2026-11-01 | AkiPasa light-theme portrait header and launch marquee
+
+- **Observed:** Actual Android Chrome screenshots show the consumer portrait/mobile header and launch strip retaining their dark palette after choosing light mode, while the desktop/landscape discovery rail is correctly light. The cause is hard-coded night colours in `PasaCinematic.css` for the mobile header and its controls, plus theme-unaware `LaunchRibbon.module.css`.
+- **Change:** On mobile shell widths up to 850px, apply `html[data-theme="light"]` cream background, navy wordmark/icons and light, bordered menu/search controls. The reusable EN/ES marquee now uses the same cream/light ink and accessible orange roadmap link for all viewport widths. Preserve the existing dark palette, orange brand mark, announcement content/animation/reduced-motion, 44px touch targets, inset/header geometry, and landscape rail without restructuring navigation.
+- **Boundaries:** AkiPasa client-side styling and Home browser regression only. No session/theme persistence logic, other suite host, auth/roles, database, API, analytics, personal data, consent, payment, CI or release flag changes.
+- **Evidence/gate:** Home EN/ES, dark/light, 360/390/820/1440 viewport browser assertions cover computed header, launcher, search, marquee colours and unchanged image adjacency. New tests toggle light through the real More sheet, rotate 390x844 -> 844x390 -> 390x844 and reload, checking persistence and actual computed styling. Require fresh exact-head checks plus verified production Cloudflare build/deployment; test emulation is not physical Android certification. Rollback is CSS/test/doc-only.
+
+## 2026-11-01 | Theme parity for canonical consumer dock and photographic Home controls
+
+- **Owner evidence and request:** Android Chrome screenshots show cream light-mode AkiPasa header, announcement and page, but the fixed five-item consumer bottom dock remains dark. Owner also requests polished light/dark treatment for the Home "What are you in the mood for?" search, quick plan chips (Today/Tonight/This weekend/Free plans/Map), and relevant controls, not just the dock.
+- **Root cause:** `PasaBottomDock.css` uses hard-coded near-black dock background and pale text regardless of `data-theme`. The `PlansFirstHero.module.css` plan links and `VenueQuickSearch.module.css` hero variant likewise lock dark surfaces; the photographic hero itself intentionally needs a dark gradient for the white headline.
+- **Change:** AkiPasa-only, `html[data-theme="light"]` scoped warm cream dock with dark readable icon labels, clear orange active state and unchanged orange/white central Check-in treatment. Light search and dropdown receive cream/white surfaces, navy text, readable placeholders, search glyph, status/retry, focus and result states. Light quick-plan links use cream/navy surfaces and a saturated orange first action. Dark appearance and photographic contrast stay unchanged; all touch sizes, safe-area padding, focus, EN/ES labels and hrefs persist. At >=851px the existing responsive desktop sidebar remains canonical.
+- **Scope and permissions:** Shared `PasaBottomDock` appears on Home, Map, Check-in, Community and signed-in Profile via the existing `AppShell`; the Auth/operations/owner-focus exceptions stay unchanged. No data, auth, RLS, API, Supabase, Cloudflare environment, analytics, email, sponsorship, payments, tracking, locale routing, map positioning or other AkiSuite host changes.
+- **Evidence required:** Extend existing EN/ES dark/light Home browser matrix at 360/390/820/1440 for real computed dock/search/chip colours; add cross-route 390px and orientation 820/900px dock checks, including active destination, five labels and Check-in tap target. Regression also covers reduced motion and existing theme-toggle/landscape persistence. Fresh exact-head npm/check, browser, Cloudflare build and live read-only smoke required before completion. No claim of physical Android-device proof from emulation. CSS-only rollback; no schema or user data migration.
+
+## 2026-11-01 | Exclusive discovery artwork and readable card surfaces
+
+**Owner correction.** Follow-up screenshots after #352 show the storefront under transparent venue logos and pale, unreadable text in both themes. The shared component rendered both images simultaneously. The Home gradient reused the global card pseudo-element, whose existing opacity:0 and height:3px rules disabled that contrast layer. Earlier HTTP/source checks did not establish rendered visual acceptance.
+
+**Runtime contract.** DiscoveryArtwork renders exactly one image: the selected published asset, or the neutral storefront when absent or failed. Source changes reset failure state. Transparency reveals only a white light-theme or black dark-theme backing, never the fallback illustration. The fallback SVG itself is transparent grey line art. Home cards put artwork above a solid themed information area rather than overlaying names/addresses/distances on imagery; claim labels have their own opaque backgrounds. Both themes retain readable text and keyboard focus. Home, Map and Event reuse the corrected shared artwork; event/map-specific media priority stays unchanged.
+
+**Scope and dependencies.** Four runtime files only: DiscoveryArtwork component/styles, Home venue card styles and the storefront SVG. Existing AkiHQ Explore selection, claim metadata, public RLS/storage signing, URLs, pagination, locale handling, analytics and private AkiPals access are unchanged. No SQL, customer data, auth, secrets, billing or provider configuration changes. Rollback reverts these UI sources without touching stored media.
+
+**Verification gates.** The new maintained browser suite exercises actual compiled artwork with transparent, absent and HTTP-failed images, recovery and live theme switching; screenshots sample the rendered transparent corner pixels. Actual Next Home in EN/ES at phone/desktop widths verifies one image, physical text/artwork separation, solid theme colours, absent hover-overlay dependency and at least 4.5:1 label contrast. Existing responsive Home, Map, Event and cross-app CI remain required. Inspect rendered evidence before merging; verify the exact deployed source and live DOM/image loading afterwards. Browser emulation is not physical Android certification. No pass or live release is claimed by this contract entry alone.

@@ -2800,3 +2800,13 @@ Production optional identity/Funnel export modules and gating blocks remain
 byte-identical. Their three live RPC signatures/ACLs/search paths were inspected
 without customer rows. QA with these optional flags unset verifies the repaired
 base and Stories sections, not authenticated production optional-export behavior.
+
+Integration recovery: after a managed tool stalled the session, fresh fetch found
+master19a1d1f (reviewed Home artwork, marquee and light-theme/dock releases).
+Merged that history normally, preserving all incoming runtime changes and both
+sets of mandatory test additions. Only append-only product/impact docs and the
+long package test script conflicted. No force push, competing deployment or
+private PR347 source is included. The integrated focused regression group passes
+38 cases; ff45290 full npm check passed before this base changed. Full checks
+and browser evidence must now bind the integrated source. SQL28bb/99627 remain
+unapplied to production.

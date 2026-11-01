@@ -147,7 +147,7 @@ export default async function LocaleLayout({
           </span>
           <nav aria-label={locale === "es" ? "Legal" : "Legal information"}>
             <Link href={`/${locale}/roadmap`}>
-              {locale === "es" ? "Plan de lanzamiento" : "Launch roadmap"}
+              {locale === "es" ? "Nuestra hoja de ruta" : "Our Roadmap"}
             </Link>
             <Link href={`/${locale}/privacy`}>
               {locale === "es" ? "Privacidad" : "Privacy"}
