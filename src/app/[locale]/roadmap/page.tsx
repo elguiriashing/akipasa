@@ -17,7 +17,7 @@ export async function generateMetadata({
   return localizedMetadata(
     locale,
     "/roadmap",
-    es ? "Nuestro plan y expansión | AkiPasa" : "Our plan & rollout | AkiPasa",
+    es ? "Nuestra hoja de ruta | AkiPasa" : "Our Roadmap | AkiPasa",
     es
       ? "Descubre cómo se está preparando AkiPasa, empezando por la Costa del Sol y creciendo por España según la demanda."
       : "Follow the AkiPasa launch plan: Costa del Sol first, then expansion across Spain based on real demand.",
@@ -38,7 +38,7 @@ export default async function RoadmapPage({
       <div className={styles.topline}>
         <span className={styles.edition}>
           <span className={styles.liveDot} aria-hidden="true" /> AKIPASA /
-          ROADMAP
+          {es ? "NUESTRA HOJA DE RUTA" : "OUR ROADMAP"}
         </span>
         <Link href={`/${locale}`} className={styles.back}>
           <Icon name="arrow-right" size={16} />{" "}
@@ -113,7 +113,7 @@ export default async function RoadmapPage({
               01 / {es ? "EL VIAJE" : "THE JOURNEY"}
             </span>
             <h2 id="plan-title">
-              {es ? "Nuestro plan de lanzamiento" : "The launch plan"}
+              {es ? "Nuestra hoja de ruta" : "Our Roadmap"}
             </h2>
           </div>
           <p>

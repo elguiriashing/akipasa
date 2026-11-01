@@ -4533,3 +4533,10 @@ canonical scope,
 non-execution gates and STOPs remain intact. No hosted storage evidence, paid
 resource, production SQL, photo activation or physical Android proof is claimed.
 New targeted and exact-head validation is required before merging repaired source.
+
+## 2026-11-01 | Flush discovery hero and rolling local launch notice
+
+- **Owner request:** AkiPasa Home photography starts immediately after the launch strip in desktop, tablet and handset orientations; the formerly static banner scrolls a truthful Costa del Sol-first announcement. Public Roadmap links are retitled **Our Roadmap** in English and **Nuestra hoja de ruta** in Spanish while preserving existing `/en/roadmap` and `/es/roadmap` routes.
+- **Scope:** Client-side `LaunchRibbon` copy/styles, Home-only layout override in `PasaCinematic.css`, visible link/title copy on `AppShell`, localized Home/roadmap/footer, and focused E2E/contract tests. No backend, Auth, RLS, payments, geolocation, analytics, site-wide padding or alternate AkiSuite host changes.
+- **Accessibility:** One read-once, visually hidden announcement; duplicate visual track excluded from screen readers; pause on hover/focus, stop animation for reduced motion, fixed Roadmap link stays keyboard/touch accessible. No unsupported dates or promises.
+- **Verification:** Release only after exact-head CI, tested responsive Home geometry, EN/ES links and Cloudflare live version/source verification; physical device testing not claimed by emulation. Rollback reverts UI source only, no schema/data changes.

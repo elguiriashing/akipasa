@@ -6,6 +6,7 @@
   width: min(100%, 1240px);
   margin: 0 auto 12px;
   padding: 5px 16px;
+  overflow: hidden;
   border-bottom: 1px solid #39302a;
   background: #101112;
   color: #f9f8f7;
@@ -17,15 +18,42 @@
   border-radius: 50%;
   background: #ff8b48;
 }
-.ribbon p {
+.viewport {
+  position: relative;
   flex: 1 1 auto;
-  margin: 0;
-  font-size: 0.76rem;
-  line-height: 1.4;
-  color: #e1dcd8;
+  min-width: 0;
+  overflow: hidden;
 }
-.ribbon strong {
+.accessible {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.track {
+  display: flex;
+  width: max-content;
+  animation: launch-scroll 34s linear infinite;
+}
+.message {
+  flex: 0 0 auto;
+  padding-right: 3rem;
+  color: #e1dcd8;
+  font-size: 0.76rem;
   font-weight: 550;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.ribbon:hover .track,
+.ribbon:focus-within .track {
+  animation-play-state: paused;
+}
+@keyframes launch-scroll {
+  to {
+    transform: translateX(-50%);
+  }
 }
 .link {
   display: inline-flex;
@@ -54,9 +82,7 @@
     gap: 8px;
     padding-inline: 12px;
   }
-  .ribbon p {
-    font-size: 0.72rem;
-  }
+  .message,
   .link {
     font-size: 0.72rem;
   }
@@ -64,5 +90,13 @@
 @media (min-width: 851px) {
   .ribbon {
     padding-right: 76px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
+  .message + .message {
+    display: none;
   }
 }

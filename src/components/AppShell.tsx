@@ -195,7 +195,7 @@ export function AppShell({
     { href: `/${locale}/passports`, label: m.passports, icon: "passport" },
     {
       href: `/${locale}/roadmap`,
-      label: es ? "Plan de lanzamiento" : "Roadmap",
+      label: es ? "Nuestra hoja de ruta" : "Our Roadmap",
       icon: "calendar",
     },
     {
