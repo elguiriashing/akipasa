@@ -1,0 +1,72 @@
+.camera {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--story-line, #51443b);
+  border-radius: 18px;
+  background: var(--story-raised, #1c1a18);
+  color: var(--story-ink, #faf7f3);
+}
+.video {
+  width: 100%;
+  max-height: 440px;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: 14px;
+  background: #080808;
+}
+.video[hidden] {
+  display: none;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.actions button {
+  min-height: 48px;
+  padding: 12px 18px;
+  border: 1px solid var(--story-accent, #ffad78);
+  border-radius: 14px;
+  background: var(--story-surface, #111213);
+  color: var(--story-ink, #faf7f3);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.actions button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.actions button:focus-visible {
+  outline: 3px solid var(--story-accent, #ffad78);
+  outline-offset: 3px;
+}
+
+.actions button:first-child {
+  background: #ff762b;
+  color: #21140c;
+  border-color: #ff762b;
+}
+.camera details {
+  color: var(--story-muted, #c9c2bb);
+  font-size: 13px;
+}
+.camera summary {
+  cursor: pointer;
+  min-height: 32px;
+  display: list-item;
+}
+
+.compact {
+  padding: 0;
+  border: 0;
+  background: none;
+  gap: 0;
+}
+.compact .actions button:first-child {
+  background: transparent;
+  color: var(--story-ink, #faf7f3);
+  border-color: var(--story-line, #51443b);
+}

@@ -8,6 +8,44 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+const { freshGeo, qualityCheck } = vi.hoisted(() => ({
+  freshGeo: vi.fn(),
+  qualityCheck: vi.fn(),
+}));
+vi.mock("@/lib/community-stories/photo-quality", () => ({
+  checkPhotoQuality: qualityCheck,
+}));
+vi.mock("./StoryCamera", async (original) => {
+  const actual = await original<typeof import("./StoryCamera")>();
+  return {
+    ...actual,
+    freshStoryLocation: freshGeo,
+    StoryCamera: ({
+      onCapture,
+      facing,
+      disabled,
+    }: {
+      onCapture: (file: File) => void;
+      facing: string;
+      disabled: boolean;
+    }) => (
+      <button
+        type="button"
+        disabled={disabled}
+        data-facing={facing}
+        onClick={() =>
+          onCapture(
+            new File(["fresh camera pixels"], "fresh.jpg", {
+              type: "image/jpeg",
+            }),
+          )
+        }
+      >
+        Capture fixture photo
+      </button>
+    ),
+  };
+});
 import {
   CheckinStoryComposer,
   prepareCheckinStoryPhoto,
@@ -24,6 +62,13 @@ let encoding: Blob | null;
 let canvasSize: [number, number];
 beforeEach(() => {
   vi.clearAllMocks();
+  freshGeo.mockImplementation(async () => ({
+    latitude: 36.54,
+    longitude: -4.62,
+    accuracy: 10,
+    locatedAt: Date.now(),
+  }));
+  qualityCheck.mockResolvedValue(null);
   encoding = new Blob(
     [
       new Uint8Array([
@@ -45,6 +90,11 @@ beforeEach(() => {
     fillStyle: "",
     fillRect,
     drawImage,
+    getImageData: () => ({
+      data: new Uint8ClampedArray(4),
+      width: 640,
+      height: 480,
+    }),
   } as unknown as CanvasRenderingContext2D);
   vi.spyOn(HTMLCanvasElement.prototype, "toBlob").mockImplementation(function (
     this: HTMLCanvasElement,
@@ -76,9 +126,9 @@ const photo = () =>
     type: "image/jpeg",
   });
 async function choose() {
-  fireEvent.change(screen.getByLabelText(/^(Choose photo|Elegir foto)$/), {
-    target: { files: [photo()] },
-  });
+  fireEvent.click(
+    screen.getByRole("button", { name: "Capture fixture photo" }),
+  );
   await screen.findByAltText(
     /^(Preview of your chosen photo|Vista previa de la foto que has elegido)$/,
   );
@@ -88,7 +138,7 @@ describe("static opaque metadata-free image preparation", () => {
     const file = await prepareCheckinStoryPhoto(photo());
     expect(canvasSize).toEqual([1280, 960]);
     expect(fillRect).toHaveBeenCalledWith(0, 0, 1280, 960);
-    expect(drawImage).toHaveBeenCalledOnce();
+    expect(drawImage).toHaveBeenCalledTimes(2);
     expect(closeBitmap).toHaveBeenCalledOnce();
     expect(file.name).toBe("checkin-story.webp");
     expect(file.type).toBe("image/webp");
@@ -226,12 +276,12 @@ for (const locale of ["en", "es"] as const) {
     expect(optIn).not.toBeChecked();
     expect(fetcher).not.toHaveBeenCalled();
     expect(
-      screen.getByLabelText(locale === "es" ? "Hacer foto" : "Take photo"),
-    ).toHaveAttribute("capture", "environment");
+      screen.getByRole("button", { name: "Capture fixture photo" }),
+    ).toHaveAttribute("data-facing", "environment");
     fireEvent.click(screen.getByLabelText("Selfie"));
     expect(
-      screen.getByLabelText(locale === "es" ? "Hacer foto" : "Take photo"),
-    ).toHaveAttribute("capture", "user");
+      screen.getByRole("button", { name: "Capture fixture photo" }),
+    ).toHaveAttribute("data-facing", "user");
     fireEvent.click(optIn);
     expect(screen.getByRole("button", { name: submitLabel })).toBeEnabled();
   });
@@ -244,6 +294,9 @@ for (const locale of ["en", "es"] as const) {
       />,
     );
     await choose();
+    fireEvent.click(
+      screen.getByText(locale === "es" ? "Añadir texto" : "Add caption"),
+    );
     fireEvent.change(
       screen.getByLabelText(
         locale === "es" ? "Texto (opcional)" : "Caption (optional)",
@@ -263,10 +316,14 @@ for (const locale of ["en", "es"] as const) {
     expect(options.headers).toBeUndefined();
     const form = options.body as FormData;
     expect([...form.keys()].sort()).toEqual([
+      "accuracy",
       "caption",
       "checkInId",
       "file",
       "kind",
+      "latitude",
+      "locatedAt",
+      "longitude",
       "publicOptIn",
     ]);
     expect(form.get("checkInId")).toBe(checkInId);
@@ -330,7 +387,7 @@ it("cannot submit twice while a request is pending", async () => {
     .closest("form")!;
   fireEvent.submit(form);
   fireEvent.submit(form);
-  expect(fetcher).toHaveBeenCalledOnce();
+  await waitFor(() => expect(fetcher).toHaveBeenCalledOnce());
   expect(screen.getByRole("button", { name: "Sending…" })).toBeDisabled();
 });
 it("does not accept a forged auto-approved response as a successful public share", async () => {
@@ -410,11 +467,192 @@ it("ignores preparation completing after unmount", async () => {
       venueName="Known venue"
     />,
   );
-  fireEvent.change(screen.getByLabelText("Choose photo"), {
-    target: { files: [photo()] },
-  });
+  fireEvent.click(
+    screen.getByRole("button", { name: "Capture fixture photo" }),
+  );
   view.unmount();
   resolve({ width: 100, height: 100, close: closeBitmap });
   await waitFor(() => expect(closeBitmap).toHaveBeenCalledOnce());
   expect(createUrl).not.toHaveBeenCalled();
 });
+
+it.each(["en", "es"] as const)(
+  "%s explains separate photos and lets people remove a preview without sharing",
+  async (locale) => {
+    render(
+      <CheckinStoryComposer
+        locale={locale}
+        checkInId={checkInId}
+        venueName="Known venue"
+      />,
+    );
+    const help = screen.getByText(
+      locale === "es" ? "Fotos y privacidad" : "Photo guidance & privacy",
+    );
+    expect(help.closest("details")).not.toHaveAttribute("open");
+    fireEvent.click(help);
+    expect(
+      screen.getByText(
+        locale === "es"
+          ? /El escáner QR no guarda ni adjunta imágenes/
+          : /The QR scanner does not save or attach images/,
+      ),
+    ).toBeVisible();
+    expect(
+      screen.queryByRole("button", {
+        name: locale === "es" ? "Quitar foto" : "Remove photo",
+      }),
+    ).not.toBeInTheDocument();
+    await choose();
+    expect(
+      screen.getByRole("heading", {
+        name: locale === "es" ? "Revisa tu foto" : "Review your photo",
+      }),
+    ).toBeVisible();
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: locale === "es" ? "Quitar foto" : "Remove photo",
+      }),
+    );
+    expect(
+      screen.queryByAltText(
+        /^(Preview of your chosen photo|Vista previa de la foto que has elegido)$/,
+      ),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("checkbox")).not.toBeChecked();
+    expect(
+      screen.getByRole("button", {
+        name: locale === "es" ? "Enviar a revisión" : "Submit for review",
+      }),
+    ).toBeDisabled();
+    expect(revokeUrl).toHaveBeenCalled();
+    expect(fetcher).not.toHaveBeenCalled();
+  },
+);
+it("replacing a preview requires fresh permission and never uploads automatically", async () => {
+  render(
+    <CheckinStoryComposer
+      locale="en"
+      checkInId={checkInId}
+      venueName="Known venue"
+    />,
+  );
+  await choose();
+  fireEvent.click(screen.getByRole("checkbox"));
+  expect(
+    screen.getByRole("button", { name: "Submit for review" }),
+  ).toBeEnabled();
+  fireEvent.click(
+    screen.getByRole("button", { name: "Capture fixture photo" }),
+  );
+  await waitFor(() =>
+    expect(screen.getByAltText("Preview of your chosen photo")).toHaveAttribute(
+      "src",
+      "blob:sanitized-2",
+    ),
+  );
+  expect(screen.getByRole("checkbox")).not.toBeChecked();
+  expect(
+    screen.getByRole("button", { name: "Submit for review" }),
+  ).toBeDisabled();
+  expect(revokeUrl).toHaveBeenCalledWith("blob:sanitized-1");
+  expect(fetcher).not.toHaveBeenCalled();
+});
+
+it.each(["blank_photo", "qr_photo", "photo_check_unavailable"])(
+  "blocks preview and upload when local photo check reports %s",
+  async (code) => {
+    if (code === "photo_check_unavailable")
+      qualityCheck.mockRejectedValue(new Error(code));
+    else qualityCheck.mockResolvedValue(code);
+    render(
+      <CheckinStoryComposer
+        locale="en"
+        checkInId={checkInId}
+        venueName="Known venue"
+      />,
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Capture fixture photo" }),
+    );
+    expect(await screen.findByRole("alert")).toBeVisible();
+    expect(screen.queryByRole("img")).toBeNull();
+    expect(
+      screen.getByRole("button", { name: "Submit for review" }),
+    ).toBeDisabled();
+    expect(fetcher).not.toHaveBeenCalled();
+    expect(closeBitmap).toHaveBeenCalledOnce();
+  },
+);
+it("automatically obtains fresh submit location and retains private preview if location is denied", async () => {
+  freshGeo.mockRejectedValue(new Error("location_required"));
+  const view = render(
+    <CheckinStoryComposer
+      locale="en"
+      checkInId={checkInId}
+      venueName="Known venue"
+    />,
+  );
+  expect(view.container.querySelector('input[type="file"]')).toBeNull();
+  await choose();
+  fireEvent.click(screen.getByRole("checkbox"));
+  fireEvent.click(screen.getByRole("button", { name: "Submit for review" }));
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "Allow precise location",
+  );
+  expect(freshGeo).toHaveBeenCalledOnce();
+  expect(fetcher).not.toHaveBeenCalled();
+  expect(screen.getByAltText("Preview of your chosen photo")).toBeVisible();
+});
+it.each(["location_timeout", "location_unavailable"])(
+  "retains photo with specific %s recovery when automatic submit GPS fails",
+  async (code) => {
+    freshGeo.mockRejectedValue(new Error(code));
+    render(
+      <CheckinStoryComposer
+        locale="en"
+        checkInId={checkInId}
+        venueName="Known venue"
+      />,
+    );
+    await choose();
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(screen.getByRole("button", { name: "Submit for review" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      code === "location_timeout"
+        ? "Location took too long"
+        : "Your location could not be found",
+    );
+    expect(screen.getByAltText("Preview of your chosen photo")).toBeVisible();
+    expect(fetcher).not.toHaveBeenCalled();
+  },
+);
+
+it.each(["en", "es"] as const)(
+  "%s keeps the optional caption collapsed until requested",
+  (locale) => {
+    render(
+      <CheckinStoryComposer
+        locale={locale}
+        checkInId={checkInId}
+        venueName="Known venue"
+      />,
+    );
+    const add = screen.getByText(
+      locale === "en" ? "Add caption" : "Añadir texto",
+    );
+    const input = screen.getByLabelText(
+      locale === "en" ? "Caption (optional)" : "Texto (opcional)",
+    );
+    expect(add.closest("details")).not.toHaveAttribute("open");
+    expect(input).not.toBeVisible();
+    expect(input).toHaveValue("");
+    fireEvent.click(add);
+    expect(input).toBeVisible();
+    fireEvent.change(input, { target: { value: "A short caption" } });
+    expect(input).toHaveValue("A short caption");
+    expect(screen.getByRole("checkbox")).not.toBeChecked();
+    expect(fetcher).not.toHaveBeenCalled();
+  },
+);

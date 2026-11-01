@@ -5494,3 +5494,45 @@ Rollback reverts these UI sources only.
 - Release/rollback: install exact additive read-only source before new HTTP
   deployment; old API remains usable. Pause collection first on rollback and
   preserve schema readiness/exports/withdrawal. No manual/duplicate deployment.
+
+## 2026-11-01 | Truthful check-in feedback and one-action nearby camera Stories
+
+- Trigger: owner's actual outside-geofence attempts showed a generic failure;
+  owner requested fresh Story photos near the pin and remembered browser grants.
+- Affected: token server action, authenticated Passport rejection card, Community
+  composer/live camera, same-origin Story capture-location preflight/upload,
+  EN/ES dark/light presentation and maintained browser fixtures. No schema,
+  original lifecycle SQL, QR reward policy or new paid/external AI provider.
+- Authority: failed receipt/venue/distance require normal caller RLS ownership;
+  success remains accepted-record-only. Safe reason mapping hides diagnostics;
+  network ambiguity directs users to Progress rather than claiming no award.
+- Story gate: one gesture requests camera+fresh GPS; browser owns permission
+  persistence. New-frame capture repeats server location validation at shutter;
+  upload repeats fresh GPS and server checks before reservation/private storage.
+  Fixed100m Story radius, <=50m accuracy, <=60s/+5s freshness; this is separate
+  from the unchanged check-in geofence. Raw GPS is not stored or sent to AI.
+- Privacy: no QR frame upload, gallery bypass, autoplay on arrival, microphone,
+  automatic sharing or approval. Retake/remove resets consent, stops/revokes
+  temporary media; all original eligibility/moderation/export/cleanup remain.
+- Quality: local <=640px analysis blocks uniform blank/dominant decoded QR;
+  detailed low light/small background codes remain possible. Availability errors
+  do not pass. Browser capture/GPS/client checks are not cryptographic evidence;
+  hands/screens/venue identity are not advertised as AI verified.
+- Evidence: focused mapping/action/component, geometry/RLS, image-quality and
+  HTTP tests; real Chromium fake-camera composed fixtures preserve existing
+  authorization/consent/uploadretry/cleanup checks. Full source-bound checks,
+  both-language viewport review and exact-head CI required before live claims.
+- Rollback: pause collection, preserve readiness/private bucket/exports and use
+  compatible UI-off Worker. No production customer test check-in or XP mutation.
+- Owner-reviewed UI direction was tightened during implementation: removed
+  repeated instructions, slogan/eyebrow and explanatory footer; short states,
+  clear primary actions and collapsed optional help preserve the same guards.
+  Four Passport recovery tests were updated from the removed generic sentence
+  to exact reason-specific headings while retaining scrolling/order/no-success
+  assertions; the initial failed run remains recorded and was not a pass.
+- Native camera CI uses the bundled full Chromium (`channel: chromium`) when
+  no existing browser override is supplied. Default headless-shell149 reproducibly
+  rejected getUserMedia with NotSupportedError despite a granted fake camera;
+  full Chrome149 passed the same20 contexts and negative permission cases.
+  Assertions/timeouts remain unchanged, and bounded fixture-only media error
+  diagnostics retain no GPS, frames or device IDs. No runtime policy change.

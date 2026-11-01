@@ -144,53 +144,184 @@ const story = (owned = false) => ({
 });
 const results = [];
 let browser;
-async function prepareRealPhoto(page) {
-  await page.evaluate(async () => {
-    const canvas = document.createElement("canvas");
-    canvas.width = 2400;
-    canvas.height = 1800;
-    const context = canvas.getContext("2d");
-    context.fillStyle = "#8f4b26";
-    context.fillRect(0, 0, 2400, 1800);
-    context.fillStyle = "#e1b783";
-    context.fillRect(240, 200, 1600, 1100);
-    const original = await new Promise((r) =>
-      canvas.toBlob(r, "image/jpeg", 0.9),
+async function prepareRealPhoto(page, locale, exerciseLifecycle = false) {
+  const es = locale === "es";
+  try {
+    const camera = page.getByRole("region", {
+      name: es ? "Cámara de historias" : "Story camera",
+    });
+    const preview = camera.locator("video");
+    const start = camera.getByRole("button", {
+      name: es
+        ? /^(Abrir cámara|Volver a hacer foto)$/
+        : /^(Open camera|Retake photo)$/,
+      exact: true,
+    });
+    const shutter = camera.getByRole("button", {
+      name: es ? "Hacer foto" : "Take photo",
+      exact: true,
+    });
+    await expect(page.locator("input[type=file]")).toHaveCount(0);
+    if (exerciseLifecycle) {
+      await page.evaluate(() => {
+        window.fixtureGeoDenied = true;
+      });
+      await start.click();
+      await expect(camera.getByRole("alert")).toBeVisible();
+      await expect
+        .poll(() =>
+          page.evaluate(() =>
+            window.fixtureCameraTracks.every((t) => t.readyState === "ended"),
+          ),
+        )
+        .toBe(true);
+      await expect(preview).toHaveJSProperty("srcObject", null);
+      await page.evaluate(() => {
+        window.fixtureGeoDenied = false;
+      });
+      await page.context().clearPermissions();
+      await start.click();
+      await expect(camera.getByRole("alert")).toBeVisible();
+      await expect(preview).toHaveJSProperty("srcObject", null);
+      await page.context().grantPermissions(["camera"]);
+      await start.click();
+      await expect(shutter).toBeEnabled();
+      await camera
+        .getByRole("button", {
+          name: es ? "Cerrar cámara" : "Close camera",
+          exact: true,
+        })
+        .click();
+      await expect(preview).toHaveJSProperty("srcObject", null);
+      await expect
+        .poll(() =>
+          page.evaluate(() =>
+            window.fixtureCameraTracks.every((t) => t.readyState === "ended"),
+          ),
+        )
+        .toBe(true);
+      await start.click();
+      await expect(shutter).toBeEnabled();
+      await page.evaluate(() => {
+        Object.defineProperty(document, "hidden", {
+          configurable: true,
+          value: true,
+        });
+        document.dispatchEvent(new Event("visibilitychange"));
+      });
+      await expect(preview).toHaveJSProperty("srcObject", null);
+      await expect
+        .poll(() =>
+          page.evaluate(() =>
+            window.fixtureCameraTracks.every((t) => t.readyState === "ended"),
+          ),
+        )
+        .toBe(true);
+      await page.evaluate(() => {
+        Object.defineProperty(document, "hidden", {
+          configurable: true,
+          value: false,
+        });
+      });
+    }
+    await start.click();
+    await expect(shutter).toBeEnabled();
+    expect(
+      await preview.evaluate((v) => ({
+        live: v.srcObject
+          .getVideoTracks()
+          .every((t) => t.readyState === "live"),
+        audio: v.srcObject.getAudioTracks().length,
+      })),
+    ).toEqual({ live: true, audio: 0 });
+    if (exerciseLifecycle)
+      await camera.screenshot({
+        path: resolve(out, `${locale}-camera-live-native-frame.png`),
+      });
+    await shutter.click();
+    await expect(preview).toHaveJSProperty("srcObject", null);
+    await expect
+      .poll(() =>
+        page.evaluate(() =>
+          window.fixtureCameraTracks.every((t) => t.readyState === "ended"),
+        ),
+      )
+      .toBe(true);
+  } catch (error) {
+    const diagnostic = await page.evaluate(async () => {
+      let kinds = [],
+        enumerateError = null,
+        permission = null;
+      try {
+        kinds = (await navigator.mediaDevices.enumerateDevices()).map(
+          (device) => device.kind,
+        );
+      } catch (error) {
+        enumerateError = {
+          name: error.name,
+          message: String(error.message).slice(0, 240),
+        };
+      }
+      try {
+        permission = (await navigator.permissions.query({ name: "camera" }))
+          .state;
+      } catch {}
+      return {
+        secureContext: isSecureContext,
+        mediaAPI: typeof navigator.mediaDevices?.getUserMedia,
+        kinds,
+        enumerateError,
+        permission,
+        errors: (window.fixtureMediaErrors || []).slice(-8),
+        videos: [...document.querySelectorAll("video")]
+          .slice(0, 3)
+          .map((video) => ({
+            readyState: video.readyState,
+            networkState: video.networkState,
+            paused: video.paused,
+            mediaErrorCode: video.error?.code || null,
+            tracks:
+              video.srcObject?.getTracks().map((track) => ({
+                kind: track.kind,
+                state: track.readyState,
+              })) || [],
+          })),
+        trackStates: (window.fixtureCameraTracks || [])
+          .slice(-12)
+          .map((track) => ({ kind: track.kind, state: track.readyState })),
+        theme: document.documentElement.dataset.theme,
+        width: innerWidth,
+      };
+    });
+    diagnostic.browserVersion = page.context().browser().version();
+    writeFileSync(
+      resolve(
+        out,
+        `${locale}-${diagnostic.theme}-${diagnostic.width}-camera-failure-diagnostics.json`,
+      ),
+      JSON.stringify(diagnostic, null, 2),
     );
-    const bytes = new Uint8Array(await original.arrayBuffer());
-    const metadata = new TextEncoder().encode(
-      "Exif\0\0II*\0\b\0\0\0\0\0\0\0\0\0PRIVATE-GPS-EXIF",
-    );
-    const size = metadata.length + 2;
-    const file = new File(
-      [
-        bytes.slice(0, 2),
-        new Uint8Array([255, 225, size >> 8, size & 255]),
-        metadata,
-        bytes.slice(2),
-      ],
-      "private-location.jpg",
-      { type: "image/jpeg" },
-    );
-    const transfer = new DataTransfer();
-    transfer.items.add(file);
-    const input = document.querySelector('input[type="file"]:not([capture])');
-    input.files = transfer.files;
-    input.dispatchEvent(new Event("change", { bubbles: true }));
-  });
+    throw error;
+  }
 }
+
 try {
   browser = await chromium.launch({
     headless: true,
+    args: ["--use-fake-device-for-media-stream"],
+    // The bundled headless shell exposes fake devices but rejects native
+    // getUserMedia with NotSupportedError. Full Chromium's new headless mode
+    // supports the same real camera capture and permission-denial assertions.
     ...(process.env.BOOKING_BROWSER_PATH
       ? { executablePath: process.env.BOOKING_BROWSER_PATH }
-      : {}),
+      : { channel: "chromium" }),
   });
   for (const locale of ["en", "es"])
     for (const theme of ["dark", "light"])
       for (const width of [360, 390, 820, 1440]) {
         const context = await browser.newContext({
           viewport: { width, height: 900 },
+          permissions: ["camera"],
           reducedMotion: "reduce",
           colorScheme: theme,
         });
@@ -208,11 +339,89 @@ try {
         await context.addInitScript((value) => {
           localStorage.setItem("akipasa.theme", value);
           window.geoCalls = 0;
+          window.fixtureGeoDenied = false;
+          window.fixtureCameraTracks = [];
+          window.fixtureExifInjections = 0;
+          // Preserve the old EXIF-stripping regression using the actual captured
+          // camera pixels: add a synthetic metadata segment to the JPEG only.
+          const toBlob = HTMLCanvasElement.prototype.toBlob;
+          HTMLCanvasElement.prototype.toBlob = function (
+            callback,
+            type,
+            quality,
+          ) {
+            return toBlob.call(
+              this,
+              async (blob) => {
+                if (!blob || type !== "image/jpeg") return callback(blob);
+                const bytes = new Uint8Array(await blob.arrayBuffer());
+                const marker = new TextEncoder().encode(
+                  "Exif\0\0II*\0\b\0\0\0\0\0\0\0\0\0PRIVATE-GPS-EXIF",
+                );
+                const length = marker.length + 2;
+                window.fixtureExifInjections++;
+                callback(
+                  new Blob(
+                    [
+                      bytes.slice(0, 2),
+                      new Uint8Array([255, 225, length >> 8, length & 255]),
+                      marker,
+                      bytes.slice(2),
+                    ],
+                    { type: "image/jpeg" },
+                  ),
+                );
+              },
+              type,
+              quality,
+            );
+          };
+          window.fixtureMediaErrors = [];
+          const record = (operation, error) => {
+            window.fixtureMediaErrors.push({
+              operation,
+              name: error.name,
+              message: String(error.message)
+                .replace(/[A-Za-z0-9_-]{24,}/g, "[redacted]")
+                .slice(0, 240),
+            });
+            if (window.fixtureMediaErrors.length > 8)
+              window.fixtureMediaErrors.shift();
+          };
+          const play = HTMLMediaElement.prototype.play;
+          HTMLMediaElement.prototype.play = async function (...args) {
+            try {
+              return await play.apply(this, args);
+            } catch (error) {
+              record("video.play", error);
+              throw error;
+            }
+          };
+          if (navigator.mediaDevices?.getUserMedia) {
+            const getMedia = navigator.mediaDevices.getUserMedia.bind(
+              navigator.mediaDevices,
+            );
+            navigator.mediaDevices.getUserMedia = async (...args) => {
+              try {
+                const stream = await getMedia(...args);
+                window.fixtureCameraTracks.push(...stream.getTracks());
+                return stream;
+              } catch (error) {
+                record("getUserMedia", error);
+                throw error;
+              }
+            };
+          } else
+            record("getUserMedia-availability", {
+              name: "Unavailable",
+              message: "navigator.mediaDevices.getUserMedia is absent",
+            });
           Object.defineProperty(navigator, "geolocation", {
             configurable: true,
             value: {
-              getCurrentPosition(success) {
+              getCurrentPosition(success, failure) {
                 window.geoCalls++;
+                if (window.fixtureGeoDenied) return failure({ code: 1 });
                 success({
                   coords: { latitude: 36.72, longitude: -4.42, accuracy: 50 },
                   timestamp: Date.now(),
@@ -328,6 +537,25 @@ try {
             );
           }
           if (
+            url.pathname === "/api/community/stories/capture-location" &&
+            req.method() === "POST"
+          ) {
+            const fix = req.postDataJSON();
+            expect(Object.keys(fix).sort()).toEqual([
+              "accuracy",
+              "checkInId",
+              "latitude",
+              "locatedAt",
+              "longitude",
+            ]);
+            expect(fix.checkInId).toBe(id);
+            expect(fix.latitude).toBe(36.72);
+            expect(fix.longitude).toBe(-4.42);
+            expect(fix.accuracy).toBe(50);
+            expect(Math.abs(Date.now() - fix.locatedAt)).toBeLessThan(60000);
+            return route.fulfill({ json: { ready: true } });
+          }
+          if (
             url.pathname === "/api/community/stories" &&
             req.method() === "POST"
           ) {
@@ -349,6 +577,11 @@ try {
               keys: [...parsed.keys()].sort(),
               publicOptIn: parsed.get("publicOptIn"),
               checkInId: parsed.get("checkInId"),
+              caption: parsed.get("caption"),
+              latitude: Number(parsed.get("latitude")),
+              longitude: Number(parsed.get("longitude")),
+              accuracy: Number(parsed.get("accuracy")),
+              locatedAt: Number(parsed.get("locatedAt")),
               name: file.name,
               type: file.type,
               size: file.size,
@@ -555,9 +788,63 @@ try {
           .selectOption(id);
         const optIn = dialog.getByRole("checkbox");
         await expect(optIn).not.toBeChecked();
-        await prepareRealPhoto(page);
+        await prepareRealPhoto(page, locale, width === 390 && theme === "dark");
         await expect(dialog.getByRole("img")).toBeVisible();
         await expect(optIn).not.toBeChecked();
+        const flatCamera = dialog.getByRole("region", {
+          name: locale === "es" ? "Cámara de historias" : "Story camera",
+        });
+        await expect(
+          flatCamera.getByRole("button", {
+            name: locale === "es" ? "Volver a hacer foto" : "Retake photo",
+            exact: true,
+          }),
+        ).toBeVisible();
+        await expect(flatCamera.locator("details")).toHaveCount(0);
+        await expect(dialog.locator("details[open]")).toHaveCount(0);
+        if (width === 360 && theme === "dark") {
+          await dialog.evaluate((box) => {
+            box.scrollTop = 0;
+            for (const content of box.querySelectorAll(
+              '[class*="CheckinStories_content"]',
+            ))
+              content.scrollTop = 0;
+          });
+          await page.screenshot({
+            path: resolve(
+              out,
+              `${locale}-phone-photo-first-full-modal-head.png`,
+            ),
+          });
+          await dialog.getByRole("img").scrollIntoViewIfNeeded();
+          await page.screenshot({
+            path: resolve(
+              out,
+              `${locale}-phone-photo-first-full-modal-preview.png`,
+            ),
+          });
+        }
+        if (width === 390 && theme === "dark") {
+          await dialog.getByRole("img").screenshot({
+            path: resolve(out, `${locale}-camera-processed-preview.png`),
+          });
+          await optIn.check();
+          await prepareRealPhoto(page, locale);
+          await expect(dialog.getByRole("img")).toBeVisible();
+          await expect(optIn).not.toBeChecked();
+        }
+        const captionToggle = dialog.getByText(
+          locale === "es" ? "Añadir texto" : "Add caption",
+          { exact: true },
+        );
+        await captionToggle.click();
+        const captionInput = dialog.getByRole("textbox", {
+          name: locale === "es" ? "Texto (opcional)" : "Caption (optional)",
+          exact: true,
+        });
+        await captionInput.fill("Synthetic camera caption");
+        await expect(captionInput).toHaveValue("Synthetic camera caption");
+        await captionToggle.click();
         const submit = dialog.getByRole("button", {
           name: locale === "es" ? "Enviar a revisión" : "Submit for review",
         });
@@ -733,14 +1020,23 @@ try {
         expect(deletions).toHaveLength(3);
         for (const photo of uploads) {
           expect(photo.keys).toEqual([
+            "accuracy",
             "caption",
             "checkInId",
             "file",
             "kind",
+            "latitude",
+            "locatedAt",
+            "longitude",
             "publicOptIn",
           ]);
           expect(photo.checkInId).toBe(id);
+          expect(photo.caption).toBe("Synthetic camera caption");
           expect(photo.publicOptIn).toBe("true");
+          expect(photo.latitude).toBe(36.72);
+          expect(photo.longitude).toBe(-4.42);
+          expect(photo.accuracy).toBe(50);
+          expect(Number.isFinite(photo.locatedAt)).toBe(true);
           expect(photo.chunks).toEqual(["VP8 "]);
           expect(photo.originalExifMarker).toBe(false);
           expect(photo.name).toBe("checkin-story.webp");
@@ -755,7 +1051,9 @@ try {
           width: document.documentElement.clientWidth,
           scrollWidth: document.documentElement.scrollWidth,
           geoCalls: window.geoCalls,
+          exifFixtureInjections: window.fixtureExifInjections,
         }));
+        expect(metrics.exifFixtureInjections).toBeGreaterThanOrEqual(1);
         expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.width + 1);
         await Promise.all([
           page.waitForURL(`**/${locale}/community?view=suggest`),
@@ -765,6 +1063,19 @@ try {
         expect(new URL(page.url()).searchParams.get("view")).toBe("suggest");
         results.push({
           rowMetrics,
+          cameraEvidence: {
+            device:
+              "Real Chromium fake media device; native getUserMedia and actual canvas frame capture",
+            localPhotoPreviewAndWebP: true,
+            metadataStripping:
+              "Synthetic EXIF added to real captured JPEG pixels, absent in submitted WebP",
+            cameraTracksStoppedAfterCapture: true,
+            locationPreflight:
+              "Mocked loopback HTTP; no real geofence/RLS claim",
+            lifecycleAndRetake: width === 390 && theme === "dark",
+            visibility:
+              "Synthetic visibilitychange with actual media track cleanup, not physical background-device proof",
+          },
           nativeNearbyFocus: true,
           nativeSuggestLink: true,
           locale,

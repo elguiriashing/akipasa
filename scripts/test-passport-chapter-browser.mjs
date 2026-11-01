@@ -14,14 +14,14 @@ import { resolve, extname } from "node:path";
 const directory = resolve("test-results/passport-protected-chapters");
 mkdirSync(directory, { recursive: true });
 const fixture = `export async function optionalUser(){
-const state=new URLSearchParams(location.search).get('state');window.__reads=[];
+const params=new URLSearchParams(location.search),state=params.get('state');window.__reads=[];
 const now=Date.now();const rows={passports:[{id:'fixture-route',slug:'synthetic-route',title_es:'Ruta sintética de prueba',title_en:'Synthetic fixture route',description_es:'Datos desechables para revisar el diseño.',description_en:'Disposable data for visual review.',reward_es:'Premio de prueba',reward_en:'Fixture reward',access_tier:'free',completion_window_days:7,starts_at:new Date(now-86400000).toISOString(),ends_at:new Date(now+2592000000).toISOString(),passport_steps:[{id:'fixture-step',label_es:'Parada de prueba',label_en:'Fixture stop',venues:{name:'Synthetic venue'}}],passport_rewards:[]}],loyalty_programs:[{id:'fixture-program',title_es:'Programa de prueba',title_en:'Fixture programme',reward_es:'Recompensa de prueba',reward_en:'Fixture reward',stamps_required:5,venues:{name:'Synthetic venue'},loyalty_program_rewards:[]}],loyalty_ledger:[{program_id:'fixture-program',delta:2}],xp_ledger:[{delta:40}],passport_progress:[{step_id:'fixture-step',enrollment_id:'fixture-enrollment'}],passport_enrollments:[{id:'fixture-enrollment',passport_id:'fixture-route',started_at:new Date(now-86400000).toISOString(),expires_at:new Date(now+518400000).toISOString(),state:'active',completed_at:null}],reward_claims:[],check_ins:[]};
-return {user:{id:'fixture-explorer'},supabase:{from(table){const result={data:state==='unavailable'?null:state==='empty'?[]:rows[table]||[],error:state==='unavailable'?{message:'Private synthetic provider error, must never display'}:null};const query={select(...args){window.__reads.push({table,method:'select',args});return query},eq(...args){window.__reads.push({table,method:'eq',args});return query},in(){return query},not(){return query},lt(){return query},lte(){return query},gte(){return query},order(){return query},limit(){return query},then(fn){return Promise.resolve(result).then(fn)}};return query}}};}`;
+return {user:{id:'fixture-explorer'},supabase:{from(table){const result={data:state==='unavailable'?null:state==='empty'?[]:rows[table]||[],error:state==='unavailable'?{message:'Private synthetic provider error, must never display'}:null};const filters={};const query={select(...args){window.__reads.push({table,method:'select',args});return query},eq(...args){window.__reads.push({table,method:'eq',args});filters[args[0]]=args[1];return query},in(){return query},not(){return query},lt(){return query},lte(){return query},gte(){return query},order(){return query},limit(){return query},maybeSingle(){if(table!=='check_ins'||filters.id!=='00000000-0000-4000-8000-000000000438'||filters.profile_id!=='fixture-explorer')throw Error('Fixture receipt read must constrain exact id and caller');window.__reads.push({table,method:'maybeSingle',args:[]});return Promise.resolve({data:params.get('receipt')==='owned'?{id:filters.id,state:'duplicate',risk_flags:['outside_geofence'],distance_meters:438,venues:{slug:'synthetic-venue'}}:null,error:null})},then(fn){return Promise.resolve(result).then(fn)}};return query}}};}`;
 const entry = `import React from 'react';import{createRoot}from'react-dom/client';import Page from './src/app/[locale]/passports/page';
 const q=new URLSearchParams(location.search),locale=q.get('lang')||'en';
 async function resolveNode(node){if(Array.isArray(node))return Promise.all(node.map(resolveNode));if(!React.isValidElement(node))return node;if(typeof node.type==='function'&&node.type.constructor.name==='AsyncFunction')return resolveNode(await node.type(node.props));const props={};for(const[key,value]of Object.entries(node.props))props[key]=await resolveNode(value);return React.cloneElement(node,props)}
 window.__textContrast=(element,overrideColour,opacity=1)=>{const rgba=value=>{if(!/^rgba?\\(/.test(value)){const canvas=document.createElement("canvas");canvas.width=canvas.height=1;const context=canvas.getContext("2d");context.fillStyle=value;context.fillRect(0,0,1,1);const pixel=context.getImageData(0,0,1,1).data;return[pixel[0],pixel[1],pixel[2],pixel[3]/255]}const result=(value.match(/[0-9.]+/g)||[]).map(Number);return result.length===3?[...result,1]:result};const mix=(top,bottom)=>top.slice(0,3).map((channel,i)=>channel*top[3]+bottom[i]*(1-top[3]));let colours=[[255,255,255]],node=element,chain=[];while(node){chain.unshift(node);node=node.parentElement}for(const layer of chain){const style=getComputedStyle(layer),colour=rgba(style.backgroundColor);if(colour.length===4)colours=colours.map(base=>mix(colour,base));if(style.backgroundImage!=='none'){const stops=[...style.backgroundImage.matchAll(/rgba?\\(([^)]+)\\)/g)].map(match=>rgba(match[0]));if(stops.length)colours=colours.flatMap(base=>stops.map(stop=>mix(stop,base)));}}const lum=rgb=>rgb.slice(0,3).map(x=>x/255).map(x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4).reduce((sum,x,i)=>sum+x*[.2126,.7152,.0722][i],0);const ink=rgba(overrideColour||getComputedStyle(element).color);ink[3]*=opacity;return Math.min(...colours.map(base=>{const fg=lum(mix(ink,base)),bg=lum(base);return(Math.max(fg,bg)+.05)/(Math.min(fg,bg)+.05)}))};
-window.__writes=[];const element=await Page({params:Promise.resolve({locale}),searchParams:Promise.resolve({view:q.get('view')||'progress',city:q.get('city')||undefined})});createRoot(document.getElementById('root')).render(await resolveNode(element));window.__fixtureReady=true;`;
+window.__writes=[];const element=await Page({params:Promise.resolve({locale}),searchParams:Promise.resolve({view:q.get('view')||'progress',city:q.get('city')||undefined,checkin:q.get('checkin')||undefined,visit:q.get('visit')||undefined})});createRoot(document.getElementById('root')).render(await resolveNode(element));window.__fixtureReady=true;`;
 const actions =
   "export const claimPassportReward=async input=>{window.__writes.push('claimPassportReward');throw Error('Fixture never submits rewards')};export const claimStampReward=claimPassportReward;export const enrollPassport=claimPassportReward;";
 const bundle = await build({
@@ -42,6 +42,10 @@ const bundle = await build({
       setup(b) {
         b.onResolve({ filter: /^@\/lib\/auth$/ }, () => ({
           path: "auth",
+          namespace: "fixture",
+        }));
+        b.onResolve({ filter: /supabase\/server$/ }, () => ({
+          path: "server",
           namespace: "fixture",
         }));
         b.onResolve({ filter: /^@\/lib\/passport-repository$/ }, () => ({
@@ -67,17 +71,20 @@ const bundle = await build({
           contents:
             a.path === "auth"
               ? fixture
-              : a.path === "collection"
-                ? `export async function myPassportCollection(){const q=new URLSearchParams(location.search);if(q.get('state')!=='populated')return undefined;const milestones=[{key:'synthetic-bronze',tier:1,target:1,title_es:'Bronce sintético',title_en:'Synthetic bronze',unlocked_at:'2026-10-01T00:00:00Z',manual_at:null},{key:'synthetic-silver',tier:2,target:5,title_es:'Plata sintética',title_en:'Synthetic silver',unlocked_at:null,manual_at:null}];return {updated_at:'2026-10-01T00:00:00Z',families:[{family_key:'city:malaga',city_key:'malaga',category_key:null,archived:false,current_count:2,available:10,remaining:8,milestones},{family_key:'city:malaga:cafe',city_key:'malaga',category_key:'cafe',archived:false,current_count:2,available:10,remaining:8,milestones}]}}`
-                : a.path === "achievements"
-                  ? `export async function myAchievements(){if(new URLSearchParams(location.search).get("state")==="unavailable")throw Error("Synthetic read failure");return new URLSearchParams(location.search).get("state")==="empty"?[]:[{key:"fixture_earned",title_en:"Synthetic earned badge",title_es:"Logro sintético obtenido",description_en:"Disposable fixture achievement, not real activity.",description_es:"Logro de prueba desechable, no actividad real.",condition_type:"xp",target_count:40,minimum_xp:40,icon:"discover",active:true,updated_at:"2026-10-29T00:00:00Z",current_count:40,unlocked_at:"2026-10-29T00:00:00Z",city_key:null,category_key:null},{key:"fixture_locked",title_en:"Synthetic locked badge",title_es:"Logro sintético pendiente",description_en:"Disposable future milestone.",description_es:"Meta futura de prueba.",condition_type:"xp",target_count:250,minimum_xp:250,icon:"star",active:true,updated_at:"2026-10-29T00:00:00Z",current_count:40,unlocked_at:null,city_key:null,category_key:null}]}`
-                  : a.path === "actions"
-                    ? actions
-                    : a.path.endsWith("navigation")
-                      ? "export function useRouter(){return {refresh(){window.__refreshes=(window.__refreshes||0)+1}}}export function notFound(){throw Error('not-found')}"
-                      : a.path.endsWith("image")
-                        ? `import React from 'react';export default function Image({fill,priority,unoptimized,sizes,...props}){return <img {...props} style={fill?{position:'absolute',inset:0,width:'100%',height:'100%',...props.style}:props.style}/>} `
-                        : `import React from 'react';export default function Link({children,prefetch,...props}){return <a {...props}>{children}</a>}`,
+              : a.path === "server"
+                ? fixture +
+                  "export async function createSupabaseServerClient(){return (await optionalUser()).supabase;}"
+                : a.path === "collection"
+                  ? `export async function myPassportCollection(){const q=new URLSearchParams(location.search);if(q.get('state')!=='populated')return undefined;const milestones=[{key:'synthetic-bronze',tier:1,target:1,title_es:'Bronce sintético',title_en:'Synthetic bronze',unlocked_at:'2026-10-01T00:00:00Z',manual_at:null},{key:'synthetic-silver',tier:2,target:5,title_es:'Plata sintética',title_en:'Synthetic silver',unlocked_at:null,manual_at:null}];return {updated_at:'2026-10-01T00:00:00Z',families:[{family_key:'city:malaga',city_key:'malaga',category_key:null,archived:false,current_count:2,available:10,remaining:8,milestones},{family_key:'city:malaga:cafe',city_key:'malaga',category_key:'cafe',archived:false,current_count:2,available:10,remaining:8,milestones}]}}`
+                  : a.path === "achievements"
+                    ? `export async function myAchievements(){if(new URLSearchParams(location.search).get("state")==="unavailable")throw Error("Synthetic read failure");return new URLSearchParams(location.search).get("state")==="empty"?[]:[{key:"fixture_earned",title_en:"Synthetic earned badge",title_es:"Logro sintético obtenido",description_en:"Disposable fixture achievement, not real activity.",description_es:"Logro de prueba desechable, no actividad real.",condition_type:"xp",target_count:40,minimum_xp:40,icon:"discover",active:true,updated_at:"2026-10-29T00:00:00Z",current_count:40,unlocked_at:"2026-10-29T00:00:00Z",city_key:null,category_key:null},{key:"fixture_locked",title_en:"Synthetic locked badge",title_es:"Logro sintético pendiente",description_en:"Disposable future milestone.",description_es:"Meta futura de prueba.",condition_type:"xp",target_count:250,minimum_xp:250,icon:"star",active:true,updated_at:"2026-10-29T00:00:00Z",current_count:40,unlocked_at:null,city_key:null,category_key:null}]}`
+                    : a.path === "actions"
+                      ? actions
+                      : a.path.endsWith("navigation")
+                        ? "export function useRouter(){return {refresh(){window.__refreshes=(window.__refreshes||0)+1}}}export function notFound(){throw Error('not-found')}"
+                        : a.path.endsWith("image")
+                          ? `import React from 'react';export default function Image({fill,priority,unoptimized,sizes,...props}){return <img {...props} style={fill?{position:'absolute',inset:0,width:'100%',height:'100%',...props.style}:props.style}/>} `
+                          : `import React from 'react';export default function Link({children,prefetch,...props}){return <a {...props}>{children}</a>}`,
         }));
       },
     },
@@ -509,12 +516,193 @@ try {
           }
           await context.close();
         }
+  for (const locale of ["en", "es"])
+    for (const theme of ["dark", "light"])
+      for (const width of [390, 820, 1440])
+        for (const receipt of ["owned", "missing"]) {
+          const context = await browser.newContext({
+            viewport: { width, height: 900 },
+            hasTouch: width === 390,
+            reducedMotion: "reduce",
+            colorScheme: theme,
+          });
+          await context.route("**/*", (route) => {
+            const request = route.request();
+            if (
+              new URL(request.url()).origin !== origin ||
+              request.method() !== "GET"
+            ) {
+              blocked.push({ url: request.url(), method: request.method() });
+              return route.abort();
+            }
+            return route.continue();
+          });
+          await context.addInitScript((theme) => {
+            document.addEventListener("DOMContentLoaded", () => {
+              for (const node of [document.documentElement, document.body]) {
+                node.dataset.theme = theme;
+                node.classList.add("theme-" + theme);
+              }
+            });
+          }, theme);
+          const page = await context.newPage();
+          page.on("pageerror", (error) => pageErrors.push(String(error)));
+          await page.goto(
+            `${origin}/?lang=${locale}&view=progress&state=populated&checkin=outside_geofence&visit=00000000-0000-4000-8000-000000000438&receipt=${receipt}`,
+          );
+          await page.waitForFunction(() => window.__fixtureReady === true);
+          const failure = page.getByRole("status").filter({
+            has: page.getByRole("heading", {
+              level: 2,
+              name:
+                receipt === "owned"
+                  ? locale === "en"
+                    ? "Move closer to the venue"
+                    : "Acércate al local"
+                  : locale === "en"
+                    ? "Check-in unconfirmed"
+                    : "Check-in sin confirmar",
+            }),
+          });
+          await expect(failure).toBeVisible();
+          if (receipt === "owned") {
+            await expect(failure).toContainText("438 m");
+            await expect(
+              failure.getByRole("link", {
+                name: locale === "en" ? "View venue" : "Ver el local",
+              }),
+            ).toHaveAttribute("href", `/${locale}/venues/synthetic-venue`);
+            await expect(
+              failure.getByRole("link", {
+                name:
+                  locale === "en" ? "Scan official QR" : "Escanear QR oficial",
+              }),
+            ).toHaveAttribute("href", `/${locale}/check-in`);
+          } else {
+            await expect(failure).not.toContainText("438 m");
+            await expect(failure).not.toContainText(
+              locale === "en" ? "Distance:" : "Distancia:",
+            );
+            await expect(
+              failure.getByRole("link", {
+                name: locale === "en" ? "Check my progress" : "Ver mi progreso",
+              }),
+            ).toHaveAttribute("href", `/${locale}/passports?view=progress`);
+            await expect(
+              failure.getByRole("link", {
+                name: locale === "en" ? "Explore the map" : "Explorar el mapa",
+              }),
+            ).toHaveAttribute("href", `/${locale}/map`);
+          }
+          await expect(
+            page.getByRole("heading", {
+              name:
+                locale === "en" ? "You’re checked in!" : "¡Ya estás dentro!",
+              exact: true,
+            }),
+          ).toHaveCount(0);
+          expect(
+            await page.evaluate(
+              () => document.documentElement.scrollWidth <= innerWidth,
+            ),
+          ).toBe(true);
+          expect(await page.evaluate(() => window.__writes)).toEqual([]);
+          const reads = await page.evaluate(() => window.__reads);
+          expect(
+            reads.some(
+              (read) =>
+                read.table === "check_ins" &&
+                read.method === "eq" &&
+                read.args[0] === "id" &&
+                read.args[1] === "00000000-0000-4000-8000-000000000438",
+            ),
+          ).toBe(true);
+          expect(
+            reads.some(
+              (read) =>
+                read.table === "check_ins" &&
+                read.method === "eq" &&
+                read.args[0] === "profile_id" &&
+                read.args[1] === "fixture-explorer",
+            ),
+          ).toBe(true);
+          expect(
+            reads.filter((read) => read.method === "maybeSingle"),
+          ).toHaveLength(1);
+          const chapterTitle = page.getByRole("heading", {
+            name: locale === "en" ? "My journey" : "Mi viaje",
+            exact: true,
+          });
+          await expect(chapterTitle).toBeVisible();
+          const failureBounds = await failure.boundingBox(),
+            titleBounds = await chapterTitle.boundingBox();
+          expect(failureBounds.y).toBeGreaterThanOrEqual(
+            titleBounds.y + titleBounds.height,
+          );
+          const file = `${directory}/${locale}-${theme}-${width}-rejected-${receipt}`;
+          await page.screenshot({
+            path: `${file}-viewport.png`,
+            animations: "disabled",
+          });
+          await page.screenshot({
+            path: `${file}-full.png`,
+            fullPage: true,
+            animations: "disabled",
+          });
+          const contrast = await failure
+            .locator("h2,p,a")
+            .evaluateAll((nodes) =>
+              nodes.map((node) => ({
+                text: node.textContent,
+                contrast: window.__textContrast(node),
+              })),
+            );
+          for (const text of contrast)
+            expect(text.contrast, JSON.stringify(text)).toBeGreaterThanOrEqual(
+              4.5,
+            );
+          const weekly = page.locator("#weekly-quests-heading");
+          await weekly.scrollIntoViewIfNeeded();
+          await expect(weekly).toBeVisible();
+          const weeklyBounds = await weekly.boundingBox(),
+            scrolledFailure = await failure.boundingBox();
+          expect(weeklyBounds.y).toBeGreaterThanOrEqual(
+            scrolledFailure.y + scrolledFailure.height,
+          );
+          await page.screenshot({
+            path: `${file}-belowfold.png`,
+            animations: "disabled",
+          });
+          results.push({
+            locale,
+            theme,
+            width,
+            state: `rejected-${receipt}`,
+            chapter: "progress",
+            file: `${file}-full.png`,
+            screenshots: [
+              `${file}-viewport.png`,
+              `${file}-full.png`,
+              `${file}-belowfold.png`,
+            ],
+            realFailureComponent: true,
+            ownedReceiptFixture: receipt === "owned",
+            persistedDistance: receipt === "owned" ? 438 : null,
+            noCelebration: true,
+            noWrites: true,
+            contrast,
+          });
+          await context.close();
+        }
   expect(blocked).toEqual([]);
   expect(pageErrors).toEqual([]);
   const files = [
     "src/app/[locale]/passports/page.tsx",
     "src/components/PassportBook.tsx",
     "src/components/PassportBook.module.css",
+    "src/components/CheckInFailure.tsx",
+    "src/components/CheckInFailure.module.css",
+    "src/lib/checkin-feedback.ts",
     "scripts/test-passport-chapter-browser.mjs",
   ];
   writeFileSync(

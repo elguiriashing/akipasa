@@ -404,14 +404,20 @@ it.each([
   async (locale, checkin) => {
     await renderPage(locale, { checkin });
     const text =
-      locale === "en"
-        ? "The check-in could not be accepted."
-        : "No se pudo aceptar el check-in.";
+      checkin === "weak_location"
+        ? locale === "en"
+          ? "Location too imprecise"
+          : "Ubicación poco precisa"
+        : locale === "en"
+          ? "Check-in unconfirmed"
+          : "Check-in sin confirmar";
     expect(
-      within(screen.getByTestId("absolute-notices")).queryByText(text),
+      within(screen.getByTestId("absolute-notices")).queryByRole("heading", {
+        name: text,
+      }),
     ).not.toBeInTheDocument();
     const progress = screen.getByTestId("scrollable-progress");
-    const feedback = within(progress).getByText(text);
+    const feedback = within(progress).getByRole("heading", { name: text });
     const weekly = within(progress).getByRole("heading", {
       name:
         locale === "en" ? "Your week of exploring" : "Tu semana de exploración",

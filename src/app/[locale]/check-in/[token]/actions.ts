@@ -2,42 +2,59 @@
 
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requireUser } from "@/lib/auth";
-import { createSupabaseServiceClient } from "@/lib/supabase/service";
-import { recordTrustedBehaviour } from "@/lib/personalisation/trusted";
+import { requireUser } from "../../../../lib/auth";
+import { createSupabaseServiceClient } from "../../../../lib/supabase/service";
+import { recordTrustedBehaviour } from "../../../../lib/personalisation/trusted";
+import { checkInOutcome } from "../../../../lib/checkin-feedback";
 
 const schema = z.object({
   locale: z.enum(["es", "en"]),
   token: z.string().uuid(),
   idempotencyKey: z.string().uuid(),
-  latitude: z.coerce.number().min(-90).max(90),
-  longitude: z.coerce.number().min(-180).max(180),
-  accuracy: z.coerce.number().int().min(0).max(500),
+  latitude: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() ? Number(v) : NaN),
+    z.number().finite().min(-90).max(90),
+  ),
+  longitude: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() ? Number(v) : NaN),
+    z.number().finite().min(-180).max(180),
+  ),
+  accuracy: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() ? Number(v) : NaN),
+    z.number().finite().int().min(0).max(500),
+  ),
 });
 
 export async function completeCheckIn(formData: FormData) {
   const parsed = schema.safeParse(Object.fromEntries(formData));
   const locale = formData.get("locale") === "en" ? "en" : "es";
-  if (!parsed.success) redirect(`/${locale}/passports?checkin=invalid`);
+  if (!parsed.success) {
+    const reason = z.string().uuid().safeParse(formData.get("token")).success
+      ? "weak_location"
+      : "invalid_token";
+    redirect(`/${locale}/passports?checkin=${reason}`);
+  }
   const { supabase, user } = await requireUser(
     locale,
     `/${locale}/check-in/${parsed.data.token}`,
   );
-  const { data, error } = await supabase.rpc("check_in_by_token", {
-    p_token: parsed.data.token,
-    p_idempotency_key: parsed.data.idempotencyKey,
-    p_latitude: parsed.data.latitude,
-    p_longitude: parsed.data.longitude,
-    p_accuracy_meters: parsed.data.accuracy,
-  });
-  const state = error
-    ? "invalid"
-    : String((data as { state?: string } | null)?.state || "invalid");
+  let result: ReturnType<typeof checkInOutcome>;
+  try {
+    const { data, error } = await supabase.rpc("check_in_by_token", {
+      p_token: parsed.data.token,
+      p_idempotency_key: parsed.data.idempotencyKey,
+      p_latitude: parsed.data.latitude,
+      p_longitude: parsed.data.longitude,
+      p_accuracy_meters: parsed.data.accuracy,
+    });
+    result = checkInOutcome(data, error);
+  } catch {
+    result = checkInOutcome(null, { message: "network request failed" });
+  }
+  const { state, visitId } = result;
   if (state === "accepted") {
     try {
-      const checkInId = String(
-        (data as { check_in_id?: string } | null)?.check_in_id || "",
-      );
+      const checkInId = visitId!;
       const service = createSupabaseServiceClient();
       const { data: checkIn } = await service
         .from("check_ins")
@@ -57,12 +74,7 @@ export async function completeCheckIn(formData: FormData) {
       // The verified check-in remains successful if behavioural logging fails.
     }
   }
-  const checkInId = z
-    .string()
-    .uuid()
-    .safeParse((data as { check_in_id?: string } | null)?.check_in_id);
-  const receipt =
-    state === "accepted" && checkInId.success ? `&visit=${checkInId.data}` : "";
+  const receipt = visitId ? `&visit=${visitId}` : "";
   redirect(
     `/${locale}/passports?checkin=${encodeURIComponent(state)}${receipt}`,
   );
