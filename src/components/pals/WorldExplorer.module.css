@@ -337,6 +337,7 @@
   background: #ffffff0b;
 }
 .venuePin {
+  z-index: 0;
   position: absolute;
   top: 0;
   left: 0;
@@ -392,6 +393,7 @@
 }
 /* Marker bottom = geographic ground point. Label never shifts the feet anchor. */
 .avatarPin {
+  z-index: 1;
   position: absolute;
   top: 0;
   left: 0;

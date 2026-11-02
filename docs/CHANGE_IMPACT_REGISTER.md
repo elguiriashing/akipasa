@@ -5581,10 +5581,16 @@ revert and preceding app/Worker version are the rollback, with no data migration
 - No database migration, customer backfill, billing, rewards, external AI or
   Pokémon assets. Missing graphics do not silently fall back to Classic.
 - Verify actual rendered assets/fit/colour changes, private save/cancel/reload,
-  both languages/themes/viewports and native World map interactions. Full check,
+  both languages/OS preferences/viewports and native World map interactions. Full check,
   strict audit, exact-head CI and automatic deployment identity required.
   Physical Android is owner testing after live; no device acceptance fabricated.
 - Rollback preserves stored JSON. An older strict appearance parser can display
   its default when it sees newly saved colour keys; do not delete fields or
   rewrite customer rows to mask that incompatibility. Prefer compatible source
   rollback/forward repair for profiles already saved with the new palette keys.
+
+Native review caught and repaired a 41px header-link touch target on hosted Chromium
+and a dense venue marker painting over the Pal. The link now has an explicit
+44px minimum, and the non-interactive player paints above venue markers without
+changing geographic anchors or intercepting venue clicks. Existing 44px and native
+projection/click assertions remain required; the failed CI receipt is retained.
