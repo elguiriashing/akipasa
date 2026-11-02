@@ -5594,3 +5594,10 @@ and a dense venue marker painting over the Pal. The link now has an explicit
 44px minimum, and the non-interactive player paints above venue markers without
 changing geographic anchors or intercepting venue clicks. Existing 44px and native
 projection/click assertions remain required; the failed CI receipt is retained.
+
+Verified locally: complete npm check PASS, focused175/21 PASS, strict audit
+104 routes/0 awaiting historical acceptance, unchanged playground15/15 PASS.
+Real native 3D/MapLibre matrices and exact-head hosted gates retain all failure,
+GPS, touch, projection and save assertions. Night palette is intentional under
+both OS preferences. Final browser/CI/automatic Worker identities are recorded
+in the release PR; physical Android acceptance remains separate.

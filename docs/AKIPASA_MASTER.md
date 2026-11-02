@@ -4834,3 +4834,12 @@ resource isolation must pass alongside map projection/GPS/privacy tests. Full
 check, strict audit, exact-head CI and actual automatic Worker/source readback
 remain release gates. Alex explicitly requests live deployment after testing;
 physical Android playtesting occurs on live, without claiming an unperformed pass.
+
+Verified candidate evidence: 175 focused cases across 21 files, the complete
+local `npm run check`, strict route audit104/0, and the unchanged15-scenario
+playground browser suite pass. Genuine authored-model and native MapLibre
+matrices exercise EN/ES, 320–1440px, OS preferences, read-only legacy saves,
+explicit saves, render recovery and foreground GPS. The interface deliberately
+uses its night palette under either OS preference; separate light-theme support
+is not claimed. Final source-bound browser/CI results and deployment identities
+are attached to the release PR and external receipts before live acceptance.
