@@ -167,7 +167,7 @@ try {
                 path: path.join(output, "arrival-pasa.png"),
               });
               await expect.poll(() =>
-                route.evaluate((node) => +getComputedStyle(node).strokeDashoffset),
+                route.evaluate((node) => parseFloat(getComputedStyle(node).strokeDashoffset)),
               ).toBe(0);
               await scene.screenshot({
                 path: path.join(output, "material-pasa.png"),
