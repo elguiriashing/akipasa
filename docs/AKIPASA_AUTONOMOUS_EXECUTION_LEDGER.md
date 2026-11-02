@@ -2956,3 +2956,21 @@ writes. Full source/CI and exact automatic deployment remain required; physical
 Android remains owner post-live testing. 361's two GitHub postdeploy probes
 failed readiness403, while the same scripts passed locally; no pass is inferred
 for those failed hosted probes.
+
+## 2026-11-02 | Owner-directed anchored World and location requirement
+
+Root branch feat/pals-anchored-location-world-20261102 starts at live362/a83c675,
+retaining texture recovery and all prior releases. Three disjoint streams: World
+state/camera/grouping/credits and unit tests; native MapLibre/GPS/gesture browser
+proof; root EN/ES Terms/Privacy, contracts, integration and release. Location is
+required only to operate World; edit-only Wardrobe has no map spawn. Browser
+permission is reused but never bypassed or inferred from T&Cs. No global terms
+version/DB acceptance migration, GPS archive, public access or reward change.
+Development native checks already exercise real gestures/GLB and freshness;
+actual inspection found credits overlapped the places button, which must be
+repaired and covered before final freeze. Full source/CI/live gates remain open.
+
+Owner clarified automatic location reuse like Snapchat/Pokemon Go: no extra
+in-app Allow button on launch. World now invokes the native browser location
+flow automatically, preserves granted permissions and shows recovery only for
+real denial/unavailability. Browser permission is never inferred from T&Cs.

@@ -1,13 +1,13 @@
 # AkiPals World: real-world social exploration prototype
 
-**Status:** Restricted prototype, not released or linked publicly. Initiated 31 October 2026.
+**Status:** Private live playtest; administrator/invitation access only, not linked in public navigation. Initiated 31 October 2026. The 2 November anchored-location update requires its final source/CI/live verification.
 **Branch:** feature/akipals-world-explorer-20261031
 **Product owner:** AkiPasa, separately from the consumer redesign release train.
 
 ## Product definition
 
 AkiPals 3D character creator becomes **Wardrobe**; the same user's saved avatar
-is reusable as their visible walking character inside **World**. Around that core,
+is reusable as their visible character inside **World**. Around that core,
 build a city-adventure system inspired by the _interaction pattern_ of
 location-based exploration games, **without copying protected assets or game UI**.
 
@@ -15,7 +15,7 @@ The real-world loop:
 
 1. Create your character in Wardrobe.
 2. Open World to explore a tilted, colorful map and nearby real venues.
-3. Optionally enable position tracking, visible only on your own device.
+3. Allow device location to enter World; reuse an existing browser grant. World needs a fresh reliable position.
 4. Discover venue/event highlights, create a plan and head out with friends.
 5. Future: verified visits, photo/video Moments, AR Hunts, shared crew challenges
    and Passport collections, with server-authoritative rewards only.
@@ -32,9 +32,17 @@ popularity, fake live crowd activity, strangers' exact locations, or loot boxes.
 - Reuse existing authenticated /pals/identity appearance and first-party Three.js
   GLB character runtime in low-power small-canvas world mode; no duplicate
   avatar profile or identity service. Wardrobe remains existing /pals.
-- GPS is off by default and only starts after a direct click. In-app position
-  is rendered locally; watch stops when hidden, closed or explicitly stopped.
-  The player marker starts at a **labelled demo center** until opted in.
+- World requires a fresh reliable foreground position before creating its map,
+  player or nearby-venue requests. Existing browser grants resume automatically;
+  the native browser handles any first grant. There is no extra app permission
+  button on launch; denied/unavailable recovery stays explicit.
+  There is no demo spawn or GPS on/off switch. Watchers stop when hidden or left,
+  and return requires a genuinely fresh fix. Wardrobe editing remains independent.
+- Map camera stays on the player. Dragging rotates around that point; wheel,
+  pinch and zoom controls zoom around it. Venue selection never pans away. Real
+  nearby markers group at crowded screen positions with truthful member counts;
+  individual venues remain accessible in the list. Visible provider credits
+  retain attribution links without the floating information pill.
 - Current coarse map center (two decimal places) is sent to an
   authorized /pals/world/venues read-only endpoint for nearby public listing
   discovery. Precise coordinates are never sent to that endpoint. Normal public
@@ -57,8 +65,12 @@ popularity, fake live crowd activity, strangers' exact locations, or loot boxes.
 - **Maps:** src/lib/config.ts::config.mapStyleUrl, MapLibre 5 and existing tile
   source; do not touch ProductionMap or any public map styling. Proper tile
   attribution must remain visible.
-- **Privacy:** browser-only precise geolocation after explicit tap; coarse
-  per-query map cell sent to first-party server; no persistent user traces.
+- **Privacy:** browser-controlled location permission, required for World; precise
+  coordinates position the player on-device, and only a coarse per-query map cell
+  goes to the first-party venue reader. No persistent precise movement traces.
+  Terms acceptance never substitutes for browser permission. EN/ES Terms and
+  Privacy explain the feature at `#akipals-world`; the shared account terms
+  version/approved DB rollout is unchanged.
   Viewing public street maps may still cause requests to tile hosts.
 - **Billing/teams:** entirely unchanged, no Stripe/entitlements/crews/API changes.
 - **Other products:** AkiHQ, AkiBusiness, AkiCoches and AkiDuermo untouched.

@@ -4869,3 +4869,44 @@ owner's instruction remains test then live, physical Android retest after live.
 GitHub-hosted postdeploy probes for361 separately received HTTP403 at readiness;
 identical scripts passed locally over verified TLS. Retain those failures and do
 not confuse their network boundary with the reproduced texture/CSP defect.
+
+## 2026-11-02 | Location-required, player-centred AkiPals World
+
+Owner requests a fixed player-centred game map: ordinary drag orbits the player,
+pinch/wheel/buttons zoom around that same point, and free panning/venue fly-to
+are removed. Camera padding cannot displace the geographic player anchor. Real
+venue records remain at their own coordinates; crowded markers group with real
+member counts and all individual records remain reachable. Provider attribution
+links remain visible in a small credits strip rather than an information pill.
+
+This supersedes the earlier World demo spawn and optional in-game GPS toggle.
+World cannot create a map/player or issue nearby queries without a fresh reliable
+foreground position. World requests location automatically on entry and reuses an existing browser
+grant. Prompt/unsupported permission-query browsers also use the native browser
+flow directly, with no extra in-app Allow/Enable action. Denial/unavailable/
+stale/poor fixes keep the game gated with recovery and Wardrobe navigation. No fabricated
+position or timestamp. Weak initial fixes can improve within a bounded wait.
+Foreground stationary refresh keeps real timestamps current; hidden/unmount/
+revocation stops watchers and invalidates late callbacks. Returning needs a new
+valid fix. Wardrobe editing does not use location or spawn a map character.
+
+EN/ES Terms and Privacy add a dated AkiPals World section: location is a service
+requirement for World, browser/device permission remains authoritative and can be
+withdrawn, precise coordinates position the player locally, two-decimal coarse
+area queries and provider map-area requests are disclosed, and no precise trail,
+public live presence or GPS-only attendance/reward is created. Terms agreement
+does not grant device permission. This feature notice does not alter the shared
+account `currentTermsVersion`/approved database rollout, silently reaccept terms
+or force unrelated account onboarding; no legal acceptance/customer row is edited.
+
+Scope is private World component/styles/helpers and their browser/unit tests,
+localized public Terms/Privacy information and documentation. Preserve 362's
+scoped texture decoder, Rain/Snow wardrobe/owner saves, actual Next header
+composition regression, administrator/invitation auth, no-store/noindex, server
+coarse-cell validation, public maps, consent, check-ins, XP, billing and providers.
+No schema, paid resource, server location archive or public-access activation.
+Required proof includes actual native gestures with <=1px player-centre error,
+real GLBs, denied/granted/prompt and freshness lifecycle, no pre-fix venue/map
+traffic, truthful dense groups, unoccluded credit links, EN/ES responsive views,
+full check/strict audit/exact-head CI and automatic live source/version readback.
+Physical Android remains owner testing after the authorized live publication.

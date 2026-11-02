@@ -5622,3 +5622,28 @@ in the release PR; physical Android acceptance remains separate.
   matrices without mislabelling their permissive-policy coverage.
 - Github postdeploy403 readiness failures are separately recorded; do not mark
   those as passed based on local TLS alternatives or weaken access policy.
+
+## 2026-11-02 | Anchored World controls and required foreground location
+
+- Owner replaces demo spawn/free browsing/GPS toggles with a location-required
+  player-centred World. Drag rotates, zoom stays around the player, selecting
+  places leaves the camera anchored. Wardrobe editing remains location-free.
+- Browser permission is required and existing grants are reused, independently
+  of Terms agreement. Entry automatically invokes the native location flow for
+  granted/prompt/unsupported-query cases; no app Enable/Allow button each launch. No game map/player or nearby request before a fresh valid
+  fix. Real stationary refresh, bounded weak-fix wait, stale/denied/unavailable
+  recovery, hidden/unmount cleanup and epoch-invalidated late callbacks required.
+- Coarse two-decimal venue reader, real coordinates and private access remain.
+  Dense markers group truthfully; all venues remain accessible. Replace floating
+  attribution I with visible, clickable provider credits without removing links.
+- EN/ES Terms/Privacy feature sections explain requirement, foreground scope,
+  approximate area/tile requests and withdrawal. Shared account terms version and
+  approved DB acceptance remain unchanged; no silent or blanket location consent.
+- No public map, schema, customer row, reward, billing, paid resource, precise
+  server trace or shared-presence change. Retain 362 decoder/Retry/wardrobe and
+  actual Next CSP tests, not the old permissive fixture.
+- Verify actual touch/mouse orbit/pinch/off-centre wheel/buttons and moving GPS
+  camera anchoring, real pin projection, permission lifecycle, no pre-GPS query,
+  dense groups/venue selection and unoccluded native credit links. Keep all
+  earlier failure evidence; full source/strict audit/final-head CI/live identity
+  gates remain. Owner physical Android test follows publication, never inferred.

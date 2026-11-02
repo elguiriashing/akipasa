@@ -165,7 +165,8 @@ const mapStyle = {
     streets: {
       type: "geojson",
       data: fixtures,
-      attribution: "AkiPals disposable test map",
+      attribution:
+        '<a href="https://maplibre.org/">MapLibre</a> · Disposable test map',
     },
   },
   layers: [
@@ -269,14 +270,14 @@ const browser = await chromium.launch({
 });
 const receipt = [];
 const browserErrors = [];
-async function setup(context) {
+async function setup(context, permission = "prompt") {
   context.on("page", (page) => {
     page.on("pageerror", (error) => {
       browserErrors.push(error.message);
       console.error("World browser exception:", error.stack);
     });
   });
-  await context.addInitScript(() => {
+  await context.addInitScript((initialPermission) => {
     window.palsCspViolations = [];
     window.palsDecodedImages = [];
     // The scoped loader now decodes embedded PNGs as real HTML images under
@@ -332,14 +333,41 @@ async function setup(context) {
     );
     const state = {
       calls: 0,
+      refreshCalls: 0,
+      refreshSuccess: null,
+      refreshFailure: null,
       clears: [],
       success: null,
       failure: null,
       hidden: false,
+      permission: initialPermission,
     };
+    const permissionStatus = new EventTarget();
+    Object.defineProperty(permissionStatus, "state", {
+      get: () => state.permission,
+    });
+    Object.defineProperty(navigator, "permissions", {
+      configurable: true,
+      value: {
+        query: async ({ name }) => {
+          if (initialPermission === "unsupported")
+            throw new TypeError(
+              "Disposable browser has no permission-query support",
+            );
+          if (name !== "geolocation")
+            throw new Error("Unexpected permission query");
+          return permissionStatus;
+        },
+      },
+    });
     Object.defineProperty(navigator, "geolocation", {
       configurable: true,
       value: {
+        getCurrentPosition(success, failure) {
+          state.refreshCalls++;
+          state.refreshSuccess = success;
+          state.refreshFailure = failure;
+        },
         watchPosition(success, failure) {
           state.calls++;
           state.success = success;
@@ -358,13 +386,35 @@ async function setup(context) {
     window.palsGPS = {
       state,
       emit(latitude, longitude, accuracy = 6, age = 0) {
+        if (accuracy <= 100 && age <= 30000 && age >= -5000)
+          state.accepted = { latitude, longitude };
         state.success?.({
           timestamp: Date.now() - age,
           coords: { latitude, longitude, accuracy, heading: 85, speed: 1.1 },
         });
       },
+      refresh(latitude, longitude, accuracy = 6, age = 0) {
+        state.refreshSuccess?.({
+          timestamp: Date.now() - age,
+          coords: { latitude, longitude, accuracy, heading: 85, speed: 0 },
+        });
+      },
+      rejectRefresh(code = 2) {
+        state.refreshFailure?.({ code });
+      },
+      grant() {
+        state.permission = "granted";
+        permissionStatus.dispatchEvent(new Event("change"));
+      },
       deny() {
+        state.permission = "denied";
         state.failure?.({ code: 1 });
+      },
+      unavailable() {
+        state.failure?.({ code: 2 });
+      },
+      timeout() {
+        state.failure?.({ code: 3 });
       },
       hide() {
         state.hidden = true;
@@ -375,7 +425,7 @@ async function setup(context) {
         document.dispatchEvent(new Event("visibilitychange"));
       },
     };
-  });
+  }, permission);
 }
 
 async function projectedPins(page, locale = "en") {
@@ -434,6 +484,229 @@ async function assertProjectedPins(page, step, locale = "en") {
   return { step, maximumPixelError: Math.max(...pins.map((p) => p.error)) };
 }
 
+async function assertPlayerCentered(
+  page,
+  step,
+  latitude = 36.54311,
+  longitude = -4.62312,
+) {
+  await expect
+    .poll(() =>
+      page.evaluate(
+        ({ latitude, longitude }) => {
+          const map = window.palsFixtureMap;
+          if (!map) return 99999;
+          const point = map.project([longitude, latitude]);
+          const box = map.getContainer().getBoundingClientRect();
+          return Math.max(
+            Math.abs(point.x - box.width / 2),
+            Math.abs(point.y - box.height / 2),
+          );
+        },
+        { latitude, longitude },
+      ),
+    )
+    .toBeLessThanOrEqual(1);
+  return {
+    step,
+    centerError: await page.evaluate(
+      ({ latitude, longitude }) => {
+        const map = window.palsFixtureMap,
+          point = map.project([longitude, latitude]);
+        const box = map.getContainer().getBoundingClientRect();
+        return Math.max(
+          Math.abs(point.x - box.width / 2),
+          Math.abs(point.y - box.height / 2),
+        );
+      },
+      { latitude, longitude },
+    ),
+  };
+}
+
+async function assertCreditsReachable(page, step) {
+  await expect(
+    page.locator(".maplibregl-ctrl-attrib-button"),
+  ).not.toBeVisible();
+  const strip = page.locator(".maplibregl-ctrl-attrib-inner");
+  await expect(strip).toBeVisible();
+  const geometry = await strip.evaluate((node) => {
+    const a = node.getBoundingClientRect();
+    const overlaps = [
+      ...document.querySelectorAll(
+        "[data-pals-world-hud], nav[aria-label], [data-pals-world-details]",
+      ),
+    ].map((other) => {
+      const b = other.getBoundingClientRect();
+      return (
+        Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) *
+        Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top))
+      );
+    });
+    return {
+      overlaps,
+      withinViewport:
+        a.left >= 0 &&
+        a.top >= 0 &&
+        a.right <= innerWidth + 1 &&
+        a.bottom <= innerHeight + 1,
+    };
+  });
+  assert.equal(
+    geometry.withinViewport,
+    true,
+    step + ": credits stay within viewport",
+  );
+  assert.equal(
+    Math.max(...geometry.overlaps),
+    0,
+    step + ": complete credit strip clears HUD, navigation and open card",
+  );
+  const links = strip.locator("a");
+  assert.ok(
+    (await links.count()) > 0,
+    "Truthful fixture software attribution links remain visible",
+  );
+  for (const link of await links.all()) {
+    await expect(link).toBeVisible();
+    assert.match(await link.getAttribute("href"), /^https?:/);
+    assert.equal(
+      await link.evaluate((node) => {
+        const box = node.getBoundingClientRect(),
+          hit = document.elementFromPoint(
+            box.left + box.width / 2,
+            box.top + box.height / 2,
+          );
+        return hit === node || node.contains(hit);
+      }),
+      true,
+      step + ": provider link genuinely hit-testable",
+    );
+  }
+}
+
+async function nativeCameraGestures(page) {
+  await page.evaluate(() => {
+    window.palsCenterTrace = [];
+    const map = window.palsFixtureMap;
+    map.on("move", () => {
+      const fix = window.palsGPS.state.accepted;
+      if (!fix) return;
+      const point = map.project([fix.longitude, fix.latitude]),
+        box = map.getContainer().getBoundingClientRect();
+      window.palsCenterTrace.push(
+        Math.max(
+          Math.abs(point.x - box.width / 2),
+          Math.abs(point.y - box.height / 2),
+        ),
+      );
+    });
+  });
+  const map = page.locator(".maplibregl-canvas");
+  const clearPath = await map.evaluate((canvas) => {
+    const box = canvas.getBoundingClientRect(),
+      length = Math.min(180, box.width - 60);
+    for (const fraction of [0.2, 0.3, 0.4, 0.6, 0.7]) {
+      const y = box.top + box.height * fraction,
+        x = box.left + box.width / 2;
+      if (
+        Array.from({ length: 13 }, (_, i) =>
+          document.elementFromPoint(x - length / 2 + (i * length) / 12, y),
+        ).every((hit) => hit === canvas)
+      )
+        return { x, y, length };
+    }
+    return null;
+  });
+  assert.ok(
+    clearPath,
+    "Native orbit gesture needs a genuine unobstructed map path",
+  );
+  const start = await page.evaluate(() => ({
+    bearing: window.palsFixtureMap.getBearing(),
+    zoom: window.palsFixtureMap.getZoom(),
+  }));
+  await page.mouse.move(clearPath.x - clearPath.length / 2, clearPath.y);
+  await page.mouse.down();
+  await page.mouse.move(clearPath.x + clearPath.length / 2, clearPath.y, {
+    steps: 12,
+  });
+  await page.mouse.up();
+  await expect
+    .poll(() => page.evaluate(() => window.palsFixtureMap.getBearing()))
+    .not.toBe(start.bearing);
+  const checks = [await assertPlayerCentered(page, "native normal-drag orbit")];
+  await page.mouse.move(clearPath.x + clearPath.length / 3, clearPath.y);
+  await page.mouse.wheel(0, -250);
+  await expect
+    .poll(() => page.evaluate(() => window.palsFixtureMap.getZoom()))
+    .not.toBe(start.zoom);
+  checks.push(await assertPlayerCentered(page, "native off-centre wheel zoom"));
+  for (const label of ["Zoom in", "Zoom out"]) {
+    const previousZoom = await page.evaluate(() =>
+      window.palsFixtureMap.getZoom(),
+    );
+    await page.getByRole("button", { name: label, exact: true }).click();
+    await expect
+      .poll(() => page.evaluate(() => window.palsFixtureMap.getZoom()))
+      .not.toBe(previousZoom);
+    checks.push(await assertPlayerCentered(page, "native " + label));
+  }
+  const beforePinchZoom = await page.evaluate(() =>
+    window.palsFixtureMap.getZoom(),
+  );
+  const cdp = await page.context().newCDPSession(page);
+  const x = clearPath.x,
+    y = clearPath.y;
+  const beforeTouchBearing = await page.evaluate(() =>
+    window.palsFixtureMap.getBearing(),
+  );
+  await cdp.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [{ x: x - 45, y }],
+  });
+  for (let delta = -30; delta <= 45; delta += 15)
+    await cdp.send("Input.dispatchTouchEvent", {
+      type: "touchMove",
+      touchPoints: [{ x: x + delta, y }],
+    });
+  await cdp.send("Input.dispatchTouchEvent", {
+    type: "touchEnd",
+    touchPoints: [],
+  });
+  await expect
+    .poll(() => page.evaluate(() => window.palsFixtureMap.getBearing()))
+    .not.toBe(beforeTouchBearing);
+  checks.push(
+    await assertPlayerCentered(page, "native one-finger touch orbit"),
+  );
+  await cdp.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [
+      { x: x - 35, y },
+      { x: x + 35, y },
+    ],
+  });
+  for (let delta = 40; delta <= 90; delta += 10)
+    await cdp.send("Input.dispatchTouchEvent", {
+      type: "touchMove",
+      touchPoints: [
+        { x: x - delta, y },
+        { x: x + delta, y },
+      ],
+    });
+  await cdp.send("Input.dispatchTouchEvent", {
+    type: "touchEnd",
+    touchPoints: [],
+  });
+  await expect
+    .poll(() => page.evaluate(() => window.palsFixtureMap.getZoom()))
+    .not.toBe(beforePinchZoom);
+  checks.push(await assertPlayerCentered(page, "native two-finger pinch"));
+  await cdp.detach();
+  return checks;
+}
+
 try {
   const cspContext = await browser.newContext();
   await setup(cspContext);
@@ -475,7 +748,7 @@ try {
   assert.deepEqual(await cspPage.evaluate(() => window.palsCspViolations), []);
   await cspContext.close();
   for (const { width, height } of [
-    ...[360, 390, 430, 820, 1440].map((width) => ({ width, height: 900 })),
+    ...[320, 360, 390, 430, 820, 1440].map((width) => ({ width, height: 900 })),
     { width: 390, height: 640 },
   ]) {
     const context = await browser.newContext({
@@ -501,7 +774,32 @@ try {
     page.on("request", (request) => {
       if (request.url().endsWith(".glb")) modelRequests.push(request.url());
     });
+    const requestStart = requests.length;
     await page.goto(origin + "/pals/world");
+    await expect(
+      page.getByRole("button", { name: "Enable location", exact: true }),
+    ).toHaveCount(0);
+    assert.equal(await page.evaluate(() => !!window.palsFixtureMap), false);
+    await expect(page.locator("[data-pals-world-avatar]")).toHaveCount(0);
+    assert.equal(
+      requests
+        .slice(requestStart)
+        .some(
+          (r) => r.path === "/pals/world/venues" || r.path === "/style.json",
+        ),
+      false,
+      "No map/venue network before required fresh GPS",
+    );
+    await expect
+      .poll(() => page.evaluate(() => window.palsGPS.state.calls))
+      .toBe(1);
+    await page.evaluate(() => window.palsGPS.grant());
+    assert.equal(
+      await page.evaluate(() => window.palsGPS.state.calls),
+      1,
+      "First native grant does not duplicate an active permission watch",
+    );
+    await page.evaluate(() => window.palsGPS.emit(36.54311, -4.62312));
     await expect(page.locator("[data-pals-world-avatar]")).toHaveAttribute(
       "data-rendered",
       "true",
@@ -534,7 +832,7 @@ try {
     const portraitBeforeGps = await page.evaluate(() =>
       window.palsWorldStage.screenshot(),
     );
-    assert.equal(await page.evaluate(() => window.palsGPS.state.calls), 0);
+    assert.equal(await page.evaluate(() => window.palsGPS.state.calls), 1);
     assert.equal(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= window.innerWidth + 1,
@@ -562,31 +860,29 @@ try {
         await assertProjectedPins(page, "negative control restored"),
       );
     }
-    for (const [step, camera] of [
-      ["pan", { center: [-4.6244, 36.5437] }],
-      ["zoom", { zoom: 17.2 }],
-      ["tilt and rotate", { pitch: 34, bearing: 31 }],
-    ]) {
-      await page.evaluate(
-        (camera) => window.palsFixtureMap.jumpTo(camera),
-        camera,
-      );
-      projection.push(await assertProjectedPins(page, step));
-    }
+    const centered = await nativeCameraGestures(page);
+    await page.evaluate(() => window.palsGPS.emit(36.5434, -4.6233));
+    await expect
+      .poll(() =>
+        page.evaluate(
+          (before) => window.palsWorldStage.screenshot() !== before,
+          portraitBeforeGps,
+        ),
+      )
+      .toBe(true);
+    centered.push(
+      await assertPlayerCentered(page, "fresh moving GPS", 36.5434, -4.6233),
+    );
+    await page.evaluate(() => window.palsGPS.emit(36.54311, -4.62312));
+    centered.push(await assertPlayerCentered(page, "fresh GPS restored"));
+    projection.push(await assertProjectedPins(page, "native gestures"));
     await page.setViewportSize({
       width: Math.max(320, width - 37),
       height: height - 80,
     });
     projection.push(await assertProjectedPins(page, "resize"));
     await page.setViewportSize({ width, height });
-    await page.evaluate(() =>
-      window.palsFixtureMap.jumpTo({
-        center: [-4.6234, 36.543],
-        zoom: 16.1,
-        pitch: 55,
-        bearing: -14,
-      }),
-    );
+    centered.push(await assertPlayerCentered(page, "resize restored"));
     projection.push(await assertProjectedPins(page, "restored"));
     if (width <= 880) {
       const mapBox = await page
@@ -622,29 +918,16 @@ try {
         page.getByRole("region", { name: "Nearby venue list" }),
       ).toBeVisible();
       await expect(
-        page.getByRole("button", { name: "Locate my AkiPal", exact: true }),
-      ).toBeVisible();
+        page.getByRole("button", {
+          name: /Locate my AkiPal|Stop location tracking/,
+        }),
+      ).toHaveCount(0);
       await page.getByRole("button", { name: "Close nearby places" }).click();
       await expect(
         page.getByRole("button", { name: "Nearby places", exact: true }),
       ).toBeFocused();
-      const attribution = page.locator(".maplibregl-ctrl-attrib-button");
-      const attributionBox = await attribution.boundingBox();
-      assert.ok(attributionBox.width >= 44 && attributionBox.height >= 44);
-      assert.equal(
-        await attribution.evaluate(
-          (node) => getComputedStyle(node).backgroundRepeat,
-        ),
-        "no-repeat",
-        "Larger accessible attribution control must not tile its icon",
-      );
-      await attribution.click();
-      await expect(
-        page.locator(".maplibregl-ctrl-attrib-inner"),
-      ).not.toBeVisible();
-      await attribution.click();
-      await expect(page.locator(".maplibregl-ctrl-attrib-inner")).toBeVisible();
     }
+    await assertCreditsReachable(page, "closed panels");
     await page.getByRole("button", { name: "About AkiWorld" }).click();
     await expect(
       page.getByRole("heading", { name: "Map & location" }),
@@ -670,25 +953,8 @@ try {
       ),
       fullPage: true,
     });
-    await page
-      .getByRole("button", { name: "Locate my AkiPal", exact: true })
-      .click();
-    assert.equal(await page.evaluate(() => window.palsGPS.state.calls), 1);
-    await expect(
-      page.getByRole("button", { name: "Stop location tracking", exact: true }),
-    ).toBeVisible();
     await page.evaluate(() => window.palsGPS.emit(36.54311, -4.62312));
-    await expect(page.locator("[data-pals-gps-status]")).toContainText(
-      "GPS ±6 m · private",
-    );
-    await expect
-      .poll(() =>
-        page.evaluate(
-          (before) => window.palsWorldStage.screenshot() !== before,
-          portraitBeforeGps,
-        ),
-      )
-      .toBe(true);
+    await expect(page.locator("[data-pals-gps-status]")).toContainText("GPS");
     await page
       .getByRole("button", {
         name: "Explore TEST ONLY Music Room",
@@ -701,60 +967,80 @@ try {
     projection.push(
       await assertProjectedPins(page, "venue opened while following"),
     );
+    await assertCreditsReachable(page, "selected venue card");
+    centered.push(
+      await assertPlayerCentered(
+        page,
+        "selected venue cannot move camera off player",
+      ),
+    );
     if (width === 390 && height === 640) {
       await page.screenshot({
         path: resolve(output, "world-390-short-venue.png"),
         fullPage: true,
       });
     }
-    const stop = page.getByRole("button", {
-      name: "Stop location tracking",
-      exact: true,
+    const centerTrace = await page.evaluate(() => window.palsCenterTrace);
+    assert.ok(
+      centerTrace.length > 10,
+      "Record actual intermediate move events through native gestures",
+    );
+    const maximumMovingCenterError = Math.max(...centerTrace);
+    assert.ok(
+      maximumMovingCenterError <= 1,
+      "Player stays centred during every observed move event",
+    );
+    const beforeHideClears = await page.evaluate(
+      () => window.palsGPS.state.clears.length,
+    );
+    await page.evaluate(() => window.palsGPS.hide());
+    await expect(page.locator("[data-pals-world-avatar]")).toHaveCount(0);
+    assert.ok(
+      (await page.evaluate(() => window.palsGPS.state.clears.length)) >
+        beforeHideClears,
+    );
+    const hiddenRequestCount = requests.length;
+    await page.evaluate(() => window.palsGPS.emit(36.56, -4.6));
+    await expect(page.locator("[data-pals-world-avatar]")).toHaveCount(0);
+    assert.equal(
+      requests.length,
+      hiddenRequestCount,
+      "Late hidden callback cannot fetch map or venues",
+    );
+    await page.evaluate(() => {
+      window.palsGPS.state.permission = "granted";
+      window.palsGPS.show();
     });
-    await expect(stop).toBeVisible();
-    const box = await stop.boundingBox();
-    assert.ok(box.width >= 44 && box.height >= 44);
-    await stop.click();
-    await expect(page.locator("[data-pals-gps-status]")).toContainText(
-      "Location off",
-    );
-    await page.evaluate(() => window.palsGPS.emit(36.55, -4.61));
-    await expect(page.locator("[data-pals-gps-status]")).toContainText(
-      "Location off",
-    );
-    await page
-      .getByRole("button", { name: "Locate my AkiPal", exact: true })
-      .click();
+    await expect
+      .poll(() => page.evaluate(() => window.palsGPS.state.calls))
+      .toBe(2);
     await page.evaluate(() =>
       window.palsGPS.emit(36.54311, -4.62312, 6, 60000),
     );
-    await expect(page.locator("[data-pals-gps-status]")).toContainText(
-      "fresh GPS",
-    );
+    await expect(page.locator("[data-pals-world-location-gate]")).toBeVisible();
+    await expect(page.locator("[data-pals-world-avatar]")).toHaveCount(0);
     await page.evaluate(() => window.palsGPS.emit(36.54311, -4.62312, 500));
-    await expect(page.locator("[data-pals-gps-status]")).toContainText(
-      "imprecise",
-    );
+    await expect(page.locator("[data-pals-world-location-gate]")).toBeVisible();
+    await expect(page.locator("[data-pals-world-avatar]")).toHaveCount(0);
     await page.evaluate(() => window.palsGPS.emit(36.54311, -4.62312));
-    await page.evaluate(() => window.palsGPS.hide());
-    await expect(page.locator("[data-pals-gps-status]")).toContainText(
-      "Location off",
+    await expect(page.locator("[data-pals-world-avatar]")).toHaveAttribute(
+      "data-rendered",
+      "true",
+      { timeout: 45000 },
     );
-    await page.evaluate(() => window.palsGPS.emit(36.56, -4.6));
-    await expect(page.locator("[data-pals-gps-status]")).toContainText(
-      "Location off",
-    );
-    await page.evaluate(() => window.palsGPS.show());
-    await page
-      .getByRole("button", { name: "Locate my AkiPal", exact: true })
-      .click();
     await page.evaluate(() => window.palsGPS.deny());
-    await expect(page.locator("[data-pals-gps-status]")).toContainText(
-      "Location denied",
-    );
-    await page
-      .getByRole("button", { name: "Locate my AkiPal", exact: true })
-      .click();
+    await expect(
+      page.getByRole("button", { name: "Try again", exact: true }),
+    ).toBeVisible();
+    await expect(page.locator("[data-pals-world-avatar]")).toHaveCount(0);
+    await page.evaluate(() => {
+      window.palsGPS.state.permission = "granted";
+    });
+    const watchCalls = await page.evaluate(() => window.palsGPS.state.calls);
+    await page.getByRole("button", { name: "Try again", exact: true }).click();
+    await expect
+      .poll(() => page.evaluate(() => window.palsGPS.state.calls))
+      .toBe(watchCalls + 1);
     const clears = await page.evaluate(
       () => window.palsGPS.state.clears.length,
     );
@@ -762,7 +1048,7 @@ try {
     assert.equal(
       await page.evaluate(() => window.palsGPS.state.clears.length),
       clears + 1,
-      "Unmount clears the sensor",
+      "Unmount clears sensor",
     );
     assert.deepEqual(browserErrors, [], "No JavaScript runtime errors");
     assert.deepEqual(
@@ -783,8 +1069,10 @@ try {
       savedAppearance: expectedModel === "snow-v4",
       decodedTextureImages: decodedImages,
       realWorldModeAndGpsPortraitUpdate: true,
-      gpsInitiallyOff: true,
-      stopVisibleOnVenue: true,
+      mandatoryFreshGpsGate: true,
+      playerCenteredNativeGestures: centered,
+      moveEventSamples: centerTrace.length,
+      maximumMovingCenterError,
       staleCallbackBlocked: true,
       oldAndInaccurateFixRejected: true,
       backgroundStop: true,
@@ -803,7 +1091,7 @@ try {
           reducedMotion: "reduce",
           colorScheme: theme,
         });
-        await setup(context);
+        await setup(context, "granted");
         const page = await context.newPage(),
           es = locale === "es";
         await page.route("**/pals/identity", (r) =>
@@ -819,6 +1107,10 @@ try {
           }),
         );
         await page.goto(origin + "/pals/world?lang=" + locale);
+        await expect
+          .poll(() => page.evaluate(() => window.palsGPS.state.calls))
+          .toBe(1);
+        await page.evaluate(() => window.palsGPS.emit(36.54311, -4.62312));
         await expect(page.locator("[data-pals-world-avatar]")).toHaveAttribute(
           "data-rendered",
           "true",
@@ -828,7 +1120,7 @@ try {
           "data-model-id",
           es ? "snow-v4" : "rain-v3",
         );
-        assert.equal(await page.evaluate(() => window.palsGPS.state.calls), 0);
+        assert.equal(await page.evaluate(() => window.palsGPS.state.calls), 1);
         const projected = await assertProjectedPins(
           page,
           "localized night HUD",
@@ -853,29 +1145,12 @@ try {
           })
           .click();
         await expect(nearby).not.toBeVisible();
-        const locate = page.getByRole("button", {
-          name: es ? "Localizar mi AkiPal" : "Locate my AkiPal",
-          exact: true,
-        });
-        await locate.click();
-        await page.evaluate(() => window.palsGPS.emit(36.54311, -4.62312));
-        await expect(page.locator("[data-pals-gps-status]")).toContainText(
-          es ? "privado" : "private",
-        );
-        await page
-          .getByRole("button", {
-            name: es ? "Detener ubicación" : "Stop location tracking",
-            exact: true,
-          })
-          .click();
-        await expect(page.locator("[data-pals-gps-status]")).toContainText(
-          es ? "Ubicación desactivada" : "Location off",
-        );
-        await locate.click();
-        await page.evaluate(() => window.palsGPS.deny());
-        await expect(page.locator("[data-pals-gps-status]")).toContainText(
-          es ? "Ubicación denegada" : "Location denied",
-        );
+        await assertPlayerCentered(page, "localized granted permission");
+        await expect(
+          page.getByRole("button", {
+            name: /Locate my AkiPal|Stop location tracking|Localizar mi AkiPal|Detener ubicación/,
+          }),
+        ).toHaveCount(0);
         await page
           .getByRole("button", {
             name: (es ? "Explorar " : "Explore ") + "TEST ONLY Music Room",
@@ -913,13 +1188,303 @@ try {
           modelId: es ? "snow-v4" : "rain-v3",
           projected,
           nearbyDefaultClosed: true,
-          actualOptInStopDenied: true,
+          actualGrantedPermissionAutostart: true,
           nativeVenueHref: true,
           realMapLibre: true,
           realGLB: true,
         });
         await context.close();
       }
+  {
+    const context = await browser.newContext({
+      viewport: { width: 390, height: 844 },
+    });
+    await setup(context, "granted");
+    const page = await context.newPage();
+    const dense = Array.from({ length: 30 }, (_, i) => ({
+      ...fixtureVenues[0],
+      id: "dense-" + i,
+      slug: "fixture-dense-" + i,
+      name: "TEST ONLY Dense " + i,
+      latitude: 36.544,
+      longitude: -4.621,
+    }));
+    await page.route("**/pals/world/venues?*", (r) =>
+      r.fulfill({ json: { venues: dense, truncated: false } }),
+    );
+    await page.goto(origin + "/pals/world");
+    await expect
+      .poll(() => page.evaluate(() => window.palsGPS.state.calls))
+      .toBe(1);
+    await page.evaluate(() => window.palsGPS.emit(36.54311, -4.62312));
+    const cluster = page.getByRole("button", {
+      name: "30 nearby places",
+      exact: true,
+    });
+    await expect(cluster).toBeVisible();
+    assert.equal(
+      await page
+        .locator(".maplibregl-marker[aria-label='30 nearby places']")
+        .count(),
+      1,
+    );
+    await expect
+      .poll(() =>
+        cluster.evaluate((node) => {
+          const map = window.palsFixtureMap,
+            box = node.getBoundingClientRect(),
+            container = map.getContainer().getBoundingClientRect(),
+            point = map.project([-4.621, 36.544]);
+          return Math.max(
+            Math.abs(box.left + box.width / 2 - container.left - point.x),
+            Math.abs(box.bottom - container.top - point.y),
+          );
+        }),
+      )
+      .toBeLessThanOrEqual(1.6);
+    const anchorError = await cluster.evaluate((node) => {
+      const map = window.palsFixtureMap,
+        box = node.getBoundingClientRect(),
+        container = map.getContainer().getBoundingClientRect(),
+        point = map.project([-4.621, 36.544]);
+      return Math.max(
+        Math.abs(box.left + box.width / 2 - container.left - point.x),
+        Math.abs(box.bottom - container.top - point.y),
+      );
+    });
+    assert.ok(
+      anchorError <= 1.6,
+      "Dense group remains anchored to a real member coordinate",
+    );
+    await cluster.click();
+    const list = page.getByRole("region", {
+      name: "Nearby venue list",
+      exact: true,
+    });
+    await expect(
+      list.getByRole("button", { name: /TEST ONLY Dense / }),
+    ).toHaveCount(30);
+    await list.getByRole("button", { name: /TEST ONLY Dense 29 / }).click();
+    await expect(
+      page.getByRole("heading", { name: "TEST ONLY Dense 29", exact: true }),
+    ).toBeVisible();
+    await assertPlayerCentered(page, "dense selected venue retains GPS centre");
+    await expect(
+      page.getByRole("link", { name: "View place ↗", exact: true }),
+    ).toHaveAttribute("href", "/en/venues/fixture-dense-29");
+    await page.screenshot({
+      path: resolve(output, "world-dense-real-members.png"),
+      fullPage: true,
+    });
+    receipt.push({
+      denseVenueCount: 30,
+      truthfulSingleGroup: true,
+      anchorError,
+      allMembersReachable: true,
+      selectedVenueDidNotPan: true,
+    });
+    await context.close();
+  }
+  for (const refreshResult of ["fresh", "stale", "denied"]) {
+    const context = await browser.newContext({
+      viewport: { width: 390, height: 844 },
+    });
+    await setup(context, "granted");
+    const page = await context.newPage();
+    await page.goto(origin + "/pals/world");
+    await expect
+      .poll(() => page.evaluate(() => window.palsGPS.state.calls))
+      .toBe(1);
+    await page.evaluate(() =>
+      window.palsGPS.emit(36.54311, -4.62312, 6, 19000),
+    );
+    await expect
+      .poll(() => page.evaluate(() => window.palsGPS.state.refreshCalls), {
+        timeout: 5000,
+      })
+      .toBe(1);
+    await expect(page.locator("[data-pals-world-avatar]")).toHaveAttribute(
+      "data-rendered",
+      "true",
+      { timeout: 45000 },
+    );
+    const beforeTransientClears = await page.evaluate(
+      () => window.palsGPS.state.clears.length,
+    );
+    await page.evaluate(
+      (result) =>
+        result === "stale"
+          ? window.palsGPS.timeout()
+          : window.palsGPS.unavailable(),
+      refreshResult,
+    );
+    await expect(page.locator("[data-pals-world-location-gate]")).toHaveCount(
+      0,
+    );
+    await expect(page.locator("[data-pals-world-avatar]")).toHaveAttribute(
+      "data-rendered",
+      "true",
+    );
+    assert.equal(
+      await page.evaluate(() => window.palsGPS.state.clears.length),
+      beforeTransientClears,
+      "Transient code2/3 cannot preempt a valid sample's independent deadline",
+    );
+    const beforeRefreshVenues = requests.filter(
+      (r) => r.path === "/pals/world/venues",
+    ).length;
+    await page.evaluate((result) => {
+      if (result === "denied") window.palsGPS.rejectRefresh(1);
+      else
+        window.palsGPS.refresh(
+          36.54311,
+          -4.62312,
+          6,
+          result === "fresh" ? 0 : 60000,
+        );
+    }, refreshResult);
+    if (refreshResult === "fresh") {
+      await expect(page.locator("[data-pals-world-avatar]")).toHaveAttribute(
+        "data-rendered",
+        "true",
+        { timeout: 45000 },
+      );
+      await assertPlayerCentered(page, "stationary fresh sample");
+      assert.equal(
+        requests.filter((r) => r.path === "/pals/world/venues").length,
+        beforeRefreshVenues,
+        "Stationary refresh does not disclose another venue query",
+      );
+      await page.evaluate(() => window.palsGPS.hide());
+      await page.evaluate(() => window.palsGPS.refresh(36.55, -4.61));
+      await expect(page.locator("[data-pals-world-avatar]")).toHaveCount(0);
+    } else {
+      await expect(page.locator("[data-pals-world-location-gate]")).toBeVisible(
+        { timeout: 14000 },
+      );
+      await expect(page.locator("[data-pals-world-avatar]")).toHaveCount(0);
+      await expect(
+        page.getByRole("button", { name: "Try again", exact: true }),
+      ).toBeVisible();
+    }
+    receipt.push({
+      stationaryRefresh: refreshResult,
+      originalSensorTimestampHonoured: true,
+      staleRefreshCannotExtendDeadline: refreshResult !== "fresh",
+      lateHiddenCallbackBlocked: refreshResult === "fresh",
+    });
+    await context.close();
+  }
+  {
+    const context = await browser.newContext({
+      viewport: { width: 390, height: 844 },
+    });
+    await setup(context, "unsupported");
+    const page = await context.newPage();
+    for (const entry of ["first-entry", "reopen"]) {
+      if (entry === "first-entry") await page.goto(origin + "/pals/world");
+      else await page.reload();
+      await expect
+        .poll(() => page.evaluate(() => window.palsGPS.state.calls))
+        .toBe(1);
+      await expect(
+        page.getByRole("button", { name: "Enable location", exact: true }),
+      ).toHaveCount(0);
+      await expect(page.locator("[data-pals-world-avatar]")).toHaveCount(0);
+      await page.evaluate(() => window.palsGPS.emit(36.54311, -4.62312));
+      await expect(page.locator("[data-pals-world-avatar]")).toHaveAttribute(
+        "data-rendered",
+        "true",
+        { timeout: 45000 },
+      );
+      await assertPlayerCentered(
+        page,
+        "native permission query unsupported " + entry,
+      );
+    }
+    receipt.push({
+      permissionQueryUnsupported: true,
+      nativeWatchAutomaticallyOnEntryAndReopen: true,
+      noInAppEnableButton: true,
+    });
+    await context.close();
+  }
+  {
+    const context = await browser.newContext({
+      viewport: { width: 390, height: 844 },
+    });
+    await setup(context, "denied");
+    const page = await context.newPage();
+    await page.goto(origin + "/pals/world");
+    await expect(
+      page.getByRole("button", { name: "Try again", exact: true }),
+    ).toBeVisible();
+    assert.equal(await page.evaluate(() => window.palsGPS.state.calls), 0);
+    await page.evaluate(() => window.palsGPS.grant());
+    await expect
+      .poll(() => page.evaluate(() => window.palsGPS.state.calls))
+      .toBe(1);
+    await expect(page.locator("[data-pals-world-avatar]")).toHaveCount(0);
+    await page.evaluate(() => window.palsGPS.emit(36.54311, -4.62312));
+    await expect(page.locator("[data-pals-world-avatar]")).toHaveAttribute(
+      "data-rendered",
+      "true",
+      { timeout: 45000 },
+    );
+    await assertPlayerCentered(
+      page,
+      "native browser settings grant auto-resumes fresh watch",
+    );
+    receipt.push({
+      permissionSettingsGrantAutostart: true,
+      deniedInitiallyNoWatch: true,
+      waitsForFreshFix: true,
+    });
+    await context.close();
+  }
+  for (const failure of ["denied", "unavailable", "timeout", "future"]) {
+    const context = await browser.newContext({
+      viewport: { width: 320, height: 740 },
+    });
+    await setup(context, failure === "denied" ? "denied" : "granted");
+    const page = await context.newPage(),
+      start = requests.length;
+    await page.goto(origin + "/pals/world");
+    if (failure !== "denied") {
+      await expect
+        .poll(() => page.evaluate(() => window.palsGPS.state.calls))
+        .toBe(1);
+      await page.evaluate((failure) => {
+        if (failure === "future")
+          window.palsGPS.emit(36.54311, -4.62312, 6, -60000);
+        else window.palsGPS[failure]();
+      }, failure);
+    }
+    await expect(
+      page.getByRole("button", { name: "Try again", exact: true }),
+    ).toBeVisible({ timeout: failure === "future" ? 25000 : 5000 });
+    await expect(page.locator("[data-pals-world-avatar]")).toHaveCount(0);
+    assert.equal(await page.evaluate(() => !!window.palsFixtureMap), false);
+    assert.equal(
+      requests
+        .slice(start)
+        .some(
+          (r) => r.path === "/pals/world/venues" || r.path === "/style.json",
+        ),
+      false,
+      "Invalid or denied fix never opens map or venue data",
+    );
+    await page.screenshot({
+      path: resolve(output, "world-required-gps-" + failure + ".png"),
+      fullPage: true,
+    });
+    receipt.push({
+      requiredGpsFailure: failure,
+      noMapOrVenueTraffic: true,
+      noDemoPlayer: true,
+    });
+    await context.close();
+  }
   for (const kind of ["venues", "avatar"]) {
     const context = await browser.newContext({
       viewport: { width: 390, height: 844 },
@@ -936,6 +1501,10 @@ try {
       }),
     );
     await page.goto(origin + "/pals/world");
+    await expect
+      .poll(() => page.evaluate(() => window.palsGPS.state.calls))
+      .toBe(1);
+    await page.evaluate(() => window.palsGPS.emit(36.54311, -4.62312));
     if (kind === "venues") {
       await expect(
         page.getByRole("button", { name: "Nearby places", exact: true }),

@@ -37,6 +37,17 @@ export default async function PrivacyPage({
             ? "Para prestar el servicio, protegerlo contra abusos y ofrecer estadísticas agregadas a los negocios. No vendemos datos personales."
             : "To provide the service, protect it from abuse and give businesses aggregate statistics. We do not sell personal data."}
         </p>
+        <h2 id="akipals-world">AkiPals World</h2>
+        <p>
+          {es
+            ? "World requiere permiso de ubicación y una posición actual fiable para funcionar. El navegador controla ese permiso y puede recordar tu elección. Aceptar las condiciones no lo concede. World deja de solicitar la ubicación al ocultarse o al salir y necesita una posición reciente para continuar cuando vuelves. Puedes retirar el permiso desde el navegador o dispositivo; World se pausa y el Armario sigue disponible."
+            : "World requires location permission and a reliable current position to work. Your browser controls that permission and may remember your choice. Accepting the terms does not grant it. World stops requesting location when hidden or left and needs a fresh position to continue when you return. You can withdraw permission in your browser or device; World pauses and Wardrobe remains available."}
+        </p>
+        <p>
+          {es
+            ? "Las coordenadas precisas se utilizan en tu navegador para situar el personaje. La búsqueda de lugares recibe una zona aproximada, redondeada a dos decimales, y el proveedor del mapa recibe las áreas de mapa solicitadas. World no guarda un historial preciso de tus desplazamientos ni publica tu posición para otras personas. Las visitas y recompensas de check-in siguen teniendo sus propias comprobaciones."
+            : "Precise coordinates are used in your browser to position the character. Nearby-place searches receive an approximate area, rounded to two decimal places, and the map provider receives the map areas requested. World does not store a precise movement history or publish your position to other people. Visits and check-in rewards retain their separate verification requirements."}
+        </p>
         <h2 id="city-stories">
           {es ? "Fotos e historias de ciudades" : "Photos and city stories"}
         </h2>
@@ -118,8 +129,8 @@ export default async function PrivacyPage({
         <p>
           <small>
             {es
-              ? "Última actualización: 1 de noviembre de 2026. Pendiente de revisión jurídica profesional antes del lanzamiento comercial."
-              : "Last updated: 1 November 2026. Pending professional legal review before commercial launch."}
+              ? "Última actualización: 2 de noviembre de 2026. Pendiente de revisión jurídica profesional antes del lanzamiento comercial."
+              : "Last updated: 2 November 2026. Pending professional legal review before commercial launch."}
           </small>
         </p>
       </section>

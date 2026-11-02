@@ -59,3 +59,55 @@ describe("private AkiPals World boundary", () => {
     ).toHaveLength(WORLD_VENUE_LIMIT);
   });
 });
+
+it("only admits fresh bounded sensor fixes and never substitutes a demo coordinate", async () => {
+  const { worldPositionIssue } = await import("@/lib/pals/world");
+  const now = 1000000;
+  const good = {
+    timestamp: now,
+    coords: { latitude: 36.54, longitude: -4.62, accuracy: 10 },
+  };
+  expect(worldPositionIssue(good, now)).toBeNull();
+  expect(worldPositionIssue({ ...good, timestamp: now - 30001 }, now)).toBe(
+    "stale",
+  );
+  expect(worldPositionIssue({ ...good, timestamp: now + 5001 }, now)).toBe(
+    "stale",
+  );
+  expect(worldPositionIssue({ ...good, timestamp: NaN }, now)).toBe(
+    "unavailable",
+  );
+  expect(
+    worldPositionIssue(
+      { ...good, coords: { ...good.coords, latitude: 91 } },
+      now,
+    ),
+  ).toBe("unavailable");
+  for (const accuracy of [101, -1, NaN, Infinity])
+    expect(
+      worldPositionIssue(
+        { ...good, coords: { ...good.coords, accuracy } },
+        now,
+      ),
+    ).toBe("inaccurate");
+});
+it("groups true dense members at a real member anchor while retaining all records", async () => {
+  const { groupWorldVenues } = await import("@/lib/pals/world");
+  const venues = Array.from({ length: 30 }, (_, index) => ({
+    id: `v${index}`,
+    slug: `venue-${index}`,
+    name: `Place${index}`,
+    latitude: 36.54,
+    longitude: -4.62,
+    claimStatus: "claimed" as const,
+  }));
+  const far = { ...venues[0], id: "far", longitude: -4.5 };
+  const groups = groupWorldVenues([...venues, far], (venue) => ({
+    x: venue.longitude * 1000,
+    y: venue.latitude * 1000,
+  }));
+  expect(groups.map((group) => group.length)).toEqual([30, 1]);
+  expect(groups[0][0]).toBe(venues[0]);
+  expect(groups.flat()).toEqual([...venues, far]);
+  expect(new Set(groups.flat().map((venue) => venue.id)).size).toBe(31);
+});
