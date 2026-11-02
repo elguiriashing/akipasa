@@ -63,8 +63,14 @@ module.exports = async function exercisePointerBrowsing(
     await page.mouse.down();
     await page.mouse.move(x + direction * 30, y, { steps: 4 });
     await expect(scene).toHaveAttribute("data-dragging", "true");
-    const shift = await icon.evaluate((node) => node.getBoundingClientRect().x);
-    expect(direction * (shift - start.x)).toBeGreaterThan(20);
+    // Wait for the composited transform, without relaxing the 20px drag requirement.
+    await expect
+      .poll(async () =>
+        direction *
+        ((await icon.evaluate((node) => node.getBoundingClientRect().x)) -
+          start.x),
+      )
+      .toBeGreaterThan(20);
     // Release outside the scene to exercise real pointer capture, not synthetic swipes.
     await page.mouse.move(
       direction < 0 ? bounds.x - 10 : bounds.x + bounds.width + 10,
