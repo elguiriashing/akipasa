@@ -12,3 +12,5 @@ reduced geometry and textures for mobile, adapted authored materials to glTF PBR
 These models use the shared Three.js GLB renderer; the full M3 CharacterStudio engine is not included.
 Source archive, Blender source and GLB SHA-256 hashes are recorded in manifest.json.
 
+The November 2026 Wardrobe additionally applies reversible runtime hair/garment shaping
+and per-surface colour palettes. The original exported GLB files and their recorded hashes remain unchanged.

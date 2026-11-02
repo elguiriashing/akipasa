@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SUPPORTED_AUTHORED_OPTIONS } from "./catalogue";
 
 /**
  * AkiPals identity v2. Stylised illustration, not biometrics.
@@ -37,6 +38,12 @@ export const appearanceSchema = z
     top: z.enum(["tee", "hoodie", "jacket", "sweater"]),
     topColor: z.enum(["orange", "ink", "cream", "mint", "purple", "red"]),
     bottom: z.enum(["cargo", "jeans", "tailored", "shorts"]).default("cargo"),
+    bottomColor: z
+      .enum(["orange", "ink", "cream", "mint", "purple", "red"])
+      .default("ink"),
+    shoeColor: z
+      .enum(["orange", "ink", "cream", "mint", "purple", "red"])
+      .default("cream"),
     shoes: z.enum(["sneakers", "boots", "trainers"]).default("sneakers"),
     bag: z.enum(["none", "crossbody", "backpack"]).default("crossbody"),
     accessory: z.enum(["none", "glasses", "earrings", "cap"]).default("none"),
@@ -66,14 +73,61 @@ export const DEFAULT_APPEARANCE: Appearance = {
   top: "tee",
   topColor: "orange",
   bottom: "cargo",
+  bottomColor: "ink",
+  shoeColor: "cream",
   shoes: "sneakers",
   bag: "crossbody",
   accessory: "none",
 };
 
+/** Selectable authored characters. Legacy IDs remain parseable for private saves. */
+export const AUTHORED_CHARACTER_PRESETS = [
+  { id: "rain-v3", name: "Rain", bodyStyle: "feminine" },
+  { id: "snow-v4", name: "Snow", bodyStyle: "masculine" },
+] as const;
+export type AuthoredModel = (typeof AUTHORED_CHARACTER_PRESETS)[number]["id"];
+
+/** Read-only presentation projection: never writes or migrates a saved row.
+ * Unsupported legacy hair projects onto an available fit for the selected model;
+ * the original row remains unchanged until its owner explicitly saves.
+ */
+export function authoredAppearance(value: unknown): Appearance {
+  const parsed = appearanceSchema.parse(value);
+  const model =
+    parsed.model === "classic-v2"
+      ? parsed.bodyStyle === "masculine"
+        ? "snow-v4"
+        : "rain-v3"
+      : parsed.model;
+  return {
+    ...parsed,
+    hair: (
+      SUPPORTED_AUTHORED_OPTIONS[model].hair as readonly string[]
+    ).includes(parsed.hair)
+      ? parsed.hair
+      : model === "snow-v4"
+        ? "crop"
+        : "long",
+    model,
+    bodyStyle: model === "snow-v4" ? "masculine" : "feminine",
+  };
+}
+
+export function characterAppearance(model: AuthoredModel): Appearance {
+  return {
+    ...DEFAULT_APPEARANCE,
+    model,
+    bodyStyle: model === "snow-v4" ? "masculine" : "feminine",
+    hair: model === "snow-v4" ? "crop" : "long",
+    hairColor: model === "snow-v4" ? "black" : "auburn",
+    top: model === "snow-v4" ? "hoodie" : "tee",
+    topColor: model === "snow-v4" ? "ink" : "orange",
+  };
+}
+
 /** Every starter item and colour is free. No paid, random or unlockable gear here. */
 export const APPEARANCE_OPTIONS: Record<keyof Appearance, readonly string[]> = {
-  model: ["classic-v2", "rain-v3", "snow-v4"],
+  model: ["rain-v3", "snow-v4"],
   bodyStyle: ["feminine", "masculine"],
   skin: ["porcelain", "light", "warm", "olive", "brown", "deep"],
   face: ["oval", "round", "angular"],
@@ -102,6 +156,8 @@ export const APPEARANCE_OPTIONS: Record<keyof Appearance, readonly string[]> = {
   top: ["tee", "hoodie", "jacket", "sweater"],
   topColor: ["orange", "ink", "cream", "mint", "purple", "red"],
   bottom: ["cargo", "jeans", "tailored", "shorts"],
+  bottomColor: ["orange", "ink", "cream", "mint", "purple", "red"],
+  shoeColor: ["orange", "ink", "cream", "mint", "purple", "red"],
   shoes: ["sneakers", "boots", "trainers"],
   bag: ["none", "crossbody", "backpack"],
   accessory: ["none", "glasses", "earrings", "cap"],
@@ -140,6 +196,16 @@ const tops: Record<Appearance["topColor"], string> = {
   purple: "#8467C1",
   red: "#BC5666",
 };
+
+/** Closed swatches shared by customisation controls and authored renderers. */
+export const APPEARANCE_PALETTES = {
+  skin,
+  hairColor: hair,
+  eyeColor: iris,
+  topColor: tops,
+  bottomColor: tops,
+  shoeColor: tops,
+} as const;
 
 /** Only receives parsed enum values, so the SVG cannot contain supplied markup. */
 export function renderHumanAvatar(

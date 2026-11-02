@@ -1,721 +1,17 @@
-/* Restricted AkiPals game world. The public discovery map is untouched. */
+/* Private World HUD; all geographic placement remains owned by MapLibre. */
 .root {
-  --aki: #ff8049;
-  --ink: #09101b;
+  --aki: #ff824b;
+  position: relative;
   height: 100dvh;
   min-height: 0;
   overflow: hidden;
-  background: var(--ink);
-  color: #fff1e6;
-  display: flex;
-  flex-direction: column;
+  background: #101a20;
+  color: #fff4e9;
   font-family:
     system-ui,
     -apple-system,
     Segoe UI,
     sans-serif;
-}
-.root button,
-.root a {
-  font: inherit;
-}
-.root button {
-  cursor: pointer;
-}
-.root :focus-visible {
-  outline: 3px solid #ffc19c;
-  outline-offset: 3px;
-}
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  min-height: 54px;
-  flex-shrink: 0;
-  padding: 3px clamp(12px, 3vw, 28px);
-  background: #0c1521;
-  border-bottom: 1px solid #ffffff1a;
-  position: relative;
-  z-index: 8;
-}
-.brand {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  font-weight: 850;
-  font-size: 22px;
-  text-decoration: none;
-  color: #fff;
-  letter-spacing: -0.065em;
-}
-.brand span {
-  color: var(--aki);
-}
-.topTag {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  color: #d5ced0;
-  font-size: 12px;
-  border: 1px solid #ffffff28;
-  border-radius: 30px;
-  padding: 9px 12px;
-}
-.topTag i {
-  height: 7px;
-  width: 7px;
-  border-radius: 50%;
-  background: var(--aki);
-}
-.headerActions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.helpButton,
-.closeButton {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border: 1px solid #ffffff28;
-  border-radius: 50%;
-  background: #ffffff08;
-  color: #fff1e6;
-  flex-shrink: 0;
-  font-size: 20px !important;
-}
-.closeButton {
-  position: absolute;
-  right: 5px;
-  top: 5px;
-  border: 0;
-  background: transparent;
-  font-size: 26px !important;
-}
-.layout {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
-  min-height: 0;
-  flex: 1;
-}
-.world {
-  position: relative;
-  min-width: 0;
-  height: 100%;
-  min-height: 0;
-  background: #1a2331;
-  overflow: hidden;
-}
-.map {
-  position: absolute;
-  inset: 0;
-}
-.map :global(.maplibregl-ctrl-bottom-right) {
-  bottom: var(--pals-attribution-clearance, 90px);
-  right: 4px;
-}
-.map :global(.maplibregl-ctrl-attrib) {
-  background: #101a27d9;
-  color: #ffffffb8;
-  border-radius: 8px;
-  font-size: 10px;
-}
-.map :global(.maplibregl-ctrl-attrib a) {
-  color: #fff0e6;
-}
-.map :global(.maplibregl-ctrl-attrib.maplibregl-compact) {
-  min-height: 44px;
-  min-width: 44px;
-  padding-right: 44px;
-}
-.map :global(.maplibregl-ctrl-attrib-button) {
-  width: 44px;
-  height: 44px;
-  background-color: #e3eaf2;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 24px;
-}
-.topbar {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  right: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 9px;
-  pointer-events: none;
-  z-index: 3;
-}
-.topbar > * {
-  pointer-events: auto;
-}
-.tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  background: #101722e8;
-  border: 1px solid #ffffff38;
-  border-radius: 18px;
-  padding: 9px 12px;
-  backdrop-filter: blur(12px);
-  font-size: 12px;
-  color: #fce8d9;
-  box-shadow: 0 5px 18px #0005;
-}
-.tag strong {
-  color: #ffab7b;
-}
-.mapTools {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.iconButton {
-  width: 45px;
-  height: 45px;
-  border: 1px solid #ffffff3f;
-  background: #111c2be8;
-  color: white;
-  border-radius: 15px;
-  font-size: 25px;
-  box-shadow: 0 4px 20px #0006;
-}
-.tourCard {
-  position: absolute;
-  bottom: calc(var(--pals-hud-clearance, 82px) + 10px);
-  left: 12px;
-  right: 12px;
-  z-index: 4;
-  max-width: 480px;
-  border-radius: 22px;
-  background: #111b29ef;
-  border: 1px solid #ffa1686c;
-  backdrop-filter: blur(16px);
-  padding: 16px;
-  padding-right: 48px;
-  max-height: 46%;
-  overflow: auto;
-  box-shadow: 0 10px 35px #0009;
-}
-.tourCard h2 {
-  margin: 2px 0 6px;
-  font-size: 23px;
-  letter-spacing: -0.05em;
-}
-.root .tourCard h2,
-.root .side h1,
-.root .panel h2 {
-  color: #fff1e6;
-}
-.tourCard p {
-  font-size: 13px;
-  line-height: 1.5;
-  color: #d4c9c4;
-  margin: 0;
-}
-.tourCard .futureNote {
-  margin-top: 9px;
-  font-size: 11px;
-  color: #b9c3d0;
-}
-.hud {
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
-  right: 12px;
-  z-index: 5;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 9px;
-  max-width: 540px;
-  padding: 8px 10px;
-  border: 1px solid #ffffff45;
-  border-radius: 18px;
-  background: #111b29f5;
-  box-shadow: 0 5px 18px #0005;
-}
-.gpsStatus {
-  margin: 0;
-  color: #e9e2dc;
-  font-size: 12px;
-  line-height: 1.4;
-}
-.hud .primary {
-  white-space: nowrap;
-}
-.placesButton {
-  display: none;
-}
-.mobileOnly {
-  display: none;
-}
-.mapError {
-  position: absolute;
-  z-index: 3;
-  top: 68px;
-  left: 12px;
-  right: 74px;
-  max-width: 340px;
-  padding: 10px 12px;
-  border: 1px solid #ffb08a;
-  border-radius: 12px;
-  background: #111b29f5;
-  color: #ffe1cc;
-  font-size: 12px;
-  line-height: 1.4;
-}
-.eyebrow {
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  font-weight: 850;
-  color: #ffb08a;
-}
-.ctas {
-  display: flex;
-  gap: 9px;
-  margin-top: 14px;
-  flex-wrap: wrap;
-}
-.primary,
-.secondary {
-  border-radius: 13px;
-  border: 1px solid #ffffff2f;
-  min-height: 44px;
-  padding: 10px 14px;
-  font-size: 13px !important;
-  font-weight: 750 !important;
-  text-align: center;
-  text-decoration: none;
-}
-.primary {
-  background: var(--aki);
-  border-color: var(--aki);
-  color: #1d1613;
-}
-.secondary {
-  background: #ffffff12;
-  color: #f6f0ec;
-}
-.venuePin {
-  /* MapLibre owns the outer anchor and its transform. Normal-flow positioning
-     stacks each projected marker below the previous one. */
-  position: absolute;
-  top: 0;
-  left: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  max-width: 155px;
-  background: transparent;
-  border: 0;
-  padding: 0;
-  color: white;
-  filter: drop-shadow(0 3px 9px #070a0ed9);
-  outline-offset: 2px;
-}
-.venueCore {
-  height: 53px;
-  width: 53px;
-  display: grid;
-  place-items: center;
-  border: 3px solid #ffd0a5;
-  border-radius: 20px 20px 19px 19px;
-  background: linear-gradient(145deg, #ff9949, #f45c2b);
-  box-shadow:
-    0 0 0 6px #ff864331,
-    0 0 30px #ff7a3580;
-  color: #171923;
-  font-size: 24px;
-}
-.venuePin:after {
-  content: "";
-  height: 16px;
-  width: 5px;
-  background: linear-gradient(#ff9c51, transparent);
-}
-.venueLabel {
-  border-radius: 10px;
-  background: #111925eb;
-  padding: 5px 9px;
-  font-size: 11px;
-  font-weight: 850;
-  max-width: 145px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  border: 1px solid #ffffff28;
-  margin-top: 4px;
-}
-.venuePinActive .venueCore {
-  box-shadow:
-    0 0 0 8px #ffa36260,
-    0 0 35px #ffb479;
-}
-.avatarPin {
-  width: 104px;
-  height: 160px;
-  pointer-events: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  filter: drop-shadow(0 7px 10px #050c15c4);
-}
-.avatarCanvas {
-  height: 136px;
-  width: 100px;
-  pointer-events: none;
-  overflow: hidden;
-}
-.avatarPin span {
-  position: relative;
-  z-index: 1;
-  white-space: nowrap;
-  background: #111b2cfa;
-  color: white;
-  padding: 5px 10px;
-  border: 1px solid #ffa267;
-  border-radius: 12px;
-  font-size: 10px;
-  font-weight: 750;
-}
-.avatarFallback {
-  height: 110px;
-  width: 88px;
-  display: grid;
-  place-items: center;
-  font-size: 49px;
-  background: radial-gradient(#ff8e5e42, transparent);
-}
-.side {
-  background: linear-gradient(165deg, #1a2130, #0c1522 50%);
-  border-left: 1px solid #ffffff1c;
-  padding: 22px 19px 27px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  overflow: auto;
-  min-height: 0;
-  max-height: 100%;
-}
-.side h1 {
-  font-size: 36px;
-  line-height: 1.02;
-  letter-spacing: -0.065em;
-  margin: 7px 0;
-}
-.muted {
-  color: #b6bac6;
-  font-size: 13px;
-  line-height: 1.55;
-  margin: 0;
-}
-.nav {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-.nav a,
-.nav button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 48px;
-  border: 1px solid #ffffff30;
-  background: #ffffff0b;
-  color: #ebe8e8;
-  border-radius: 15px;
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 750;
-}
-.nav .active {
-  border-color: #ff925c;
-  background: #ff874229;
-  color: #ffb284;
-}
-.nav button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-.panel {
-  position: relative;
-  background: #ffffff0b;
-  border: 1px solid #ffffff24;
-  border-radius: 19px;
-  padding: 15px;
-}
-.panel h2 {
-  margin: 5px 0;
-  font-size: 19px;
-  letter-spacing: -0.03em;
-}
-.panel p {
-  color: #c5c5ca;
-  line-height: 1.5;
-  font-size: 12px;
-  margin: 0 0 11px;
-}
-.stat {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 12px;
-  color: #ded8d8;
-  padding: 10px 0;
-  border-bottom: 1px solid #ffffff17;
-}
-.stat:last-child {
-  border: 0;
-}
-.stat strong {
-  color: #ffb686;
-}
-.venueList {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  max-height: 280px;
-  overflow: auto;
-}
-.venueRow {
-  display: flex;
-  align-items: center;
-  text-align: left;
-  gap: 10px;
-  background: #ffffff09;
-  border: 1px solid #ffffff22;
-  border-radius: 13px;
-  min-height: 52px;
-  padding: 9px;
-  color: #fff;
-  width: 100%;
-}
-.venueRowActive {
-  background: #ff833320;
-  border-color: #ffa267;
-}
-.venueRowIcon {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 11px;
-  background: #ff81312f;
-  color: #ffb079;
-  flex-shrink: 0;
-}
-.venueRowName {
-  font-size: 12px;
-  font-weight: 750;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 185px;
-}
-.venueRowMeta {
-  font-size: 11px;
-  color: #b4bdc9;
-  display: block;
-  margin-top: 2px;
-}
-.status {
-  color: #e6cabe;
-  min-height: 28px;
-  font-size: 12px;
-  line-height: 1.5;
-  margin: 0;
-}
-.tip {
-  border-left: 3px solid #ff8f5a;
-  padding-left: 12px;
-  color: #c9c5c8;
-  font-size: 12px;
-  line-height: 1.6;
-}
-.bottomNav {
-  display: none;
-}
-/* The phone map owns the available viewport; sheets open only on request. */
-@media (max-width: 880px) {
-  .header {
-    min-height: 50px;
-    padding: 2px 12px;
-  }
-  .brand {
-    font-size: 22px;
-  }
-  .topTag {
-    font-size: 10px;
-    padding: 5px 7px;
-    border: 0;
-  }
-  .headerActions {
-    gap: 2px;
-  }
-  .layout {
-    display: block;
-    min-height: 0;
-  }
-  .world {
-    height: 100%;
-    min-height: 0;
-  }
-  .side {
-    display: none;
-  }
-  .sideOpen {
-    display: block;
-    position: absolute;
-    z-index: 6;
-    left: 10px;
-    right: 10px;
-    bottom: 110px;
-    padding: 0;
-    max-height: min(60dvh, calc(100% - 150px));
-    border: 1px solid #ffffff45;
-    border-radius: 18px;
-    background: #111b29fa;
-    box-shadow: 0 8px 25px #0007;
-  }
-  .side > .intro,
-  .side > .nav,
-  .side > .panel,
-  .side > .tip {
-    display: none;
-  }
-  .side > .panel:last-of-type {
-    display: block;
-    border: 0;
-    background: transparent;
-    padding: 18px 14px;
-  }
-  .side .eyebrow {
-    display: block;
-    padding-right: 32px;
-  }
-  .venueList {
-    max-height: 210px;
-    margin-top: 10px;
-  }
-  .mobileOnly {
-    display: grid;
-  }
-  .hud {
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
-    grid-template-columns: minmax(0, 1fr) auto 44px;
-    max-width: none;
-    gap: 7px;
-    padding: 7px 8px;
-  }
-  .gpsStatus {
-    font-size: 11px;
-    line-height: 1.35;
-  }
-  .hud .primary {
-    font-size: 12px !important;
-    padding: 9px 11px;
-  }
-  .placesButton {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    min-height: 44px;
-    gap: 1px;
-    color: #ffe3cc;
-    background: #ffffff0c;
-    border: 1px solid #ffffff30;
-    border-radius: 12px;
-    font-size: 11px !important;
-  }
-  .world .tourCard {
-    max-width: none;
-    border-radius: 18px;
-  }
-  .tourCard h2 {
-    font-size: 20px;
-  }
-  .tourCard .ctas {
-    gap: 7px;
-    margin-top: 12px;
-  }
-  .tourCard .primary,
-  .tourCard .secondary {
-    min-height: 44px;
-    padding: 9px;
-    font-size: 12px !important;
-  }
-  .bottomNav {
-    position: relative;
-    z-index: 10;
-    flex-shrink: 0;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    padding: 6px 10px max(6px, env(safe-area-inset-bottom));
-    background: #101a27;
-    border-top: 1px solid #ffffff25;
-  }
-  .bottomNav a {
-    border: 1px solid #ffffff24;
-    background: #ffffff09;
-    color: #f5e7de;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 750;
-    min-height: 44px;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-  }
-  .bottomNav .active {
-    background: #ff87302b;
-    border-color: #ffa777;
-    color: #ffb48d;
-  }
-  .topbar {
-    top: 9px;
-    left: 10px;
-    right: 10px;
-  }
-  .tag {
-    font-size: 11px;
-    padding: 8px 10px;
-  }
-  .tagCaption {
-    display: none;
-  }
-}
-@media (max-width: 390px) {
-  .venueLabel {
-    font-size: 10px;
-    max-width: 95px;
-  }
-  .venueCore {
-    height: 45px;
-    width: 45px;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .root * {
-    animation: none !important;
-    transition: none !important;
-  }
 }
 .root,
 .root *,
@@ -723,6 +19,571 @@
 .root *::after {
   box-sizing: border-box;
 }
-.avatarPin {
+.root button,
+.root a {
+  font: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.root button {
+  cursor: pointer;
+}
+.root :focus-visible {
+  outline: 3px solid #ffd8a8;
+  outline-offset: 4px;
+}
+.header {
+  position: absolute;
+  z-index: 8;
+  top: max(12px, env(safe-area-inset-top));
+  left: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   pointer-events: none;
+}
+.header > * {
+  pointer-events: auto;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 17px;
+  border: 1px solid #ffffff40;
+  border-radius: 28px;
+  background: #101a20e8;
+  box-shadow: 0 5px 22px #0003;
+  backdrop-filter: blur(16px);
+  font-size: 23px;
+  font-weight: 850;
+  letter-spacing: -0.06em;
+  text-decoration: none;
+  color: #fff;
+}
+.brand span {
+  color: var(--aki);
+}
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.topTag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 11px;
+  border-radius: 20px;
+  background: #101a20df;
+  color: #f3e9dc;
+  font-size: 11px;
+}
+.topTag i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #90d5b3;
+}
+.helpButton,
+.iconButton,
+.closeButton,
+.placesButton,
+.locateButton {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border: 1px solid #ffffff4a;
+  background: #142128eb;
+  color: #fff4e9;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  box-shadow: 0 4px 18px #0003;
+  backdrop-filter: blur(14px);
+}
+.helpButton {
+  font-size: 21px !important;
+}
+.layout,
+.world {
+  position: absolute;
+  inset: 0;
+  min-width: 0;
+  min-height: 0;
+}
+.world {
+  overflow: hidden;
+}
+.map {
+  position: absolute;
+  inset: 0;
+}
+.map :global(.maplibregl-ctrl-bottom-right) {
+  bottom: var(--pals-attribution-clearance, 155px);
+  right: 12px;
+}
+.map :global(.maplibregl-ctrl-attrib) {
+  background: #142128ed;
+  color: #fff4e9;
+  border-radius: 23px;
+  font-size: 10px;
+}
+.map :global(.maplibregl-ctrl-attrib a) {
+  color: #fff4e9;
+}
+.map :global(.maplibregl-ctrl-attrib.maplibregl-compact) {
+  min-width: 44px;
+  min-height: 44px;
+  padding-right: 44px;
+}
+.map :global(.maplibregl-ctrl-attrib-button) {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #f5e9d4;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 23px;
+}
+.topbar {
+  position: absolute;
+  top: calc(max(12px, env(safe-area-inset-top)) + 64px);
+  left: 15px;
+  right: 15px;
+  z-index: 3;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.topbar > * {
+  pointer-events: auto;
+}
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid #ffffff35;
+  border-radius: 20px;
+  background: #142128e8;
+  box-shadow: 0 4px 15px #0002;
+  font-size: 11px;
+  backdrop-filter: blur(12px);
+}
+.tag strong {
+  font-weight: 750;
+}
+.tagCaption {
+  display: none;
+}
+.mapTools {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.iconButton {
+  font-size: 26px !important;
+}
+.hud {
+  position: absolute;
+  z-index: 5;
+  bottom: calc(max(12px, env(safe-area-inset-bottom)) + 76px);
+  left: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+.hud > * {
+  pointer-events: auto;
+}
+.gpsStatus {
+  margin: 0;
+  max-width: 200px;
+  padding: 9px 12px;
+  border-radius: 24px;
+  background: #142128eb;
+  border: 1px solid #ffffff35;
+  color: #f4eadc;
+  font-size: 11px;
+  line-height: 1.35;
+  box-shadow: 0 3px 16px #0002;
+  backdrop-filter: blur(14px);
+}
+.locateButton {
+  margin-left: auto;
+  width: 56px;
+  height: 56px;
+  gap: 0;
+  align-content: center;
+}
+.locateButton > span:first-child {
+  font-size: 25px;
+  line-height: 25px;
+}
+.controlLabel {
+  font-size: 9px;
+  font-weight: 750;
+}
+.locateActive {
+  background: #ff824b;
+  border-color: #ffbb87;
+  color: #21180f;
+}
+.placesButton {
+  width: 56px;
+  height: 56px;
+  align-content: center;
+  font-size: 11px !important;
+  gap: 0;
+}
+.placesButton > span:first-child {
+  font-size: 24px;
+  line-height: 25px;
+}
+.mapError {
+  position: absolute;
+  z-index: 3;
+  top: 125px;
+  left: 15px;
+  right: 80px;
+  max-width: 320px;
+  padding: 12px;
+  border: 1px solid #ffc192;
+  border-radius: 18px;
+  background: #142128f5;
+  font-size: 12px;
+}
+.tourCard {
+  position: absolute;
+  z-index: 6;
+  left: 14px;
+  right: 14px;
+  bottom: calc(var(--pals-hud-clearance, 150px) + 12px);
+  max-width: 390px;
+  max-height: min(43dvh, 360px);
+  overflow: auto;
+  padding: 18px;
+  border: 1px solid #ffffff55;
+  border-radius: 25px;
+  background: #122027f5;
+  box-shadow: 0 16px 45px #0005;
+  backdrop-filter: blur(20px);
+}
+.closeButton {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  width: 44px;
+  height: 44px;
+  font-size: 25px !important;
+  background: #ffffff09;
+  border-color: #ffffff24;
+  box-shadow: none;
+}
+.eyebrow {
+  display: block;
+  padding-right: 35px;
+  color: #ffb980;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+}
+.root .tourCard h2,
+.root .panel h2 {
+  margin: 7px 36px 6px 0;
+  color: #fff4e9;
+  font-size: 24px;
+  line-height: 1.1;
+  letter-spacing: -0.045em;
+}
+.tourCard p {
+  margin: 0;
+  color: #d3d9d7;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.ctas {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 24px;
+  border: 1px solid #ffffff40;
+  font-size: 12px !important;
+  font-weight: 750 !important;
+  text-decoration: none;
+  text-align: center;
+}
+.primary {
+  color: #261a0e;
+  background: var(--aki);
+  border-color: var(--aki);
+}
+.secondary {
+  color: #f5eee4;
+  background: #ffffff0b;
+}
+.venuePin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 140px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  filter: drop-shadow(0 4px 8px #07121566);
+}
+.venueCore {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid #ffe4b5;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #ffac68, #fa713c);
+  color: #302316;
+  font-size: 23px;
+  box-shadow:
+    0 0 0 5px #ff9e3930,
+    0 0 22px #ff9b3550;
+}
+.venuePin::after {
+  content: "";
+  height: 11px;
+  width: 3px;
+  background: linear-gradient(#ffd4a1, transparent);
+}
+.venueLabel {
+  max-width: 135px;
+  padding: 4px 8px;
+  border: 1px solid #ffffff35;
+  border-radius: 14px;
+  background: #142128ef;
+  font-size: 10px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 6px;
+}
+.venuePinActive .venueCore {
+  background: #ffe0a6;
+  box-shadow:
+    0 0 0 7px #ffa45350,
+    0 0 25px #ffae63a0;
+}
+/* Marker bottom = geographic ground point. Label never shifts the feet anchor. */
+.avatarPin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 80px;
+  height: 126px;
+  pointer-events: none;
+}
+.avatarGround {
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  width: 48px;
+  height: 18px;
+  border: 2px solid #bcf8df;
+  border-radius: 50%;
+  background: #69d6b34d;
+  box-shadow:
+    0 0 0 6px #79d4bb24,
+    0 0 17px #b4f5dc66;
+}
+.avatarCanvas {
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  width: 80px;
+  height: 112px;
+  overflow: hidden;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 4px #07191955);
+}
+.avatarPin > span {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  padding: 3px 7px;
+  background: #142128e8;
+  border: 1px solid #ffffff40;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+}
+.avatarFallback {
+  width: 80px;
+  height: 110px;
+  display: grid;
+  place-items: center;
+  font-size: 42px;
+}
+.side {
+  display: none;
+}
+.sideOpen {
+  display: block;
+  position: absolute;
+  z-index: 7;
+  left: 14px;
+  bottom: calc(max(12px, env(safe-area-inset-bottom)) + 150px);
+  width: min(360px, calc(100% - 28px));
+  max-height: min(52dvh, calc(100% - 240px));
+  overflow: auto;
+  border-radius: 25px;
+  border: 1px solid #ffffff4d;
+  background: #122027f5;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 16px 45px #0005;
+}
+.panel {
+  position: relative;
+  padding: 20px 16px 16px;
+}
+.status {
+  color: #ccd8d4;
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 6px 35px 12px 0;
+}
+.venueList {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 12px;
+  max-height: 250px;
+  overflow: auto;
+}
+.venueRow {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  min-height: 58px;
+  padding: 9px 12px;
+  text-align: left;
+  border-radius: 17px;
+  border: 1px solid #ffffff20;
+  background: #ffffff07;
+  color: #fff;
+}
+.venueRowActive {
+  border-color: #ffaf74;
+  background: #ff974320;
+}
+.venueRowIcon {
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #ff9b3825;
+  color: #ffc38e;
+}
+.venueRowName {
+  display: block;
+  max-width: 245px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 700;
+}
+.venueRowMeta {
+  display: block;
+  margin-top: 3px;
+  color: #c3d1cc;
+  font-size: 10px;
+}
+.bottomNav {
+  position: absolute;
+  z-index: 8;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 5px;
+  border: 1px solid #ffffff35;
+  border-radius: 40px;
+  background: #142128e8;
+  box-shadow: 0 6px 22px #0003;
+  backdrop-filter: blur(18px);
+}
+.bottomNav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  width: 64px;
+  height: 58px;
+  border-radius: 32px;
+  color: #e0e7df;
+  font-size: 10px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.bottomNav a > span:first-child {
+  font-size: 24px;
+  line-height: 28px;
+}
+.bottomNav .active {
+  color: #21190f;
+  background: #ff9b62;
+}
+@media (min-width: 881px) {
+  .hud {
+    max-width: 400px;
+  }
+  .tourCard {
+    left: 28px;
+  }
+  .sideOpen {
+    left: 28px;
+  }
+}
+@media (max-width: 390px) {
+  .topTag {
+    display: none;
+  }
+  .gpsStatus {
+    max-width: 150px;
+  }
+  .venueLabel {
+    max-width: 104px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .root * {
+    animation: none !important;
+    transition: none !important;
+  }
 }

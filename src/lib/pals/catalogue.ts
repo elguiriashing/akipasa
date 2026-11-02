@@ -212,3 +212,34 @@ export function validateCatalogue(catalogue: Catalogue) {
   }
   return true;
 }
+
+/** Authored mesh customisation uses existing saved enum IDs, never asset URLs.
+ * Other historical fields remain readable/exportable but are not advertised as
+ * interactive controls until an actual fitted authored asset supports them.
+ */
+export const AUTHORED_WARDROBE_SLOTS = ["hair", "top"] as const;
+export const SUPPORTED_AUTHORED_OPTIONS = {
+  "rain-v3": {
+    hair: ["crop", "quiff", "long", "bun"],
+    top: ["tee", "hoodie", "jacket", "sweater"],
+  },
+  "snow-v4": {
+    hair: ["crop", "quiff"],
+    top: ["tee", "hoodie", "jacket", "sweater"],
+  },
+} as const;
+
+export function authoredWardrobeCatalogue(model: "rain-v3" | "snow-v4") {
+  const options = SUPPORTED_AUTHORED_OPTIONS[model];
+  return AUTHORED_WARDROBE_SLOTS.map((slot) => ({
+    slot,
+    items: options[slot].map((value) => ({
+      id: `${model}:${slot}:${value}`,
+      value,
+      slot,
+      model,
+      source: "starter" as const,
+      price: null,
+    })),
+  }));
+}

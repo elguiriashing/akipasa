@@ -11,6 +11,7 @@ import {
   type WorldVenue,
 } from "@/lib/pals/world";
 import styles from "./WorldExplorer.module.css";
+import { PALS_RENDERER_VERSION } from "@/lib/pals/renderer-version";
 
 type Coordinates = { latitude: number; longitude: number };
 type Maplibre = typeof import("maplibre-gl");
@@ -44,12 +45,16 @@ function distanceLabel(metres: number) {
 function makeMarker(
   venue: WorldVenue,
   onSelect: () => void,
+  es = false,
 ): HTMLButtonElement {
   const button = document.createElement("button");
   button.type = "button";
   button.className = styles.venuePin;
   button.title = venue.name;
-  button.setAttribute("aria-label", "Explore " + venue.name);
+  button.setAttribute(
+    "aria-label",
+    (es ? "Explorar " : "Explore ") + venue.name,
+  );
   const core = document.createElement("span");
   core.className = styles.venueCore;
   core.textContent = "✦";
@@ -62,7 +67,20 @@ function makeMarker(
   return button;
 }
 
-export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
+export function WorldExplorer({
+  styleUrl,
+  locale = "en",
+}: {
+  styleUrl: string;
+  locale?: "en" | "es";
+}) {
+  const es = locale === "es";
+  const t = useCallback(
+    (en: string, spanish: string) => (es ? spanish : en),
+    [es],
+  );
+  const wardrobeHref = es ? "/pals?lang=es" : "/pals";
+  const worldHref = es ? "/pals/world?lang=es" : "/pals/world";
   const mapNode = useRef<HTMLDivElement>(null);
   const hudNode = useRef<HTMLDivElement>(null);
   const cardNode = useRef<HTMLDivElement>(null);
@@ -89,11 +107,13 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
   const [gpsActive, setGpsActive] = useState(false);
   const [gpsRequested, setGpsRequested] = useState(false);
   const [gpsStatus, setGpsStatus] = useState(
-    "Preview mode · no location access",
+    t("Location off", "Ubicación desactivada"),
   );
   const [venues, setVenues] = useState<WorldVenue[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [worldStatus, setWorldStatus] = useState("Loading real places…");
+  const [worldStatus, setWorldStatus] = useState(
+    t("Loading places…", "Cargando lugares…"),
+  );
   const [mapError, setMapError] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [placesOpen, setPlacesOpen] = useState(false);
@@ -107,51 +127,62 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
     [center, venues],
   );
   const selected = venues.find((v) => v.id === selectedId) || null;
-  const venueUnavailable = worldStatus.startsWith("Venue feed unavailable.");
+  const venueUnavailable = worldStatus.startsWith(
+    t("Venue feed unavailable.", "Lugares no disponibles."),
+  );
 
-  const requestVenues = useCallback(async (at: Coordinates) => {
-    const cell = coarseWorldCell(at.latitude, at.longitude);
-    if (!cell) return;
-    const key = cell.latitude + "/" + cell.longitude;
-    if (lastCell.current === key) return;
-    lastCell.current = key;
-    const seq = ++fetchSerial.current;
-    setWorldStatus("Looking for real venues nearby…");
-    try {
-      const url =
-        "/pals/world/venues?lat=" + cell.latitude + "&lng=" + cell.longitude;
-      const response = await fetch(url, {
-        credentials: "same-origin",
-        cache: "no-store",
-      });
-      if (!response.ok) throw new Error("Unavailable");
-      const result: unknown = await response.json();
-      const data =
-        result && typeof result === "object"
-          ? (result as { venues?: unknown; truncated?: boolean })
-          : {};
-      const next = normalizeWorldVenues(data.venues);
-      if (seq !== fetchSerial.current) return;
-      setVenues(next);
-      setSelectedId((current) =>
-        next.some((venue) => venue.id === current) ? current : null,
-      );
-      setWorldStatus(
-        next.length
-          ? data.truncated
-            ? "Showing the first nearby places. More are available on the ordinary map."
-            : "Tap a glowing venue to explore."
-          : "No published venues returned for this area. Move the map to explore.",
-      );
-    } catch {
-      if (seq === fetchSerial.current) {
-        lastCell.current = null;
-        setWorldStatus(
-          "Venue feed unavailable. The map still works; try moving it.",
+  const requestVenues = useCallback(
+    async (at: Coordinates) => {
+      const cell = coarseWorldCell(at.latitude, at.longitude);
+      if (!cell) return;
+      const key = cell.latitude + "/" + cell.longitude;
+      if (lastCell.current === key) return;
+      lastCell.current = key;
+      const seq = ++fetchSerial.current;
+      setWorldStatus(t("Finding places…", "Buscando lugares…"));
+      try {
+        const url =
+          "/pals/world/venues?lat=" + cell.latitude + "&lng=" + cell.longitude;
+        const response = await fetch(url, {
+          credentials: "same-origin",
+          cache: "no-store",
+        });
+        if (!response.ok) throw new Error("Unavailable");
+        const result: unknown = await response.json();
+        const data =
+          result && typeof result === "object"
+            ? (result as { venues?: unknown; truncated?: boolean })
+            : {};
+        const next = normalizeWorldVenues(data.venues);
+        if (seq !== fetchSerial.current) return;
+        setVenues(next);
+        setSelectedId((current) =>
+          next.some((venue) => venue.id === current) ? current : null,
         );
+        setWorldStatus(
+          next.length
+            ? data.truncated
+              ? t(
+                  "Nearby places · open the map for more",
+                  "Lugares cercanos · más en el mapa",
+                )
+              : t("Select a place", "Elige un lugar")
+            : t("No places in this area", "No hay lugares en esta zona"),
+        );
+      } catch {
+        if (seq === fetchSerial.current) {
+          lastCell.current = null;
+          setWorldStatus(
+            t(
+              "Venue feed unavailable. Try again.",
+              "Lugares no disponibles. Reintentar.",
+            ),
+          );
+        }
       }
-    }
-  }, []);
+    },
+    [t],
+  );
 
   // This is the existing first-party 3D studio runtime, re-mounted as a
   // lightweight map character. Do not create a second avatar identity.
@@ -177,7 +208,7 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
         const win = window as Window & { AkiPals3D?: AvatarRuntime };
         if (!win.AkiPals3D) {
           script = document.createElement("script");
-          script.src = "/pals/runtime/creator.min.js?v=20261031-professional-1";
+          script.src = `/pals/runtime/creator.min.js?v=${PALS_RENDERER_VERSION}`;
           script.async = true;
           const loading = new Promise<void>((resolve, reject) => {
             if (!script) return reject(new Error("No script"));
@@ -197,7 +228,7 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
         await stage.setAppearance(json.appearance);
       } catch {
         if (!cancelled) {
-          target.textContent = "3D unavailable";
+          target.textContent = t("3D unavailable", "3D no disponible");
           target.setAttribute("role", "status");
         }
       } finally {
@@ -216,7 +247,7 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
       avatarStage.current = null;
       script?.remove();
     };
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     if (!mapNode.current) return;
@@ -295,18 +326,24 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
         });
         const pal = document.createElement("div");
         pal.className = styles.avatarPin;
-        pal.setAttribute("aria-label", "Your AkiPal game character");
+        pal.setAttribute(
+          "aria-label",
+          t("Your AkiPal game character", "Tu personaje AkiPal"),
+        );
         const canvas = document.createElement("div");
         canvas.className = styles.avatarCanvas;
         canvas.dataset.palsWorldAvatar = "true";
+        const ground = document.createElement("div");
+        ground.className = styles.avatarGround;
+        ground.setAttribute("aria-hidden", "true");
         const fallback = document.createElement("div");
         fallback.className = styles.avatarFallback;
         fallback.textContent = "🧍";
         canvas.append(fallback);
         const label = document.createElement("span");
-        label.textContent = "Preview avatar";
+        label.textContent = t("Preview avatar", "Vista previa");
         avatarLabel.current = label;
-        pal.append(canvas, label);
+        pal.append(ground, canvas, label);
         avatarMarker.current = new maplibre.Marker({
           element: pal,
           anchor: "bottom",
@@ -330,7 +367,7 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
       localMap?.remove();
       if (map.current === localMap) map.current = null;
     };
-  }, [requestVenues, styleUrl]);
+  }, [requestVenues, styleUrl, t]);
 
   useEffect(() => {
     const world = mapNode.current?.parentElement;
@@ -372,11 +409,15 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
     markers.current.forEach((marker) => marker.remove());
     markers.current.clear();
     for (const venue of venues) {
-      const element = makeMarker(venue, () => {
-        setSelectedId(venue.id);
-        setHelpOpen(false);
-        setPlacesOpen(false);
-      });
+      const element = makeMarker(
+        venue,
+        () => {
+          setSelectedId(venue.id);
+          setHelpOpen(false);
+          setPlacesOpen(false);
+        },
+        es,
+      );
       if (venue.id === selectedId) element.classList.add(styles.venuePinActive);
       markers.current.set(
         venue.id,
@@ -389,7 +430,7 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
       ownedMarkers.forEach((marker) => marker.remove());
       ownedMarkers.clear();
     };
-  }, [venues, selectedId]);
+  }, [venues, selectedId, es]);
 
   const stopGPS = useCallback(() => {
     gpsEpoch.current += 1;
@@ -403,24 +444,30 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
     setCurrentPosition(null);
     setGpsActive(false);
     setGpsRequested(false);
-    setGpsStatus("Location off · not shared with anyone");
+    setGpsStatus(t("Location off", "Ubicación desactivada"));
     avatarStage.current?.setMotion?.({ walking: false });
     if (map.current) {
       const c = map.current.getCenter();
       avatarMarker.current?.setLngLat([c.lng, c.lat]);
     }
-    if (avatarLabel.current) avatarLabel.current.textContent = "Preview avatar";
-  }, []);
+    if (avatarLabel.current)
+      avatarLabel.current.textContent = t("Preview avatar", "Vista previa");
+  }, [t]);
 
   const startGPS = useCallback(() => {
     if (!navigator.geolocation) {
-      setGpsStatus("This browser does not support location.");
+      setGpsStatus(
+        t(
+          "This browser does not support location.",
+          "Este navegador no admite ubicación.",
+        ),
+      );
       return;
     }
     if (gpsWatch.current !== null) return;
     const epoch = ++gpsEpoch.current;
     setGpsRequested(true);
-    setGpsStatus("Waiting for device location permission…");
+    setGpsStatus(t("Waiting for location…", "Esperando ubicación…"));
     gpsWatch.current = navigator.geolocation.watchPosition(
       (sample) => {
         if (epoch !== gpsEpoch.current || document.hidden) return;
@@ -428,7 +475,12 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
           Date.now() - sample.timestamp > 30000 ||
           sample.timestamp > Date.now() + 5000
         ) {
-          setGpsStatus("Waiting for a fresh GPS position…");
+          setGpsStatus(
+            t(
+              "Waiting for a fresh GPS position…",
+              "Esperando una ubicación reciente…",
+            ),
+          );
           return;
         }
         const { latitude, longitude, accuracy, heading, speed } = sample.coords;
@@ -440,7 +492,10 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
           return;
         if (!Number.isFinite(accuracy) || accuracy > 100 || accuracy < 0) {
           setGpsStatus(
-            "GPS is too imprecise. Your Pal has not moved; try near an entrance.",
+            t(
+              "Location imprecise · try again outside",
+              "Ubicación imprecisa · prueba fuera",
+            ),
           );
           return;
         }
@@ -452,17 +507,11 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
         tracking.current = true;
         setGpsActive(true);
         setGpsStatus(
-          accuracy > 100
-            ? "GPS weak (±" +
-                Math.round(accuracy) +
-                " m). Avatar position is approximate."
-            : "Following you · ±" +
-                Math.round(accuracy) +
-                " m accuracy · private to this screen",
+          "GPS ±" + Math.round(accuracy) + t(" m · private", " m · privado"),
         );
         avatarMarker.current?.setLngLat([longitude, latitude]);
         if (avatarLabel.current)
-          avatarLabel.current.textContent = "You · private";
+          avatarLabel.current.textContent = t("You", "Tú");
         if (map.current) {
           map.current.easeTo({
             center: [longitude, latitude],
@@ -493,14 +542,20 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
         stopGPS();
         setGpsStatus(
           error.code === 1
-            ? "Location denied. Preview still works."
-            : "Could not get a reliable position. Try again when you have signal.",
+            ? t(
+                "Location denied. Preview still works.",
+                "Ubicación denegada. Puedes explorar.",
+              )
+            : t(
+                "Could not get a reliable position. Try again when you have signal.",
+                "Sin ubicación fiable. Reintenta con señal.",
+              ),
         );
       },
       { enableHighAccuracy: true, maximumAge: 10000, timeout: 18000 },
     );
     tracking.current = true;
-  }, [requestVenues, stopGPS]);
+  }, [requestVenues, stopGPS, t]);
 
   useEffect(() => {
     const onHidden = () => {
@@ -564,18 +619,18 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
       }}
     >
       <header className={styles.header}>
-        <Link className={styles.brand} href="/pals/world">
+        <Link className={styles.brand} href={worldHref}>
           Aki<span>Pals.</span>
         </Link>
         <div className={styles.headerActions}>
           <span className={styles.topTag}>
-            <i aria-hidden="true" /> Private playtest
+            <i aria-hidden="true" /> {t("Private preview", "Vista privada")}
           </span>
           <button
             ref={helpButton}
             type="button"
             className={styles.helpButton}
-            aria-label="About AkiWorld"
+            aria-label={t("About AkiWorld", "Acerca de AkiWorld")}
             aria-expanded={helpOpen}
             aria-controls="pals-world-details"
             onClick={() => {
@@ -591,26 +646,30 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
       <div className={styles.layout}>
         <section
           className={styles.world}
-          aria-label="AkiPals interactive exploration map"
+          aria-label={t(
+            "AkiPals interactive exploration map",
+            "Mapa interactivo de AkiPals",
+          )}
         >
           <div
             className={styles.map}
             ref={mapNode}
-            aria-label="Tilted map with real nearby AkiPasa venues"
+            aria-label={t(
+              "Tilted map with real nearby AkiPasa venues",
+              "Mapa inclinado con lugares reales de AkiPasa",
+            )}
           />
           <div className={styles.topbar}>
             <span className={styles.tag}>
               ✦ <strong>AkiWorld</strong>
-              <span className={styles.tagCaption}>
-                · Explore the real world
-              </span>
+              <span className={styles.tagCaption}></span>
             </span>
             <div className={styles.mapTools}>
               <button
                 type="button"
                 className={styles.iconButton}
                 onClick={() => zoom(1)}
-                aria-label="Zoom in"
+                aria-label={t("Zoom in", "Acercar")}
               >
                 +
               </button>
@@ -618,7 +677,7 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
                 type="button"
                 className={styles.iconButton}
                 onClick={() => zoom(-1)}
-                aria-label="Zoom out"
+                aria-label={t("Zoom out", "Alejar")}
               >
                 −
               </button>
@@ -626,8 +685,10 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
           </div>
           {mapError && (
             <span role="status" className={styles.mapError}>
-              Map tiles could not load on this device. Please retry when
-              connected.
+              {t(
+                "Map unavailable. Check your connection.",
+                "Mapa no disponible. Revisa tu conexión.",
+              )}
             </span>
           )}
           <div className={styles.hud} ref={hudNode} data-pals-world-hud>
@@ -636,21 +697,30 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
             </p>
             <button
               type="button"
-              className={styles.primary}
+              className={
+                styles.locateButton +
+                (gpsActive ? " " + styles.locateActive : "")
+              }
+              aria-pressed={gpsRequested}
               onClick={() =>
                 gpsWatch.current !== null ? stopGPS() : startGPS()
               }
               aria-label={
-                gpsRequested ? "Stop location tracking" : "Locate my AkiPal"
+                gpsRequested
+                  ? t("Stop location tracking", "Detener ubicación")
+                  : t("Locate my AkiPal", "Localizar mi AkiPal")
               }
             >
-              {gpsRequested ? "Stop" : "Follow me"}
+              <span aria-hidden="true">{gpsRequested ? "■" : "◎"}</span>
+              <span className={styles.controlLabel}>
+                {gpsRequested ? t("Stop", "Parar") : t("Locate", "Localizar")}
+              </span>
             </button>
             <button
               ref={placesButton}
               type="button"
               className={styles.placesButton}
-              aria-label="Nearby places"
+              aria-label={t("Nearby places", "Lugares cercanos")}
               aria-expanded={placesOpen}
               aria-controls="pals-world-places"
               aria-describedby="pals-world-feed-status"
@@ -662,7 +732,9 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
               }}
             >
               <span aria-hidden="true">{venueUnavailable ? "!" : "✦"}</span>
-              <span>{venueUnavailable ? "Retry" : venues.length}</span>
+              <span>
+                {venueUnavailable ? t("Retry", "Reintentar") : venues.length}
+              </span>
             </button>
           </div>
           {(selected || helpOpen) && (
@@ -676,7 +748,9 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
                 type="button"
                 className={styles.closeButton}
                 aria-label={
-                  selected ? "Close venue details" : "Close World help"
+                  selected
+                    ? t("Close venue details", "Cerrar detalles del lugar")
+                    : t("Close World help", "Cerrar ayuda del mapa")
                 }
                 onClick={closeDetails}
               >
@@ -685,33 +759,39 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
               {selected ? (
                 <>
                   <span className={styles.eyebrow}>
-                    ✦ Nearby discovery · real listing
+                    {t("✦ Place", "✦ Lugar")}
                   </span>
                   <h2>{selected.name}</h2>
                   <p>
                     {selectedDistance === null
-                      ? "Explore this location on the map."
-                      : (gpsActive ? "About " : "From preview center: ") +
-                        distanceLabel(selectedDistance)}
+                      ? t(
+                          "Explore this location on the map.",
+                          "Explora este lugar en el mapa.",
+                        )
+                      : (gpsActive
+                          ? t("About ", "A unos ")
+                          : t(
+                              "From map center: ",
+                              "Desde el centro del mapa: ",
+                            )) + distanceLabel(selectedDistance)}
                     {" · "}
                     {selected.claimStatus === "claimed"
-                      ? "Claimed listing"
-                      : "Unclaimed listing"}
+                      ? t("Claimed listing", "Local reclamado")
+                      : t("Unclaimed listing", "Local sin reclamar")}
                   </p>
                   <div className={styles.ctas}>
-                    <button
-                      type="button"
+                    <Link
                       className={styles.primary}
-                      onClick={closeDetails}
+                      href={`/${locale}/venues/${selected.slug}`}
                     >
-                      Back to AkiWorld
-                    </button>
+                      {t("View place ↗", "Ver lugar ↗")}
+                    </Link>
                     <button
                       type="button"
                       className={styles.secondary}
                       onClick={() => focusVenue(selected)}
                     >
-                      Show on map
+                      {t("Show on map", "Ver en el mapa")}
                     </button>
                   </div>
                 </>
@@ -719,21 +799,22 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
                 <>
                   <span className={styles.eyebrow}>
                     {gpsActive
-                      ? "✦ Your live position"
-                      : "✦ Demo start · Fuengirola"}
+                      ? t("✦ Your live position", "✦ Tu posición")
+                      : t(
+                          "✦ Demo start · Fuengirola",
+                          "✦ Vista previa · Fuengirola",
+                        )}
                   </span>
-                  <h2>Your city. Your adventure.</h2>
+                  <h2>{t("Map & location", "Mapa y ubicación")}</h2>
                   <p>
-                    Explore real nearby venues with your saved AkiPal. Tap a
-                    venue pin or open the places list. Location starts only when
-                    you choose Follow me and stops when this screen is hidden.
-                  </p>
-                  <p className={styles.futureNote}>
-                    AR hunts, crew quests and stamps are upcoming features.
+                    {t(
+                      "Locate starts private GPS. It stops when you leave or hide this screen. Map browsing never verifies a visit.",
+                      "Localizar activa el GPS privado. Se detiene al salir u ocultar esta pantalla. Explorar el mapa no verifica visitas.",
+                    )}
                   </p>
                   <div className={styles.ctas}>
-                    <Link className={styles.secondary} href="/pals">
-                      Open Wardrobe ↗
+                    <Link className={styles.secondary} href={wardrobeHref}>
+                      {t("Open Wardrobe ↗", "Abrir armario ↗")}
                     </Link>
                     <a
                       className={styles.secondary}
@@ -741,7 +822,7 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Character credits ↗
+                      {t("Character credits ↗", "Créditos del personaje ↗")}
                     </a>
                   </div>
                 </>
@@ -753,68 +834,22 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
           className={styles.side + (placesOpen ? " " + styles.sideOpen : "")}
           id="pals-world-places"
         >
-          <div className={styles.intro}>
-            <span className={styles.eyebrow}>BE YOU. GO PLACES.</span>
-            <h1>
-              Go out.
-              <br />
-              Level up life.
-            </h1>
-            <p className={styles.muted}>
-              The start of a game where exploring actual places will eventually
-              unlock experiences, stamps and avatar styles.
-            </p>
-          </div>
-          <nav className={styles.nav} aria-label="AkiPals areas">
-            <Link
-              href="/pals/world"
-              className={styles.active}
-              aria-current="page"
-            >
-              ◉ World
-            </Link>
-            <Link href="/pals">♧ Wardrobe</Link>
+          <section
+            className={styles.panel}
+            aria-label={t("Nearby venue list", "Lista de lugares cercanos")}
+          >
             <button
               type="button"
-              disabled
-              title="Passport quests are not connected yet"
-            >
-              ◎ Passport · Soon
-            </button>
-            <button type="button" disabled title="Crew gameplay is planned">
-              ♧ Crews · Soon
-            </button>
-          </nav>
-          <section className={styles.panel} aria-label="Private map controls">
-            <span className={styles.eyebrow}>YOUR ADVENTURE</span>
-            <h2>{gpsActive ? "Walking the world" : "Explore before you go"}</h2>
-            <p>{gpsStatus}</p>
-            <div className={styles.stat}>
-              <span>Real venue listings</span>
-              <strong>{venues.length}</strong>
-            </div>
-            <div className={styles.stat}>
-              <span>AR stamps</span>
-              <strong>Not live</strong>
-            </div>
-            <div className={styles.stat}>
-              <span>Check-ins and rewards</span>
-              <strong>Not live</strong>
-            </div>
-          </section>
-          <section className={styles.panel} aria-label="Nearby venue list">
-            <button
-              type="button"
-              className={styles.closeButton + " " + styles.mobileOnly}
-              aria-label="Close nearby places"
+              className={styles.closeButton}
+              aria-label={t("Close nearby places", "Cerrar lugares cercanos")}
               onClick={closePlaces}
             >
               ×
             </button>
             <span className={styles.eyebrow}>
-              REAL PLACES, NO FAKE ACTIVITY
+              {t("Around the map", "En el mapa")}
             </span>
-            <h2>Places to discover</h2>
+            <h2>{t("Nearby places", "Lugares cercanos")}</h2>
             <p
               className={styles.status}
               role="status"
@@ -830,7 +865,7 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
                 void requestVenues(browseCenter);
               }}
             >
-              Refresh nearby places
+              {t("Refresh nearby places", "Actualizar lugares")}
             </button>
             <div className={styles.venueList}>
               {orderedVenues.slice(0, 12).map((venue) => (
@@ -849,29 +884,27 @@ export function WorldExplorer({ styleUrl }: { styleUrl: string }) {
                     <span className={styles.venueRowMeta}>
                       {distanceLabel(distanceMetres(center, venue))} ·{" "}
                       {venue.claimStatus === "claimed"
-                        ? "Claimed"
-                        : "Unclaimed"}
+                        ? t("Claimed", "Reclamado")
+                        : t("Unclaimed", "Sin reclamar")}
                     </span>
                   </span>
                 </button>
               ))}
             </div>
           </section>
-          <p className={styles.tip}>
-            Your position stays in this browser session. GPS only starts when
-            you tap the button, and automatically stops in the background.
-            Nearby venue queries use a coarse map cell; there is no public
-            location sharing, automatic filming, spatial capture, earned XP or
-            verification yet.
-          </p>
         </aside>
       </div>
-      <nav className={styles.bottomNav} aria-label="AkiPals mobile tabs">
-        <Link href="/pals/world" className={styles.active} aria-current="page">
-          ◉<span>World</span>
+      <nav
+        className={styles.bottomNav}
+        aria-label={t("AkiPals mobile tabs", "Pestañas de AkiPals")}
+      >
+        <Link href={worldHref} className={styles.active} aria-current="page">
+          <span aria-hidden="true">◉</span>
+          <span>{t("World", "Mundo")}</span>
         </Link>
-        <Link href="/pals">
-          ♧<span>Wardrobe</span>
+        <Link href={wardrobeHref}>
+          <span aria-hidden="true">♧</span>
+          <span>{t("Wardrobe", "Armario")}</span>
         </Link>
       </nav>
     </main>

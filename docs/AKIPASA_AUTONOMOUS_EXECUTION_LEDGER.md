@@ -2932,3 +2932,16 @@ production forward remain required. No production customer-record writes.
   Android acceptance or production photo/check-in/XP test mutation is inferred.
 - Current batch is implemented and under source-bound browser/full-check/CI
   verification; not yet claimed deployed. No new database or paid AI resource.
+
+## 2026-11-02 | Owner resumes Rain/Snow Wardrobe and World update
+
+Root branchwork/rain-snow-game-ui-20261102 preserves latest3583c17. Six disjoint
+streams cover catalogue/read-only legacy projection, authored renderer, actual
+identity Wardrobe UI, World HUD, native WebGL QA and asset provenance/fit review.
+Old Classic read resolution and stale renderer URL reproduced as causes of the
+reported old character. Actual model fitting found and repaired Snow scalp/hem
+and Rain tied-hair alignment defects before final review. New controls reflect
+real supported meshes/material zones. No private347 blanket merge, SQL, paid
+provider or customer-row edit. Targeted tests and early WebGL images are real;
+final source-bound browser/full/CI/deployment gates remain in progress. Owner
+requests Android testing after live publication, with no physical pass inferred.

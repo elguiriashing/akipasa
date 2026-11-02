@@ -1,13 +1,22 @@
 import { build } from "esbuild";
+import { PNG } from "pngjs";
 import { chromium, expect } from "@playwright/test";
 import { createServer } from "node:http";
 import { randomUUID } from "node:crypto";
-import { mkdirSync, mkdtempSync, rmSync, readFileSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  rmSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
-const outputDir = resolve("test-results/pals-identity-browser");
+const outputDir = resolve(
+  process.env.PALS_IDENTITY_EVIDENCE || "test-results/pals-identity-browser",
+);
 const buildDir = mkdtempSync(resolve(tmpdir(), "akipals-identity-"));
 mkdirSync(outputDir, { recursive: true });
 await build({
@@ -35,6 +44,7 @@ const avatarMeshes = Object.fromEntries(
   ]),
 );
 let saved = null;
+let saveWrites = 0;
 let starter = studio.DEFAULT_APPEARANCE;
 let browser;
 const server = createServer(async (request, response) => {
@@ -141,7 +151,10 @@ const server = createServer(async (request, response) => {
       json(400, { error: "Invalid settings" });
       return;
     }
-    if (input.save) saved = appearance.data;
+    if (input.save) {
+      saved = appearance.data;
+      saveWrites++;
+    }
     json(200, {
       appearance: appearance.data,
       saved: input.save,
@@ -195,26 +208,114 @@ async function verifySyntheticPersistedReturn(page, locale, expectedLook) {
     "true",
     { timeout: 30000 },
   );
+  await page.locator('[data-tab="Hair"]').click();
   await expect(
-    page.getByLabel(locale === "es" ? "Peinado" : "Hairstyle"),
-  ).toHaveValue(expectedLook.hair);
+    page.locator(`[data-field="hair"][data-value="${expectedLook.hair}"]`),
+  ).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator("#save")).toBeDisabled();
   await expect(page.locator("#download")).toBeEnabled();
-  await expect(
-    page.getByText(
-      locale === "es"
-        ? "Guarda antes de salir de esta página. Los cambios sin guardar se descartan al volver."
-        : "Save before leaving this page. Unsaved edits are discarded when you return.",
-      { exact: true },
-    ),
-  ).toBeVisible();
   expect(saved).toMatchObject(expectedLook);
 }
-try {
-  await new Promise((resolveReady) =>
-    server.listen(0, "127.0.0.1", resolveReady),
+const evidence = [];
+async function ready(page) {
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-ready",
+    "true",
+    { timeout: 30000 },
   );
-  const port = server.address().port;
+}
+async function choose(page, field, value) {
+  const tab = {
+    model: "Character",
+    height: "Character",
+    skin: "Face",
+    eyeColor: "Face",
+    hair: "Hair",
+    hairColor: "Hair",
+    top: "Outfit",
+    topColor: "Outfit",
+    bottomColor: "Outfit",
+    shoeColor: "Outfit",
+  }[field];
+  await page.locator(`[data-tab="${tab}"]`).click();
+  const button = page.locator(`[data-field="${field}"][data-value="${value}"]`);
+  await button.click();
+  await expect(button).toHaveAttribute("aria-pressed", "true");
+  await ready(page);
+}
+async function changedCanvas(page, field, first, second) {
+  await choose(page, field, first);
+  // A rear bun is physically behind the head: use matching, native60degree
+  // views for hairstyle geometry. Front/rear calibration evidence is separate.
+  if (field === "hair") await page.locator("#rotate").click();
+  const before = await page.locator("#avatar-stage canvas").screenshot();
+  await choose(page, field, second);
+  let changedPixels = null;
+  try {
+    await expect
+      .poll(async () =>
+        before.equals(await page.locator("#avatar-stage canvas").screenshot()),
+      )
+      .toBe(false);
+    if (field === "hair") {
+      const after = await page.locator("#avatar-stage canvas").screenshot(),
+        a = PNG.sync.read(before),
+        b = PNG.sync.read(after);
+      changedPixels = 0;
+      for (let i = 0; i < a.data.length; i += 4)
+        if (
+          Math.max(
+            ...[0, 1, 2].map((c) => Math.abs(a.data[i + c] - b.data[i + c])),
+          ) > 8
+        )
+          changedPixels++;
+      expect(changedPixels).toBeGreaterThan(100);
+      await expect(page.locator("#save")).toBeEnabled();
+      await page.locator("#save").click();
+      await expect(page.locator("#status")).toContainText("Saved");
+      expect(saved.hair).toBe(second);
+      await expect(page.locator("#save")).toBeDisabled();
+      for (let i = 0; i < 5; i++) await page.locator("#rotate").click();
+    }
+  } catch (error) {
+    writeFileSync(resolve(outputDir, `failure-${field}-${first}.png`), before);
+    await page.locator("#avatar-stage canvas").screenshot({
+      path: resolve(outputDir, `failure-${field}-${second}.png`),
+    });
+    writeFileSync(
+      resolve(outputDir, `failure-${field}-state.json`),
+      JSON.stringify(
+        {
+          field,
+          first,
+          second,
+          changedPixels,
+          dataset: await page
+            .locator("#avatar-stage")
+            .evaluate((x) => ({ ...x.dataset })),
+          saved,
+        },
+        null,
+        2,
+      ),
+    );
+    throw error;
+  }
+  evidence.push({
+    test: "actual-WebGL-appearance-change",
+    field,
+    first,
+    second,
+    view: field === "hair" ? "native60degree" : "fixed",
+    changedPixels,
+    status: "PASS",
+  });
+}
+
+try {
+  await new Promise((r) => server.listen(0, "127.0.0.1", r));
+  const port = server.address().port,
+    origin = "http://127.0.0.1:" + port;
   browser = await chromium.launch({
     headless: true,
     executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
@@ -227,105 +328,71 @@ try {
       "--enable-unsafe-swiftshader",
     ],
   });
-  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  const page = await browser.newPage({
+    viewport: { width: 390, height: 844 },
+    reducedMotion: "reduce",
+  });
   const failures = [];
-  page.on("pageerror", (error) => failures.push(error.message));
+  page.on("pageerror", (e) => failures.push(e.message));
   await page.addInitScript(() => {
-    const original = window.requestAnimationFrame;
+    const raf = requestAnimationFrame;
     window.__palsFrames = 0;
     window.requestAnimationFrame = (callback) =>
-      original.call(window, (time) => {
+      raf.call(window, (time) => {
         window.__palsFrames++;
         callback(time);
       });
   });
-  await page.goto("http://127.0.0.1:" + port + "/pals");
+  await page.goto(origin + "/pals");
+  await ready(page);
+  const worldLink = page.locator('a[href^="/pals/world"]');
+  await expect(worldLink).toBeVisible();
+  const linkBox = await worldLink.boundingBox();
+  expect(linkBox.height).toBeGreaterThanOrEqual(44);
+  expect(linkBox.width).toBeGreaterThanOrEqual(44);
   await expect(
-    page.getByRole("link", {
-      name: "Enter the private AkiPals World prototype",
-    }),
-  ).toHaveAttribute("href", "/pals/world");
-  const englishWorldLink = await page
-    .getByRole("link", { name: "Enter the private AkiPals World prototype" })
-    .boundingBox();
-  expect(englishWorldLink?.height).toBeGreaterThanOrEqual(44);
-  expect(englishWorldLink?.width).toBeGreaterThanOrEqual(44);
-  await expect(page.locator("#avatar-stage canvas")).toBeVisible();
-  await expect(page.locator("#avatar-stage")).toHaveAttribute(
-    "data-ready",
-    "true",
-    { timeout: 30000 },
-  );
-  await expect(
-    page.getByRole("heading", { name: /Looking like.*yourself/i }),
+    page.getByRole("heading", { name: "Wardrobe", exact: true }),
   ).toBeVisible();
-  await page.screenshot({
-    path: resolve(outputDir, "identity-default-390.png"),
-    fullPage: true,
-  });
-  // A stationary portrait should not keep the mobile GPU busy indefinitely.
-  await page.waitForTimeout(350);
-  const idleFrames = await page.evaluate(() => window.__palsFrames);
-  await page.waitForTimeout(250);
-  expect(await page.evaluate(() => window.__palsFrames)).toBe(idleFrames);
-  // A new profile uses the licensed authored character in the actual WebGL
-  // renderer. Legacy sliders must not pretend to modify its fixed outfit.
+  await expect(page.locator('[data-field="model"]')).toHaveCount(2);
+  await expect(
+    page.locator('[data-field="model"][data-value="classic-v2"]'),
+  ).toHaveCount(0);
   await expect(page.locator("#avatar-stage")).toHaveAttribute(
     "data-model-id",
     "rain-v3",
   );
-  await expect(page.getByLabel("Character model")).toHaveValue("rain-v3");
-  await expect(
-    page.getByRole("tab", { name: "Hair", exact: true }),
-  ).toHaveCount(0);
-  await expect(page.locator("#save")).toBeEnabled();
+  await page.screenshot({
+    path: resolve(outputDir, "identity-default-390.png"),
+    fullPage: true,
+  });
+  await page.waitForTimeout(350);
+  const frames = await page.evaluate(() => window.__palsFrames);
+  await page.waitForTimeout(250);
+  expect(await page.evaluate(() => window.__palsFrames)).toBe(frames);
   await expect(
     page.getByRole("link", { name: "Character credits" }),
   ).toHaveAttribute("href", "/pals/models/professional/ATTRIBUTION.txt");
-  await page.locator("#avatar-stage canvas").screenshot({
-    path: resolve(outputDir, "professional-rain-stage-390.png"),
-  });
-  const rainImage = await page.locator("#avatar-stage canvas").screenshot();
-  await page.getByLabel("Character model").selectOption("snow-v4");
-  await expect(page.locator("#avatar-stage")).toHaveAttribute(
-    "data-model-id",
-    "snow-v4",
-  );
-  await expect(page.locator("#avatar-stage")).toHaveAttribute(
-    "data-ready",
-    "true",
-  );
-  const snowImage = await page.locator("#avatar-stage canvas").screenshot();
-  expect(snowImage.equals(rainImage)).toBe(false);
-  await page.locator("#avatar-stage canvas").screenshot({
-    path: resolve(outputDir, "professional-snow-stage-390.png"),
-  });
-  await page.getByLabel("Height", { exact: true }).selectOption("short");
-  await expect(page.locator("#avatar-stage")).toHaveAttribute(
-    "data-ready",
-    "true",
-  );
+  const rain = await page.locator("#avatar-stage canvas").screenshot();
+  await choose(page, "model", "snow-v4");
+  expect(
+    (await page.locator("#avatar-stage canvas").screenshot()).equals(rain),
+  ).toBe(false);
+  await choose(page, "height", "short");
+  await choose(page, "hair", "quiff");
   await page.locator("#save").click();
-  await expect(page.locator("#status")).toContainText(
-    "Saved to your AkiPasa account",
-  );
+  await expect(page.locator("#status")).toContainText("Saved");
   expect(saved).toMatchObject({
     model: "snow-v4",
     height: "short",
     hair: "quiff",
   });
   await page.reload();
-  await expect(page.locator("#avatar-stage")).toHaveAttribute(
-    "data-model-id",
-    "snow-v4",
-  );
-  await expect(page.getByLabel("Height", { exact: true })).toHaveValue("short");
+  await ready(page);
   await expect(page.locator("#save")).toBeDisabled();
-  // Failed assets remain visibly failed and unsaveable. A retry must not reuse
-  // a permanently rejected cached Promise, nor mutate the saved model choice.
+  await choose(page, "height", "short");
   const rainAsset = "**/pals/models/professional/rain-v3-20261031.glb";
-  await page.route(rainAsset, (route) => route.abort());
-  await page.getByLabel("Character model").selectOption("rain-v3");
+  await page.route(rainAsset, (r) => r.abort());
+  await chooseModelWithoutReady(page, "rain-v3");
   await expect(page.locator("#avatar-stage")).toHaveAttribute(
     "data-ready",
     "error",
@@ -334,55 +401,69 @@ try {
   await expect(page.locator("#download")).toBeDisabled();
   expect(saved.model).toBe("snow-v4");
   await page.unroute(rainAsset);
-  await page.getByLabel("Character model").selectOption("snow-v4");
-  await page.getByLabel("Character model").selectOption("rain-v3");
-  await expect(page.locator("#avatar-stage")).toHaveAttribute(
-    "data-model-id",
-    "rain-v3",
-  );
-  await expect(page.locator("#avatar-stage")).toHaveAttribute(
-    "data-ready",
-    "true",
-  );
+  await choose(page, "model", "snow-v4");
+  await choose(page, "model", "rain-v3");
   await page.locator("#reset").click();
-  await expect(page.getByLabel("Character model")).toHaveValue("snow-v4");
-  // A rapid model switch must settle on the last request, including a cached
-  // authored model after a classic model request started in the meantime.
-  await page.getByLabel("Character model").selectOption("classic-v2");
-  await page.getByLabel("Character model").selectOption("rain-v3");
+  await ready(page);
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-model-id",
+    "snow-v4",
+  );
+  await chooseModelWithoutReady(page, "rain-v3");
+  await chooseModelWithoutReady(page, "snow-v4");
+  await chooseModelWithoutReady(page, "rain-v3");
+  await ready(page);
   await expect(page.locator("#avatar-stage")).toHaveAttribute(
     "data-model-id",
     "rain-v3",
   );
-  await expect(page.locator("#avatar-stage")).toHaveAttribute(
-    "data-ready",
-    "true",
-  );
-
-  // Run the established saved classic appearance regression in a separate
-  // unsaved fixture; professional choices do not overwrite those old fields.
+  // Both saved legacy frames project read-only onto authored rigs. No Classic UI,
+  // no automatic write, no mutation of the raw saved row or unsupported old hair.
+  for (const [bodyStyle, model, hair, projectedHair] of [
+    ["feminine", "rain-v3", "buzz", "long"],
+    ["masculine", "snow-v4", "bun", "crop"],
+  ]) {
+    saved = {
+      ...studio.DEFAULT_APPEARANCE,
+      model: "classic-v2",
+      bodyStyle,
+      hair,
+    };
+    const raw = JSON.stringify(saved),
+      writes = saveWrites;
+    await page.reload();
+    await ready(page);
+    await expect(page.locator("#avatar-stage")).toHaveAttribute(
+      "data-model-id",
+      model,
+    );
+    await page.locator('[data-tab="Hair"]').click();
+    await expect(
+      page.locator(`[data-field="hair"][data-value="${projectedHair}"]`),
+    ).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator("#save")).toBeDisabled();
+    expect(JSON.stringify(saved)).toBe(raw);
+    expect(saveWrites).toBe(writes);
+    evidence.push({
+      test: "legacy-classic-read-only-authored-projection",
+      bodyStyle,
+      model,
+      hair,
+      projectedHair,
+      status: "PASS",
+    });
+  }
   saved = null;
   starter = { ...studio.DEFAULT_APPEARANCE, model: "classic-v2" };
   await page.reload();
-  await expect(page.locator("#avatar-stage")).toHaveAttribute(
-    "data-ready",
-    "true",
-  );
-  await page.getByRole("tab", { name: "Hair", exact: true }).click();
-  await expect(page.locator("#avatar-stage")).toHaveAttribute(
-    "data-model-id",
-    "classic-v2",
-  );
-  await page.getByLabel("Hairstyle").selectOption("crop");
-  await expect(page.locator("#save")).toBeEnabled();
-  // Exercise real WebGL loss/restoration, not a synthetic DOM-only event. A
-  // lost context must never leave a blank render presented as save/export ready.
+  await ready(page);
+  await choose(page, "hair", "crop");
   await page.evaluate(() => {
-    const canvas = document.querySelector("#avatar-stage canvas");
-    window.__palsContext = canvas
+    window.__palsContext = document
+      .querySelector("#avatar-stage canvas")
       .getContext("webgl2")
       .getExtension("WEBGL_lose_context");
-    if (!window.__palsContext) throw new Error("Context-loss test unavailable");
+    if (!window.__palsContext) throw Error("Context-loss test unavailable");
     window.__palsContext.loseContext();
   });
   await expect(page.locator("#avatar-stage")).toHaveAttribute(
@@ -394,202 +475,119 @@ try {
   await expect(page.locator("#download")).toBeDisabled();
   expect(saved).toBeNull();
   await page.evaluate(() => window.__palsContext.restoreContext());
-  await expect(page.locator("#avatar-stage")).toHaveAttribute(
-    "data-ready",
-    "true",
-    { timeout: 30000 },
-  );
-  await expect(page.getByLabel("Hairstyle")).toHaveValue("crop");
-  await expect(page.locator("#save")).toBeEnabled();
+  await ready(page);
+  await expect(
+    page.locator('[data-field="hair"][data-value="crop"]'),
+  ).toHaveAttribute("aria-pressed", "true");
   await page.locator("#reset").click();
-  await expect(page.getByLabel("Hairstyle")).toHaveValue("quiff");
-  // A real 3D renderer must load the alternate rig when the user changes body frame.
-  await page.getByRole("tab", { name: "Face" }).click();
-  const maleMesh = page.waitForResponse(
-    (response) =>
-      response.url().includes("/pals/models/akipals-base-male.glb") &&
-      response.status() === 200,
-  );
-  await page.getByLabel("Body frame").selectOption("masculine");
-  await maleMesh;
+  await ready(page);
+  // Selecting Snow replaces the old masculine procedural-rig switch with the
+  // actual authored asset required by the new two-character product contract.
+  await choose(page, "model", "snow-v4");
   await expect(page.locator("#avatar-stage")).toHaveAttribute(
-    "data-model",
-    "male",
+    "data-model-id",
+    "snow-v4",
   );
-  await expect(page.locator("#avatar-stage")).toHaveAttribute(
-    "data-ready",
-    "true",
-  );
-  await page.screenshot({
-    path: resolve(outputDir, "identity-male-390.png"),
-    fullPage: true,
-  });
-  await page.locator("#avatar-stage canvas").screenshot({
-    path: resolve(outputDir, "identity-male-stage-390.png"),
-  });
-  await page.getByRole("tab", { name: "Outfit" }).click();
-  await page.getByRole("button", { name: "Night out" }).click();
-  await expect(page.locator('select[name="top"]')).toHaveValue("jacket");
-  await expect(page.getByLabel("Bottoms")).toHaveValue("tailored");
-  await page.getByRole("tab", { name: "Hair" }).click();
-  await page.getByLabel("Hairstyle").selectOption("bun");
-  await expect(page.locator("#save")).toBeEnabled();
+  await choose(page, "top", "jacket");
+  await choose(page, "bottomColor", "mint");
+  await choose(page, "hair", "quiff");
   await page.locator("#save").click();
-  await expect(page.locator("#status")).toContainText(
-    "Saved to your AkiPasa account",
-  );
+  await expect(page.locator("#status")).toContainText("Saved");
   await page.reload();
-  await expect(page.getByLabel("Hairstyle")).toHaveValue("bun");
-  await page.getByRole("tab", { name: "Face" }).click();
-  await expect(page.getByLabel("Body frame")).toHaveValue("masculine");
-  await page.getByRole("tab", { name: "Outfit" }).click();
-  await expect(page.locator('select[name="top"]')).toHaveValue("jacket");
-  await page.getByRole("tab", { name: "Hair" }).click();
-  await page.getByLabel("Hairstyle").selectOption("buzz");
+  await ready(page);
+  await page.locator('[data-tab="Hair"]').click();
+  await expect(
+    page.locator('[data-field="hair"][data-value="quiff"]'),
+  ).toHaveAttribute("aria-pressed", "true");
+  await choose(page, "hair", "crop");
   await page.locator("#reset").click();
-  await expect(page.getByLabel("Hairstyle")).toHaveValue("bun");
-  await expect(page.locator("#avatar-stage")).toHaveAttribute(
-    "data-ready",
-    "true",
-  );
-  await page.getByLabel("Hairstyle").selectOption("crop");
-  await expect(page.locator("#save")).toBeEnabled();
+  await ready(page);
+  await expect(
+    page.locator('[data-field="hair"][data-value="quiff"]'),
+  ).toHaveAttribute("aria-pressed", "true");
+  await choose(page, "hair", "crop");
   await verifySyntheticPersistedReturn(page, "en", {
-    hair: "bun",
+    model: "snow-v4",
+    hair: "quiff",
     bodyStyle: "masculine",
     top: "jacket",
   });
-  for (const width of [320, 360, 390, 820, 1440]) {
-    await page.setViewportSize({ width, height: 850 });
-    await expect(page.locator("#avatar-stage canvas")).toBeVisible();
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth > innerWidth,
-    );
-    if (overflow) throw new Error("Horizontal overflow at " + width + "px");
-    await page.screenshot({
-      path: resolve(outputDir, "identity-" + width + ".png"),
-      fullPage: true,
-    });
-  }
-  // Reduced-motion must stop the idle frame loop while edits still render.
-  await page.emulateMedia({ reducedMotion: "reduce" });
+  await choose(page, "model", "rain-v3");
+  await changedCanvas(page, "hair", "long", "bun");
+  await changedCanvas(page, "hairColor", "black", "blonde");
+  await changedCanvas(page, "top", "tee", "jacket");
+  await changedCanvas(page, "topColor", "orange", "mint");
+  await changedCanvas(page, "skin", "porcelain", "deep");
+  const stable = await page.locator("#avatar-stage canvas").screenshot();
+  await page.locator("#zoom-in").click();
+  await expect
+    .poll(async () =>
+      stable.equals(await page.locator("#avatar-stage canvas").screenshot()),
+    )
+    .toBe(false);
+  await page.locator("#zoom-out").click();
+  await choose(page, "model", "snow-v4");
+  await choose(page, "hair", "quiff");
+  await page.locator("#save").click();
+  await expect(page.locator("#status")).toContainText("Saved");
+  for (const locale of ["en", "es"])
+    for (const theme of ["dark", "light"])
+      for (const width of [320, 390, 820, 1440]) {
+        await page.emulateMedia({
+          colorScheme: theme,
+          reducedMotion: "reduce",
+        });
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(origin + "/pals?lang=" + locale);
+        await ready(page);
+        await expect(page.locator("html")).toHaveAttribute("lang", locale);
+        await expect(page.locator('a[href^="/pals/world"]')).toHaveAttribute(
+          "href",
+          "/pals/world?lang=" + locale,
+        );
+        expect(
+          await page.evaluate(() => document.documentElement.scrollWidth),
+        ).toBeLessThanOrEqual(width);
+        await page.locator('[data-tab="Outfit"]').click();
+        await page.screenshot({
+          path: resolve(outputDir, `identity-${locale}-${theme}-${width}.png`),
+          fullPage: true,
+        });
+        evidence.push({
+          test: "responsive-locale-theme",
+          locale,
+          theme,
+          width,
+          status: "PASS",
+        });
+      }
+  await choose(page, "top", "sweater");
+  await page.locator("#save").click();
+  await expect(page.locator("#status")).toContainText("Guardado");
   await page.reload();
-  await expect(page.locator("#avatar-stage")).toHaveAttribute(
-    "data-ready",
-    "true",
-  );
-  await page.waitForTimeout(250);
-  const settledFrames = await page.evaluate(() => window.__palsFrames);
-  await page.waitForTimeout(250);
-  expect(await page.evaluate(() => window.__palsFrames)).toBe(settledFrames);
-  await page.getByRole("tab", { name: "Body", exact: true }).click();
-  for (const height of ["short", "tall"]) {
-    await page.getByLabel("Height", { exact: true }).selectOption(height);
-    await expect(page.locator("#avatar-stage")).toHaveAttribute(
-      "data-ready",
-      "true",
-    );
-    await page.screenshot({
-      path: resolve(outputDir, "identity-" + height + "-reduced-motion.png"),
-      fullPage: true,
-    });
-  }
-  expect(await page.evaluate(() => window.__palsFrames)).toBeGreaterThan(
-    settledFrames,
-  );
-  await page.goto("http://127.0.0.1:" + port + "/pals?lang=es");
-  await expect(page.locator("html")).toHaveAttribute("lang", "es");
-  await expect(
-    page.getByRole("link", {
-      name: "Entrar en el prototipo privado de AkiPals World",
-    }),
-  ).toHaveAttribute("href", "/pals/world");
-  const spanishWorldLink = await page
-    .getByRole("link", {
-      name: "Entrar en el prototipo privado de AkiPals World",
-    })
-    .boundingBox();
-  expect(spanishWorldLink?.height).toBeGreaterThanOrEqual(44);
-  expect(spanishWorldLink?.width).toBeGreaterThanOrEqual(44);
-  await expect(page.locator("#avatar-stage")).toHaveAttribute(
-    "data-ready",
-    "true",
-  );
-  await page.getByRole("tab", { name: "Ropa", exact: true }).click();
-  await page.evaluate(() => {
-    window.__palsContext = document
-      .querySelector("#avatar-stage canvas")
-      .getContext("webgl2")
-      .getExtension("WEBGL_lose_context");
-    window.__palsContext.loseContext();
-  });
-  await expect(page.locator("#stage-error")).toContainText("Vista 3D en pausa");
-  await expect(page.locator("#download")).toBeDisabled();
-  await page.evaluate(() => window.__palsContext.restoreContext());
-  await expect(page.locator("#avatar-stage")).toHaveAttribute(
-    "data-ready",
-    "true",
-    { timeout: 30000 },
-  );
-  await page
-    .getByRole("button", { name: "Día tranquilo", exact: true })
-    .click();
-  await expect(page.getByLabel("Parte superior", { exact: true })).toHaveValue(
-    "sweater",
-  );
-  await page
-    .getByRole("button", { name: "Guardar mi estilo", exact: true })
-    .click();
-  await expect(page.locator("#status")).toContainText(
-    "Guardado en tu cuenta de AkiPasa",
-  );
-  await page.reload();
-  await expect(page.locator("#avatar-stage")).toHaveAttribute(
-    "data-ready",
-    "true",
-  );
-  await page.getByRole("tab", { name: "Ropa", exact: true }).click();
-  await expect(page.getByLabel("Parte superior", { exact: true })).toHaveValue(
-    "sweater",
-  );
-  await page.getByRole("tab", { name: "Pelo", exact: true }).click();
-  await page.getByLabel("Peinado").selectOption("buzz");
-  await expect(page.locator("#save")).toBeEnabled();
+  await ready(page);
+  await choose(page, "hair", "crop");
   await verifySyntheticPersistedReturn(page, "es", {
-    hair: "bun",
+    model: "snow-v4",
+    hair: "quiff",
     bodyStyle: "masculine",
     top: "sweater",
   });
-  await page.getByRole("tab", { name: "Ropa", exact: true }).click();
-  for (const width of [320, 360, 390, 820, 1440]) {
-    await page.setViewportSize({ width, height: 850 });
-    expect(
-      await page.evaluate(() => document.documentElement.scrollWidth),
-    ).toBeLessThanOrEqual(width);
-    await page.screenshot({
-      path: resolve(outputDir, "identity-es-" + width + ".png"),
-      fullPage: true,
-    });
-  }
   const android = await browser.newPage({
     viewport: { width: 390, height: 844 },
     isMobile: true,
     hasTouch: true,
+    reducedMotion: "reduce",
     userAgent:
       "Mozilla/5.0 (Linux; Android 13; AkiPasa WebView) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/153.0.0.0 Mobile Safari/537.36",
   });
-  android.on("pageerror", (error) => failures.push(error.message));
-  await android.goto("http://127.0.0.1:" + port + "/pals?lang=es");
-  await expect(android.locator("#avatar-stage")).toHaveAttribute(
-    "data-ready",
-    "true",
-    { timeout: 30000 },
-  );
-  const canvas = android.locator("#avatar-stage canvas");
-  await canvas.scrollIntoViewIfNeeded();
-  const beforeTouch = await canvas.screenshot();
-  const box = await canvas.boundingBox();
-  const touch = await android.context().newCDPSession(android);
+  android.on("pageerror", (e) => failures.push(e.message));
+  await android.goto(origin + "/pals?lang=es");
+  await ready(android);
+  const canvas = android.locator("#avatar-stage canvas"),
+    beforeTouch = await canvas.screenshot(),
+    box = await canvas.boundingBox(),
+    touch = await android.context().newCDPSession(android);
   await touch.send("Input.dispatchTouchEvent", {
     type: "touchStart",
     touchPoints: [{ x: box.x + box.width * 0.4, y: box.y + box.height * 0.5 }],
@@ -613,50 +611,54 @@ try {
     await android.evaluate(() => document.documentElement.scrollWidth),
   ).toBeLessThanOrEqual(390);
   await android.close();
-  // High-resolution actual stage renders make donor-face shading, fitted hair
-  // and neck joins reviewable independently of the full editor screenshots.
   const art = await browser.newPage({
     viewport: { width: 1440, height: 1000 },
     deviceScaleFactor: 2,
     reducedMotion: "reduce",
   });
-  art.on("pageerror", (error) => failures.push(error.message));
-  await art.goto("http://127.0.0.1:" + port + "/pals");
-  await expect(art.locator("#avatar-stage")).toHaveAttribute(
-    "data-ready",
-    "true",
-    { timeout: 30000 },
-  );
-  for (const bodyStyle of ["feminine", "masculine"]) {
+  art.on("pageerror", (e) => failures.push(e.message));
+  await art.goto(origin + "/pals");
+  await ready(art);
+  for (const [model, hairs] of [
+    ["rain-v3", ["crop", "quiff", "long", "bun"]],
+    ["snow-v4", ["crop", "quiff"]],
+  ]) {
+    await choose(art, "model", model);
     for (const skin of ["porcelain", "deep"]) {
-      await art.getByRole("tab", { name: "Face", exact: true }).click();
-      await art.getByLabel("Body frame").selectOption(bodyStyle);
-      const tone = art.locator(
-        `button[data-field="skin"][data-value="${skin}"]`,
-      );
-      await tone.click();
-      await expect(tone).toHaveAttribute("aria-pressed", "true");
-      await art.getByRole("tab", { name: "Hair", exact: true }).click();
-      for (const hair of ["buzz", "crop", "quiff", "bun"]) {
-        await art.getByLabel("Hairstyle").selectOption(hair);
-        await expect(art.locator("#avatar-stage")).toHaveAttribute(
-          "data-ready",
-          "true",
-        );
+      await choose(art, "skin", skin);
+      for (const hair of hairs) {
+        await choose(art, "hair", hair);
         await art.locator("#avatar-stage canvas").screenshot({
-          path: resolve(outputDir, `art-${bodyStyle}-${skin}-${hair}.png`),
+          path: resolve(outputDir, `art-${model}-${skin}-${hair}.png`),
         });
       }
     }
   }
   await art.close();
-  if (failures.length)
-    throw new Error("Client-side errors: " + failures.join("; "));
+  expect(failures).toEqual([]);
+  writeFileSync(
+    resolve(outputDir, "results.json"),
+    JSON.stringify(
+      {
+        status: "PASS",
+        actualWebGL: true,
+        syntheticIdentityProvider: true,
+        physicalDevice: false,
+        evidence,
+      },
+      null,
+      2,
+    ),
+  );
   console.log(
-    "AkiPals real GLB 3D creator: renders, saves, restores and passes responsive browser smoke.",
+    "AkiPals authored Rain/Snow: actual WebGL wardrobe, legacy privacy, save/restore, context loss, touch, responsive locales and appearance changes PASS",
   );
 } finally {
   if (browser) await browser.close();
-  await new Promise((done) => server.close(done));
+  await new Promise((r) => server.close(r));
   rmSync(buildDir, { recursive: true, force: true });
+}
+async function chooseModelWithoutReady(page, model) {
+  await page.locator('[data-tab="Character"]').click();
+  await page.locator(`[data-field="model"][data-value="${model}"]`).click();
 }

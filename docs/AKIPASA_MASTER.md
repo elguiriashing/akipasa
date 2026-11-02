@@ -4798,3 +4798,39 @@ exact-head CI and compiled browser review are recorded separately before release
 No signed Android/Play/iOS release or installed-device icon refresh is claimed;
 native launcher/notification resources require a newly signed package. Source
 revert and preceding app/Worker version are the rollback, with no data migration.
+
+## 2026-11-02 | Rain/Snow-only visual Wardrobe and World
+
+Alex explicitly resumes AkiPals work and requests Rain/Snow only, real hair,
+clothing and colour choices, and an immersive map/character interface. This
+supersedes the earlier development pause for this bounded update, without merging
+all of private347 or changing administrator/invitation eligibility. Current
+master3583c17's logo360 and live Story359 changes remain intact.
+
+Legacy saved JSON stays readable/exportable and is never migrated on read.
+Presentation projects Classic/missing models to Rain or Snow by saved body style;
+unsupported legacy hair projects to an actual available authored style. Only the
+2 authored characters are selectable. New bounded bottom/shoe colours default
+without a database rewrite. Explicit authenticated Save remains required.
+
+Existing licensed CC-BY Rain/Snow meshes/materials supply actual hair/garment
+variants and six material colour zones while retaining textures/UVs. Supported
+choices reflect actual fitting, not invented extra garments or anatomy. The
+assets remain baked standing meshes: no skeletal walking or facial morph system
+is claimed. The same appearance and shared renderer release key drive World and
+Wardrobe; old cached renderer URLs must not restore Classic silently. Asset or
+WebGL failure shows recovery and disables Save rather than presenting stale art.
+
+Wardrobe uses a large live stage, visual choices and swatches, portrait focus for
+Face/Hair, full-body Outfit/Character, unobstructed touch controls and short labels.
+World is map-first with round HUD controls, real venue links, optional nearby
+sheet and exact foot-point marker placement. EN/ES navigation stays coherent.
+Existing foreground-only opt-in GPS, cancellation/Stop/background behavior,
+owner RLS, private/no-store/noindex headers, exports and source history remain.
+No SQL, rewards, payments, AI provider, fake activity or public-access grant.
+
+Real GLB/WebGL appearance, fitting, colour changes, save/cancel/failed-load and
+resource isolation must pass alongside map projection/GPS/privacy tests. Full
+check, strict audit, exact-head CI and actual automatic Worker/source readback
+remain release gates. Alex explicitly requests live deployment after testing;
+physical Android playtesting occurs on live, without claiming an unperformed pass.
