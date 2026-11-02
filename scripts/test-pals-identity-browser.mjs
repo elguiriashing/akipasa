@@ -547,6 +547,7 @@ try {
   );
   await expect(page.locator("#save")).toBeEnabled();
   await expect(page.locator("#download")).toBeEnabled();
+  await expect(page.locator("#status")).not.toContainText(/Loading|Cargando/i);
   expect({ saveWrites, identityReads, documentReads }).toEqual(beforeRetry);
   evidence.push({
     test: "native-Retry-recovers-actual-failed-GLB",
