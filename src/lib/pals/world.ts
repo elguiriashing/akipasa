@@ -2,8 +2,56 @@
  * Private AkiPals World prototype. No GPS is persisted, no visit is verified,
  * and nothing here awards XP, checks users in, or publishes social presence.
  */
-export const WORLD_START = { latitude: 36.543, longitude: -4.623 } as const;
 export const WORLD_VENUE_LIMIT = 80;
+
+/** Reject unsafe samples; approximate browser GPS is never attendance proof. */
+export function worldPositionIssue(
+  sample: {
+    timestamp: number;
+    coords: { latitude: number; longitude: number; accuracy: number };
+  },
+  now = Date.now(),
+): "stale" | "inaccurate" | "unavailable" | null {
+  if (
+    !Number.isFinite(now) ||
+    !Number.isFinite(sample.timestamp) ||
+    !coarseWorldCell(sample.coords.latitude, sample.coords.longitude)
+  )
+    return "unavailable";
+  if (now - sample.timestamp > 30000 || sample.timestamp > now + 5000)
+    return "stale";
+  if (
+    !Number.isFinite(sample.coords.accuracy) ||
+    sample.coords.accuracy < 0 ||
+    sample.coords.accuracy > 100
+  )
+    return "inaccurate";
+  return null;
+}
+
+/** True screen-neighbour groups, anchored at an actual member's coordinates.
+ * No venue is discarded or assigned a fabricated location. All remain in list.
+ */
+export function groupWorldVenues(
+  venues: WorldVenue[],
+  project: (venue: WorldVenue) => { x: number; y: number },
+  radius = 44,
+): WorldVenue[][] {
+  const groups: Array<{
+    point: { x: number; y: number };
+    members: WorldVenue[];
+  }> = [];
+  for (const venue of venues) {
+    const point = project(venue);
+    const group = groups.find(
+      (item) =>
+        Math.hypot(item.point.x - point.x, item.point.y - point.y) < radius,
+    );
+    if (group) group.members.push(venue);
+    else groups.push({ point, members: [venue] });
+  }
+  return groups.map((group) => group.members);
+}
 
 export type WorldVenue = {
   id: string;

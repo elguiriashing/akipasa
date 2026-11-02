@@ -36,6 +36,20 @@ export default async function TermsPage({
             ? "Podemos solicitar prueba de representación antes de verificar un local. Los accesos de equipo deben asignarse únicamente a personas autorizadas."
             : "We may request proof of authority before verifying a venue. Team access must only be assigned to authorised people."}
         </p>
+        <h2 id="akipals-world">AkiPals World</h2>
+        <p>
+          {es
+            ? "World necesita una ubicación actual del dispositivo para situar tu personaje y mostrar lugares cercanos. Debes permitir el acceso a la ubicación en tu navegador o dispositivo. Si lo deniegas, lo retiras o no hay una ubicación fiable, World se pausa hasta que vuelva a estar disponible. Puedes editar tu personaje en el Armario sin usar la ubicación."
+            : "World needs your current device location to position your character and show nearby places. You must allow location access in your browser or device. If you deny or withdraw permission, or a reliable position is unavailable, World pauses until location is available again. You can edit your character in Wardrobe without using location."}
+        </p>
+        <p>
+          {es
+            ? "Aceptar estas condiciones no activa ni sustituye el permiso de ubicación del navegador. World solo utiliza la ubicación mientras está visible y deja de solicitarla al ocultarlo o salir. Abrir el mapa o desplazarte por él no verifica visitas ni concede recompensas de check-in. "
+            : "Accepting these terms does not enable or replace your browser’s location permission. World uses location while it is visible and stops requesting it when hidden or left. Opening or moving around the map does not verify visits or award check-in rewards. "}
+          <a href={`/${locale}/privacy#akipals-world`}>
+            {es ? "Privacidad de la ubicación" : "Location privacy"}
+          </a>
+        </p>
         <h2>{es ? "Contacto" : "Contact"}</h2>
         <p>support@akipasa.com</p>
         <p>
@@ -43,6 +57,13 @@ export default async function TermsPage({
             {es
               ? "Versión preliminar, 23 de julio de 2026. Pendiente de revisión jurídica profesional."
               : "Preview version, 23 July 2026. Pending professional legal review."}
+          </small>
+        </p>
+        <p>
+          <small>
+            {es
+              ? "Información de ubicación de AkiPals World actualizada el 2 de noviembre de 2026."
+              : "AkiPals World location information updated 2 November 2026."}
           </small>
         </p>
       </section>

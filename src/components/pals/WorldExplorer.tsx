@@ -7,7 +7,8 @@ import type { Appearance } from "@/lib/pals/avatar-v2";
 import {
   coarseWorldCell,
   normalizeWorldVenues,
-  WORLD_START,
+  worldPositionIssue,
+  groupWorldVenues,
   type WorldVenue,
 } from "@/lib/pals/world";
 import styles from "./WorldExplorer.module.css";
@@ -91,21 +92,27 @@ export function WorldExplorer({
   const markers = useRef<Map<string, Marker>>(new Map());
   const avatarMarker = useRef<Marker | null>(null);
   const avatarStage = useRef<WorldStage | null>(null);
-  const avatarLabel = useRef<HTMLSpanElement | null>(null);
   const gpsWatch = useRef<number | null>(null);
   const lastGPS = useRef<Coordinates | null>(null);
   const position = useRef<Coordinates | null>(null);
   const [currentPosition, setCurrentPosition] = useState<Coordinates | null>(
     null,
   );
-  const [browseCenter, setBrowseCenter] = useState<Coordinates>(WORLD_START);
+  const [gpsPhase, setGpsPhase] = useState<
+    "starting" | "ready" | "error" | "paused"
+  >("starting");
+  const [mapRevision, setMapRevision] = useState(0);
+  const freshnessTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const acquireTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const refreshSampleTime = useRef<number | null>(null);
   const gpsEpoch = useRef(0);
   const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastCell = useRef<string | null>(null);
   const fetchSerial = useRef(0);
   const tracking = useRef(false);
-  const [gpsActive, setGpsActive] = useState(false);
-  const [gpsRequested, setGpsRequested] = useState(false);
+  const gpsActive = currentPosition !== null;
+  const worldReady = gpsActive;
   const [gpsStatus, setGpsStatus] = useState(
     t("Location off", "Ubicación desactivada"),
   );
@@ -118,12 +125,14 @@ export function WorldExplorer({
   const [helpOpen, setHelpOpen] = useState(false);
   const [placesOpen, setPlacesOpen] = useState(false);
 
-  const center = currentPosition || browseCenter;
+  const center = currentPosition;
   const orderedVenues = useMemo(
     () =>
-      [...venues].sort(
-        (a, b) => distanceMetres(center, a) - distanceMetres(center, b),
-      ),
+      center
+        ? [...venues].sort(
+            (a, b) => distanceMetres(center, a) - distanceMetres(center, b),
+          )
+        : [],
     [center, venues],
   );
   const selected = venues.find((v) => v.id === selectedId) || null;
@@ -133,6 +142,7 @@ export function WorldExplorer({
 
   const requestVenues = useCallback(
     async (at: Coordinates) => {
+      if (!position.current || document.hidden) return;
       const cell = coarseWorldCell(at.latitude, at.longitude);
       if (!cell) return;
       const key = cell.latitude + "/" + cell.longitude;
@@ -187,6 +197,7 @@ export function WorldExplorer({
   // This is the existing first-party 3D studio runtime, re-mounted as a
   // lightweight map character. Do not create a second avatar identity.
   useEffect(() => {
+    if (!worldReady) return;
     let cancelled = false;
     let script: HTMLScriptElement | null = null;
     let loading = false;
@@ -247,21 +258,24 @@ export function WorldExplorer({
       avatarStage.current = null;
       script?.remove();
     };
-  }, [t]);
+  }, [t, worldReady]);
 
   useEffect(() => {
-    if (!mapNode.current) return;
+    if (!worldReady || !mapNode.current || !position.current) return;
     let removed = false;
     let localMap: MapInstance | null = null;
+    let removeGestures = () => {};
     const ownedMarkers = markers.current;
     void import("maplibre-gl")
       .then((maplibre) => {
-        if (removed || !mapNode.current) return;
+        if (removed || !mapNode.current || document.hidden || !position.current)
+          return;
+        const initial = position.current;
         lib.current = maplibre;
         const nextMap = new maplibre.Map({
           container: mapNode.current,
           style: styleUrl,
-          center: [WORLD_START.longitude, WORLD_START.latitude],
+          center: [initial.longitude, initial.latitude],
           zoom: 16.1,
           pitch: 55,
           bearing: -14,
@@ -270,14 +284,22 @@ export function WorldExplorer({
           attributionControl: false,
           cooperativeGestures: false,
           renderWorldCopies: false,
+          dragPan: false,
+          dragRotate: false,
+          keyboard: false,
+          touchPitch: false,
+          doubleClickZoom: false,
         });
         localMap = nextMap;
         map.current = nextMap;
         // The compact controls reserve only their actual space. Expanded
         // cards update this inset through the observer below.
-        nextMap.setPadding({ top: 64, bottom: 112, left: 16, right: 16 });
+        nextMap.setPadding({ top: 0, bottom: 0, left: 0, right: 0 });
+        nextMap.scrollZoom.enable({ around: "center" });
+        nextMap.touchZoomRotate.enable({ around: "center" });
+        nextMap.touchZoomRotate.disableRotation();
         nextMap.addControl(
-          new maplibre.AttributionControl({ compact: true }),
+          new maplibre.AttributionControl({ compact: false }),
           "bottom-right",
         );
         nextMap.on("error", (event) => {
@@ -316,14 +338,59 @@ export function WorldExplorer({
               /* Source layer not available in this tile configuration. */
             }
           }
-          void requestVenues(WORLD_START);
+          if (position.current) void requestVenues(position.current);
+          setMapRevision((n) => n + 1);
+        });
+        let recentering = false;
+        nextMap.on("move", () => {
+          if (removed || recentering || !position.current) return;
+          const at = nextMap.getCenter();
+          const fix = position.current;
+          if (
+            Math.abs(at.lat - fix.latitude) < 1e-10 &&
+            Math.abs(at.lng - fix.longitude) < 1e-10
+          )
+            return;
+          recentering = true;
+          nextMap.jumpTo({ center: [fix.longitude, fix.latitude] });
+          recentering = false;
         });
         nextMap.on("moveend", () => {
-          if (removed) return;
-          const at = nextMap.getCenter();
-          setBrowseCenter({ latitude: at.lat, longitude: at.lng });
-          void requestVenues({ latitude: at.lat, longitude: at.lng });
+          if (!removed) setMapRevision((n) => n + 1);
         });
+        const canvasElement = nextMap.getCanvas();
+        const pointers = new Map<number, number>();
+        const down = (event: PointerEvent) => {
+          if (event.pointerType === "mouse" && event.button !== 0) return;
+          pointers.set(event.pointerId, event.clientX);
+          canvasElement.setPointerCapture?.(event.pointerId);
+        };
+        const move = (event: PointerEvent) => {
+          const before = pointers.get(event.pointerId);
+          if (before === undefined) return;
+          pointers.set(event.pointerId, event.clientX);
+          if (pointers.size !== 1 || !position.current) return;
+          const delta = event.clientX - before;
+          if (!delta) return;
+          nextMap.jumpTo({
+            center: [position.current.longitude, position.current.latitude],
+            bearing: nextMap.getBearing() - delta * 0.35,
+          });
+        };
+        const up = (event: PointerEvent) => {
+          pointers.delete(event.pointerId);
+        };
+        canvasElement.addEventListener("pointerdown", down);
+        canvasElement.addEventListener("pointermove", move);
+        canvasElement.addEventListener("pointerup", up);
+        canvasElement.addEventListener("pointercancel", up);
+        removeGestures = () => {
+          pointers.clear();
+          canvasElement.removeEventListener("pointerdown", down);
+          canvasElement.removeEventListener("pointermove", move);
+          canvasElement.removeEventListener("pointerup", up);
+          canvasElement.removeEventListener("pointercancel", up);
+        };
         const pal = document.createElement("div");
         pal.className = styles.avatarPin;
         pal.setAttribute(
@@ -340,15 +407,12 @@ export function WorldExplorer({
         fallback.className = styles.avatarFallback;
         fallback.textContent = "🧍";
         canvas.append(fallback);
-        const label = document.createElement("span");
-        label.textContent = t("Preview avatar", "Vista previa");
-        avatarLabel.current = label;
-        pal.append(ground, canvas, label);
+        pal.append(ground, canvas);
         avatarMarker.current = new maplibre.Marker({
           element: pal,
           anchor: "bottom",
         })
-          .setLngLat([WORLD_START.longitude, WORLD_START.latitude])
+          .setLngLat([initial.longitude, initial.latitude])
           .addTo(nextMap);
         // Wake avatar loading after the marker is connected to the document.
         window.dispatchEvent(new Event("akipals:world-map-ready"));
@@ -363,11 +427,11 @@ export function WorldExplorer({
       ownedMarkers.clear();
       avatarMarker.current?.remove();
       avatarMarker.current = null;
-      avatarLabel.current = null;
+      removeGestures();
       localMap?.remove();
       if (map.current === localMap) map.current = null;
     };
-  }, [requestVenues, styleUrl, t]);
+  }, [requestVenues, styleUrl, t, worldReady]);
 
   useEffect(() => {
     const world = mapNode.current?.parentElement;
@@ -383,11 +447,6 @@ export function WorldExplorer({
         "--pals-attribution-clearance",
         bounds.bottom - card.getBoundingClientRect().top + 6 + "px",
       );
-      const bottom = Math.min(
-        bounds.height * 0.55,
-        bounds.bottom - card.getBoundingClientRect().top + 18,
-      );
-      map.current.setPadding({ top: 64, bottom, left: 16, right: 16 });
     };
     const observer = new ResizeObserver(update);
     for (const node of [world, hudNode.current, cardNode.current]) {
@@ -399,7 +458,7 @@ export function WorldExplorer({
       observer.disconnect();
       window.removeEventListener("akipals:world-map-ready", update);
     };
-  }, [selectedId, helpOpen]);
+  }, [selectedId, helpOpen, worldReady]);
 
   // Render pins from the existing public venue discovery source, not fake
   // popularity, hard-coded businesses or unverified live-event counts.
@@ -408,16 +467,36 @@ export function WorldExplorer({
     const ownedMarkers = markers.current;
     markers.current.forEach((marker) => marker.remove());
     markers.current.clear();
-    for (const venue of venues) {
+    const ordered = selectedId
+      ? [
+          ...venues.filter((venue) => venue.id === selectedId),
+          ...venues.filter((venue) => venue.id !== selectedId),
+        ]
+      : venues;
+    for (const members of groupWorldVenues(ordered, (venue) =>
+      map.current!.project([venue.longitude, venue.latitude]),
+    )) {
+      const venue = members[0];
       const element = makeMarker(
         venue,
         () => {
-          setSelectedId(venue.id);
+          setSelectedId(members.length === 1 ? venue.id : null);
           setHelpOpen(false);
-          setPlacesOpen(false);
+          setPlacesOpen(members.length > 1);
         },
         es,
       );
+      if (members.length > 1) {
+        element.querySelector("span")!.textContent = String(members.length);
+        element.setAttribute(
+          "aria-label",
+          t(
+            `${members.length} nearby places`,
+            `${members.length} lugares cercanos`,
+          ),
+        );
+        element.title = members.map((member) => member.name).join(" · ");
+      }
       if (venue.id === selectedId) element.classList.add(styles.venuePinActive);
       markers.current.set(
         venue.id,
@@ -430,158 +509,237 @@ export function WorldExplorer({
       ownedMarkers.forEach((marker) => marker.remove());
       ownedMarkers.clear();
     };
-  }, [venues, selectedId, es]);
+  }, [venues, selectedId, es, t, mapRevision, worldReady]);
 
   const stopGPS = useCallback(() => {
     gpsEpoch.current += 1;
     if (idleTimer.current !== null) clearTimeout(idleTimer.current);
+    if (freshnessTimer.current !== null) clearTimeout(freshnessTimer.current);
+    if (acquireTimer.current !== null) clearTimeout(acquireTimer.current);
+    if (refreshTimer.current !== null) clearTimeout(refreshTimer.current);
+    refreshSampleTime.current = null;
     if (gpsWatch.current !== null)
       navigator.geolocation.clearWatch(gpsWatch.current);
     gpsWatch.current = null;
     tracking.current = false;
     lastGPS.current = null;
     position.current = null;
+    fetchSerial.current += 1;
+    lastCell.current = null;
     setCurrentPosition(null);
-    setGpsActive(false);
-    setGpsRequested(false);
-    setGpsStatus(t("Location off", "Ubicación desactivada"));
+    setVenues([]);
+    setSelectedId(null);
+    setPlacesOpen(false);
+    setHelpOpen(false);
     avatarStage.current?.setMotion?.({ walking: false });
-    if (map.current) {
-      const c = map.current.getCenter();
-      avatarMarker.current?.setLngLat([c.lng, c.lat]);
-    }
-    if (avatarLabel.current)
-      avatarLabel.current.textContent = t("Preview avatar", "Vista previa");
-  }, [t]);
+  }, []);
 
   const startGPS = useCallback(() => {
-    if (!navigator.geolocation) {
-      setGpsStatus(
-        t(
-          "This browser does not support location.",
-          "Este navegador no admite ubicación.",
-        ),
-      );
+    stopGPS();
+    setGpsPhase("starting");
+    setGpsStatus(t("Finding your location…", "Buscando tu ubicación…"));
+    if (document.hidden) {
+      setGpsPhase("paused");
       return;
     }
-    if (gpsWatch.current !== null) return;
-    const epoch = ++gpsEpoch.current;
-    setGpsRequested(true);
-    setGpsStatus(t("Waiting for location…", "Esperando ubicación…"));
-    gpsWatch.current = navigator.geolocation.watchPosition(
-      (sample) => {
-        if (epoch !== gpsEpoch.current || document.hidden) return;
-        if (
-          Date.now() - sample.timestamp > 30000 ||
-          sample.timestamp > Date.now() + 5000
-        ) {
-          setGpsStatus(
-            t(
-              "Waiting for a fresh GPS position…",
-              "Esperando una ubicación reciente…",
-            ),
-          );
-          return;
-        }
-        const { latitude, longitude, accuracy, heading, speed } = sample.coords;
-        if (
-          !Number.isFinite(latitude) ||
-          !Number.isFinite(longitude) ||
-          !coarseWorldCell(latitude, longitude)
-        )
-          return;
-        if (!Number.isFinite(accuracy) || accuracy > 100 || accuracy < 0) {
-          setGpsStatus(
-            t(
-              "Location imprecise · try again outside",
-              "Ubicación imprecisa · prueba fuera",
-            ),
-          );
-          return;
-        }
-        const next = { latitude, longitude };
-        setCurrentPosition(next);
-        const previous = lastGPS.current;
-        lastGPS.current = next;
-        position.current = next;
-        tracking.current = true;
-        setGpsActive(true);
+    if (!navigator.geolocation) {
+      setGpsPhase("error");
+      setGpsStatus(t("Location unavailable", "Ubicación no disponible"));
+      return;
+    }
+    const epoch = gpsEpoch.current;
+    const fail = (message: string) => {
+      stopGPS();
+      setGpsPhase("error");
+      setGpsStatus(message);
+    };
+    acquireTimer.current = setTimeout(() => {
+      if (epoch === gpsEpoch.current && !position.current)
+        fail(t("No precise location yet", "Sin ubicación precisa"));
+    }, 20000);
+    const acceptSample = (sample: GeolocationPosition) => {
+      if (epoch !== gpsEpoch.current || document.hidden) return;
+      const issue = worldPositionIssue(sample);
+      if (issue) {
+        // Initial samples can improve while the bounded watch remains active.
         setGpsStatus(
-          "GPS ±" + Math.round(accuracy) + t(" m · private", " m · privado"),
+          issue === "inaccurate"
+            ? t("Waiting for precise GPS…", "Esperando GPS preciso…")
+            : t("Waiting for fresh GPS…", "Esperando GPS reciente…"),
         );
-        avatarMarker.current?.setLngLat([longitude, latitude]);
-        if (avatarLabel.current)
-          avatarLabel.current.textContent = t("You", "Tú");
-        if (map.current) {
-          map.current.easeTo({
-            center: [longitude, latitude],
-            zoom: Math.max(16.4, map.current.getZoom()),
-            duration: 650,
-          });
-        }
-        const walking =
-          typeof speed === "number" && Number.isFinite(speed)
-            ? speed > 0.45 && speed < 4
-            : previous
-              ? distanceMetres(previous, next) > Math.max(accuracy, 6)
-              : false;
-        avatarStage.current?.setMotion?.({
-          walking,
-          headingDegrees:
-            Number.isFinite(heading) && heading !== null ? heading : undefined,
-        });
-        if (idleTimer.current !== null) clearTimeout(idleTimer.current);
-        idleTimer.current = setTimeout(
-          () => avatarStage.current?.setMotion?.({ walking: false }),
-          1800,
-        );
-        void requestVenues(next);
-      },
+        return;
+      }
+      if (acquireTimer.current !== null) clearTimeout(acquireTimer.current);
+      const { latitude, longitude, accuracy, heading, speed } = sample.coords;
+      const next = { latitude, longitude };
+      const previous = lastGPS.current;
+      lastGPS.current = next;
+      position.current = next;
+      tracking.current = true;
+      setCurrentPosition(next);
+      setGpsPhase("ready");
+      setGpsStatus(
+        "GPS ±" + Math.round(accuracy) + t(" m · private", " m · privado"),
+      );
+      avatarMarker.current?.setLngLat([longitude, latitude]);
+      map.current?.jumpTo({ center: [longitude, latitude] });
+      const walking =
+        typeof speed === "number" && Number.isFinite(speed)
+          ? speed > 0.45 && speed < 4
+          : previous
+            ? distanceMetres(previous, next) > Math.max(accuracy, 6)
+            : false;
+      avatarStage.current?.setMotion?.({
+        walking,
+        headingDegrees:
+          typeof heading === "number" && Number.isFinite(heading)
+            ? heading
+            : undefined,
+      });
+      if (idleTimer.current !== null) clearTimeout(idleTimer.current);
+      idleTimer.current = setTimeout(
+        () => avatarStage.current?.setMotion?.({ walking: false }),
+        1800,
+      );
+      if (freshnessTimer.current !== null) clearTimeout(freshnessTimer.current);
+      freshnessTimer.current = setTimeout(
+        () => {
+          if (epoch === gpsEpoch.current)
+            fail(t("Location expired", "Ubicación caducada"));
+        },
+        Math.max(1, 30000 - (Date.now() - sample.timestamp)),
+      );
+      if (refreshTimer.current !== null) clearTimeout(refreshTimer.current);
+      refreshTimer.current = setTimeout(
+        () => {
+          if (
+            epoch !== gpsEpoch.current ||
+            document.hidden ||
+            refreshSampleTime.current === sample.timestamp
+          )
+            return;
+          refreshSampleTime.current = sample.timestamp;
+          navigator.geolocation.getCurrentPosition(
+            acceptSample,
+            (error) => {
+              // A failed refresh never extends the last genuine fix deadline.
+              if (error.code === 1 && epoch === gpsEpoch.current)
+                fail(
+                  t(
+                    "Location permission required",
+                    "Permiso de ubicación necesario",
+                  ),
+                );
+            },
+            { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 },
+          );
+        },
+        Math.max(0, 20000 - (Date.now() - sample.timestamp)),
+      );
+      void requestVenues(next);
+    };
+    const id = navigator.geolocation.watchPosition(
+      acceptSample,
       (error) => {
         if (epoch !== gpsEpoch.current) return;
-        stopGPS();
-        setGpsStatus(
+        // A temporary watch timeout must not discard a still-fresh stationary
+        // fix; the independent refresh/deadline remains authoritative.
+        if (position.current && error.code !== 1) {
+          setGpsStatus(t("Refreshing location…", "Actualizando ubicación…"));
+          return;
+        }
+        fail(
           error.code === 1
             ? t(
-                "Location denied. Preview still works.",
-                "Ubicación denegada. Puedes explorar.",
+                "Allow location in browser settings",
+                "Permite la ubicación en el navegador",
               )
             : t(
-                "Could not get a reliable position. Try again when you have signal.",
-                "Sin ubicación fiable. Reintenta con señal.",
+                "Location unavailable · try again",
+                "Ubicación no disponible · reintentar",
               ),
         );
       },
-      { enableHighAccuracy: true, maximumAge: 10000, timeout: 18000 },
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 18000 },
     );
-    tracking.current = true;
+    if (epoch === gpsEpoch.current) gpsWatch.current = id;
+    else navigator.geolocation.clearWatch(id);
   }, [requestVenues, stopGPS, t]);
 
   useEffect(() => {
-    const onHidden = () => {
-      if (document.hidden && gpsWatch.current !== null) stopGPS();
+    let disposed = false;
+    let observedPermission: PermissionStatus | undefined;
+    const permissionChanged = () => {
+      if (disposed || document.hidden) return;
+      if (observedPermission?.state !== "denied") {
+        // Granting the browser's first prompt must not restart its live watch.
+        if (observedPermission?.state === "prompt" && position.current)
+          stopGPS();
+        if (gpsWatch.current === null && !position.current) startGPS();
+        return;
+      }
+      stopGPS();
+      setGpsPhase("error");
+      setGpsStatus(
+        t("Location permission required", "Permiso de ubicación necesario"),
+      );
     };
-    document.addEventListener("visibilitychange", onHidden);
+    const checkPermission = async () => {
+      if (document.hidden) return;
+      setGpsPhase("starting");
+      try {
+        const permission = await navigator.permissions?.query({
+          name: "geolocation",
+        });
+        if (disposed || document.hidden) return;
+        observedPermission?.removeEventListener?.("change", permissionChanged);
+        observedPermission = permission;
+        observedPermission?.addEventListener?.("change", permissionChanged);
+        if (permission?.state !== "denied") {
+          if (gpsWatch.current === null && !position.current) startGPS();
+        } else {
+          stopGPS();
+          setGpsPhase("error");
+          setGpsStatus(
+            t(
+              "Location required to enter World",
+              "La ubicación es necesaria para entrar",
+            ),
+          );
+        }
+      } catch {
+        // Permissions API support is optional. Only the browser can grant GPS;
+        // entering World initiates its native prompt, never a fake app grant.
+        if (
+          !disposed &&
+          !document.hidden &&
+          gpsWatch.current === null &&
+          !position.current
+        )
+          startGPS();
+      }
+    };
+    const visibility = () => {
+      if (document.hidden) {
+        stopGPS();
+        setGpsPhase("paused");
+        setGpsStatus(t("World paused", "Mundo en pausa"));
+      } else void checkPermission();
+    };
+    document.addEventListener("visibilitychange", visibility);
+    void checkPermission();
     return () => {
-      document.removeEventListener("visibilitychange", onHidden);
-      gpsEpoch.current += 1;
-      tracking.current = false;
-      if (idleTimer.current !== null) clearTimeout(idleTimer.current);
-      if (gpsWatch.current !== null)
-        navigator.geolocation.clearWatch(gpsWatch.current);
-      gpsWatch.current = null;
+      disposed = true;
+      observedPermission?.removeEventListener?.("change", permissionChanged);
+      document.removeEventListener("visibilitychange", visibility);
+      stopGPS();
     };
-  }, [stopGPS]);
+  }, [startGPS, stopGPS, t]);
 
   const focusVenue = useCallback((venue: WorldVenue) => {
     setSelectedId(venue.id);
     setHelpOpen(false);
     setPlacesOpen(false);
-    map.current?.flyTo({
-      center: [venue.longitude, venue.latitude],
-      zoom: Math.max(16.2, map.current.getZoom()),
-      duration: 550,
-    });
   }, []);
 
   const zoom = (amount: number) => {
@@ -589,7 +747,8 @@ export function WorldExplorer({
       duration: 300,
     });
   };
-  const selectedDistance = selected ? distanceMetres(center, selected) : null;
+  const selectedDistance =
+    selected && center ? distanceMetres(center, selected) : null;
 
   const closeDetails = () => {
     if (selectedId) {
@@ -608,6 +767,47 @@ export function WorldExplorer({
     setPlacesOpen(false);
     placesButton.current?.focus();
   };
+
+  if (!center)
+    return (
+      <main className={styles.root}>
+        <section
+          className={styles.locationGate}
+          aria-label={t("World location", "Ubicación del mundo")}
+          data-pals-world-location-gate
+        >
+          <span className={styles.gateIcon} aria-hidden="true">
+            ◎
+          </span>
+          <h1>{t("Enter your World", "Entra en tu mundo")}</h1>
+          <p role="status" data-pals-gps-status>
+            {gpsStatus}
+          </p>
+          {gpsPhase !== "starting" && (
+            <button className={styles.primary} type="button" onClick={startGPS}>
+              {t("Try again", "Reintentar")}
+            </button>
+          )}
+          <Link className={styles.secondary} href={wardrobeHref}>
+            {t("Wardrobe", "Armario")}
+          </Link>
+          <nav
+            className={styles.gateLinks}
+            aria-label={t(
+              "World location information",
+              "Información de ubicación",
+            )}
+          >
+            <a href={`/${locale}/terms#akipals-world`}>
+              {t("Terms", "Condiciones")}
+            </a>
+            <a href={`/${locale}/privacy#akipals-world`}>
+              {t("Privacy", "Privacidad")}
+            </a>
+          </nav>
+        </section>
+      </main>
+    );
 
   return (
     <main
@@ -696,27 +896,6 @@ export function WorldExplorer({
               {gpsStatus}
             </p>
             <button
-              type="button"
-              className={
-                styles.locateButton +
-                (gpsActive ? " " + styles.locateActive : "")
-              }
-              aria-pressed={gpsRequested}
-              onClick={() =>
-                gpsWatch.current !== null ? stopGPS() : startGPS()
-              }
-              aria-label={
-                gpsRequested
-                  ? t("Stop location tracking", "Detener ubicación")
-                  : t("Locate my AkiPal", "Localizar mi AkiPal")
-              }
-            >
-              <span aria-hidden="true">{gpsRequested ? "■" : "◎"}</span>
-              <span className={styles.controlLabel}>
-                {gpsRequested ? t("Stop", "Parar") : t("Locate", "Localizar")}
-              </span>
-            </button>
-            <button
               ref={placesButton}
               type="button"
               className={styles.placesButton}
@@ -789,27 +968,22 @@ export function WorldExplorer({
                     <button
                       type="button"
                       className={styles.secondary}
-                      onClick={() => focusVenue(selected)}
+                      onClick={closeDetails}
                     >
-                      {t("Show on map", "Ver en el mapa")}
+                      {t("Back to World", "Volver al mundo")}
                     </button>
                   </div>
                 </>
               ) : (
                 <>
                   <span className={styles.eyebrow}>
-                    {gpsActive
-                      ? t("✦ Your live position", "✦ Tu posición")
-                      : t(
-                          "✦ Demo start · Fuengirola",
-                          "✦ Vista previa · Fuengirola",
-                        )}
+                    {t("✦ Your live position", "✦ Tu posición")}
                   </span>
                   <h2>{t("Map & location", "Mapa y ubicación")}</h2>
                   <p>
                     {t(
-                      "Locate starts private GPS. It stops when you leave or hide this screen. Map browsing never verifies a visit.",
-                      "Localizar activa el GPS privado. Se detiene al salir u ocultar esta pantalla. Explorar el mapa no verifica visitas.",
+                      "World uses foreground GPS. Drag to rotate; pinch to zoom. Visits are not verified here.",
+                      "World usa GPS en primer plano. Arrastra para girar; pellizca para ampliar. Aquí no se verifican visitas.",
                     )}
                   </p>
                   <div className={styles.ctas}>
@@ -862,13 +1036,13 @@ export function WorldExplorer({
               className={styles.secondary}
               onClick={() => {
                 lastCell.current = null;
-                void requestVenues(browseCenter);
+                if (position.current) void requestVenues(position.current);
               }}
             >
               {t("Refresh nearby places", "Actualizar lugares")}
             </button>
             <div className={styles.venueList}>
-              {orderedVenues.slice(0, 12).map((venue) => (
+              {orderedVenues.map((venue) => (
                 <button
                   key={venue.id}
                   type="button"
