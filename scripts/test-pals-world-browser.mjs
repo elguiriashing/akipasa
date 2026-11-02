@@ -166,7 +166,7 @@ const mapStyle = {
       type: "geojson",
       data: fixtures,
       attribution:
-        '<a href="https://maplibre.org/">MapLibre</a> · Disposable test map',
+        '<a href="https://openfreemap.org" target="_blank">OpenFreeMap</a> <a href="https://www.openmaptiles.org/" target="_blank">&copy; OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> · Disposable test map',
     },
   },
   layers: [
