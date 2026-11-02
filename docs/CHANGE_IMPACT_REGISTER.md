@@ -1,5 +1,13 @@
 # Change Impact Register
 
+## 2026-11-02 | AkiPasa logo-aligned selector road-trace rollout
+
+**Why.** The five selectors still visually featured the obsolete orange pin landing and large fire shape despite the 2026 road/sweep AkiPasa logo now used for the product.
+
+**Change.** Replace only AkiPasa's arrival and sustained ember treatment with four lightweight inline-SVG route traces, a short 2026 A/sweep mark reveal and restrained orange route glints. Preserve real asset logos, other products' product stories, local navigation state, deep links/referral data, focus, drag suppression, pointer events and touch targets. React and native static selectors use the same SVG path coordinates and shared CSS, with an intentional static reduced-motion fallback. This is client-side presentation only: no third-party assets, network calls, new tracking, DB migrations or auth changes.
+
+**Validation.** Updated React/static DOM tests assert no old Pasa pin actor and the correct SVG routes; selector browser suites validate the one-shot draw and continuous idle without assuming a disappeared pin. CI, preview and production Cloudflare verification remain release gates; screenshot-level aesthetics on mobile/desktop and OS reduced-motion still need explicit live checks. Rollback is source-only per site.
+
 ## 2026-11-01 | P0 Explore media binding and storefront fallback (#351)
 
 **Cause.** Public nearby venue pagination returns geography and claim metadata, not the media slots assigned in AkiHQ. Home/Map cards ignored real venue images and always painted black. Events already resolve explicit Explore media but could show broken URLs.
