@@ -2,7 +2,6 @@ import { build } from "esbuild";
 import { PNG } from "pngjs";
 import { chromium, expect } from "@playwright/test";
 import { createServer } from "node:http";
-import { randomUUID } from "node:crypto";
 import {
   mkdirSync,
   mkdtempSync,
@@ -13,6 +12,7 @@ import {
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { createRequire } from "node:module";
 
 const outputDir = resolve(
   process.env.PALS_IDENTITY_EVIDENCE || "test-results/pals-identity-browser",
@@ -35,6 +35,86 @@ await build({
   target: "node22",
 });
 const studio = await import(pathToFileURL(resolve(buildDir, "runtime.mjs")));
+const require = createRequire(import.meta.url);
+const { NodeNextResponse } = require("next/dist/server/base-http/node");
+const { sendResponse } = require("next/dist/server/send-response");
+await build({
+  entryPoints: ["next.config.ts"],
+  outfile: resolve(buildDir, "next-config.mjs"),
+  bundle: true,
+  format: "esm",
+  platform: "node",
+  define: { "process.env.NODE_ENV": '"production"' },
+});
+const { default: productionConfig } = await import(
+  pathToFileURL(resolve(buildDir, "next-config.mjs"))
+);
+const globalHeaderRule = (await productionConfig.headers()).find(
+  (rule) => rule.source === "/(.*)",
+);
+const globalCsp = globalHeaderRule.headers.find(
+  (header) => header.key === "Content-Security-Policy",
+).value;
+expect(globalCsp).not.toContain("'unsafe-eval'");
+expect(
+  globalCsp.split(";").find((rule) => rule.trim().startsWith("connect-src")),
+).not.toContain("blob:");
+const privateHeaderMatch = readFileSync("src/lib/pals/server.ts", "utf8").match(
+  /export const privateHeaders = (\{[\s\S]*?\n\});/,
+);
+if (!privateHeaderMatch)
+  throw Error("Actual privateHeaders fixture boundary needs review");
+await build({
+  entryPoints: ["src/app/pals/route.ts"],
+  outfile: resolve(buildDir, "actual-route.cjs"),
+  bundle: true,
+  format: "cjs",
+  platform: "node",
+  plugins: [
+    {
+      name: "disposable-auth-provider-only",
+      setup(builder) {
+        builder.onResolve({ filter: /^@\/lib\/pals\/server$/ }, () => ({
+          path: "authorized-fixture",
+          namespace: "pals-auth-fixture",
+        }));
+        builder.onLoad(
+          { filter: /.*/, namespace: "pals-auth-fixture" },
+          () => ({
+            contents: `export const privateHeaders=${privateHeaderMatch[1]};export async function previewAccess(){return {user:{id:"synthetic-fixture-user"},allowed:true}}`,
+            loader: "js",
+          }),
+        );
+      },
+    },
+  ],
+});
+const actualRoute = require(resolve(buildDir, "actual-route.cjs"));
+const rendererSource = readFileSync("src/components/pals/studio-3d.js", "utf8");
+const pluginRegistration = "loader.register(useEmbeddedImageLoader);";
+expect(rendererSource.split(pluginRegistration)).toHaveLength(2);
+const negativeRuntime = await build({
+  stdin: {
+    contents: rendererSource.replace(
+      pluginRegistration,
+      "/* Test-only original ImageBitmap transport negative control. */",
+    ),
+    resolveDir: resolve("src/components/pals"),
+    loader: "js",
+  },
+  bundle: true,
+  write: false,
+  minify: true,
+  treeShaking: true,
+  sourcemap: false,
+  format: "iife",
+  platform: "browser",
+  target: ["es2022", "chrome112", "safari16"],
+  legalComments: "none",
+});
+let negativeRenderer = false;
+const headerComposition = [];
+
 const icon = readFileSync("src/app/icon.svg");
 const creatorBundle = readFileSync("public/pals/runtime/creator.min.js");
 const avatarMeshes = Object.fromEntries(
@@ -45,6 +125,8 @@ const avatarMeshes = Object.fromEntries(
 );
 let saved = null;
 let saveWrites = 0;
+let identityReads = 0;
+let documentReads = 0;
 let starter = studio.DEFAULT_APPEARANCE;
 let browser;
 const server = createServer(async (request, response) => {
@@ -60,7 +142,11 @@ const server = createServer(async (request, response) => {
         "Content-Type": "application/javascript",
         "Cache-Control": "private, no-store",
       });
-      response.end(creatorBundle);
+      response.end(
+        negativeRenderer
+          ? negativeRuntime.outputFiles[0].contents
+          : creatorBundle,
+      );
       return;
     }
     const professionalMatch =
@@ -87,26 +173,27 @@ const server = createServer(async (request, response) => {
       return;
     }
     if (path === "/pals") {
-      const nonce = randomUUID().replaceAll("-", "");
-      response.writeHead(200, {
-        "Content-Type": "text/html; charset=utf-8",
-        "Cache-Control": "private, no-store",
-        "Content-Security-Policy":
-          "default-src 'none'; script-src 'nonce-" +
-          nonce +
-          "'; style-src 'nonce-" +
-          nonce +
-          "'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' blob:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
-      });
-      response.end(
-        studio.identityPreviewHtml(
-          nonce,
-          new URL(request.url, "http://127.0.0.1").searchParams.get("lang") ===
-            "es"
-            ? "es"
-            : "en",
-        ),
+      documentReads++;
+      const routeResponse = await actualRoute.GET(
+        new Request("http://" + request.headers.host + request.url),
       );
+      expect(routeResponse.headers.get("Content-Security-Policy")).toContain(
+        "connect-src 'self' blob:",
+      );
+      const nextResponse = new NodeNextResponse(response);
+      for (const header of globalHeaderRule.headers)
+        nextResponse.setHeader(header.key, header.value);
+      await sendResponse(
+        { method: request.method },
+        nextResponse,
+        routeResponse,
+      );
+      headerComposition.push({
+        actualRouteStatus: routeResponse.status,
+        routeNonceCsp: true,
+        servedCsp: response.getHeader("Content-Security-Policy"),
+        usesActualNextSendResponse: true,
+      });
       return;
     }
     if (path !== "/pals/identity") {
@@ -122,6 +209,7 @@ const server = createServer(async (request, response) => {
       response.end(JSON.stringify(payload));
     };
     if (request.method === "GET") {
+      identityReads++;
       const appearance = saved ?? starter;
       json(200, {
         appearance,
@@ -336,6 +424,15 @@ try {
   page.on("pageerror", (e) => failures.push(e.message));
   await page.addInitScript(() => {
     const raf = requestAnimationFrame;
+    window.__palsCspViolations = [];
+    document.addEventListener("securitypolicyviolation", (event) =>
+      window.__palsCspViolations.push({
+        directive: event.effectiveDirective,
+        blocked: event.blockedURI.startsWith("blob:")
+          ? "blob"
+          : event.blockedURI,
+      }),
+    );
     window.__palsFrames = 0;
     window.requestAnimationFrame = (callback) =>
       raf.call(window, (time) => {
@@ -343,8 +440,48 @@ try {
         callback(time);
       });
   });
-  await page.goto(origin + "/pals");
+  negativeRenderer = true;
+  starter = {
+    ...studio.DEFAULT_APPEARANCE,
+    model: "snow-v4",
+    bodyStyle: "masculine",
+  };
+  const negativeResponse = await page.goto(origin + "/pals");
+  expect(negativeResponse.headers()["content-security-policy"]).toBe(globalCsp);
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-ready",
+    "error",
+    { timeout: 30000 },
+  );
+  await expect(page.locator("#save")).toBeDisabled();
+  await expect(page.locator("#download")).toBeDisabled();
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        window.__palsCspViolations.some(
+          (x) => x.directive === "connect-src" && x.blocked === "blob",
+        ),
+      ),
+    )
+    .toBe(true);
+  await page.screenshot({
+    path: resolve(outputDir, "actual-next-csp-old-loader-negative.png"),
+    fullPage: true,
+  });
+  evidence.push({
+    test: "actual-Next-composed-production-CSP-negative",
+    originalImageBitmapTransport: true,
+    connectBlobAllowed: false,
+    actualSnowGlbFailed: true,
+    saveExportDisabled: true,
+    status: "PASS",
+  });
+  negativeRenderer = false;
+  starter = studio.DEFAULT_APPEARANCE;
+  const positiveResponse = await page.goto(origin + "/pals");
+  expect(positiveResponse.headers()["content-security-policy"]).toBe(globalCsp);
   await ready(page);
+  expect(await page.evaluate(() => window.__palsCspViolations)).toEqual([]);
   const worldLink = page.locator('a[href^="/pals/world"]');
   await expect(worldLink).toBeVisible();
   const linkBox = await worldLink.boundingBox();
@@ -401,6 +538,22 @@ try {
   await expect(page.locator("#download")).toBeDisabled();
   expect(saved.model).toBe("snow-v4");
   await page.unroute(rainAsset);
+  const beforeRetry = { saveWrites, identityReads, documentReads };
+  await page.locator("#retry-stage").click();
+  await ready(page);
+  await expect(page.locator("#avatar-stage")).toHaveAttribute(
+    "data-model-id",
+    "rain-v3",
+  );
+  await expect(page.locator("#save")).toBeEnabled();
+  await expect(page.locator("#download")).toBeEnabled();
+  expect({ saveWrites, identityReads, documentReads }).toEqual(beforeRetry);
+  evidence.push({
+    test: "native-Retry-recovers-actual-failed-GLB",
+    noProfileWritesOrAuthRefetch: true,
+    saveExportRecovered: true,
+    status: "PASS",
+  });
   await choose(page, "model", "snow-v4");
   await choose(page, "model", "rain-v3");
   await page.locator("#reset").click();
@@ -642,6 +795,9 @@ try {
       {
         status: "PASS",
         actualWebGL: true,
+        actualProductionNextHeaderComposition: true,
+        restrictiveGlobalCsp: globalCsp,
+        headerComposition,
         syntheticIdentityProvider: true,
         physicalDevice: false,
         evidence,

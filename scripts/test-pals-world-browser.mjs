@@ -279,6 +279,29 @@ async function setup(context) {
   await context.addInitScript(() => {
     window.palsCspViolations = [];
     window.palsDecodedImages = [];
+    // The scoped loader now decodes embedded PNGs as real HTML images under
+    // img-src. Observe successful native loads without substituting pixels.
+    const createElementNS = document.createElementNS.bind(document);
+    document.createElementNS = function (...args) {
+      const image = createElementNS(...args);
+      if (String(args[1]).toLowerCase() === "img")
+        image.addEventListener(
+          "load",
+          () => {
+            if (
+              image.currentSrc.startsWith("blob:") ||
+              image.src.startsWith("blob:")
+            )
+              window.palsDecodedImages.push({
+                width: image.naturalWidth,
+                height: image.naturalHeight,
+                transport: "HTMLImageElement",
+              });
+          },
+          { once: true },
+        );
+      return image;
+    };
     const decodeImage = window.createImageBitmap.bind(window);
     window.createImageBitmap = async (...args) => {
       const image = await decodeImage(...args);
@@ -498,7 +521,7 @@ try {
     assert.ok(
       decodedImages.length > 0 &&
         decodedImages.every((image) => image.width > 0 && image.height > 0),
-      "Native ImageBitmap decoding completes for embedded model textures",
+      "Native image decoding completes for embedded model textures",
     );
     await expect(
       page.getByRole("button", { name: /TEST ONLY Music Room/ }).first(),
