@@ -113,13 +113,20 @@ it("assigns each product its own decorative opening independently from its idle 
   products.forEach((product, index) => {
     const card = screen.getByRole("link", { name: names[index] });
     expect(card).toHaveAttribute("data-arrival", product);
-    expect(card.querySelector(".aks-selector__arrival")).toHaveAttribute(
-      "aria-hidden",
-      "true",
-    );
-    expect(
-      card.querySelector(".aks-selector__arrival-actor"),
-    ).toBeInTheDocument();
+    if (product === "pasa") {
+      // The new road-mark reveal replaces the old pin-drop actor.
+      expect(card.querySelector(".aks-selector__arrival")).not.toBeInTheDocument();
+      expect(card.querySelectorAll(".aks-selector__pasa-roads path")).toHaveLength(4);
+      expect(card.querySelectorAll(".aks-selector__pasa-runners path")).toHaveLength(4);
+      expect(card.querySelectorAll(".aks-selector__pasa-mark path")).toHaveLength(2);
+    } else {
+      expect(card.querySelector(".aks-selector__arrival")).toHaveAttribute(
+        "aria-hidden",
+        "true",
+      );
+      expect(card.querySelector(".aks-selector__arrival-actor")).toBeInTheDocument();
+      expect(card.querySelector(".aks-selector__pasa-routes")).not.toBeInTheDocument();
+    }
     expect(card.querySelector(".aks-selector__sustain")).toBeInTheDocument();
   });
   expect(container.querySelectorAll("[data-energized=true]")).toHaveLength(1);

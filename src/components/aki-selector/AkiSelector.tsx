@@ -48,6 +48,37 @@ export type AkiSelectorProps = {
   showBrowseArrows?: boolean;
 };
 
+/** Four luminous roads converge on the actual 2026 AkiPasa road-mark. */
+function PasaRoadTrace() {
+  return (
+    <svg
+      className="aks-selector__pasa-routes"
+      viewBox="0 0 400 360"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <g className="aks-selector__pasa-roads">
+        <path pathLength="100" d="M10 273 C94 266 70 168 125 146 S179 169 200 144" />
+        <path pathLength="100" d="M390 280 C310 276 342 188 274 176 S228 157 200 144" />
+        <path pathLength="100" d="M54 14 C91 50 99 68 136 76 S181 111 200 144" />
+        <path pathLength="100" d="M355 12 C294 38 301 76 264 90 S217 120 200 144" />
+      </g>
+      <g className="aks-selector__pasa-runners">
+        <path pathLength="100" d="M10 273 C94 266 70 168 125 146 S179 169 200 144" />
+        <path pathLength="100" d="M390 280 C310 276 342 188 274 176 S228 157 200 144" />
+        <path pathLength="100" d="M54 14 C91 50 99 68 136 76 S181 111 200 144" />
+        <path pathLength="100" d="M355 12 C294 38 301 76 264 90 S217 120 200 144" />
+      </g>
+      <g className="aks-selector__pasa-mark">
+        <path pathLength="100" d="M151 242 L189 139 Q200 117 211 139 L249 242" />
+        <path pathLength="100" d="M177 200 Q197 173 216 189 Q231 207 248 211" />
+        <circle cx="266" cy="213" r="4" />
+      </g>
+    </svg>
+  );
+}
+
 function nearestEnabled(
   options: readonly AkiSelectorOption[],
   currentIndex: number,
@@ -315,8 +346,9 @@ export function AkiSelector({
                     />
                   ))}
                 </span>
+                {option.arrival === "pasa" && <PasaRoadTrace />}
               </span>
-              {option.arrival && (
+              {option.arrival && option.arrival !== "pasa" && (
                 <span className="aks-selector__arrival" aria-hidden="true">
                   <span className="aks-selector__arrival-trail" />
                   <span className="aks-selector__arrival-actor" />

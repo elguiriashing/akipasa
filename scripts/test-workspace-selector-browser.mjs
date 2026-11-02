@@ -153,37 +153,58 @@ try {
                   .evaluate((node) => +getComputedStyle(node).opacity),
               )
               .toBeGreaterThan(0.6);
-            const story = page.locator(
-              '[data-energized="true"] .aks-selector__arrival-actor',
-            );
-            await expect
-              .poll(() =>
-                story.evaluate((node) => +getComputedStyle(node).opacity),
-              )
-              .toBeGreaterThan(0.4);
-            expect(
-              await story.evaluate(
+            if (name === "pasa") {
+              const route = page.locator(
+                '[data-energized="true"] .aks-selector__pasa-roads path',
+              ).first();
+              await expect.poll(() =>
+                route.evaluate((node) => +getComputedStyle(node).opacity),
+              ).toBeGreaterThan(0.2);
+              expect(await route.evaluate(
                 (node) => getComputedStyle(node).animationIterationCount,
-              ),
-            ).toBe("1");
-            await scene.screenshot({
-              path: path.join(output, `arrival-${name}.png`),
-            });
-            await expect
-              .poll(() =>
-                story.evaluate((node) => +getComputedStyle(node).opacity),
-              )
-              .toBe(0);
-            await expect
-              .poll(() =>
-                page
-                  .locator('[data-energized="true"] .aks-selector__sustain')
-                  .evaluate((node) => +getComputedStyle(node).opacity),
-              )
-              .toBe(1);
-            await scene.screenshot({
-              path: path.join(output, `material-${name}.png`),
-            });
+              )).toBe("1");
+              await scene.screenshot({
+                path: path.join(output, "arrival-pasa.png"),
+              });
+              await expect.poll(() =>
+                route.evaluate((node) => parseFloat(getComputedStyle(node).strokeDashoffset)),
+              ).toBe(0);
+              await scene.screenshot({
+                path: path.join(output, "material-pasa.png"),
+              });
+            } else {
+              const story = page.locator(
+                '[data-energized="true"] .aks-selector__arrival-actor',
+              );
+              await expect
+                .poll(() =>
+                  story.evaluate((node) => +getComputedStyle(node).opacity),
+                )
+                .toBeGreaterThan(0.4);
+              expect(
+                await story.evaluate(
+                  (node) => getComputedStyle(node).animationIterationCount,
+                ),
+              ).toBe("1");
+              await scene.screenshot({
+                path: path.join(output, `arrival-${name}.png`),
+              });
+              await expect
+                .poll(() =>
+                  story.evaluate((node) => +getComputedStyle(node).opacity),
+                )
+                .toBe(0);
+              await expect
+                .poll(() =>
+                  page
+                    .locator('[data-energized="true"] .aks-selector__sustain')
+                    .evaluate((node) => +getComputedStyle(node).opacity),
+                )
+                .toBe(1);
+              await scene.screenshot({
+                path: path.join(output, `material-${name}.png`),
+              });
+            }
             await page.keyboard.press("ArrowRight");
           }
           // Interrupted transitions must converge to the last input.
