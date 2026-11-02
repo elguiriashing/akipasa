@@ -10,12 +10,22 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false, noarchive: true },
 };
 
-export default async function AkiPalsWorldPage() {
+export default async function AkiPalsWorldPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ lang?: string }>;
+}) {
+  const locale = (await searchParams)?.lang === "es" ? "es" : "en";
   // The prototype is not linked to public navigation and cannot be rendered
   // to a guest or an account outside the existing AkiPals preview allowlist.
   const access = await previewAccess();
-  if (!access.user) redirect("/en/auth?next=%2Fpals%2Fworld");
+  if (!access.user)
+    redirect(
+      locale === "es"
+        ? "/es/auth?next=%2Fpals%2Fworld%3Flang%3Des"
+        : "/en/auth?next=%2Fpals%2Fworld",
+    );
   if (!access.allowed) notFound();
 
-  return <WorldExplorer styleUrl={config.mapStyleUrl} />;
+  return <WorldExplorer styleUrl={config.mapStyleUrl} locale={locale} />;
 }

@@ -15,7 +15,9 @@ import { pathToFileURL } from "node:url";
 import { createRequire } from "node:module";
 
 // Actual World, MapLibre, Three.js and GLB meshes. Only data and GPS are fixtures.
-const output = resolve("test-results/pals-world-browser");
+const output = resolve(
+  process.env.PALS_WORLD_EVIDENCE || "test-results/pals-world-browser",
+);
 const temp = mkdtempSync(resolve(tmpdir(), "pals-world-"));
 const require = createRequire(import.meta.url);
 mkdirSync(output, { recursive: true });
@@ -59,7 +61,7 @@ assert.doesNotMatch(
 await build({
   stdin: {
     contents:
-      'import React from "react"; import {createRoot} from "react-dom/client"; import {WorldExplorer} from "./src/components/pals/WorldExplorer"; const root=createRoot(document.getElementById("root")); window.unmountWorld=()=>root.unmount(); root.render(React.createElement(WorldExplorer,{styleUrl:"/style.json"}));',
+      'import React from "react"; import {createRoot} from "react-dom/client"; import {WorldExplorer} from "./src/components/pals/WorldExplorer"; const root=createRoot(document.getElementById("root")); window.unmountWorld=()=>root.unmount(); root.render(React.createElement(WorldExplorer,{styleUrl:"/style.json",locale:new URLSearchParams(location.search).get("lang")==="es"?"es":"en"}));',
     resolveDir: process.cwd(),
     loader: "tsx",
   },
@@ -353,39 +355,47 @@ async function setup(context) {
   });
 }
 
-async function projectedPins(page) {
-  return page.evaluate((venues) => {
-    const map = window.palsFixtureMap;
-    const mapBox = map.getContainer().getBoundingClientRect();
-    return venues.map((venue) => {
-      const marker = [...document.querySelectorAll(".maplibregl-marker")].find(
-        (node) => node.getAttribute("aria-label") === "Explore " + venue.name,
-      );
-      if (!marker) return { id: venue.id, error: 99999 };
-      const point = map.project([venue.longitude, venue.latitude]);
-      const box = marker.getBoundingClientRect();
-      // The stem is an in-flow ::after flex child, so its foot is included in
-      // this bottom-centre anchor. Shadows/3D face styling do not move it.
-      return {
-        id: venue.id,
-        position: getComputedStyle(marker).position,
-        stemPosition: getComputedStyle(marker, "::after").position,
-        error: Math.max(
-          Math.abs(box.left + box.width / 2 - (mapBox.left + point.x)),
-          Math.abs(box.bottom - (mapBox.top + point.y)),
-        ),
-      };
-    });
-  }, fixtureVenues);
+async function projectedPins(page, locale = "en") {
+  return page.evaluate(
+    ({ venues, prefix }) => {
+      const map = window.palsFixtureMap;
+      const mapBox = map.getContainer().getBoundingClientRect();
+      return venues.map((venue) => {
+        const marker = [
+          ...document.querySelectorAll(".maplibregl-marker"),
+        ].find(
+          (node) => node.getAttribute("aria-label") === prefix + venue.name,
+        );
+        if (!marker) return { id: venue.id, error: 99999 };
+        const point = map.project([venue.longitude, venue.latitude]);
+        const box = marker.getBoundingClientRect();
+        // The stem is an in-flow ::after flex child, so its foot is included in
+        // this bottom-centre anchor. Shadows/3D face styling do not move it.
+        return {
+          id: venue.id,
+          position: getComputedStyle(marker).position,
+          stemPosition: getComputedStyle(marker, "::after").position,
+          error: Math.max(
+            Math.abs(box.left + box.width / 2 - (mapBox.left + point.x)),
+            Math.abs(box.bottom - (mapBox.top + point.y)),
+          ),
+        };
+      });
+    },
+    {
+      venues: fixtureVenues,
+      prefix: locale === "es" ? "Explorar " : "Explore ",
+    },
+  );
 }
 
-async function assertProjectedPins(page, step) {
+async function assertProjectedPins(page, step, locale = "en") {
   await expect
     .poll(async () =>
-      Math.max(...(await projectedPins(page)).map((p) => p.error)),
+      Math.max(...(await projectedPins(page, locale)).map((p) => p.error)),
     )
     .toBeLessThan(1.6);
-  const pins = await projectedPins(page);
+  const pins = await projectedPins(page, locale);
   for (const pin of pins) {
     assert.equal(
       pin.position,
@@ -614,14 +624,14 @@ try {
     }
     await page.getByRole("button", { name: "About AkiWorld" }).click();
     await expect(
-      page.getByRole("heading", { name: "Your city. Your adventure." }),
+      page.getByRole("heading", { name: "Map & location" }),
     ).toBeVisible();
     const helpInk = await page
-      .getByRole("heading", { name: "Your city. Your adventure." })
+      .getByRole("heading", { name: "Map & location" })
       .evaluate((node) => getComputedStyle(node).color);
     assert.equal(
       helpInk,
-      "rgb(255, 241, 230)",
+      "rgb(255, 244, 233)",
       "World cards set readable ink above global heading rules",
     );
     await page.keyboard.press("Escape");
@@ -646,7 +656,7 @@ try {
     ).toBeVisible();
     await page.evaluate(() => window.palsGPS.emit(36.54311, -4.62312));
     await expect(page.locator("[data-pals-gps-status]")).toContainText(
-      "Following you",
+      "GPS ±6 m · private",
     );
     await expect
       .poll(() =>
@@ -700,7 +710,7 @@ try {
     );
     await page.evaluate(() => window.palsGPS.emit(36.54311, -4.62312, 500));
     await expect(page.locator("[data-pals-gps-status]")).toContainText(
-      "too imprecise",
+      "imprecise",
     );
     await page.evaluate(() => window.palsGPS.emit(36.54311, -4.62312));
     await page.evaluate(() => window.palsGPS.hide());
@@ -760,6 +770,133 @@ try {
     });
     await context.close();
   }
+  // The night-game HUD is intentional under both OS preferences. This is
+  // actual localized World/MapLibre/WebGL, not a claimed separate light palette.
+  for (const locale of ["en", "es"])
+    for (const theme of ["dark", "light"])
+      for (const width of [390, 820, 1440]) {
+        const context = await browser.newContext({
+          viewport: { width, height: 900 },
+          reducedMotion: "reduce",
+          colorScheme: theme,
+        });
+        await setup(context);
+        const page = await context.newPage(),
+          es = locale === "es";
+        await page.route("**/pals/identity", (r) =>
+          r.fulfill({
+            json: {
+              appearance: {
+                ...DEFAULT_APPEARANCE,
+                model: "classic-v2",
+                bodyStyle: es ? "masculine" : "feminine",
+              },
+              saved: true,
+            },
+          }),
+        );
+        await page.goto(origin + "/pals/world?lang=" + locale);
+        await expect(page.locator("[data-pals-world-avatar]")).toHaveAttribute(
+          "data-rendered",
+          "true",
+          { timeout: 45000 },
+        );
+        await expect(page.locator("[data-pals-world-avatar]")).toHaveAttribute(
+          "data-model-id",
+          es ? "snow-v4" : "rain-v3",
+        );
+        assert.equal(await page.evaluate(() => window.palsGPS.state.calls), 0);
+        const projected = await assertProjectedPins(
+          page,
+          "localized night HUD",
+          locale,
+        );
+        const nearby = page.getByRole("region", {
+          name: es ? "Lista de lugares cercanos" : "Nearby venue list",
+          exact: true,
+        });
+        await expect(nearby).not.toBeVisible();
+        await page
+          .getByRole("button", {
+            name: es ? "Lugares cercanos" : "Nearby places",
+            exact: true,
+          })
+          .click();
+        await expect(nearby).toBeVisible();
+        await page
+          .getByRole("button", {
+            name: es ? "Cerrar lugares cercanos" : "Close nearby places",
+            exact: true,
+          })
+          .click();
+        await expect(nearby).not.toBeVisible();
+        const locate = page.getByRole("button", {
+          name: es ? "Localizar mi AkiPal" : "Locate my AkiPal",
+          exact: true,
+        });
+        await locate.click();
+        await page.evaluate(() => window.palsGPS.emit(36.54311, -4.62312));
+        await expect(page.locator("[data-pals-gps-status]")).toContainText(
+          es ? "privado" : "private",
+        );
+        await page
+          .getByRole("button", {
+            name: es ? "Detener ubicación" : "Stop location tracking",
+            exact: true,
+          })
+          .click();
+        await expect(page.locator("[data-pals-gps-status]")).toContainText(
+          es ? "Ubicación desactivada" : "Location off",
+        );
+        await locate.click();
+        await page.evaluate(() => window.palsGPS.deny());
+        await expect(page.locator("[data-pals-gps-status]")).toContainText(
+          es ? "Ubicación denegada" : "Location denied",
+        );
+        await page
+          .getByRole("button", {
+            name: (es ? "Explorar " : "Explore ") + "TEST ONLY Music Room",
+            exact: true,
+          })
+          .click();
+        const venue = page.getByRole("link", {
+          name: es ? "Ver lugar ↗" : "View place ↗",
+          exact: true,
+        });
+        await expect(venue).toHaveAttribute(
+          "href",
+          `/${locale}/venues/fixture-music-room`,
+        );
+        await page.screenshot({
+          path: resolve(output, `world-${locale}-${theme}-${width}.png`),
+          fullPage: true,
+        });
+        assert.equal(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= innerWidth + 1,
+          ),
+          true,
+        );
+        await Promise.all([
+          page.waitForURL(`**/${locale}/venues/fixture-music-room`),
+          venue.click(),
+        ]);
+        receipt.push({
+          locale,
+          osPreference: theme,
+          visualPalette: "intentional fixed night game HUD",
+          width,
+          legacySavedModelReadOnly: true,
+          modelId: es ? "snow-v4" : "rain-v3",
+          projected,
+          nearbyDefaultClosed: true,
+          actualOptInStopDenied: true,
+          nativeVenueHref: true,
+          realMapLibre: true,
+          realGLB: true,
+        });
+        await context.close();
+      }
   for (const kind of ["venues", "avatar"]) {
     const context = await browser.newContext({
       viewport: { width: 390, height: 844 },

@@ -1,4 +1,4 @@
-/* Shared World/Wardrobe renderer: licensed authored GLBs, plus saved classic looks. */
+/* Shared World/Wardrobe renderer: authored Rain/Snow with read-only legacy projection. */
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -71,6 +71,169 @@ export function assertProfessionalTextures(gltf) {
   });
   if (expected.size < 4 || loaded.size !== expected.size)
     throw new Error("Authored character textures did not finish loading");
+}
+
+/** Tint named authored surfaces in the shader: original UVs, normal maps,
+ * texture images and per-pixel shading remain intact. Eye dye is iris-only. */
+function dyeMaterial(material, color, irisOnly = false) {
+  let dye = material.userData.akipalsDye;
+  if (!dye) {
+    dye = { value: new THREE.Color(color) };
+    material.userData.akipalsDye = dye;
+    material.onBeforeCompile = (shader) => {
+      shader.uniforms.akipalsDye = dye;
+      shader.fragmentShader =
+        "uniform vec3 akipalsDye;\n" +
+        shader.fragmentShader.replace(
+          "#include <map_fragment>",
+          `#include <map_fragment>
+        float akiLight = dot(diffuseColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+        vec3 akiDyed = akipalsDye * clamp(0.3 + akiLight * 1.5, 0.2, 1.25);
+        ${
+          irisOnly
+            ? `float akiChroma = max(max(diffuseColor.r,diffuseColor.g),diffuseColor.b)-min(min(diffuseColor.r,diffuseColor.g),diffuseColor.b);
+        float akiIris = smoothstep(0.01,0.05,akiLight)*(1.0-smoothstep(0.4,0.7,akiLight))*smoothstep(0.015,0.06,akiChroma);
+        diffuseColor.rgb = mix(diffuseColor.rgb, akiDyed, akiIris);`
+            : "diffuseColor.rgb = akiDyed;"
+        }`,
+        );
+    };
+    material.customProgramCacheKey = () =>
+      irisOnly ? "akipals-authored-iris-v1" : "akipals-authored-dye-v1";
+    material.needsUpdate = true;
+  }
+  dye.value.set(color);
+}
+
+/** Geometry is always rebuilt from the authored rest positions, never the last
+ * selected shape. No procedural hair/body is substituted for Rain or Snow. */
+export function applyProfessionalAppearance(model, appearance, modelId) {
+  const rain = modelId === "rain-v3";
+  const supportedHair = rain
+    ? ["crop", "quiff", "long", "bun"]
+    : ["crop", "quiff"];
+  const hair = supportedHair.includes(appearance.hair)
+    ? appearance.hair
+    : rain
+      ? "long"
+      : "crop";
+  const top = ["tee", "hoodie", "jacket", "sweater"].includes(appearance.top)
+    ? appearance.top
+    : "tee";
+  model.traverse((node) => {
+    if (!node.isMesh) return;
+    const name = node.name.toLowerCase();
+    const position = node.geometry.attributes.position;
+    if (!node.geometry.userData.akipalsRestPositions)
+      node.geometry.userData.akipalsRestPositions = position.array.slice();
+    const rest = node.geometry.userData.akipalsRestPositions;
+    position.array.set(rest);
+    node.visible = true;
+    if (rain && name.includes("hair_ponytail")) {
+      node.visible = hair === "long" || hair === "bun";
+      if (hair === "bun")
+        for (let i = 0; i < position.count; i++) {
+          position.setXYZ(
+            i,
+            rest[i * 3] * 0.85,
+            1.64 + (rest[i * 3 + 1] - 1.72) * 0.85,
+            0.03 + (rest[i * 3 + 2] - 0.04) * 0.22,
+          );
+        }
+    }
+    if (rain && name.includes("hairband")) {
+      node.visible = hair === "long" || hair === "bun";
+      if (hair === "bun")
+        for (let i = 0; i < position.count; i++) {
+          position.setY(i, rest[i * 3 + 1] - 0.08);
+          position.setZ(i, rest[i * 3 + 2] - 0.015);
+        }
+    }
+    if (rain && name.includes("hair_strand")) {
+      node.visible = hair !== "crop";
+      if (hair === "quiff")
+        for (let i = 0; i < position.count; i++) {
+          const lift = Math.max(0, (rest[i * 3 + 1] - 1.59) / 0.15) * 0.035;
+          position.setY(i, rest[i * 3 + 1] + lift);
+        }
+    }
+    if (!rain && name.includes("hair_base") && hair === "crop") {
+      for (let i = 0; i < position.count; i++) {
+        const y = rest[i * 3 + 1];
+        if (y > 1.73) position.setY(i, 1.73 + (y - 1.73) * 0.5);
+      }
+    }
+    if (rain && name.includes("scarf"))
+      node.visible = top === "hoodie" || top === "sweater";
+    if (
+      (rain && name.includes("rain-top")) ||
+      (!rain && name.includes("snow-shirt"))
+    ) {
+      for (let i = 0; i < position.count; i++) {
+        const x = rest[i * 3],
+          y = rest[i * 3 + 1],
+          z = rest[i * 3 + 2];
+        const hem = Math.max(0, Math.min(1, (1.12 - y) / 0.25));
+        const relaxed =
+          top === "sweater" ? 1.045 : top === "jacket" ? 1.025 : 1;
+        const length =
+          top === "jacket" ? 0.075 : !rain && top === "hoodie" ? 0.045 : 0;
+        const hemEase = length > 0 ? hem * 0.18 : 0;
+        const depthCenter = rain ? 0.2 : 0;
+        position.setXYZ(
+          i,
+          x * (relaxed + hemEase),
+          y - hem * length,
+          depthCenter +
+            (z - depthCenter) * (1 + (relaxed - 1) * 0.6 + hemEase * 1.8),
+        );
+      }
+    }
+    position.needsUpdate = true;
+    node.geometry.computeVertexNormals();
+    node.geometry.computeBoundingBox();
+    node.geometry.computeBoundingSphere();
+    const materials = Array.isArray(node.material)
+      ? node.material
+      : [node.material];
+    for (const material of materials) {
+      const mat = material.name.toLowerCase();
+      if (/\.hair\./.test(mat) || /\.eyebrows\./.test(mat))
+        dyeMaterial(material, HAIR[appearance.hairColor] ?? HAIR.espresso);
+      else if (/\.(top|shirt|scarf|hairband)\./.test(mat))
+        dyeMaterial(material, COLORS[appearance.topColor] ?? COLORS.orange);
+      else if (/\.(jeans|pants)\./.test(mat))
+        dyeMaterial(material, COLORS[appearance.bottomColor] ?? COLORS.ink);
+      else if (/\.(shoes|shoe)\./.test(mat))
+        dyeMaterial(material, COLORS[appearance.shoeColor] ?? COLORS.cream);
+      else if (/\.(body|skin)\.mobile/.test(mat))
+        dyeMaterial(material, SKINS[appearance.skin] ?? SKINS.warm);
+      else if (/\.eyes\.mobile/.test(mat))
+        dyeMaterial(material, EYES[appearance.eyeColor] ?? EYES.brown, true);
+    }
+  });
+  return { hair, top };
+}
+
+/** The authored characters have different head depth offsets. Portrait framing
+ * targets the actual head/shoulder region rather than zooming at the torso. */
+export function authoredStageFraming(mode, modelId, heightScale = 1) {
+  if (mode === "head") {
+    const z = (modelId === "rain-v3" ? 0.2 : 0.02) * heightScale;
+    const y = 1.56 * heightScale;
+    return {
+      target: [0, y, z],
+      position: [0, y + 0.035, z + 1.3],
+      minDistance: 0.8,
+      maxDistance: 2.1,
+    };
+  }
+  return {
+    target: [0, 1.04, 0],
+    position: [0, 1.34, 3.6],
+    minDistance: 2.05,
+    maxDistance: 4.8,
+  };
 }
 
 /** Give each mounted stage its own GPU resources. The bounded source cache can
@@ -1097,7 +1260,7 @@ function create(container, { mode = "studio" } = {}) {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(isWorld ? 39 : 33, 1, 0.05, 90);
   // Reserve breathing room for the stage badge and bottom touch controls.
-  camera.position.set(0, isWorld ? 1.23 : 1.34, isWorld ? 2.62 : 4.5);
+  camera.position.set(0, isWorld ? 1.23 : 1.34, isWorld ? 2.62 : 3.6);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.target.set(0, isWorld ? 0.99 : 1.04, 0);
   controls.enabled = !isWorld;
@@ -1180,6 +1343,7 @@ function create(container, { mode = "studio" } = {}) {
     active = true,
     contextLost = false,
     raf = 0;
+  let focusMode = "full";
   let faceType = null,
     previousStyle = null,
     requestedStyle = null;
@@ -1269,9 +1433,14 @@ function create(container, { mode = "studio" } = {}) {
   resize();
   async function setAppearance(a) {
     requestedStyle = JSON.stringify(a);
-    // Missing model identifies a real pre-upgrade save. Never reinterpret that
-    // person's selected hair/clothing as a different authored character.
-    const modelId = a.model ?? "classic-v2";
+    // Project legacy saves without rewriting them. The user-visible stage is
+    // always an authored character, never the former procedural placeholder.
+    const modelId =
+      !a.model || a.model === "classic-v2"
+        ? a.bodyStyle === "masculine"
+          ? "snow-v4"
+          : "rain-v3"
+        : a.model;
     const professionalUrl = Object.hasOwn(PROFESSIONAL_MODELS, modelId)
       ? PROFESSIONAL_MODELS[modelId]
       : undefined;
@@ -1316,8 +1485,17 @@ function create(container, { mode = "studio" } = {}) {
         clearGroup(faceDetails);
         base = cloth = hair = faceDetails = null;
         head.visible = false;
-        // Rain and Snow retain their authored face, hair and outfit. Uniform
-        // height is the sole supported geometry adjustment for these assets.
+        const fitted = applyProfessionalAppearance(professional, a, modelId);
+        container.dataset.authoredHair = fitted.hair;
+        container.dataset.authoredTop = fitted.top;
+        container.dataset.paletteSignature = [
+          a.skin,
+          a.hairColor,
+          a.eyeColor,
+          a.topColor,
+          a.bottomColor ?? "ink",
+          a.shoeColor ?? "cream",
+        ].join(":");
         const scale =
           a.height === "tall" ? 1.055 : a.height === "short" ? 0.94 : 1;
         root.scale.setScalar(scale);
@@ -1376,7 +1554,15 @@ function create(container, { mode = "studio" } = {}) {
         worldBaseY = a.height === "short" ? 0.01 : 0;
       }
       if (!active || contextLost || number !== loadNumber) return;
+      root.visible = true;
       root.position.y = worldBaseY;
+      if (!isWorld && focusMode === "head") {
+        const framing = authoredStageFraming("head", faceType, root.scale.y);
+        const shift = new THREE.Vector3(...framing.target).sub(controls.target);
+        controls.target.add(shift);
+        camera.position.add(shift);
+        controls.update();
+      }
       previousStyle = JSON.stringify(a);
       renderer.render(scene, camera);
       requestRender();
@@ -1388,6 +1574,8 @@ function create(container, { mode = "studio" } = {}) {
       );
     } catch (error) {
       if (active && number === loadNumber) {
+        root.visible = false;
+        renderer.render(scene, camera);
         container.dataset.rendered = "error";
         container.dispatchEvent(
           new CustomEvent("akipals:error", {
@@ -1409,6 +1597,31 @@ function create(container, { mode = "studio" } = {}) {
     },
     rotate(angle = Math.PI / 4) {
       camera.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
+      controls.update();
+      requestRender();
+    },
+    focus(mode) {
+      if (isWorld || !["head", "full"].includes(mode) || mode === focusMode)
+        return;
+      focusMode = mode;
+      const framing = authoredStageFraming(mode, faceType, root.scale.y);
+      controls.target.set(...framing.target);
+      camera.position.set(...framing.position);
+      controls.minDistance = framing.minDistance;
+      controls.maxDistance = framing.maxDistance;
+      container.dataset.focus = mode;
+      controls.update();
+      requestRender();
+    },
+    zoom(direction = 1) {
+      if (!Number.isFinite(direction)) return;
+      const offset = camera.position.clone().sub(controls.target);
+      const next = THREE.MathUtils.clamp(
+        offset.length() * (direction > 0 ? 0.85 : 1.18),
+        controls.minDistance,
+        controls.maxDistance,
+      );
+      camera.position.copy(controls.target).add(offset.setLength(next));
       controls.update();
       requestRender();
     },

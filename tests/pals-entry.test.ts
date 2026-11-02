@@ -54,14 +54,16 @@ describe("AkiPals identity entrance and localization", () => {
     const result = identityPreviewHtml("testnonce", "es");
     expect(result).toContain('<html lang="es">');
     expect(result).toContain('href="/es"');
-    expect(result).toContain("Guardar mi estilo");
-    expect(result).toContain('data-tab="Face" role="tab">Rostro</button>');
+    expect(result).toMatch(/id="save"[^>]*>Guardar<\/button>/);
+    expect(result).toMatch(/data-tab="Face"[^>]*>[\s\S]*?<span>Rostro<\/span>/);
     expect(result).toContain('"bodyStyle":["feminine","masculine"]');
     expect(result).not.toContain('data-tab="Rostro"');
-    expect(result).toContain('href="/pals/world"');
-    expect(result).toContain("Tu armario.");
-    expect(result).toContain("Entrar en el prototipo privado de AkiPals World");
-    expect(identityPreviewHtml("testnonce")).toContain("Save my look");
-    expect(identityPreviewHtml("testnonce")).toContain("Your Wardrobe.");
+    expect(result).toContain('href="/pals/world?lang=es"');
+    expect(result).toContain("<h1>Armario</h1>");
+    expect(result).toContain("Entrar en AkiWorld");
+    expect(identityPreviewHtml("testnonce")).toMatch(
+      /id="save"[^>]*>Save<\/button>/,
+    );
+    expect(identityPreviewHtml("testnonce")).toContain("<h1>Wardrobe</h1>");
   });
 });

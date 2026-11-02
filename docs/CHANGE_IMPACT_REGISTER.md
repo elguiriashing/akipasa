@@ -5563,3 +5563,41 @@ exact-head CI and compiled browser review are recorded separately before release
 No signed Android/Play/iOS release or installed-device icon refresh is claimed;
 native launcher/notification resources require a newly signed package. Source
 revert and preceding app/Worker version are the rollback, with no data migration.
+
+## 2026-11-02 | Authored-only AkiPals and visual game interface
+
+- Owner resumes this bounded AkiPals update: Rain/Snow only; actual authored
+  hair/top variants and skin/hair/iris/top/trouser/shoe palettes; sparse Wardrobe
+  and map-first World. No blanket private347 merge or unrelated redesign.
+- Preserve Classic JSON compatibility and inventory history; presentation-only
+  projection replaces the old visible model without automatic profile writes.
+  Colour fields are additive bounded defaults within existing4096-byte storage.
+- Shared renderer version invalidates old browser asset URLs on both surfaces.
+  Existing GLB licenses/credits, textures and UVs remain. Variants are bounded
+  authored-mesh changes, not new rigged animation or unsupported wardrobe claims.
+- Character preview uses full/portrait camera modes and clear touch controls;
+  World keeps private access, live venue coordinates, explicit foreground GPS,
+  Stop, cancellation and dismissible real-venue controls. EN/ES preserved.
+- No database migration, customer backfill, billing, rewards, external AI or
+  Pokémon assets. Missing graphics do not silently fall back to Classic.
+- Verify actual rendered assets/fit/colour changes, private save/cancel/reload,
+  both languages/OS preferences/viewports and native World map interactions. Full check,
+  strict audit, exact-head CI and automatic deployment identity required.
+  Physical Android is owner testing after live; no device acceptance fabricated.
+- Rollback preserves stored JSON. An older strict appearance parser can display
+  its default when it sees newly saved colour keys; do not delete fields or
+  rewrite customer rows to mask that incompatibility. Prefer compatible source
+  rollback/forward repair for profiles already saved with the new palette keys.
+
+Native review caught and repaired a 41px header-link touch target on hosted Chromium
+and a dense venue marker painting over the Pal. The link now has an explicit
+44px minimum, and the non-interactive player paints above venue markers without
+changing geographic anchors or intercepting venue clicks. Existing 44px and native
+projection/click assertions remain required; the failed CI receipt is retained.
+
+Verified locally: complete npm check PASS, focused175/21 PASS, strict audit
+104 routes/0 awaiting historical acceptance, unchanged playground15/15 PASS.
+Real native 3D/MapLibre matrices and exact-head hosted gates retain all failure,
+GPS, touch, projection and save assertions. Night palette is intentional under
+both OS preferences. Final browser/CI/automatic Worker identities are recorded
+in the release PR; physical Android acceptance remains separate.
