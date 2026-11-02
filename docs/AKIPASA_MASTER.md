@@ -4843,3 +4843,29 @@ explicit saves, render recovery and foreground GPS. The interface deliberately
 uses its night palette under either OS preference; separate light-theme support
 is not claimed. Final source-bound browser/CI results and deployment identities
 are attached to the release PR and external receipts before live acceptance.
+
+## 2026-11-02 | Live authored-texture loading repair
+
+Owner screenshot2053 shows the new Wardrobe but a Snow load failure. Live source,
+renderer bytes and both GLB hashes were correct; those HTTP assertions did not
+prove authenticated browser rendering. The previous standalone fixture applied
+the route's more permissive CSP directly and missed Next's production header
+composition: the existing global connect-src excludes blob:, while img-src
+already permits embedded blob images. The default Three ImageBitmapLoader fetch
+therefore fails under the actually applied policy.
+
+Repair uses a scoped image-element texture loader for authored GLBs, preserving
+original textures/materials and existing global security policy. Bound asset
+loading and failed-cache eviction; real bilingual Retry reuses the current draft,
+keeps Save/export disabled until a genuine rendered event and never saves or
+rewrites the owner's profile. Load failure must not falsely blame the device.
+The shared renderer URL changes for both World/Wardrobe. No schema, access grant,
+public navigation, reward, paid provider or customer mutation is introduced.
+
+A genuine old-loader negative control under Next-composed production headers and
+new-loader Rain/Snow/retry WebGL proofs are mandatory, alongside preserved
+save/recovery/touch/World tests and full source/CI/deployment verification. The
+owner's instruction remains test then live, physical Android retest after live.
+GitHub-hosted postdeploy probes for361 separately received HTTP403 at readiness;
+identical scripts passed locally over verified TLS. Retain those failures and do
+not confuse their network boundary with the reproduced texture/CSP defect.

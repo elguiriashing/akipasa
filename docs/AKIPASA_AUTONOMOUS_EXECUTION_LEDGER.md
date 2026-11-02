@@ -2945,3 +2945,14 @@ real supported meshes/material zones. No private347 blanket merge, SQL, paid
 provider or customer-row edit. Targeted tests and early WebGL images are real;
 final source-bound browser/full/CI/deployment gates remain in progress. Owner
 requests Android testing after live publication, with no physical pass inferred.
+
+Owner2053 follow-up supersedes the functional release-complete interpretation:
+361 is live with correct source/assets/private boundaries but its real browser
+texture load failed. Old standalone QA omitted the actual Next/global CSP
+composition. Root preserves all failure/proof history, starts
+fix/pals-live-model-loading-20261102 from b688fbe and splits scoped renderer,
+Retry UI and actual-header WebGL verification. No new SQL/provider/customer
+writes. Full source/CI and exact automatic deployment remain required; physical
+Android remains owner post-live testing. 361's two GitHub postdeploy probes
+failed readiness403, while the same scripts passed locally; no pass is inferred
+for those failed hosted probes.

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { BoxGeometry, Group, Mesh, MeshStandardMaterial, Texture } from "three";
 import {
   assertProfessionalTextures,
@@ -202,5 +202,144 @@ describe("authored portrait framing", () => {
     expect(frame.position[2]).toBe(3.6);
     expect(frame.minDistance).toBe(2.05);
     expect(frame.maxDistance).toBe(4.8);
+  });
+});
+
+describe("production-compatible authored asset loading", () => {
+  const url = "/pals/models/professional/snow-v4-20261031.glb";
+  it("uses an HTML image texture loader without changing global ImageBitmap support", async () => {
+    const { useEmbeddedImageLoader } = await import(
+      "../src/components/pals/studio-3d.js"
+    );
+    const { TextureLoader } = await import("three");
+    const before = globalThis.createImageBitmap;
+    const parser = {
+      options: { crossOrigin: "anonymous", requestHeader: {} },
+      textureLoader: null,
+    };
+    expect(useEmbeddedImageLoader(parser).name).toBe(
+      "AKIPASA_embedded_image_loader",
+    );
+    expect(parser.textureLoader).toBeInstanceOf(TextureLoader);
+    expect(parser.textureLoader.isImageBitmapLoader).not.toBe(true);
+    expect(globalThis.createImageBitmap).toBe(before);
+  });
+  it("fetches only allowlisted public assets then decodes with their fixed resource path", async () => {
+    const { loadProfessionalAsset } = await import(
+      "../src/components/pals/studio-3d.js"
+    );
+    const fetcher = vi
+      .fn()
+      .mockResolvedValue(new Response(new Uint8Array([1, 2, 3])));
+    const parse = vi
+      .fn()
+      .mockResolvedValue({ scene: "synthetic parse fixture" });
+    expect(await loadProfessionalAsset(url, { fetcher, parse })).toEqual({
+      scene: "synthetic parse fixture",
+    });
+    expect(fetcher).toHaveBeenCalledWith(
+      url,
+      expect.objectContaining({
+        credentials: "omit",
+        redirect: "error",
+        signal: expect.any(AbortSignal),
+      }),
+    );
+    expect(parse).toHaveBeenCalledWith(
+      expect.any(ArrayBuffer),
+      "/pals/models/professional/",
+    );
+    fetcher.mockClear();
+    await expect(
+      loadProfessionalAsset("https://elsewhere.invalid/a.glb", {
+        fetcher,
+        parse,
+      }),
+    ).rejects.toMatchObject({ code: "asset_not_allowed" });
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+  it("reports HTTP and decoder failures distinctly and never returns a partial success", async () => {
+    const { loadProfessionalAsset } = await import(
+      "../src/components/pals/studio-3d.js"
+    );
+    await expect(
+      loadProfessionalAsset(url, {
+        fetcher: async () => new Response(null, { status: 404 }),
+      }),
+    ).rejects.toMatchObject({ code: "asset_http" });
+    await expect(
+      loadProfessionalAsset(url, {
+        fetcher: async () => new Response(new Uint8Array([1])),
+        parse: async () => {
+          throw new Error("decode fixture");
+        },
+      }),
+    ).rejects.toMatchObject({ code: "texture_decode" });
+  });
+  it("rejects oversized and empty responses before decoding", async () => {
+    const { loadProfessionalAsset } = await import(
+      "../src/components/pals/studio-3d.js"
+    );
+    const parse = vi.fn();
+    await expect(
+      loadProfessionalAsset(url, {
+        fetcher: async () =>
+          new Response(new Uint8Array([1]), {
+            headers: { "content-length": String(13 * 1024 * 1024) },
+          }),
+        parse,
+      }),
+    ).rejects.toMatchObject({ code: "asset_too_large" });
+    await expect(
+      loadProfessionalAsset(url, {
+        fetcher: async () => new Response(new Uint8Array()),
+        parse,
+      }),
+    ).rejects.toMatchObject({ code: "asset_empty" });
+    expect(parse).not.toHaveBeenCalled();
+  });
+  it("bounds download stalls and aborts the underlying request", async () => {
+    const { loadProfessionalAsset } = await import(
+      "../src/components/pals/studio-3d.js"
+    );
+    vi.useFakeTimers();
+    let signal;
+    try {
+      const pending = loadProfessionalAsset(url, {
+        fetcher: (_url, options) => {
+          signal = options.signal;
+          return new Promise(() => {});
+        },
+        downloadTimeout: 30,
+      });
+      const expected = expect(pending).rejects.toMatchObject({
+        code: "asset_timeout",
+      });
+      await vi.advanceTimersByTimeAsync(30);
+      await expected;
+      expect(signal.aborted).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+  it("bounds stalled embedded image decoding without accepting an incomplete model", async () => {
+    const { loadProfessionalAsset } = await import(
+      "../src/components/pals/studio-3d.js"
+    );
+    vi.useFakeTimers();
+    try {
+      const pending = loadProfessionalAsset(url, {
+        fetcher: async () => new Response(new Uint8Array([1])),
+        parse: () => new Promise(() => {}),
+        decodeTimeout: 25,
+      });
+      const expected = expect(pending).rejects.toMatchObject({
+        code: "texture_timeout",
+      });
+      await vi.advanceTimersByTimeAsync(25);
+      await expected;
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
