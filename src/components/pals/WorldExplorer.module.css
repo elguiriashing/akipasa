@@ -426,7 +426,7 @@
 }
 .avatarPin > span {
   position: absolute;
-  top: 0;
+  bottom: calc(100% + 4px);
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
