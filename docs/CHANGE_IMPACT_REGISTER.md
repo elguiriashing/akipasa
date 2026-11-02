@@ -5601,3 +5601,24 @@ Real native 3D/MapLibre matrices and exact-head hosted gates retain all failure,
 GPS, touch, projection and save assertions. Night palette is intentional under
 both OS preferences. Final browser/CI/automatic Worker identities are recorded
 in the release PR; physical Android acceptance remains separate.
+
+## 2026-11-02 | Authored model load failure on the actual live policy
+
+- Owner2053 reported new Wardrobe with Snow load error. Existing361 GLB/runtime
+  hash checks were valid but did not establish authenticated browser rendering.
+- Reproduced real Snow WebGL failure: default ImageBitmapLoader fetches embedded
+  blob URLs blocked by global connect-src. Route nonce CSP was more permissive;
+  Next's actual header composition preserves the existing global CSP instead.
+- Scope: shared authored texture loading, bounded failure/cache recovery, neutral
+  bilingual error status and an actionable Retry, shared renderer URL, genuine
+  Next-composed-header browser fixtures. Keep global CSP unchanged.
+- Retry operates only on local current appearance; no implicit profile write or
+  lost draft. Save/export remain guarded until genuine graphics success. Both
+  authored characters, six material zones, resource isolation and World reuse
+  remain required. No SQL, paid resource, public grant or reward change.
+- Preserve the old creator bundle as a failing restrictive-policy negative
+  control; verify actual Rain/Snow textures and transient failure→Retry recovery
+  under the unchanged production policy before deployment. Retain earlier
+  matrices without mislabelling their permissive-policy coverage.
+- Github postdeploy403 readiness failures are separately recorded; do not mark
+  those as passed based on local TLS alternatives or weaken access policy.

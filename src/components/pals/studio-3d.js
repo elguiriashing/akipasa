@@ -45,11 +45,107 @@ const BOTTOMS = {
 };
 const shoes = { sneakers: "#f0eee7", boots: "#514139", trainers: "#bec8c8" };
 const loader = new GLTFLoader();
+/** Embedded PNGs are image resources. GLTFLoader's ImageBitmapLoader fetches
+ * blob: URLs under connect-src; use HTMLImageElement under img-src instead.
+ * This is scoped to this loader, never a global browser/CSP modification. */
+export function useEmbeddedImageLoader(parser) {
+  parser.textureLoader = new THREE.TextureLoader(parser.options.manager);
+  parser.textureLoader.setCrossOrigin(parser.options.crossOrigin);
+  parser.textureLoader.setRequestHeader(parser.options.requestHeader);
+  return { name: "AKIPASA_embedded_image_loader" };
+}
+loader.register(useEmbeddedImageLoader);
 const models = new Map();
 const PROFESSIONAL_MODELS = {
   "rain-v3": "/pals/models/professional/rain-v3-20261031.glb",
   "snow-v4": "/pals/models/professional/snow-v4-20261031.glb",
 };
+
+const modelFailure = (code, cause) =>
+  Object.assign(new Error(code, { cause }), { code });
+async function deadline(promise, milliseconds, code, cancel = () => {}) {
+  let timer;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        timer = setTimeout(() => {
+          cancel();
+          reject(modelFailure(code));
+        }, milliseconds);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+/** Bounded same-origin public asset transport and embedded-image decoding. */
+export async function loadProfessionalAsset(
+  url,
+  {
+    fetcher = (...args) => fetch(...args),
+    parse = (buffer, path) => loader.parseAsync(buffer, path),
+    downloadTimeout = 30000,
+    decodeTimeout = 20000,
+  } = {},
+) {
+  if (!Object.values(PROFESSIONAL_MODELS).includes(url))
+    throw modelFailure("asset_not_allowed");
+  const controller = new AbortController();
+  const download = async () => {
+    const response = await fetcher(url, {
+      signal: controller.signal,
+      credentials: "omit",
+      redirect: "error",
+    });
+    if (!response.ok) throw modelFailure("asset_http", response.status);
+    const maximum = 12 * 1024 * 1024;
+    if (Number(response.headers.get("content-length")) > maximum)
+      throw modelFailure("asset_too_large");
+    if (!response.body) throw modelFailure("asset_empty");
+    const reader = response.body.getReader();
+    const chunks = [];
+    let size = 0;
+    try {
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        size += value.length;
+        if (size > maximum) throw modelFailure("asset_too_large");
+        chunks.push(value);
+      }
+    } catch (error) {
+      await reader.cancel().catch(() => {});
+      throw error;
+    }
+    if (!size) throw modelFailure("asset_empty");
+    const bytes = new Uint8Array(size);
+    let offset = 0;
+    for (const chunk of chunks) {
+      bytes.set(chunk, offset);
+      offset += chunk.length;
+    }
+    return bytes.buffer;
+  };
+  let buffer;
+  try {
+    buffer = await deadline(download(), downloadTimeout, "asset_timeout", () =>
+      controller.abort(),
+    );
+  } catch (error) {
+    controller.abort();
+    throw error?.code ? error : modelFailure("asset_network", error);
+  }
+  try {
+    return await deadline(
+      parse(buffer, url.slice(0, url.lastIndexOf("/") + 1)),
+      decodeTimeout,
+      "texture_timeout",
+    );
+  } catch (error) {
+    throw error?.code ? error : modelFailure("texture_decode", error);
+  }
+}
 
 /** GLTFLoader deliberately tolerates image decode failures. Our preview must
  * fail visibly instead of offering to save a grey, incomplete character. */
@@ -70,7 +166,10 @@ export function assertProfessionalTextures(gltf) {
     }
   });
   if (expected.size < 4 || loaded.size !== expected.size)
-    throw new Error("Authored character textures did not finish loading");
+    throw Object.assign(
+      new Error("Authored character textures did not finish loading"),
+      { code: "texture_decode" },
+    );
 }
 
 /** Tint named authored surfaces in the shader: original UVs, normal maps,
@@ -1459,14 +1558,13 @@ function create(container, { mode = "studio" } = {}) {
         if (!professional || faceType !== model) {
           let pending = models.get(model);
           if (!pending) {
-            pending = loader
-              .loadAsync(professionalUrl)
+            pending = loadProfessionalAsset(professionalUrl)
               .then((gltf) => {
                 assertProfessionalTextures(gltf);
                 return gltf;
               })
               .catch((error) => {
-                models.delete(model);
+                if (models.get(model) === pending) models.delete(model);
                 throw error;
               });
             models.set(model, pending);
@@ -1507,7 +1605,7 @@ function create(container, { mode = "studio" } = {}) {
             pending = loader
               .loadAsync("/pals/models/akipals-base-" + model + ".glb")
               .catch((error) => {
-                models.delete(model);
+                if (models.get(model) === pending) models.delete(model);
                 throw error;
               });
             models.set(model, pending);
@@ -1566,6 +1664,7 @@ function create(container, { mode = "studio" } = {}) {
       previousStyle = JSON.stringify(a);
       renderer.render(scene, camera);
       requestRender();
+      delete container.dataset.errorReason;
       container.dataset.rendered = "true";
       container.dataset.model = model;
       container.dataset.modelId = modelId;
@@ -1576,10 +1675,16 @@ function create(container, { mode = "studio" } = {}) {
       if (active && number === loadNumber) {
         root.visible = false;
         renderer.render(scene, camera);
+        const reason =
+          typeof error?.code === "string" ? error.code : "model_load";
+        container.dataset.errorReason = reason;
         container.dataset.rendered = "error";
         container.dispatchEvent(
           new CustomEvent("akipals:error", {
-            detail: { message: "The 3D model could not load. Please retry." },
+            detail: {
+              message: "The 3D model could not load. Please retry.",
+              reason: container.dataset.errorReason,
+            },
           }),
         );
       }
@@ -1588,6 +1693,20 @@ function create(container, { mode = "studio" } = {}) {
   }
   return {
     setAppearance,
+    retry(appearance) {
+      if (!active || contextLost) return;
+      const modelId =
+        !appearance.model || appearance.model === "classic-v2"
+          ? appearance.bodyStyle === "masculine"
+            ? "snow-v4"
+            : "rain-v3"
+          : appearance.model;
+      models.delete(modelId);
+      clearGroup(professional);
+      professional = null;
+      faceType = null;
+      return setAppearance(appearance);
+    },
     setMotion({ walking = false, headingDegrees } = {}) {
       if (!isWorld) return;
       worldWalking = Boolean(walking);
